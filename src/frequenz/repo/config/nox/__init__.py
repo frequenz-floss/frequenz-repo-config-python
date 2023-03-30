@@ -1,3 +1,6 @@
+# License: MIT
+# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
+
 """TODO."""
 
 from __future__ import annotations

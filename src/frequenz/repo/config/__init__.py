@@ -3,8 +3,9 @@
 
 """Frequenz project setup tools and common configuration."""
 
-from . import nox
+from . import nox, setuptools
 
 __all__ = [
     "nox",
+    "setuptools",
 ]
