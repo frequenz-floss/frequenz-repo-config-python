@@ -1,38 +1,49 @@
 # License: MIT
-# Copyright © 2022 Frequenz Energy-as-a-Service GmbH
+# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
-"""TODO."""
+"""Configuration utilities for nox.
 
+This module provides utilities to configure the nox sessions. It provides a
+`Config` and a `CommandsOptions` class, which are used to configure the nox sessions.
+
+The `get()` function can be used to retrieve the current configuration object
+so it can be used when implementing custom nox sessions.
+
+The `configure()` function must be called before `get()` is used.
+"""
 
 import dataclasses
-import itertools
 from typing import Self
 
 import nox
 
 from . import util
 
-# pylint: disable=fixme
-# TODO: to make it more extensible, create one class per defaults type (lib,
-# actor, app, api), move defaults to `default_factory` and see if that gets
-# generated properly.
-#
-# If it doesn't work, we can declare each default set separately, either in
-# a big nested DEFAULTS dict with the key being the "profile" or several
-# DEFAULT_XXX dicts, one per profile.
-
 
 @dataclasses.dataclass(kw_only=True, slots=True)
 class CommandsOptions:
-    """TODO."""
+    """Command-line options for each command."""
 
     black: list[str] = dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `black` command."""
+
     darglint: list[str] = dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `darglint` command."""
+
     isort: list[str] = dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `isort` command."""
+
     mypy: list[str] = dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `mypy` command."""
+
     pydocstyle: list[str] = dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `pydocstyle` command."""
+
     pylint: list[str] = dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `pylint` command."""
+
     pytest: list[str] = dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `pytest` command."""
 
     def copy(self) -> Self:
         """Create a new object as a copy of self.
@@ -45,25 +56,32 @@ class CommandsOptions:
 
 @dataclasses.dataclass(kw_only=True, slots=True)
 class Config:
-    """TODO."""
+    """Configuration for nox sessions."""
 
     opts: CommandsOptions = dataclasses.field(default_factory=CommandsOptions)
+    """Command-line options for each command used by sessions."""
+
     sessions: list[str] = dataclasses.field(default_factory=lambda: [])
+    """List of sessions to run."""
+
     source_paths: list[str] = dataclasses.field(default_factory=lambda: [])
-    """TODO
+    """List of paths containing source files that should be analyzed by the sessions.
 
-    Source paths are inspected for __init__.py files to look for packages,
-    it should be any package installed. The path should be the top-level
-    directory, as it will be removed when calculating the package name.
+    Source paths are inspected for `__init__.py` files to look for packages.
+    The path should be the top-level directory containing packages that will be
+    actually part of the distribution, not development paths, like tests,
+    benchmarks, etc.
 
-    TODO: Get from pyproject.toml
+    This path will be removed when calculating the package name for the found
+    packages. `mypy` needs the package name to be able to do full import
+    checking.
     """
 
     extra_paths: list[str] = dataclasses.field(default_factory=lambda: [])
-    """TODO: A list of path to be used by default and its corresponding package name.
+    """List of extra paths to be analyzed by the sessions.
 
-    The package name is needed for mypy, as it takes packages when full import
-    checking needs to be done.
+    These are not inspected for packages, as they are passed verbatim to the
+    tools invoked by the sessions.
     """
 
     def copy(self, /) -> Self:
@@ -75,16 +93,17 @@ class Config:
         return dataclasses.replace(self)
 
     def path_args(self, session: nox.Session, /) -> list[str]:
-        """TODO: Return the file paths to run the checks on.
+        """Return the file paths to run the checks on.
 
-        If positional arguments are present in the nox session, we use those as the
-        file paths, and if not, we use all source files.
+        If positional arguments are present in the nox session, those are used
+        as the file paths verbatim, and if not, all **existing** `source_paths`
+        and `extra_paths` are used.
 
         Args:
-            session: the nox session.
+            session: The nox session to use to look for command-line arguments.
 
         Returns:
-            the file paths to run the checks on.
+            The file paths to run the checks on.
         """
         if session.posargs:
             return session.posargs
@@ -94,16 +113,20 @@ class Config:
         ]
 
     def package_args(self, session: nox.Session, /) -> list[str]:
-        """TODO: Return the file paths to run the checks on.
+        """Return the package names to run the checks on.
 
-        If positional arguments are present in the nox session, we use those as the
-        file paths, and if not, we use all source files.
+        If positional arguments are present in the nox session, those are used
+        as the file paths verbatim, and if not, all **existing** `source_paths`
+        are searched for python packges by looking for `__init__.py` files.
+        `extra_paths` are used as is, only converting the paths to python
+        package names (replacing `/` with `.` and removing the suffix `.pyi?`
+        if it exists.
 
         Args:
-            session: the nox session.
+            session: The nox session to use to look for command-line arguments.
 
         Returns:
-            the file paths to run the checks on.
+            The package names found in the `source_paths`.
         """
         if session.posargs:
             return session.posargs
@@ -127,12 +150,13 @@ class Config:
 
 
 _config: Config | None = None
+"""The global configuration object."""
 
 
 def get() -> Config:
     """Get the global configuration object.
 
-    This will raise if `configure()` wasn't called before.
+    This will assert if `configure()` wasn't called before.
 
     Returns:
         The global configuration object.

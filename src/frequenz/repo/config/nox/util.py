@@ -1,4 +1,11 @@
-"""TODO."""
+# License: MIT
+# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
+
+"""General purpose utilities.
+
+This module contains general purpose utilities that are used by the other
+modules in this package.
+"""
 
 
 import pathlib
