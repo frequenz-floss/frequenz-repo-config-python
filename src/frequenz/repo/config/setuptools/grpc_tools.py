@@ -3,7 +3,6 @@
 
 """Setuptool hooks to build protobuf files."""
 
-from __future__ import annotations
 
 import pathlib
 import subprocess
