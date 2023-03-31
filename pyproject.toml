@@ -4,10 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "frequenz-repo-config"
-description = "Frequenz project setup tools and common configuration"
+description = "Frequenz repository setup tools and common configuration"
 readme = "README.md"
 license = { text = "MIT" }
-keywords = ["frequenz", "package", "project", "config", "tool"]
+keywords = [
+  "frequenz",
+  "package",
+  "project",
+  "config",
+  "tool",
+  "repository",
+  "setuptools",
+  "nox",
+  "grpc",
+  "protobuf",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
