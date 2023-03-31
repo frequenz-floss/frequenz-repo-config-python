@@ -2,7 +2,7 @@
 
 from . import config as _config
 
-command_options: _config.CommandsOptions = _config.CommandsOptions(
+common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     black=[
         "--check",
     ],
@@ -26,8 +26,8 @@ command_options: _config.CommandsOptions = _config.CommandsOptions(
     ],
 )
 
-config = _config.Config(
-    opts=command_options.copy(),
+common_config = _config.Config(
+    opts=common_command_options.copy(),
     sessions=[
         "formatting",
         "mypy",
@@ -48,18 +48,18 @@ config = _config.Config(
     ],
 )
 
-lib_command_options: _config.CommandsOptions = command_options.copy()
+lib_command_options: _config.CommandsOptions = common_command_options.copy()
 
-lib_config: _config.Config = config.copy()
+lib_config: _config.Config = common_config.copy()
 
-api_command_options: _config.CommandsOptions = command_options.copy()
+api_command_options: _config.CommandsOptions = common_command_options.copy()
 
-api_config: _config.Config = config.copy()
+api_config: _config.Config = common_config.copy()
 
-actor_command_options: _config.CommandsOptions = command_options.copy()
+actor_command_options: _config.CommandsOptions = common_command_options.copy()
 
-actor_config: _config.Config = config.copy()
+actor_config: _config.Config = common_config.copy()
 
-app_command_options: _config.CommandsOptions = command_options.copy()
+app_command_options: _config.CommandsOptions = common_command_options.copy()
 
-app_config: _config.Config = config.copy()
+app_config: _config.Config = common_config.copy()
