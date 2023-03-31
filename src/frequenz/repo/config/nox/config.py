@@ -123,11 +123,7 @@ class Config:
             util.path_to_package(p) for p in util.existing_paths(self.extra_paths)
         )
 
-        return list(
-            util.flatten(
-                ("-p", p) for p in itertools.chain(source_packages, extra_packages)
-            )
-        )
+        return [*source_packages, *extra_packages]
 
 
 _config: Config | None = None

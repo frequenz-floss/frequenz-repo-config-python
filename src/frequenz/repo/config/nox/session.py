@@ -56,7 +56,8 @@ def mypy(session: nox.Session, install_deps: bool = True) -> None:
         session.install("-e", ".[mypy]")
 
     conf = config.get()
-    session.run("mypy", *conf.opts.mypy, *conf.package_args(session))
+    pkg_args = util.flatten(("-p", p) for p in conf.package_args(session))
+    session.run("mypy", *conf.opts.mypy, *pkg_args)
 
 
 @nox.session
