@@ -39,14 +39,26 @@ def existing_paths(paths: Iterable[str], /) -> Iterable[pathlib.Path]:
     return (p for p in map(pathlib.Path, paths) if p.exists())
 
 
+def is_python_file(path: pathlib.Path, /) -> bool:
+    """Check if a path is a Python file.
+
+    Args:
+        path: The path to check.
+
+    Returns:
+        `True` if the path is a Python file, `False` otherwise.
+    """
+    return path.suffix in (".py", ".pyi")
+
+
 def path_to_package(path: pathlib.Path, root: pathlib.Path | None = None) -> str:
     """Convert paths to Python package names.
 
-    Paths should exist and be either a directory or a file ending with `.py`
-    (otherwise this function will raise an error).
-    The `root` and `path` are concatenated when performing the check.
+    Paths should exist and be either a directory or a file ending with `.pyi?`
+    (otherwise this function will assert). The `root` and `path` are
+    concatenated when performing the check.
 
-    Directory separators in `path` are replaced with `.` and the `.py` suffix
+    Directory separators in `path` are replaced with `.` and the `.pyi?` suffix
     is removed (if present).
 
     Args:
@@ -64,9 +76,9 @@ def path_to_package(path: pathlib.Path, root: pathlib.Path | None = None) -> str
     real_path = path
     if root is not None:
         real_path = root / path
-    assert real_path.is_dir() or real_path.suffix == ".py"
+    assert real_path.is_dir() or is_python_file(real_path)
 
-    if real_path.suffix == ".py":
+    if is_python_file(real_path):
         path = path.with_suffix("")
     return path.as_posix().replace("/", ".")
 
