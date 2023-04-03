@@ -4,10 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "frequenz-repo-config"
-description = "Frequenz project setup tools and common configuration"
+description = "Frequenz repository setup tools and common configuration"
 readme = "README.md"
 license = { text = "MIT" }
-keywords = ["frequenz", "package", "project", "config", "tool"]
+keywords = [
+  "frequenz",
+  "package",
+  "project",
+  "config",
+  "tool",
+  "repository",
+  "setuptools",
+  "nox",
+  "grpc",
+  "protobuf",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -26,6 +37,11 @@ name = "Frequenz Energy-as-a-Service GmbH"
 email = "floss@frequenz.com"
 
 [project.optional-dependencies]
+api = [
+  "grpcio-tools >= 1.47.0, < 2",
+  "mypy-protobuf >= 3.0.0, < 4",
+  "setuptools >= 67.6.0, < 68",
+]
 docs-gen = [
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.4.0",
@@ -38,6 +54,7 @@ docs-lint = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
 format = ["black == 23.3.0", "isort == 5.12.0"]
 mypy = [
   "mypy == 1.1.1",
+  "types-setuptools >= 67.6.0, < 68", # Should match the global dependency
   # For checking the docs/ script, and tests
   "frequenz-repo-config[docs-gen,pytest]",
 ]

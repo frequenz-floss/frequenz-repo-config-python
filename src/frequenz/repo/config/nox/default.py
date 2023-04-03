@@ -1,8 +1,35 @@
-"""TODO."""
+# License: MIT
+# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
+
+"""Default nox configuration for different types of repositories.
+
+This module provides the default configuration for different types of
+repositories:
+
+- Libraries (lib)
+- APIs (api)
+- Actors (actor)
+- Applications (app)
+
+The `lib_config`, `api_config`, `actor_config` and `app_config`
+variables are the default configurations for libraries, APIs, actors and
+applications, respectively. The `common_config` variable is the default
+configuration for all types of repositories.
+
+The `lib_command_options`, `api_command_options`, `actor_command_options` and
+`app_command_options` variables are the default command-line options for the same
+types of repositories, and the `common_command_options` variable is the default
+command-line options for all types of repositories.
+
+They can be modified before being passed to
+[`nox.configure()`][frequenz.repo.config.nox.configure] by using the
+[`CommandsOptions.copy()`][frequenz.repo.config.nox.config.CommandsOptions.copy]
+method.
+"""
 
 from . import config as _config
 
-command_options: _config.CommandsOptions = _config.CommandsOptions(
+common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     black=[
         "--check",
     ],
@@ -25,9 +52,10 @@ command_options: _config.CommandsOptions = _config.CommandsOptions(
         "-vv",
     ],
 )
+"""Default command-line options for all types of repositories."""
 
-config = _config.Config(
-    opts=command_options.copy(),
+common_config = _config.Config(
+    opts=common_command_options.copy(),
     sessions=[
         "formatting",
         "mypy",
@@ -47,19 +75,28 @@ config = _config.Config(
         "tests",
     ],
 )
+"""Default configuration for all types of repositories."""
 
-lib_command_options: _config.CommandsOptions = command_options.copy()
+lib_command_options: _config.CommandsOptions = common_command_options.copy()
+"""Default command-line options for libraries."""
 
-lib_config: _config.Config = config.copy()
+lib_config: _config.Config = common_config.copy()
+"""Default configuration for libraries."""
 
-api_command_options: _config.CommandsOptions = command_options.copy()
+api_command_options: _config.CommandsOptions = common_command_options.copy()
+"""Default command-line options for APIs."""
 
-api_config: _config.Config = config.copy()
+api_config: _config.Config = common_config.copy()
+"""Default configuration for APIs."""
 
-actor_command_options: _config.CommandsOptions = command_options.copy()
+actor_command_options: _config.CommandsOptions = common_command_options.copy()
+"""Default command-line options for actors."""
 
-actor_config: _config.Config = config.copy()
+actor_config: _config.Config = common_config.copy()
+"""Default configuration for actors."""
 
-app_command_options: _config.CommandsOptions = command_options.copy()
+app_command_options: _config.CommandsOptions = common_command_options.copy()
+"""Default command-line options for applications."""
 
-app_config: _config.Config = config.copy()
+app_config: _config.Config = common_config.copy()
+"""Default configuration for applications."""
