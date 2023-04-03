@@ -1,8 +1,11 @@
 # License: MIT
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
-"""Setuptool hooks to build protobuf files."""
+"""Setuptool hooks to build protobuf files.
 
+This module provides a function that returns a dictionary with the required
+machinery to build protobuf files via setuptools.
+"""
 
 import pathlib
 import subprocess
@@ -22,6 +25,22 @@ def build_proto_cmdclass(
 ) -> dict[str, Any]:
     """Return a dictionary with the required machinery to build protobuf files.
 
+    This dictionary is meant to be passed as the `cmdclass` argument of
+    `setuptools.setup()`.
+
+    It will add the following commands to setuptools:
+
+        - `compile_proto`: Adds a command to compile the protobuf files to
+          Python files.
+        - `build_py`: Use the `compile_proto` command to build the python files
+          and run the regular `build_py` command, so the protobuf files are
+          create automatically when the python package is created.
+
+    Unless an explicit `include_paths` is passed, the
+    `submodules/api-common-protos` wiil be added to the include paths, so your
+    project should have a submodule with the common google api protos in that
+    path.
+
     Args:
         proto_path: Path of the root directory containing the protobuf files.
         proto_glob: The glob pattern to use to find the protobuf files.
@@ -30,28 +49,16 @@ def build_proto_cmdclass(
     Returns:
         Options to pass to `setuptools.setup()` `cmdclass` argument to build
         protobuf files.
-
-    Examples:
-        To use this you need to make sure you have these dependencies:
-
-        * `grpcio-tools >= 1.47.0, < 2`
-        * `mypy-protobuf >= 3.0.0, < 4`
-
-        TODO: SUBMODULE
-
-        ```py
-        import setuptools
-
-        if __name__ == "__main__":
-            setuptools.setup(cmdclass=build_proto_cmdclass())
-        ```
     """
 
     class CompileProto(setuptools.Command):
-        """Command class to build the Python protobuf files."""
+        """Build the Python protobuf files."""
 
         description: str = f"compile protobuf files in {proto_path}/**/{proto_glob}/"
+        """Description of the command."""
+
         user_options: list[str] = []
+        """Options of the command."""
 
         def initialize_options(self) -> None:
             """Initialize options."""
@@ -76,7 +83,7 @@ def build_proto_cmdclass(
             subprocess.run(protoc_cmd, check=True)
 
     class BuildPy(setuptools.command.build_py.build_py, CompileProto):
-        """Command class to build the Python protobuf files."""
+        """Build the Python protobuf files and run the regular `build_py` command."""
 
         def run(self) -> None:
             """Compile the Python protobuf files and run regular `build_py`."""
