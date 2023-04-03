@@ -40,7 +40,7 @@ def formatting(session: nox.Session, install_deps: bool = True) -> None:
         install_deps: True if dependencies should be installed.
     """
     if install_deps:
-        session.install("-e", ".[format]")
+        session.install("-e", ".[dev-format]")
 
     conf = config.get()
     session.run("black", *conf.opts.black, *conf.path_args(session))
@@ -58,7 +58,7 @@ def mypy(session: nox.Session, install_deps: bool = True) -> None:
     if install_deps:
         # install the package itself as editable, so that it is possible to do
         # fast local tests with `nox -R -e mypy`.
-        session.install("-e", ".[mypy]")
+        session.install("-e", ".[dev-mypy]")
 
     conf = config.get()
     pkg_args = util.flatten(("-p", p) for p in conf.package_args(session))
@@ -76,7 +76,7 @@ def pylint(session: nox.Session, install_deps: bool = True) -> None:
     if install_deps:
         # install the package itself as editable, so that it is possible to do
         # fast local tests with `nox -R -e pylint`.
-        session.install("-e", ".[pylint]")
+        session.install("-e", ".[dev-pylint]")
 
     conf = config.get()
     session.run("pylint", *conf.opts.pylint, *conf.path_args(session))
@@ -91,7 +91,7 @@ def docstrings(session: nox.Session, install_deps: bool = True) -> None:
         install_deps: True if dependencies should be installed.
     """
     if install_deps:
-        session.install("-e", ".[docs-lint]")
+        session.install("-e", ".[dev-docs-lint]")
 
     conf = config.get()
     session.run("pydocstyle", *conf.opts.pydocstyle, *conf.path_args(session))
@@ -120,7 +120,7 @@ def pytest_max(session: nox.Session, install_deps: bool = True) -> None:
     if install_deps:
         # install the package itself as editable, so that it is possible to do
         # fast local tests with `nox -R -e pytest_max`.
-        session.install("-e", ".[pytest]")
+        session.install("-e", ".[dev-pytest]")
 
     _pytest_impl(session, "max")
 
@@ -136,7 +136,7 @@ def pytest_min(session: nox.Session, install_deps: bool = True) -> None:
     if install_deps:
         # install the package itself as editable, so that it is possible to do
         # fast local tests with `nox -R -e pytest_min`.
-        session.install("-e", ".[pytest]", *util.min_dependencies())
+        session.install("-e", ".[dev-pytest]", *util.min_dependencies())
 
     _pytest_impl(session, "min")
 

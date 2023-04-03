@@ -42,7 +42,7 @@ api = [
   "mypy-protobuf >= 3.0.0, < 4",
   "setuptools >= 67.6.0, < 68",
 ]
-docs-gen = [
+dev-docs-gen = [
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.4.0",
   "mkdocs-literate-nav == 0.4.0",
@@ -50,22 +50,24 @@ docs-gen = [
   "mkdocs-section-index == 0.3.5",
   "mkdocstrings[python] == 0.20.0",
 ]
-docs-lint = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
-format = ["black == 23.3.0", "isort == 5.12.0"]
-mypy = [
+dev-docs-lint = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
+dev-format = ["black == 23.3.0", "isort == 5.12.0"]
+dev-mypy = [
   "mypy == 1.1.1",
   "types-setuptools >= 67.6.0, < 68", # Should match the global dependency
   # For checking the docs/ script, and tests
   "frequenz-repo-config[docs-gen,pytest]",
 ]
-pylint = [
+dev-pylint = [
   "pylint == 2.17.1",
   "pylint-google-style-guide-imports-enforcing == 1.3.0",
   # For checking the docs/ script, and tests
   "frequenz-repo-config[docs-gen,pytest]",
 ]
-pytest = ["pytest == 7.2.2"]
-dev = ["frequenz-repo-config[docs-gen,docs-lint,format,pytest,mypy,pylint]"]
+dev-pytest = ["pytest == 7.2.2"]
+dev = [
+  "frequenz-repo-config[dev-docs-gen,dev-docs-lint,dev-format,dev-pytest,dev-mypy,dev-pylint]",
+]
 
 [project.urls]
 Changelog = "https://github.com/frequenz-floss/frequenz-repo-config-python/releases"
