@@ -28,7 +28,7 @@ def flatten(iterables: Iterable[Iterable[_T]], /) -> Iterable[_T]:
     Example:
         >>> assert list(flatten([(1, 2), (3, 4)]) == [1, 2, 3, 4]
     """
-    return [item for sublist in iterables for item in sublist]
+    return (item for sublist in iterables for item in sublist)
 
 
 def existing_paths(paths: Iterable[str], /) -> Iterable[pathlib.Path]:
