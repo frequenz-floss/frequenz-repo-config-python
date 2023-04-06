@@ -84,6 +84,15 @@ class Config:
     tools invoked by the sessions.
     """
 
+    def __post_init__(self) -> None:
+        """Initialize the configuration object.
+
+        This will add extra paths discovered in config files and other sources.
+        """
+        for path in util.discover_paths():
+            if path not in self.extra_paths:
+                self.extra_paths.append(path)
+
     def copy(self, /) -> Self:
         """Create a new object as a copy of self.
 

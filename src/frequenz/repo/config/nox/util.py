@@ -170,3 +170,30 @@ def min_dependencies() -> list[str]:
         else:
             raise RuntimeError(f"Minimum requirement is not set: {dep}")
     return min_deps
+
+
+def discover_paths() -> list[str]:
+    """Discover paths to check.
+
+    Discover the paths to check by looking into different sources, like the
+    `pyproject.toml` file.
+
+    Currently the following paths are discovered:
+
+    - The `testpaths` option in the `tools.pytest.ini_options` section of
+      `pyproject.toml`.
+
+    Returns:
+        The discovered paths to check.
+    """
+    with open("pyproject.toml", "rb") as toml_file:
+        data = tomllib.load(toml_file)
+
+    testpaths = (
+        data.get("tool", {})
+        .get("pytest", {})
+        .get("ini_options", {})
+        .get("testpaths", [])
+    )
+
+    return testpaths
