@@ -37,11 +37,14 @@ name = "Frequenz Energy-as-a-Service GmbH"
 email = "floss@frequenz.com"
 
 [project.optional-dependencies]
+actor = []
 api = [
   "grpcio-tools >= 1.47.0, < 2",
   "mypy-protobuf >= 3.0.0, < 4",
   "setuptools >= 67.6.0, < 68",
 ]
+app = []
+lib = []
 dev-docs-gen = [
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.4.0",
