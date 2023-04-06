@@ -50,8 +50,8 @@ dev-docs-gen = [
   "mkdocs-section-index == 0.3.5",
   "mkdocstrings[python] == 0.20.0",
 ]
-dev-docs-lint = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
-dev-format = ["black == 23.3.0", "isort == 5.12.0"]
+dev-docstrings = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
+dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
 dev-mypy = [
   "mypy == 1.1.1",
   "types-setuptools >= 67.6.0, < 68", # Should match the global dependency
@@ -66,7 +66,7 @@ dev-pylint = [
 ]
 dev-pytest = ["pytest == 7.2.2"]
 dev = [
-  "frequenz-repo-config[dev-docs-gen,dev-docs-lint,dev-format,dev-pytest,dev-mypy,dev-pylint]",
+  "frequenz-repo-config[dev-docs-gen,dev-docstrings,dev-formatting,dev-pytest,dev-mypy,dev-pylint]",
 ]
 
 [project.urls]

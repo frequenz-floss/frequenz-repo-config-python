@@ -40,7 +40,7 @@ def formatting(session: nox.Session, install_deps: bool = True) -> None:
         install_deps: True if dependencies should be installed.
     """
     if install_deps:
-        session.install("-e", ".[dev-format]")
+        session.install("-e", ".[dev-formatting]")
 
     conf = config.get()
     session.run("black", *conf.opts.black, *conf.path_args(session))
@@ -91,7 +91,7 @@ def docstrings(session: nox.Session, install_deps: bool = True) -> None:
         install_deps: True if dependencies should be installed.
     """
     if install_deps:
-        session.install("-e", ".[dev-docs-lint]")
+        session.install("-e", ".[dev-docstrings]")
 
     conf = config.get()
     session.run("pydocstyle", *conf.opts.pydocstyle, *conf.path_args(session))
