@@ -145,7 +145,7 @@ def _pytest_impl(
     session: nox.Session, max_or_min_deps: str  # pylint: disable=unused-argument
 ) -> None:
     conf = config.get()
-    session.run("pytest", *conf.opts.pytest, *conf.path_args(session))
+    session.run("pytest", *conf.opts.pytest, *session.posargs)
 
     # pylint: disable=fixme
     # TODO: Implement coverage reporting, we need to research this a bit and it

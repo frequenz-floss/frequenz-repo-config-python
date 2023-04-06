@@ -10,7 +10,7 @@ modules in this package.
 
 import pathlib
 import tomllib
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping, Set
 from typing import TypeVar
 
 _T = TypeVar("_T")
@@ -29,6 +29,27 @@ def flatten(iterables: Iterable[Iterable[_T]], /) -> Iterable[_T]:
         >>> assert list(flatten([(1, 2), (3, 4)]) == [1, 2, 3, 4]
     """
     return (item for sublist in iterables for item in sublist)
+
+
+def replace(iterable: Iterable[_T], replacements: Mapping[_T, _T], /) -> Iterable[_T]:
+    """Replace elements in an iterable.
+
+    Args:
+        iterable: The iterable to replace elements in.
+        old: The elements to replace.
+        new: The elements to replace with.
+
+    Returns:
+        An iterable with the elements in `iterable` replaced.
+
+    Example:
+        >>> assert list(replace([1, 2, 3], old={1, 2}, new={4, 5})) == [4, 5, 3]
+    """
+    for item in iterable:
+        if item in replacements:
+            yield replacements[item]
+        else:
+            yield item
 
 
 def existing_paths(paths: Iterable[str], /) -> Iterable[pathlib.Path]:

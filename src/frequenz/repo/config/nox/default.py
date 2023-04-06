@@ -27,7 +27,10 @@ They can be modified before being passed to
 method.
 """
 
+import dataclasses
+
 from . import config as _config
+from . import util
 
 common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     black=[
@@ -86,8 +89,16 @@ lib_config: _config.Config = common_config.copy()
 api_command_options: _config.CommandsOptions = common_command_options.copy()
 """Default command-line options for APIs."""
 
-api_config: _config.Config = common_config.copy()
-"""Default configuration for APIs."""
+api_config: _config.Config = dataclasses.replace(
+    common_config,
+    source_paths=list(util.replace(common_config.source_paths, {"src": "py"})),
+    extra_paths=list(util.replace(common_config.extra_paths, {"tests": "pytests"})),
+)
+"""Default configuration for APIs.
+
+Same as `common_config`, but with `source_paths` replacing `"src"` with `"py"`
+and `extra_paths` replacing `"tests"` with `"pytests"`.
+"""
 
 actor_command_options: _config.CommandsOptions = common_command_options.copy()
 """Default command-line options for actors."""
