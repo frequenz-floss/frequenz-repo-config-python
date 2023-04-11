@@ -3,10 +3,10 @@
 
 """Configuration file for nox."""
 
-from frequenz.repo import config
+from frequenz.repo.config import nox
 
 # Remove the pytest sessions because we don't have tests yet
-conf = config.nox.default.lib_config.copy()
-conf.sessions = [s for s in conf.sessions if not s.startswith("pytest")]
+config = nox.default.lib_config.copy()
+config.sessions = [s for s in config.sessions if not s.startswith("pytest")]
 
-config.nox.configure(conf)
+nox.configure(config)
