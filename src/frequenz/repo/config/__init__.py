@@ -148,6 +148,30 @@ dev = [
 ]
 ```
 
+### Running `nox`
+
+It is recommended to provide a `requirements-nox.txt` file that includes `nox`
+and this package as dependencies. For example:
+
+```
+nox==2022.11.21
+frequenz-repo-config==0.1.0
+```
+
+So users (and CI workflows) can easily install all the dependencies needed to
+run `nox` like this:
+
+```console
+$ pip install -r requirements-nox.txt
+...
+$ nox
+...
+```
+
+This will keep the current environment, installing only the dependencies needed
+to run `nox` (which, in turn, will install the needed dependencies creating its
+own virtual environment).
+
 # APIs
 
 ## `setuptools` gRPC support
