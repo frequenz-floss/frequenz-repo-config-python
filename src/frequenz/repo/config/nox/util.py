@@ -10,7 +10,7 @@ modules in this package.
 
 import pathlib
 import tomllib
-from collections.abc import Iterable, Mapping, Set
+from collections.abc import Iterable, Mapping
 from typing import TypeVar
 
 _T = TypeVar("_T")
@@ -36,14 +36,13 @@ def replace(iterable: Iterable[_T], replacements: Mapping[_T, _T], /) -> Iterabl
 
     Args:
         iterable: The iterable to replace elements in.
-        old: The elements to replace.
-        new: The elements to replace with.
+        replacements: A mapping of elements to replace with other elements.
 
-    Returns:
-        An iterable with the elements in `iterable` replaced.
+    Yields:
+        The next element in the iterable, with the replacements applied.
 
     Example:
-        >>> assert list(replace([1, 2, 3], old={1, 2}, new={4, 5})) == [4, 5, 3]
+        >>> assert list(replace([1, 2, 3], {1: 4, 2: 5})) == [4, 5, 3]
     """
     for item in iterable:
         if item in replacements:
@@ -210,7 +209,7 @@ def discover_paths() -> list[str]:
     with open("pyproject.toml", "rb") as toml_file:
         data = tomllib.load(toml_file)
 
-    testpaths = (
+    testpaths: list[str] = (
         data.get("tool", {})
         .get("pytest", {})
         .get("ini_options", {})
