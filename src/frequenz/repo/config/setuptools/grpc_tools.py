@@ -3,101 +3,99 @@
 
 """Setuptool hooks to build protobuf files.
 
-This module provides a function that returns a dictionary with the required
-machinery to build protobuf files via setuptools.
+This module contains a setuptools command that can be used to compile protocol
+buffer files in a project.
+
+It also runs the command as the first sub-command for the build command, so
+protocol buffer files are compiled automatically before the project is built.
 """
 
 import pathlib
 import subprocess
 import sys
-from collections.abc import Iterable
-from typing import Any
 
 import setuptools
-import setuptools.command.build_py
+
+# The typing stub for this module is missing
+import setuptools.command.build  # type: ignore[import]
 
 
-def build_proto_cmdclass(
-    *,
-    proto_path: str = "proto",
-    proto_glob: str = "*.proto",
-    include_paths: Iterable[str] = ("submodules/api-common-protos",),
-) -> dict[str, Any]:
-    """Return a dictionary with the required machinery to build protobuf files.
+class CompileProto(setuptools.Command):
+    """Build the Python protobuf files."""
 
-    This dictionary is meant to be passed as the `cmdclass` argument of
-    `setuptools.setup()`.
+    proto_path: str
+    """The path of the root directory containing the protobuf files."""
 
-    It will add the following commands to setuptools:
+    proto_glob: str
+    """The glob pattern to use to find the protobuf files."""
 
-        - `compile_proto`: Adds a command to compile the protobuf files to
-          Python files.
-        - `build_py`: Use the `compile_proto` command to build the python files
-          and run the regular `build_py` command, so the protobuf files are
-          create automatically when the python package is created.
+    include_paths: str
+    """Comma-separated list of paths to include when compiling the protobuf files."""
 
-    Unless an explicit `include_paths` is passed, the
-    `submodules/api-common-protos` wiil be added to the include paths, so your
-    project should have a submodule with the common google api protos in that
-    path.
+    py_path: str
+    """The path of the root directory where the Python files will be generated."""
 
-    Args:
-        proto_path: Path of the root directory containing the protobuf files.
-        proto_glob: The glob pattern to use to find the protobuf files.
-        include_paths: Paths to include when compiling the protobuf files.
+    description: str = "compile protobuf files"
+    """Description of the command."""
 
-    Returns:
-        Options to pass to `setuptools.setup()` `cmdclass` argument to build
-        protobuf files.
-    """
+    user_options: list[tuple[str, str | None, str]] = [
+        (
+            "proto-path=",
+            None,
+            "path of the root directory containing the protobuf files",
+        ),
+        ("proto-glob=", None, "glob pattern to use to find the protobuf files"),
+        (
+            "include-paths=",
+            None,
+            "comma-separated list of paths to include when compiling the protobuf files",
+        ),
+        (
+            "py-path=",
+            None,
+            "path of the root directory where the Python files will be generated",
+        ),
+    ]
+    """Options of the command."""
 
-    class CompileProto(setuptools.Command):
-        """Build the Python protobuf files."""
+    def initialize_options(self) -> None:
+        """Initialize options."""
+        self.proto_path = "proto"
+        self.proto_glob = "*.proto"
+        self.include_paths = "submodules/api-common-protos"
+        self.py_path = "py"
 
-        description: str = f"compile protobuf files in {proto_path}/**/{proto_glob}/"
-        """Description of the command."""
+    def finalize_options(self) -> None:
+        """Finalize options."""
 
-        user_options: list[str] = []
-        """Options of the command."""
+    def run(self) -> None:
+        """Compile the Python protobuf files."""
+        include_paths = self.include_paths.split(",")
+        proto_files = [
+            str(p) for p in pathlib.Path(self.proto_path).rglob(self.proto_glob)
+        ]
 
-        def initialize_options(self) -> None:
-            """Initialize options."""
+        if not proto_files:
+            print(f"No proto files found in {self.proto_path}/**/{self.proto_glob}/")
+            return
 
-        def finalize_options(self) -> None:
-            """Finalize options."""
+        protoc_cmd = (
+            [sys.executable, "-m", "grpc_tools.protoc"]
+            + [f"-I{p}" for p in [*include_paths, self.proto_path]]
+            + [
+                f"--{opt}={self.py_path}"
+                for opt in "python_out grpc_python_out mypy_out mypy_grpc_out".split()
+            ]
+            + proto_files
+        )
 
-        def run(self) -> None:
-            """Compile the Python protobuf files."""
-            proto_files = [str(p) for p in pathlib.Path(proto_path).rglob(proto_glob)]
-            protoc_cmd = (
-                [sys.executable, "-m", "grpc_tools.protoc"]
-                + [f"-I{p}" for p in [*include_paths, proto_path]]
-                + """--python_out=py
-                    --grpc_python_out=py
-                    --mypy_out=py
-                    --mypy_grpc_out=py
-                    """.split()
-                + proto_files
-            )
-            print(f"Compiling proto files via: {' '.join(protoc_cmd)}")
-            subprocess.run(protoc_cmd, check=True)
+        print(f"Compiling proto files via: {' '.join(protoc_cmd)}")
+        subprocess.run(protoc_cmd, check=True)
 
-    class BuildPy(setuptools.command.build_py.build_py, CompileProto):
-        """Build the Python protobuf files and run the regular `build_py` command."""
 
-        def run(self) -> None:
-            """Compile the Python protobuf files and run regular `build_py`."""
-            CompileProto.run(self)
-            setuptools.command.build_py.build_py.run(self)
-
-    return {
-        "compile_proto": CompileProto,
-        # Compile the proto files to python files. This is done when building
-        # the wheel, the source distribution (sdist) contains the *.proto files
-        # only. Check the MANIFEST.in file to see which files are included in
-        # the sdist, and the tool.setuptools.package-dir,
-        # tool.setuptools.package-data, and tools.setuptools.packages
-        # configuration keys in pyproject.toml to see which files are included
-        # in the wheel package.
-        "build_py": BuildPy,
-    }
+# This adds the compile_proto command to the build sub-command.
+# The name of the command is mapped to the class name in the pyproject.toml file,
+# in the [project.entry-points.distutils.commands] section.
+# The None value is an optional function that can be used to determine if the
+# sub-command should be executed or not.
+setuptools.command.build.build.sub_commands.insert(0, ("compile_proto", None))

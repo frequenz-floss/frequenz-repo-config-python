@@ -36,6 +36,9 @@ dynamic = ["version"]
 name = "Frequenz Energy-as-a-Service GmbH"
 email = "floss@frequenz.com"
 
+[project.entry-points."distutils.commands"]
+compile_proto = "frequenz.repo.config.setuptools.grpc_tools:CompileProto"
+
 [project.optional-dependencies]
 actor = []
 api = [
