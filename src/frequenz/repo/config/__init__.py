@@ -154,6 +154,16 @@ dev = [
 
 When configuring APIs it is assumed that they have a gRPC interface.
 
+The project structure is assumed to be as follows:
+
+- `proto/`: Directory containing the `.proto` files.
+- `py/`: Directory containing the Python code. It should only provide
+  a `py.typed` file and a `__init__.py` file. API repositories should not
+  contain any other Python code.
+- `pytests/`: Directory containing the tests for the Python code.
+- `submodules/api-common-protos`: Directory containing the submodule with the
+  `google/api-common-protos` repository.
+
 Normally Frequenz APIs use basic types from
 [`google/api-common-protos`](https://github.com/googleapis/api-common-protos),
 so you need to make sure the proper submodule is added to your project:
@@ -162,17 +172,6 @@ so you need to make sure the proper submodule is added to your project:
 mkdir submodules
 git submodule add https://github.com:googleapis/api-common-protos.git submodules/api-common-protos
 git commit -m "Add Google api-common-protos submodule" submodules/api-common-protos
-```
-
-Then you need to create a `setup.py` file with the following content:
-
-```py
-import setuptools
-
-from frequenz.repo.config.setuptools import grpc_tools
-
-if __name__ == "__main__":
-    setuptools.setup(cmdclass=grpc_tools.build_proto_cmdclass())
 ```
 
 Then you need to add this package as a build dependency and a few extra
@@ -198,22 +197,33 @@ dependencies to build the protocol files will be installed when building the
 package. Of course you need to replace the version numbers with the correct
 ones too.
 
+You should also add the following configuration to your `pyproject.toml` file
+to make sure the generated files are included in the wheel:
+
+```toml
+[tool.setuptools.package-dir]
+"" = "py"
+
+[tool.setuptools.package-data]
+"*" = ["*.pyi"]
+
+[tools.pytest.ini_options]
+testpaths = ["pytests"]
+```
+
 Finally you need to make sure to include the generated `*.pyi` files in the
 source distribution, as well as the Google api-common-protos files, as it
 is not handled automatically yet
-([#13](https://github.com/frequenz-floss/frequenz-repo-config-python/issues/13)):
+([#13](https://github.com/frequenz-floss/frequenz-repo-config-python/issues/13)).
+Make sure to include these lines in the `MANIFEST.in` file:
 
 ```
-recursive-include py *.pyi
 recursive-include submodules/api-common-protos/google *.proto
 ```
 
-If you need to customize how the protobuf files are compiled, you can pass
-a path to look for the protobuf files, a glob pattern to find the protobuf
-files, and a list of paths to include when compiling the protobuf files. By
-default `submodules/api-common-protos` is used as an include path, so if
-yout configured the submodules in a different path, you need to pass the
-correct path to the `include_paths` argument.
+For now there is no way to customize where the protocol files are located,
+where the generated files should be placed, or which extra directories must be
+included when compiling the protocol files.
 """
 
 from . import nox, setuptools

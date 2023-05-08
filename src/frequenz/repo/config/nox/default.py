@@ -91,7 +91,10 @@ api_command_options: _config.CommandsOptions = common_command_options.copy()
 
 api_config: _config.Config = dataclasses.replace(
     common_config,
-    source_paths=list(util.replace(common_config.source_paths, {"src": "py"})),
+    opts=api_command_options,
+    # We don't check the sources at all because they are automatically generated.
+    source_paths=[],
+    # We adapt the path to the tests.
     extra_paths=list(util.replace(common_config.extra_paths, {"tests": "pytests"})),
 )
 """Default configuration for APIs.
