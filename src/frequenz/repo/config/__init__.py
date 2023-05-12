@@ -7,10 +7,10 @@ The tools are provided to configure the main types of repositories most commonly
 Frequenz, defined in
 [`freq.repo.config.RepositoryType`][freq.repo.config.RepositoryType].
 
-- APIs (api)
-- Actors (actor)
-- Applications (app)
-- Libraries (lib)
+- actor: SDK actors
+- api: gRPC APIs
+- app: SDK applications
+- lib: General purpose Python libraries
 
 # Common
 

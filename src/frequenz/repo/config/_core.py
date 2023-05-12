@@ -10,13 +10,13 @@ class RepositoryType(enum.Enum):
     """Supported types of repository."""
 
     ACTOR = "actor"
-    """Actor repository."""
+    """SDK actor repository."""
 
     API = "api"
-    """API repository."""
+    """gRPC API repository."""
 
     APP = "app"
-    """App repository."""
+    """SDK application repository."""
 
     LIB = "lib"
-    """Library repository."""
+    """General purpose library repository."""
