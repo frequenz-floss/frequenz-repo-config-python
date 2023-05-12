@@ -3,7 +3,9 @@
 
 """Frequenz project setup tools and common configuration.
 
-The tools are provided to configure 4 main types of repositories:
+The tools are provided to configure the main types of repositories most commonly used at
+Frequenz, defined in
+[`freq.repo.config.RepositoryType`][freq.repo.config.RepositoryType].
 
 - APIs (api)
 - Actors (actor)
@@ -227,8 +229,10 @@ included when compiling the protocol files.
 """
 
 from . import nox, setuptools
+from ._core import RepositoryType
 
 __all__ = [
+    "RepositoryType",
     "nox",
     "setuptools",
 ]

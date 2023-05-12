@@ -3,13 +3,9 @@
 
 """Default nox configuration for different types of repositories.
 
-This module provides the default configuration for different types of
-repositories:
-
-- Libraries (lib)
-- APIs (api)
-- Actors (actor)
-- Applications (app)
+This module provides the default configuration for the different types of
+repositories defined by
+[`frequenz.repo.config.RepositoryType`][frequenz.repo.config.RepositoryType].
 
 The `lib_config`, `api_config`, `actor_config` and `app_config`
 variables are the default configurations for libraries, APIs, actors and
