@@ -20,3 +20,6 @@ class RepositoryType(enum.Enum):
 
     LIB = "lib"
     """General purpose library repository."""
+
+    MODEL = "model"
+    """SDK machine learning model repository."""

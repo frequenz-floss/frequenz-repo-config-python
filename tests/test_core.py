@@ -15,6 +15,7 @@ def test_repository_type_doesnt_have_new_types() -> None:
         "api",
         "app",
         "lib",
+        "model",
     }
     defined = {t.value for t in RepositoryType}
     assert defined == expected, utils.MSG_UNEXPECTED_REPO_TYPES

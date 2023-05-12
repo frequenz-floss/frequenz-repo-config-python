@@ -7,14 +7,16 @@ This module provides the default configuration for the different types of
 repositories defined by
 [`frequenz.repo.config.RepositoryType`][frequenz.repo.config.RepositoryType].
 
-The `actor_config`, `api_config`, `app_config`, and `lib_config` variables are the
-default configurations for libraries, APIs, actors and applications, respectively. The
-`common_config` variable is the default configuration for all types of repositories.
+The `actor_config`, `api_config`, `app_config`, `lib_config`, and `model_config`
+variables are the default configurations for libraries, APIs, actors and applications,
+respectively. The `common_config` variable is the default configuration for all types of
+repositories.
 
-The `actor_command_options`, `api_command_options`, `app_command_options`, and
-`lib_command_options` variables are the default command-line options for the same types
-of repositories, and the `common_command_options` variable is the default command-line
-options for all types of repositories.
+The `actor_command_options`, `api_command_options`, `app_command_options`,
+`lib_command_options`, and `model_command_options` variables are the default
+command-line options for the same types of repositories, and the
+`common_command_options` variable is the default command-line options for all types of
+repositories.
 
 They can be modified before being passed to
 [`nox.configure()`][frequenz.repo.config.nox.configure] by using the
@@ -109,3 +111,9 @@ lib_command_options: _config.CommandsOptions = common_command_options.copy()
 
 lib_config: _config.Config = common_config.copy()
 """Default configuration for libraries."""
+
+model_command_options: _config.CommandsOptions = common_command_options.copy()
+"""Default command-line options for models."""
+
+model_config: _config.Config = common_config.copy()
+"""Default configuration for models."""
