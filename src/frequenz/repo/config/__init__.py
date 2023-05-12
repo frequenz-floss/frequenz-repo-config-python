@@ -35,7 +35,7 @@ nox.configure(nox.default.lib_config)
 ```
 
 Again, make sure to pick the correct default configuration based on the type of
-your project (`api_config`, `actor_config`, `app_config`, `lib_config`).
+your project (`actor_config`, `api_config`, `app_config`, `lib_config`).
 
 If you need to modify the configuration, you can copy one of the default
 configurations by using the
