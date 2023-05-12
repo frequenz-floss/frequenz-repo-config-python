@@ -27,7 +27,7 @@ method.
 import dataclasses
 
 from . import config as _config
-from . import util
+from . import util as _util
 
 common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     black=[
@@ -92,7 +92,7 @@ api_config: _config.Config = dataclasses.replace(
     # We don't check the sources at all because they are automatically generated.
     source_paths=set(),
     # We adapt the path to the tests.
-    extra_paths=set(util.replace(common_config.extra_paths, {"tests": "pytests"})),
+    extra_paths=set(_util.replace(common_config.extra_paths, {"tests": "pytests"})),
 )
 """Default configuration for APIs.
 

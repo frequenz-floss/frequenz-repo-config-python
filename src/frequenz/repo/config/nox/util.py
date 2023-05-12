@@ -8,8 +8,8 @@ modules in this package.
 """
 
 
-import pathlib
-import tomllib
+import pathlib as _pathlib
+import tomllib as _tomllib
 from collections.abc import Iterable, Mapping
 from typing import TypeVar
 
@@ -51,7 +51,7 @@ def replace(iterable: Iterable[_T], replacements: Mapping[_T, _T], /) -> Iterabl
             yield item
 
 
-def existing_paths(paths: Iterable[str], /) -> Iterable[pathlib.Path]:
+def existing_paths(paths: Iterable[str], /) -> Iterable[_pathlib.Path]:
     """Filter paths to only leave valid paths that exist.
 
     Args:
@@ -63,10 +63,10 @@ def existing_paths(paths: Iterable[str], /) -> Iterable[pathlib.Path]:
     Example:
         >>> assert list(existing_paths([".", "/fake"])) == [pathlib.Path(".")]
     """
-    return (p for p in map(pathlib.Path, paths) if p.exists())
+    return (p for p in map(_pathlib.Path, paths) if p.exists())
 
 
-def is_python_file(path: pathlib.Path, /) -> bool:
+def is_python_file(path: _pathlib.Path, /) -> bool:
     """Check if a path is a Python file.
 
     Args:
@@ -78,7 +78,7 @@ def is_python_file(path: pathlib.Path, /) -> bool:
     return path.suffix in (".py", ".pyi")
 
 
-def path_to_package(path: pathlib.Path, root: pathlib.Path | None = None) -> str:
+def path_to_package(path: _pathlib.Path, root: _pathlib.Path | None = None) -> str:
     """Convert paths to Python package names.
 
     Paths should exist and be either a directory or a file ending with `.pyi?`
@@ -111,8 +111,8 @@ def path_to_package(path: pathlib.Path, root: pathlib.Path | None = None) -> str
 
 
 def find_toplevel_package_dirs(
-    path: pathlib.Path, /, *, root: pathlib.Path | None = None
-) -> Iterable[pathlib.Path]:
+    path: _pathlib.Path, /, *, root: _pathlib.Path | None = None
+) -> Iterable[_pathlib.Path]:
     """Find top-level packages directories in a `path`.
 
     Searches recursively for the top-level packages in `path`, relative to
@@ -176,7 +176,7 @@ def min_dependencies() -> list[str]:
 
     """
     with open("pyproject.toml", "rb") as toml_file:
-        data = tomllib.load(toml_file)
+        data = _tomllib.load(toml_file)
 
     dependencies = data.get("project", {}).get("dependencies", {})
     if not dependencies:
@@ -207,7 +207,7 @@ def discover_paths() -> list[str]:
         The discovered paths to check.
     """
     with open("pyproject.toml", "rb") as toml_file:
-        data = tomllib.load(toml_file)
+        data = _tomllib.load(toml_file)
 
     testpaths: list[str] = (
         data.get("tool", {})

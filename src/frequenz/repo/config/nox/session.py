@@ -8,7 +8,8 @@ This module defines the predefined nox sessions that are used by the default.
 
 import nox
 
-from . import config, util
+from . import config as _config
+from . import util as _util
 
 
 @nox.session
@@ -42,7 +43,7 @@ def formatting(session: nox.Session, install_deps: bool = True) -> None:
     if install_deps:
         session.install("-e", ".[dev-formatting]")
 
-    conf = config.get()
+    conf = _config.get()
     session.run("black", *conf.opts.black, *conf.path_args(session))
     session.run("isort", *conf.opts.isort, *conf.path_args(session))
 
@@ -60,8 +61,8 @@ def mypy(session: nox.Session, install_deps: bool = True) -> None:
         # fast local tests with `nox -R -e mypy`.
         session.install("-e", ".[dev-mypy]")
 
-    conf = config.get()
-    pkg_args = util.flatten(("-p", p) for p in conf.package_args(session))
+    conf = _config.get()
+    pkg_args = _util.flatten(("-p", p) for p in conf.package_args(session))
     session.run("mypy", *conf.opts.mypy, *pkg_args)
 
 
@@ -78,7 +79,7 @@ def pylint(session: nox.Session, install_deps: bool = True) -> None:
         # fast local tests with `nox -R -e pylint`.
         session.install("-e", ".[dev-pylint]")
 
-    conf = config.get()
+    conf = _config.get()
     session.run("pylint", *conf.opts.pylint, *conf.path_args(session))
 
 
@@ -93,7 +94,7 @@ def docstrings(session: nox.Session, install_deps: bool = True) -> None:
     if install_deps:
         session.install("-e", ".[dev-docstrings]")
 
-    conf = config.get()
+    conf = _config.get()
     session.run("pydocstyle", *conf.opts.pydocstyle, *conf.path_args(session))
 
     # Darglint checks that function argument and return values are documented.
@@ -136,7 +137,7 @@ def pytest_min(session: nox.Session, install_deps: bool = True) -> None:
     if install_deps:
         # install the package itself as editable, so that it is possible to do
         # fast local tests with `nox -R -e pytest_min`.
-        session.install("-e", ".[dev-pytest]", *util.min_dependencies())
+        session.install("-e", ".[dev-pytest]", *_util.min_dependencies())
 
     _pytest_impl(session, "min")
 
@@ -144,7 +145,7 @@ def pytest_min(session: nox.Session, install_deps: bool = True) -> None:
 def _pytest_impl(
     session: nox.Session, max_or_min_deps: str  # pylint: disable=unused-argument
 ) -> None:
-    conf = config.get()
+    conf = _config.get()
     session.run("pytest", *conf.opts.pytest, *session.posargs)
 
     # pylint: disable=fixme

@@ -12,37 +12,37 @@ so it can be used when implementing custom nox sessions.
 The `configure()` function must be called before `get()` is used.
 """
 
-import dataclasses
+import dataclasses as _dataclasses
 from typing import Self
 
-import nox
+import nox as _nox
 
-from . import util
+from . import util as _util
 
 
-@dataclasses.dataclass(kw_only=True, slots=True)
+@_dataclasses.dataclass(kw_only=True, slots=True)
 class CommandsOptions:
     """Command-line options for each command."""
 
-    black: list[str] = dataclasses.field(default_factory=lambda: [])
+    black: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `black` command."""
 
-    darglint: list[str] = dataclasses.field(default_factory=lambda: [])
+    darglint: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `darglint` command."""
 
-    isort: list[str] = dataclasses.field(default_factory=lambda: [])
+    isort: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `isort` command."""
 
-    mypy: list[str] = dataclasses.field(default_factory=lambda: [])
+    mypy: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `mypy` command."""
 
-    pydocstyle: list[str] = dataclasses.field(default_factory=lambda: [])
+    pydocstyle: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `pydocstyle` command."""
 
-    pylint: list[str] = dataclasses.field(default_factory=lambda: [])
+    pylint: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `pylint` command."""
 
-    pytest: list[str] = dataclasses.field(default_factory=lambda: [])
+    pytest: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `pytest` command."""
 
     def copy(self) -> Self:
@@ -51,20 +51,20 @@ class CommandsOptions:
         Returns:
             The copy of self.
         """
-        return dataclasses.replace(self)
+        return _dataclasses.replace(self)
 
 
-@dataclasses.dataclass(kw_only=True, slots=True)
+@_dataclasses.dataclass(kw_only=True, slots=True)
 class Config:
     """Configuration for nox sessions."""
 
-    opts: CommandsOptions = dataclasses.field(default_factory=CommandsOptions)
+    opts: CommandsOptions = _dataclasses.field(default_factory=CommandsOptions)
     """Command-line options for each command used by sessions."""
 
-    sessions: set[str] = dataclasses.field(default_factory=set)
+    sessions: set[str] = _dataclasses.field(default_factory=set)
     """List of sessions to run."""
 
-    source_paths: set[str] = dataclasses.field(default_factory=set)
+    source_paths: set[str] = _dataclasses.field(default_factory=set)
     """List of paths containing source files that should be analyzed by the sessions.
 
     Source paths are inspected for `__init__.py` files to look for packages.
@@ -77,7 +77,7 @@ class Config:
     checking.
     """
 
-    extra_paths: set[str] = dataclasses.field(default_factory=set)
+    extra_paths: set[str] = _dataclasses.field(default_factory=set)
     """List of extra paths to be analyzed by the sessions.
 
     These are not inspected for packages, as they are passed verbatim to the
@@ -89,7 +89,7 @@ class Config:
 
         This will add extra paths discovered in config files and other sources.
         """
-        for path in util.discover_paths():
+        for path in _util.discover_paths():
             if path not in self.extra_paths:
                 self.extra_paths.add(path)
 
@@ -99,9 +99,9 @@ class Config:
         Returns:
             The copy of self.
         """
-        return dataclasses.replace(self)
+        return _dataclasses.replace(self)
 
-    def path_args(self, session: nox.Session, /) -> set[str]:
+    def path_args(self, session: _nox.Session, /) -> set[str]:
         """Return the file paths to run the checks on.
 
         If positional arguments are present in the nox session, those are used
@@ -118,10 +118,10 @@ class Config:
             return set(session.posargs)
 
         return {
-            str(p) for p in util.existing_paths(self.source_paths | self.extra_paths)
+            str(p) for p in _util.existing_paths(self.source_paths | self.extra_paths)
         }
 
-    def package_args(self, session: nox.Session, /) -> set[str]:
+    def package_args(self, session: _nox.Session, /) -> set[str]:
         """Return the package names to run the checks on.
 
         If positional arguments are present in the nox session, those are used
@@ -141,18 +141,18 @@ class Config:
             return set(session.posargs)
 
         sources_package_dirs_with_roots = (
-            (p, util.find_toplevel_package_dirs(p))
-            for p in util.existing_paths(self.source_paths)
+            (p, _util.find_toplevel_package_dirs(p))
+            for p in _util.existing_paths(self.source_paths)
         )
 
         source_packages = (
-            util.path_to_package(pkg_path, root=root)
+            _util.path_to_package(pkg_path, root=root)
             for root, pkg_paths in sources_package_dirs_with_roots
             for pkg_path in pkg_paths
         )
 
         extra_packages = (
-            util.path_to_package(p) for p in util.existing_paths(self.extra_paths)
+            _util.path_to_package(p) for p in _util.existing_paths(self.extra_paths)
         )
 
         return {*source_packages, *extra_packages}
@@ -182,4 +182,4 @@ def configure(conf: Config, /) -> None:
     """
     global _config  # pylint: disable=global-statement
     _config = conf
-    nox.options.sessions = _config.sessions
+    _nox.options.sessions = _config.sessions

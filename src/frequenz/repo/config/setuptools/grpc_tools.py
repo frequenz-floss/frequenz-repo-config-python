@@ -10,17 +10,17 @@ It also runs the command as the first sub-command for the build command, so
 protocol buffer files are compiled automatically before the project is built.
 """
 
-import pathlib
-import subprocess
-import sys
+import pathlib as _pathlib
+import subprocess as _subprocess
+import sys as _sys
 
-import setuptools
+import setuptools as _setuptools
 
 # The typing stub for this module is missing
-import setuptools.command.build  # type: ignore[import]
+import setuptools.command.build as _build_command  # type: ignore[import]
 
 
-class CompileProto(setuptools.Command):
+class CompileProto(_setuptools.Command):
     """Build the Python protobuf files."""
 
     proto_path: str
@@ -72,7 +72,7 @@ class CompileProto(setuptools.Command):
         """Compile the Python protobuf files."""
         include_paths = self.include_paths.split(",")
         proto_files = [
-            str(p) for p in pathlib.Path(self.proto_path).rglob(self.proto_glob)
+            str(p) for p in _pathlib.Path(self.proto_path).rglob(self.proto_glob)
         ]
 
         if not proto_files:
@@ -80,7 +80,7 @@ class CompileProto(setuptools.Command):
             return
 
         protoc_cmd = (
-            [sys.executable, "-m", "grpc_tools.protoc"]
+            [_sys.executable, "-m", "grpc_tools.protoc"]
             + [f"-I{p}" for p in [*include_paths, self.proto_path]]
             + [
                 f"--{opt}={self.py_path}"
@@ -90,7 +90,7 @@ class CompileProto(setuptools.Command):
         )
 
         print(f"Compiling proto files via: {' '.join(protoc_cmd)}")
-        subprocess.run(protoc_cmd, check=True)
+        _subprocess.run(protoc_cmd, check=True)
 
 
 # This adds the compile_proto command to the build sub-command.
@@ -98,4 +98,4 @@ class CompileProto(setuptools.Command):
 # in the [project.entry-points.distutils.commands] section.
 # The None value is an optional function that can be used to determine if the
 # sub-command should be executed or not.
-setuptools.command.build.build.sub_commands.insert(0, ("compile_proto", None))
+_build_command.build.sub_commands.insert(0, ("compile_proto", None))

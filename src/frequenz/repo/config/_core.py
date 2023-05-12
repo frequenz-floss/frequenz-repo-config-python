@@ -3,10 +3,10 @@
 
 """Base types used accross the project."""
 
-import enum
+import enum as _enum
 
 
-class RepositoryType(enum.Enum):
+class RepositoryType(_enum.Enum):
     """Supported types of repository."""
 
     ACTOR = "actor"
