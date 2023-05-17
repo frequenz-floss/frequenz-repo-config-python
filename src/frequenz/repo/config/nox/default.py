@@ -56,24 +56,24 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
 
 common_config = _config.Config(
     opts=common_command_options.copy(),
-    sessions=[
+    sessions={
         "formatting",
         "mypy",
         "pylint",
         "docstrings",
         "pytest_min",
         "pytest_max",
-    ],
-    source_paths=[
+    },
+    source_paths={
         "src",
-    ],
-    extra_paths=[
+    },
+    extra_paths={
         "benchmarks",
         "docs",
         "examples",
         "noxfile.py",
         "tests",
-    ],
+    },
 )
 """Default configuration for all types of repositories."""
 
@@ -90,9 +90,9 @@ api_config: _config.Config = dataclasses.replace(
     common_config,
     opts=api_command_options,
     # We don't check the sources at all because they are automatically generated.
-    source_paths=[],
+    source_paths=set(),
     # We adapt the path to the tests.
-    extra_paths=list(util.replace(common_config.extra_paths, {"tests": "pytests"})),
+    extra_paths=set(util.replace(common_config.extra_paths, {"tests": "pytests"})),
 )
 """Default configuration for APIs.
 
