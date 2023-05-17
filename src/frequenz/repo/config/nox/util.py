@@ -167,13 +167,11 @@ def find_toplevel_package_dirs(
 def min_dependencies() -> list[str]:
     """Extract the minimum dependencies from pyproject.toml.
 
-    Raises:
-        RuntimeError: If minimun dependencies are not properly
-            set in pyproject.toml.
-
     Returns:
-        the minimun dependencies defined in pyproject.toml.
+        The minimun dependencies defined in pyproject.toml.
 
+    Raises:
+        RuntimeError: If minimun dependencies are not properly set in pyproject.toml.
     """
     with open("pyproject.toml", "rb") as toml_file:
         data = _tomllib.load(toml_file)
