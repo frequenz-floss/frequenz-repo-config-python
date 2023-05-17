@@ -3,12 +3,15 @@
 
 """Frequenz project setup tools and common configuration.
 
-The tools are provided to configure 4 main types of repositories:
+The tools are provided to configure the main types of repositories most commonly used at
+Frequenz, defined in
+[`freq.repo.config.RepositoryType`][freq.repo.config.RepositoryType].
 
-- APIs (api)
-- Actors (actor)
-- Applications (app)
-- Libraries (lib)
+- actor: SDK actors
+- api: gRPC APIs
+- app: SDK applications
+- lib: General purpose Python libraries
+- model: SDK machine learning models
 
 # Common
 
@@ -32,8 +35,8 @@ from frequenz.repo.config import nox
 nox.configure(nox.default.lib_config)
 ```
 
-Again, make sure to pick the correct default configuration based on the type of
-your project (`api_config`, `actor_config`, `app_config`, `lib_config`).
+Again, make sure to pick the correct default configuration based on the type of your
+project (`actor_config`, `api_config`, `app_config`, `lib_config`, `model_config`).
 
 If you need to modify the configuration, you can copy one of the default
 configurations by using the
@@ -227,8 +230,10 @@ included when compiling the protocol files.
 """
 
 from . import nox, setuptools
+from ._core import RepositoryType
 
 __all__ = [
+    "RepositoryType",
     "nox",
     "setuptools",
 ]
