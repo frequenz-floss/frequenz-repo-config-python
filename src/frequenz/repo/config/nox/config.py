@@ -156,7 +156,9 @@ class Config:
             _util.path_to_package(p) for p in _util.existing_paths(self.extra_paths)
         )
 
-        return list(_itertools.chain(source_packages, extra_packages))
+        return list(
+            _util.deduplicate(_itertools.chain(source_packages, extra_packages))
+        )
 
 
 _config: Config | None = None

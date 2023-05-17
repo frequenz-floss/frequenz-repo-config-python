@@ -51,8 +51,22 @@ def replace(iterable: Iterable[_T], replacements: Mapping[_T, _T], /) -> Iterabl
             yield item
 
 
+def deduplicate(iterable: Iterable[_T], /) -> Iterable[_T]:
+    """Filter out duplicates from an iterable preserving the original iterable order.
+
+    Args:
+        iterable: The iterable to remove duplicates from.
+
+    Returns:
+        The elements of `iterable`, without duplicates but preserving order.
+    """
+    # We can't use a set() here because sets don't preserve order.  We use this hack
+    # with dict.fromkeys() because dicts do preserve order in Python 3.7+.
+    return dict.fromkeys(iterable).keys()
+
+
 def existing_paths(paths: Iterable[str], /) -> Iterable[_pathlib.Path]:
-    """Filter paths to only leave valid paths that exist.
+    """Filter paths to only leave valid paths that exist and are unique.
 
     Args:
         paths: The paths to check and filter.
@@ -63,7 +77,7 @@ def existing_paths(paths: Iterable[str], /) -> Iterable[_pathlib.Path]:
     Example:
         >>> assert list(existing_paths([".", "/fake"])) == [pathlib.Path(".")]
     """
-    return (p for p in map(_pathlib.Path, paths) if p.exists())
+    return deduplicate(p for p in map(_pathlib.Path, paths) if p.exists())
 
 
 def is_python_file(path: _pathlib.Path, /) -> bool:
@@ -215,4 +229,4 @@ def discover_paths() -> list[str]:
         .get("testpaths", [])
     )
 
-    return testpaths
+    return list(deduplicate(testpaths))
