@@ -1,0 +1,21 @@
+// {{cookiecutter.description}}
+//
+// TODO(cookiecutter): Add a more descriptive package description.
+//
+// Copyright:
+// Copyright {% now 'utc', '%Y' %} Frequenz Energy-as-a-Service GmbH
+//
+// License:
+// MIT
+
+syntax = "proto3";
+
+package frequenz.api.{{cookiecutter.name}}.{{cookiecutter.name}};
+
+// An example message.
+//
+// TODO(cookiecutter): Remove this message.
+message HelloWorld {
+  // The lower bound.
+  string greet = 1;
+}

@@ -1,0 +1,5 @@
+{% if cookiecutter.type == "api" -%}
+[submodule "submodules/api-common-protos"]
+	path = submodules/api-common-protos
+	url = https://github.com/googleapis/api-common-protos.git
+{% endif -%}
