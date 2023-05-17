@@ -176,11 +176,12 @@ def min_dependencies() -> list[str]:
     with open("pyproject.toml", "rb") as toml_file:
         data = _tomllib.load(toml_file)
 
+    min_deps: list[str] = []
+
     dependencies = data.get("project", {}).get("dependencies", {})
     if not dependencies:
-        raise RuntimeError(f"No dependencies found in file: {toml_file.name}")
+        return min_deps
 
-    min_deps: list[str] = []
     for dep in dependencies:
         min_dep = dep.split(",")[0]
         if any(op in min_dep for op in (">=", "==")):
