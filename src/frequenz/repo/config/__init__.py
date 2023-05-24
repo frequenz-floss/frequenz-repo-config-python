@@ -1,7 +1,7 @@
 # License: MIT
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
-"""Frequenz project setup tools and common configuration.
+r"""Frequenz project setup tools and common configuration.
 
 The tools are provided to configure the main types of repositories most commonly used at
 Frequenz, defined in
@@ -166,15 +166,21 @@ The project structure is assumed to be as follows:
 - `pytests/`: Directory containing the tests for the Python code.
 - `submodules/api-common-protos`: Directory containing the submodule with the
   `google/api-common-protos` repository.
+- `submodules/frequenz-api-common`: Directory containing the submodule with the
+  `frequenz-floss/frequenz-api-common` repository.
 
 Normally Frequenz APIs use basic types from
-[`google/api-common-protos`](https://github.com/googleapis/api-common-protos),
-so you need to make sure the proper submodule is added to your project:
+[`google/api-common-protos`](https://github.com/googleapis/api-common-protos) and
+[`frequenz-floss/frequenz-api-common`](https://github.com/frequenz-floss/frequenz-api-common),
+so you need to make sure the proper submodules are added to your project:
 
 ```sh
 mkdir submodules
-git submodule add https://github.com:googleapis/api-common-protos.git submodules/api-common-protos
-git commit -m "Add Google api-common-protos submodule" submodules/api-common-protos
+git submodule add https://github.com/googleapis/api-common-protos.git \
+        submodules/api-common-protos
+git submodule add https://github.com/frequenz-floss/frequenz-api-common.git \
+        submodules/frequenz-api-common
+git commit -m "Add api-common-protos and frequenz-api-common submodules" submodules
 ```
 
 Then you need to add this package as a build dependency and a few extra
@@ -190,6 +196,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 dependencies = [
+  "frequenz-api-common == 0.2.0",
   "googleapis-common-protos == 1.56.2",
   "grpcio == 1.51.0",
 ]
@@ -222,6 +229,7 @@ Make sure to include these lines in the `MANIFEST.in` file:
 
 ```
 recursive-include submodules/api-common-protos/google *.proto
+recursive-include submodules/frequenz-api-common/proto *.proto
 ```
 
 If the defaults are not suitable for you (for example you need to use more or less
@@ -236,8 +244,8 @@ proto_path = "proto_files"
 # Glob pattern to use to find the proto files in the proto_path (default: "*.proto")
 proto_glob = "*.prt"  # Default: "*.proto"
 # List of paths to pass to the protoc compiler as include paths (default:
-# ["submodules/api-common-protos"])
-include_paths = []
+# ["submodules/api-common-protos", "submodules/frequenz-api-common/proto"])
+include_paths = ["submodules/api-common-protos"]
 # Path where to generate the Python files (default: "py")
 py_path = "generated"
 ```

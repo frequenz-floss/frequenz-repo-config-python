@@ -62,7 +62,7 @@ class CompileProto(_setuptools.Command):
     DEFAULT_OPTIONS: dict[str, str] = {
         "proto_path": "proto",
         "proto_glob": "*.proto",
-        "include_paths": "submodules/api-common-protos",
+        "include_paths": "submodules/api-common-protos,submodules/frequenz-api-common/proto",
         "py_path": "py",
     }
 

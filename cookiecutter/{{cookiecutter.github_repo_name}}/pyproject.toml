@@ -38,6 +38,7 @@ dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
 ]
 {%- elif cookiecutter.type == "api" %}
 dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+  "frequenz-api-common >= 0.2.0, < 0.3.0",
   "googleapis-common-protos >= 1.56.2, < 2",
   "grpcio >= 1.51.1, < 2",
 ]
