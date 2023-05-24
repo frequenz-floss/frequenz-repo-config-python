@@ -63,15 +63,18 @@ dev-mypy = [
   "mypy == 1.1.1",
   "types-setuptools >= 67.6.0, < 68", # Should match the global dependency
   # For checking the docs/ script, and tests
-  "frequenz-repo-config[docs-gen,pytest]",
+  "frequenz-repo-config[dev-docs-gen,dev-pytest]",
 ]
 dev-pylint = [
   "pylint == 2.17.1",
   "pylint-google-style-guide-imports-enforcing == 1.3.0",
   # For checking the docs/ script, and tests
-  "frequenz-repo-config[docs-gen,pytest]",
+  "frequenz-repo-config[dev-docs-gen,dev-pytest]",
 ]
-dev-pytest = ["pytest == 7.2.2"]
+dev-pytest = [
+  "pytest == 7.2.2",
+  "cookiecutter == 2.1.1", # For checking the cookiecutter scripts
+]
 dev = [
   "frequenz-repo-config[dev-docs-gen,dev-docstrings,dev-formatting,dev-pytest,dev-mypy,dev-pylint]",
 ]
@@ -105,3 +108,13 @@ disable = [
 profile = "black"
 line_length = 88
 src_paths = ["src"]
+
+[[tool.mypy.overrides]]
+module = ["cookiecutter", "cookiecutter.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "integration: integration tests (deselect with '-m \"not integration\"')",
+]

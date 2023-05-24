@@ -13,6 +13,7 @@ The `configure()` function must be called before `get()` is used.
 """
 
 import dataclasses as _dataclasses
+import itertools as _itertools
 from typing import Self
 
 import nox as _nox
@@ -61,10 +62,10 @@ class Config:
     opts: CommandsOptions = _dataclasses.field(default_factory=CommandsOptions)
     """Command-line options for each command used by sessions."""
 
-    sessions: set[str] = _dataclasses.field(default_factory=set)
+    sessions: list[str] = _dataclasses.field(default_factory=lambda: [])
     """List of sessions to run."""
 
-    source_paths: set[str] = _dataclasses.field(default_factory=set)
+    source_paths: list[str] = _dataclasses.field(default_factory=lambda: [])
     """List of paths containing source files that should be analyzed by the sessions.
 
     Source paths are inspected for `__init__.py` files to look for packages.
@@ -77,7 +78,7 @@ class Config:
     checking.
     """
 
-    extra_paths: set[str] = _dataclasses.field(default_factory=set)
+    extra_paths: list[str] = _dataclasses.field(default_factory=lambda: [])
     """List of extra paths to be analyzed by the sessions.
 
     These are not inspected for packages, as they are passed verbatim to the
@@ -91,7 +92,7 @@ class Config:
         """
         for path in _util.discover_paths():
             if path not in self.extra_paths:
-                self.extra_paths.add(path)
+                self.extra_paths.append(path)
 
     def copy(self, /) -> Self:
         """Create a new object as a copy of self.
@@ -101,7 +102,7 @@ class Config:
         """
         return _dataclasses.replace(self)
 
-    def path_args(self, session: _nox.Session, /) -> set[str]:
+    def path_args(self, session: _nox.Session, /) -> list[str]:
         """Return the file paths to run the checks on.
 
         If positional arguments are present in the nox session, those are used
@@ -115,13 +116,13 @@ class Config:
             The file paths to run the checks on.
         """
         if session.posargs:
-            return set(session.posargs)
+            return session.posargs
 
-        return {
-            str(p) for p in _util.existing_paths(self.source_paths | self.extra_paths)
-        }
+        return list(
+            str(p) for p in _util.existing_paths(self.source_paths + self.extra_paths)
+        )
 
-    def package_args(self, session: _nox.Session, /) -> set[str]:
+    def package_args(self, session: _nox.Session, /) -> list[str]:
         """Return the package names to run the checks on.
 
         If positional arguments are present in the nox session, those are used
@@ -138,7 +139,7 @@ class Config:
             The package names found in the `source_paths`.
         """
         if session.posargs:
-            return set(session.posargs)
+            return session.posargs
 
         sources_package_dirs_with_roots = (
             (p, _util.find_toplevel_package_dirs(p))
@@ -155,7 +156,9 @@ class Config:
             _util.path_to_package(p) for p in _util.existing_paths(self.extra_paths)
         )
 
-        return {*source_packages, *extra_packages}
+        return list(
+            _util.deduplicate(_itertools.chain(source_packages, extra_packages))
+        )
 
 
 _config: Config | None = None

@@ -1,0 +1,146 @@
+# License: MIT
+# Copyright © {% now 'utc', '%Y' %} Frequenz Energy-as-a-Service GmbH
+
+[build-system]
+requires = [
+  "setuptools == 67.7.2",
+  "setuptools_scm[toml] == 7.1.0",
+  "frequenz-repo-config[{{cookiecutter.type}}] == 0.2.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{cookiecutter.pypi_package_name}}"
+description = "{{cookiecutter.description}}"
+readme = "README.md"
+license = { text = "{{cookiecutter.license}}" }
+keywords = {{cookiecutter | keywords}}
+classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  {%- if cookiecutter.license == "MIT" %}
+  "License :: OSI Approved :: MIT License",
+  {%- elif cookiecutter.license == "Propietary" %}
+  "License :: Other/Proprietary License",
+  {%- endif %}
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  {%- if cookiecutter.type != "app" %}
+  "Topic :: Software Development :: Libraries",
+  {%- endif %}
+  "Typing :: Typed",
+]
+requires-python = ">= 3.11, < 4"
+{%- if cookiecutter.type in ("app", "actor", "model") %}
+dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+  "typing-extensions == 4.5.0",
+  "frequenz-sdk == 0.20.0",
+]
+{%- elif cookiecutter.type == "api" %}
+dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+  "googleapis-common-protos >= 1.56.2, < 2",
+  "grpcio >= 1.51.1, < 2",
+]
+{%- else %}
+dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+  "typing-extensions >= 4.5.0, < 5",
+]
+{%- endif %}
+dynamic = ["version"]
+
+[[project.authors]]
+name = "{{cookiecutter.author_name}}"
+email = "{{cookiecutter.author_email}}"
+
+[project.optional-dependencies] # TODO(cookiecutter): Remove and add more if appropriate
+dev-docstrings = [
+  "pydocstyle == 6.3.0",
+  "darglint == 1.8.1",
+  "tomli == 2.0.1",      # Needed by pydocstyle to read pyproject.toml
+]
+dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
+dev-mypy = [
+  "mypy == 1.2.0",
+  # For checking the noxfile, docs/ script, and tests
+  "{{cookiecutter.pypi_package_name}}[dev-noxfile,dev-pytest]",
+]
+dev-noxfile = [
+  "nox == 2023.4.22",
+  "frequenz-repo-config[{{cookiecutter.type}}] == 0.2.0",
+]
+dev-pylint = [
+  "pylint == 2.17.3",
+  # For checking the noxfile, docs/ script, and tests
+  "{{cookiecutter.pypi_package_name}}[dev-noxfile,dev-pytest]",
+]
+{%- if cookiecutter.type == "api" %}
+dev-pytest = ["pytest == 7.3.1"]
+{%- else %}
+dev-pytest = [
+  "pytest == 7.3.1",
+  "pytest-mock == 3.10.0",
+  "pytest-asyncio == 0.21.0",
+  "async-solipsism == 0.5",
+]
+{%- endif %}
+dev = [
+  "{{cookiecutter.pypi_package_name}}[dev-docstrings,dev-formatting,dev-gen-docs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
+]
+
+[project.urls]
+Changelog = "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}/releases"
+Issues = "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}/issues"
+Repository = "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}"
+Support = "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}/discussions/categories/support"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+{%- if cookiecutter.type != "api" %}
+include = '\.pyi?$'
+{%- endif %}
+
+[tool.isort]
+profile = "black"
+line_length = 88
+src_paths = ["src", "examples", "tests"]
+
+[tool.pylint.similarities]
+ignore-comments = ['yes']
+ignore-docstrings = ['yes']
+ignore-imports = ['no']
+min-similarity-lines = 40
+
+[tool.pylint.messages_control]
+disable = [
+  "too-few-public-methods",
+  # disabled because it conflicts with isort
+  "wrong-import-order",
+  "ungrouped-imports",
+]
+
+[tool.pytest.ini_options]
+{%- if cookiecutter.type != "api" %}
+testpaths = ["tests"]
+asyncio_mode = "auto"
+required_plugins = ["pytest-asyncio", "pytest-mock"]
+{%- else %}
+testpaths = ["pytests"]
+{%- endif %}
+{%- if cookiecutter.type != "api" %}
+
+[[tool.mypy.overrides]]
+module = ["async_solipsism", "async_solipsism.*"]
+ignore_missing_imports = true
+{%- endif %}
+{%- if cookiecutter.type == "api" %}
+
+[tool.setuptools.package-dir]
+"" = "py"
+
+[tool.setuptools.package-data]
+"*" = ["*.pyi"]
+{%- endif %}
+
+[tool.setuptools_scm]
+version_scheme = "post-release"

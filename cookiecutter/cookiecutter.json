@@ -1,0 +1,29 @@
+{
+	"type": [
+		"actor",
+		"api",
+		"app",
+		"lib",
+		"model"
+	],
+	"name": null,
+	"description": null,
+	"keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
+	"github_org": "frequenz-floss",
+	"license": [
+		"MIT",
+		"Proprietary"
+	],
+	"author_name": "Frequenz Energy-as-a-Service GmbH",
+	"author_email": "floss@frequenz.com",
+	"python_package": "{{cookiecutter | python_package}}",
+	"pypi_package_name": "{{cookiecutter | pypi_package_name}}",
+	"github_repo_name": "{{cookiecutter | github_repo_name}}",
+	"_extensions": [
+		"jinja2_time.TimeExtension",
+		"local_extensions.github_repo_name",
+		"local_extensions.keywords",
+		"local_extensions.pypi_package_name",
+		"local_extensions.python_package"
+	]
+}
