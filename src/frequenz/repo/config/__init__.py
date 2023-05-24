@@ -196,9 +196,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 dependencies = [
-  "frequenz-api-common == 0.2.0",
-  "googleapis-common-protos == 1.56.2",
-  "grpcio == 1.51.0",
+  "frequenz-api-common >= 0.2.0, < 0.3.0",
+  "googleapis-common-protos >= 1.56.2, < 2",
+  "grpcio >= 1.51.1, < 2",
 ]
 ```
 
