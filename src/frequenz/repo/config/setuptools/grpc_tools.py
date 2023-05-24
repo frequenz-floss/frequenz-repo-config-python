@@ -76,7 +76,10 @@ class CompileProto(_setuptools.Command):
         ]
 
         if not proto_files:
-            print(f"No proto files found in {self.proto_path}/**/{self.proto_glob}/")
+            print(
+                f"No proto files found in {self.proto_path}/**/{self.proto_glob}/, "
+                "skipping compilation of proto files."
+            )
             return
 
         protoc_cmd = (
