@@ -182,7 +182,6 @@ def initialize_git_submodules() -> bool:
                 "git",
                 "submodule",
                 "add",
-                "-f",
                 "--name",
                 submodule.name,
                 submodule.url,
