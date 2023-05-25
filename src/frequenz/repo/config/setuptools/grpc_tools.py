@@ -16,9 +16,7 @@ import sys as _sys
 import tomllib as _tomllib
 
 import setuptools as _setuptools
-
-# The typing stub for this module is missing
-import setuptools.command.build as _build_command  # type: ignore[import]
+import setuptools.command.build as _build_command
 
 
 class CompileProto(_setuptools.Command):
