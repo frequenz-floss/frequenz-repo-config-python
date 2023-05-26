@@ -13,11 +13,10 @@ protocol buffer files are compiled automatically before the project is built.
 import pathlib as _pathlib
 import subprocess as _subprocess
 import sys as _sys
+import tomllib as _tomllib
 
 import setuptools as _setuptools
-
-# The typing stub for this module is missing
-import setuptools.command.build as _build_command  # type: ignore[import]
+import setuptools.command.build as _build_command
 
 
 class CompileProto(_setuptools.Command):
@@ -58,15 +57,68 @@ class CompileProto(_setuptools.Command):
     ]
     """Options of the command."""
 
+    DEFAULT_OPTIONS: dict[str, str] = {
+        "proto_path": "proto",
+        "proto_glob": "*.proto",
+        "include_paths": "submodules/api-common-protos,submodules/frequenz-api-common/proto",
+        "py_path": "py",
+    }
+
     def initialize_options(self) -> None:
         """Initialize options."""
-        self.proto_path = "proto"
-        self.proto_glob = "*.proto"
-        self.include_paths = "submodules/api-common-protos"
-        self.py_path = "py"
+        options = self._get_options_from_pyproject_toml(self.DEFAULT_OPTIONS)
+
+        self.proto_path = options["proto_path"]
+        self.proto_glob = options["proto_glob"]
+        self.include_paths = options["include_paths"]
+        self.py_path = options["py_path"]
 
     def finalize_options(self) -> None:
         """Finalize options."""
+
+    def _get_options_from_pyproject_toml(
+        self, defaults: dict[str, str]
+    ) -> dict[str, str]:
+        """Get the options from the pyproject.toml file.
+
+        The options are read from the `[tool.frequenz-repo-config.setuptools.grpc_tools]`
+        section of the pyproject.toml file.
+
+        Args:
+            defaults: The default values for the options.
+
+        Returns:
+            The options read from the pyproject.toml file.
+        """
+        try:
+            with _pathlib.Path("pyproject.toml").open("rb") as toml_file:
+                pyproject_toml = _tomllib.load(toml_file)
+        except FileNotFoundError:
+            return defaults
+        except (IOError, OSError) as err:
+            print(f"WARNING: Failed to load pyproject.toml: {err}")
+            return defaults
+
+        try:
+            config = pyproject_toml["tool"]["frequenz-repo-config"]["setuptools"][
+                "grpc_tools"
+            ]
+        except KeyError:
+            return defaults
+
+        known_keys = frozenset(defaults.keys())
+        config_keys = frozenset(config.keys())
+        if unknown_keys := config_keys - known_keys:
+            print(
+                "WARNING: There are some configuration keys in pyproject.toml we don't "
+                "know about and will be ignored: "
+                + ", ".join(f"'{k}'" for k in unknown_keys)
+            )
+
+        if "include_paths" in config:
+            config["include_paths"] = ",".join(config["include_paths"])
+
+        return dict(defaults, **{k: config[k] for k in (known_keys & config_keys)})
 
     def run(self) -> None:
         """Compile the Python protobuf files."""
@@ -76,7 +128,10 @@ class CompileProto(_setuptools.Command):
         ]
 
         if not proto_files:
-            print(f"No proto files found in {self.proto_path}/**/{self.proto_glob}/")
+            print(
+                f"No proto files found in {self.proto_path}/**/{self.proto_glob}/, "
+                "skipping compilation of proto files."
+            )
             return
 
         protoc_cmd = (

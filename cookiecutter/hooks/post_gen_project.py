@@ -182,7 +182,6 @@ def initialize_git_submodules() -> bool:
                 "git",
                 "submodule",
                 "add",
-                "-f",
                 "--name",
                 submodule.name,
                 submodule.url,
@@ -194,7 +193,7 @@ def initialize_git_submodules() -> bool:
             note_on_failure=f"Please add submodule `{submodule.name}` manually.",
         )
     try_run(
-        ["git", "submodule", "update", "--init", "--recursive"],
+        ["git", "submodule", "update", "--init"],
         verbose=True,
         warn_on_error=True,
         warn_on_bad_status="Failed to initialize git submodules!",
