@@ -103,3 +103,45 @@ def keywords(cookiecutter: dict[str, str]) -> str:
         cookiecutter_keywords = ""
     extended_keywords.extend(k.strip() for k in cookiecutter_keywords.split(","))
     return _json.dumps(extended_keywords)
+
+
+@_simple_filter  # type: ignore[misc]
+def default_codeowners(cookiecutter: dict[str, str]) -> str:
+    """Build a default description for the project.
+
+    Args:
+        cookiecutter: The cookiecutter context.
+
+    Returns:
+        The default description.
+    """
+    repo_type = cookiecutter["type"]
+
+    codeowners = cookiecutter["default_codeowners"]
+    default = _get_from_json("default_codeowners")
+    if codeowners != default:
+        return codeowners
+
+    github_org = _get_from_json("github_org")
+    if github_org != "frequenz-floss":
+        return f"TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
+
+    match repo_type:
+        case "actor":
+            return (
+                "TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
+                "# Temporary, should probably change"
+            )
+        case "api":
+            return "@freqenz-floss/api-team"
+        case "lib":
+            return "@freqenz-floss/python-sdk-team"
+        case "app":
+            return (
+                "@freqenz-floss/python-sdk-team @frequenz-floss/datasci-team "
+                "# Temporary, should probably change"
+            )
+        case "model":
+            return "@freqenz-floss/datasci-team"
+        case _:
+            assert False, f"Unhandled repository type {repo_type!r}"
