@@ -47,7 +47,7 @@ def main() -> None:
     success(f"Your 🍪 {cookiecutter.github_repo_name} has been cut!")
     print()
     print_generated_tree()
-    print("Here is a list of things that should be reviewed and fixed:")
+    print("Here is a list of things that should be reviewed and FIXED:")
     print_todos()
     print()
     print(
