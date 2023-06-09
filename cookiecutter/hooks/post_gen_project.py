@@ -358,8 +358,12 @@ def finish_api_setup() -> None:
     * Rename `src` to `py`
     * Rename `tests` to `pytests`
     """
-    _pathlib.Path("src").rename("py")
-    _pathlib.Path("tests").rename("pytests")
+    # We can't do a simple rename because the target directory might not be empty if
+    # overwriting an existing project.
+    _shutil.copytree("src", "py", dirs_exist_ok=True)
+    _shutil.rmtree("src")
+    _shutil.copytree("tests", "pytests", dirs_exist_ok=True)
+    _shutil.rmtree("tests")
 
 
 def finish_app_setup() -> None:
