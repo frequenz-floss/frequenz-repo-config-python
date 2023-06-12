@@ -309,6 +309,11 @@ def print_todos() -> None:
         warn_on_bad_status=f"No `{todo_str}` found using `{' '.join(cmd)}`",
         note_on_failure=f"Please search for `{todo_str}` in `{repo}/` manually.",
     )
+    print()
+    note(
+        "Make sure to (create and) configure your GitHub repository too: "
+        "https://github.com/frequenz-floss/frequenz-repo-config-python/wiki/Configuring-a-new-GitHub-repository"
+    )
 
 
 def do_sanity_checks() -> list[str]:
