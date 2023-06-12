@@ -27,6 +27,19 @@ def _build_identifier(repo_type: str, name: str, separator: str) -> str:
     return f"frequenz{separator}{middle}{name}"
 
 
+def _get_from_json(key: str) -> str:
+    """Get a string from the cookiecutter.json file.
+
+    Args:
+        key: The key to get the string for.
+
+    Returns:
+        The string from the cookiecutter.json file.
+    """
+    with open("../cookiecutter.json", encoding="utf8") as cookiecutter_json_file:
+        return _json.load(cookiecutter_json_file)[key]
+
+
 # Ignoring because cookiecutter simple_filter decorator is not typed.
 @_simple_filter  # type: ignore[misc]
 def python_package(cookiecutter: dict[str, str]) -> str:
@@ -80,14 +93,55 @@ def keywords(cookiecutter: dict[str, str]) -> str:
         The extended keywords.
     """
     repo_type = cookiecutter["type"]
-    extended_keywords = ["frequenz", repo_type]
+    extended_keywords = ["frequenz", "python", repo_type]
     if repo_type == "api":
-        extended_keywords.append("grpc")
+        extended_keywords.extend(["grpc", "protobuf", "rpc"])
     extended_keywords.append(cookiecutter["name"])
-    with open("../cookiecutter.json", encoding="utf8") as cookiecutter_json_file:
-        no_input = _json.load(cookiecutter_json_file)["keywords"]
+    default = _get_from_json("keywords")
     cookiecutter_keywords = cookiecutter["keywords"]
-    if cookiecutter_keywords == no_input:
+    if cookiecutter_keywords == default:
         cookiecutter_keywords = ""
     extended_keywords.extend(k.strip() for k in cookiecutter_keywords.split(","))
     return _json.dumps(extended_keywords)
+
+
+@_simple_filter  # type: ignore[misc]
+def default_codeowners(cookiecutter: dict[str, str]) -> str:
+    """Build a default description for the project.
+
+    Args:
+        cookiecutter: The cookiecutter context.
+
+    Returns:
+        The default description.
+    """
+    repo_type = cookiecutter["type"]
+
+    codeowners = cookiecutter["default_codeowners"]
+    default = _get_from_json("default_codeowners")
+    if codeowners != default:
+        return codeowners
+
+    github_org = _get_from_json("github_org")
+    if github_org != "frequenz-floss":
+        return f"TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
+
+    match repo_type:
+        case "actor":
+            return (
+                "TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
+                "# Temporary, should probably change"
+            )
+        case "api":
+            return "@freqenz-floss/api-team"
+        case "lib":
+            return "@freqenz-floss/python-sdk-team"
+        case "app":
+            return (
+                "@freqenz-floss/python-sdk-team @frequenz-floss/datasci-team "
+                "# Temporary, should probably change"
+            )
+        case "model":
+            return "@freqenz-floss/datasci-team"
+        case _:
+            assert False, f"Unhandled repository type {repo_type!r}"
