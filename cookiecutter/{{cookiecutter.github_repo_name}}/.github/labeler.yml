@@ -1,0 +1,43 @@
+# Configuration for the Labeler GitHub action, executed by
+# .github/workflows/labeler.yml.
+#
+# The basic syntax is [label]: [path patterns].
+#
+# For more details on the configuration please see:
+# https://github.com/marketplace/actions/labeler
+
+# TODO(cookiecutter): Add different parts of the source
+# For example:
+#
+# "part:module":
+#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name}}/module/**"
+#
+# "part:other":
+#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name}}/other/**"
+#
+# Please have in mind that that the part:xxx should be created as a issue label
+# in the GitHub repository"
+
+"part:docs":
+  - "**/*.md"
+  - "docs/**"
+  - "examples/**"
+  - LICENSE
+
+"part:tests":
+{%- if cookiecutter.type == "api" %}
+  - "pytests/**"
+{%- else %}
+  - "tests/**"
+{%- endif %}
+
+"part:tooling":
+  - "**/*.ini"
+  - "**/*.toml"
+  - "**/*.yaml"
+  - "**/*.yml"
+  - ".git*"
+  - ".git*/**"
+  - CODEOWNERS
+  - MANIFEST.in
+  - noxfile.py
