@@ -17,5 +17,5 @@ labelMappings:
   "part:tooling": "part:tooling"
   "part:❓": "part:❓"
   # TODO(cookiecutter): Add other parts
-  # Please have in mind that that the part:xxx should be created as a issue
-  # label in the GitHub repository"
+  # Please have in mind that that the part:xxx labels need to
+  # be created in the GitHub repository.
