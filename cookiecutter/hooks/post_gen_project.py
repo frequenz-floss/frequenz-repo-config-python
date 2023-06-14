@@ -61,6 +61,7 @@ def main() -> None:
     )
     print()
     print(f"cd {cookiecutter.github_repo_name}")
+    print("# Requires at least python version 3.11")
     print("python3 -m venv .venv")
     print(". .venv/bin/activate")
     print("pip install .[dev-noxfile]")
