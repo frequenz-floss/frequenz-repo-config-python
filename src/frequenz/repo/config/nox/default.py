@@ -37,6 +37,7 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
         "-v2",  # for verbose error messages.
     ],
     isort=[
+        "--diff",
         "--check",
     ],
     mypy=[
