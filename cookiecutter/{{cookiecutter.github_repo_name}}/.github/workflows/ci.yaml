@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  merge_group:
+  pull_request:
+  push:
+    # We need to explicitly include tags because otherwise when adding
+    # `branches-ignore` it will only trigger on branches.
+    tags:
+      - '*'
+    branches-ignore:
+      # Ignore pushes to merge queues.
+      # We only want to test the merge commit (`merge_group` event), the hashes
+      # in the push were already tested by the PR checks
+      - 'gh-readonly-queue/**'
+  workflow_dispatch:
+
+env:
+  DEFAULT_PYTHON_VERSION: '3.11'
+  DEFAULT_UBUNTU_VERSION: '20.04'
+
+jobs:
+  nox:
+    name: Test with nox
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+        python:
+          - "{{'${{ env.DEFAULT_PYTHON_VERSION }}'}}"
+    runs-on: {{'${{ matrix.os }}'}}
+
+    steps:
+      - name: Fetch sources
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: {{'${{ matrix.python }}'}}
+          cache: 'pip'
+
+      - name: Install required Python packages
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev-noxfile]
+
+      - name: Run nox
+        run: nox
+        timeout-minutes: 10
+
+  build:
+    name: Build distribution packages
+    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    steps:
+      - name: Fetch sources
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: {{'${{ env.DEFAULT_PYTHON_VERSION }}'}}
+          cache: 'pip'
+
+      - name: Install required Python packages
+        run: |
+          python -m pip install -U pip
+          python -m pip install -U build
+
+      - name: Build the source and binary distribution
+        run: python -m build
+
+      - name: Upload distribution files
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-packages
+          path: dist/
+          if-no-files-found: error
+
+  create-github-release:
+    name: Create GitHub release
+    needs: ["publish-docs"]
+    # Create a release only on tags creation
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      # We need write permissions on contents to create GitHub releases and on
+      # discussions to create the release announcement in the discussion forums
+      contents: write
+      discussions: write
+    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    steps:
+      - name: Download distribution files
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-packages
+          path: dist
+
+      - name: Download RELEASE_NOTES.md
+        run: |
+          set -ux
+          gh api \
+              -X GET \
+              -f ref=$REF \
+              -H "Accept: application/vnd.github.raw" \
+              "/repos/$REPOSITORY/contents/RELEASE_NOTES.md" \
+            > RELEASE_NOTES.md
+        env:
+          REF: {{'${{ github.ref }}'}}
+          REPOSITORY: {{'${{ github.repository }}'}}
+          GH_TOKEN: {{'${{ secrets.GITHUB_TOKEN }}'}}
+
+      - name: Create GitHub release
+        run: |
+          set -ux
+          extra_opts=
+          if echo "$REF_NAME" | grep -- -; then extra_opts=" --prerelease"; fi
+          gh release create \
+            -R "$REPOSITORY" \
+            --notes-file RELEASE_NOTES.md \
+            --generate-notes \
+            $extra_opts \
+            $REF_NAME \
+            dist/*
+        env:
+          REF_NAME: {{'${{ github.ref_name }}'}}
+          REPOSITORY: {{'${{ github.repository }}'}}
+          GH_TOKEN: {{'${{ secrets.GITHUB_TOKEN }}'}}
+
+  publish-to-pypi:
+    name: Publish packages to PyPI
+    needs: ["create-github-release"]
+    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    permissions:
+      # For trusted publishing. See:
+      # https://blog.pypi.org/posts/2023-04-20-introducing-trusted-publishers/
+      id-token: write
+    steps:
+      - name: Download distribution files
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-packages
+          path: dist
+
+      - name: Publish the Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
