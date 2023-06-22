@@ -60,10 +60,18 @@ dev-docstrings = [
   "tomli == 2.0.1",      # Needed by pydocstyle to read pyproject.toml
 ]
 dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
+dev-mkdocs = [
+  "mike == 1.1.2",
+  "mkdocs-gen-files == 0.5.0",
+  "mkdocs-literate-nav == 0.6.0",
+  "mkdocs-material == 9.1.16",
+  "mkdocs-section-index == 0.3.5",
+  "mkdocstrings[python] == 0.22.0",
+]
 dev-mypy = [
   "mypy == 1.2.0",
   # For checking the noxfile, docs/ script, and tests
-  "{{cookiecutter.pypi_package_name}}[dev-noxfile,dev-pytest]",
+  "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-noxfile = [
   "nox == 2023.4.22",
@@ -72,7 +80,7 @@ dev-noxfile = [
 dev-pylint = [
   "pylint == 2.17.3",
   # For checking the noxfile, docs/ script, and tests
-  "{{cookiecutter.pypi_package_name}}[dev-noxfile,dev-pytest]",
+  "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 {%- if cookiecutter.type == "api" %}
 dev-pytest = ["pytest == 7.3.1"]
@@ -85,7 +93,7 @@ dev-pytest = [
 ]
 {%- endif %}
 dev = [
-  "{{cookiecutter.pypi_package_name}}[dev-docstrings,dev-formatting,dev-gen-docs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
+  "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-docstrings,dev-formatting,dev-gen-docs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
 ]
 
 [project.urls]

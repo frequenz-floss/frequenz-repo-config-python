@@ -66,6 +66,9 @@ def main() -> None:
     print(". .venv/bin/activate")
     print("pip install .[dev-noxfile]")
     print("nox")
+    print("# To generate and serve the documentation:")
+    print("pip install .[dev-mkdocs]")
+    print("mkdocs serve")
     print()
     if warnings := do_sanity_checks():
         for warning in warnings:

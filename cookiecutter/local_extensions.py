@@ -108,6 +108,25 @@ def title(cookiecutter: dict[str, str]) -> str:
 
 
 @_simple_filter  # type: ignore[misc]
+def src_path(cookiecutter: dict[str, str]) -> str:
+    """Build a default source path for the project.
+
+    Args:
+        cookiecutter: The cookiecutter context.
+
+    Returns:
+        The default source path.
+    """
+    match cookiecutter["type"]:
+        case "api":
+            return "py"
+        case "actor" | "lib" | "app" | "model":
+            return "src"
+        case _ as repo_type:
+            assert False, f"Unhandled repository type {repo_type!r}"
+
+
+@_simple_filter  # type: ignore[misc]
 def keywords(cookiecutter: dict[str, str]) -> str:
     """Extend cookiecutter["keywords"] with predefined ones by repository type.
 

@@ -15,7 +15,7 @@ Frequenz, defined in
 
 # Common
 
-## `nox`
+## `nox` (running tests and linters)
 
 ### Writing the `noxfile.py`
 
@@ -130,16 +130,24 @@ name = "my-package"
 [project.optional-dependencies]
 dev-docstrings = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
 dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
+dev-mkdocs = [
+  "mike == 1.1.2",
+  "mkdocs-gen-files == 0.5.0",
+  "mkdocs-literate-nav == 0.6.0",
+  "mkdocs-material == 9.1.16",
+  "mkdocs-section-index == 0.3.5",
+  "mkdocstrings[python] == 0.22.0",
+]
 dev-mypy = [
   "mypy == 1.1.1",
   # For checking tests
-  "my-package[dev-pytest]",
+  "my-package[dev-mkdocs,dev-pytest]",
 ]
 dev-pylint = [
   "pylint == 2.17.1",
   "pylint-google-style-guide-imports-enforcing == 1.3.0",
   # For checking tests
-  "my-package[dev-pytest]",
+  "my-package[dev-mkdocs,dev-pytest]",
 ]
 dev-pytest = [
   "pytest == 7.2.2",
@@ -147,8 +155,54 @@ dev-pytest = [
   "pytest-mock == 3.10.0",
 ]
 dev = [
-  "my-package[dev-docstrings,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
+  "my-package[dev-mkdocs,dev-docstrings,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
 ]
+```
+
+## `mkdocs` (generating documentation)
+
+### API reference generation
+
+The API documnentation can be automatically generated from the source files using the
+[`freq.repo.config.mkdocs`][] package as when run as a
+[`mkdocs-gen-files`](https://oprypin.github.io/mkdocs-gen-files/) plugin script.
+
+To enable it you just need to make sure the `mkdocs-gen-files`, `mkdocs-literate-nav`
+and `mkdocstrings[python]` packages are installed (look at the `pyproject.toml`
+configuration in the `nox` section) and add the following configuration to the
+`mkdocs.yml` file:
+
+```yaml
+plugins:
+  - gen-files:
+      scripts:
+        - path/to/my/custom/script.py
+```
+
+By default this script will look for files in the `src/` directory and generate the
+documentation files in the `reference/` directory inside `mkdocs` output directory
+(`site` by defaul).
+
+If you need to customize the above paths, you can create a new script to use with the
+`mkdocs-gen-files` plugin as follows:
+
+```python
+from frequenz.repo.config import mkdocs
+
+mkdocs.generate_api_pages("my_sources", "API")
+```
+
+Where `my_sources` is the directory containing the source files and `API` is the
+directory where to generate the documentation files (relative to `mkdocs` output
+directory).
+
+And then replace this configuration in the `mkdocs.yml` file:
+
+```yaml
+plugins:
+  - gen-files:
+      scripts:
+        - path/to/my/custom/script.py
 ```
 
 # APIs
@@ -254,11 +308,12 @@ Please adapt the instructions above to your project structure if you need to cha
 defaults.
 """
 
-from . import nox, setuptools
+from . import mkdocs, nox, setuptools
 from ._core import RepositoryType
 
 __all__ = [
     "RepositoryType",
+    "mkdocs",
     "nox",
     "setuptools",
 ]
