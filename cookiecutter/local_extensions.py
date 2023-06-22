@@ -83,6 +83,31 @@ def github_repo_name(cookiecutter: dict[str, str]) -> str:
 
 
 @_simple_filter  # type: ignore[misc]
+def title(cookiecutter: dict[str, str]) -> str:
+    """Build a default mkdocs site name for the project.
+
+    Args:
+        cookiecutter: The cookiecutter context.
+
+    Returns:
+        The default site name.
+    """
+    match cookiecutter["type"]:
+        case "actor":
+            return f"Frequenz {cookiecutter['name']} actor"
+        case "api":
+            return f"Frequenz {cookiecutter['name']} API"
+        case "lib":
+            return f"Freqenz {cookiecutter['name']} library"
+        case "app":
+            return f"Frequenz {cookiecutter['name']} app"
+        case "model":
+            return f"Frequenz {cookiecutter['name']} AI model"
+        case _ as repo_type:
+            assert False, f"Unhandled repository type {repo_type!r}"
+
+
+@_simple_filter  # type: ignore[misc]
 def keywords(cookiecutter: dict[str, str]) -> str:
     """Extend cookiecutter["keywords"] with predefined ones by repository type.
 
