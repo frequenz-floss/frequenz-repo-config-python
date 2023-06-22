@@ -1,4 +1,4 @@
-# Frequenz {{cookiecutter.name}} {{cookiecutter.type}}
+# {{cookiecutter.title}}
 
 {{cookiecutter.description}}
 
