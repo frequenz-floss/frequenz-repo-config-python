@@ -4,7 +4,7 @@
 blank_issues_enabled: true
 contact_links:
   - name: Ask a question ❓
-    url: https://github.com/{{github_org}}/{{github_repo_name}}/discussions/new?category=support
+    url: https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}/discussions/new?category=support
     # TODO(cookiecutter): Make sure the GitHub repository has a discussion category "Support"
     # Rename the "Q&A" category to "Support" and change the emoji to 🆘 (SOS)
     about: Use this if you are not sure how to do something, have installation problems, etc.
