@@ -19,6 +19,8 @@ from typing import Tuple
 
 import mkdocs_gen_files
 
+from . import protobuf as _protobuf
+
 
 def _is_internal(path_parts: Tuple[str, ...]) -> bool:
     """Tell if the path is internal judging by the parts.
@@ -99,19 +101,21 @@ def generate_protobuf_api_pages(
     # type ignore because mkdocs_gen_files uses a very weird module-level
     # __getattr__() which messes up the type system
     nav = mkdocs_gen_files.Nav()  # type: ignore
+    config = _protobuf.ProtobufConfig.from_pyproject_toml(
+        proto_path=src_path, docs_path=dst_path
+    )
 
     cwd = Path.cwd()
 
     with tempfile.TemporaryDirectory(prefix="mkdocs-protobuf-reference-") as tmp_path:
-        for path in sorted(Path(src_path).rglob("*.proto")):
-            doc_path = path.relative_to(src_path).with_suffix(".md")
-            full_doc_path = Path(dst_path, doc_path)
-            parts = tuple(path.relative_to(src_path).parts)
+        for path in sorted(Path(config.proto_path).rglob("*.proto")):
+            doc_path = path.relative_to(config.proto_path).with_suffix(".md")
+            full_doc_path = Path(config.docs_path, doc_path)
+            parts = tuple(path.relative_to(config.proto_path).parts)
             nav[parts] = doc_path.as_posix()
             doc_tmp_path = tmp_path / doc_path
             doc_tmp_path.parent.mkdir(parents=True, exist_ok=True)
             try:
-                # TODO: Get arguments from setuptools.grpc
                 subprocess.run(
                     [
                         "docker",
@@ -120,9 +124,8 @@ def generate_protobuf_api_pages(
                         f"-v{cwd}:{cwd}",
                         f"-v{tmp_path}:{tmp_path}",
                         "pseudomuto/protoc-gen-doc",
-                        f"-I{cwd / src_path}",
-                        f"-I{cwd}/submodules/api-common-protos",
-                        f"-I{cwd}/submodules/frequenz-api-common/proto",
+                        f"-I{cwd / config.proto_path}",
+                        *(f"-I{cwd / p}" for p in config.include_paths),
                         f"--doc_opt=markdown,{doc_path.name}",
                         f"--doc_out={tmp_path / doc_path.parent}",
                         str(cwd / path),
@@ -139,5 +142,5 @@ def generate_protobuf_api_pages(
 
             mkdocs_gen_files.set_edit_path(full_doc_path, Path("..") / path)
 
-    with mkdocs_gen_files.open(Path(dst_path) / "SUMMARY.md", "w") as nav_file:
+    with mkdocs_gen_files.open(Path(config.docs_path) / "SUMMARY.md", "w") as nav_file:
         nav_file.writelines(nav.build_literate_nav())
