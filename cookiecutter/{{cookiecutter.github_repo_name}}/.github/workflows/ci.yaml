@@ -16,10 +16,11 @@ on:
   workflow_dispatch:
 
 env:
-  # Please make sure these versions are included in the `matrix`, as the
-  # `matrix` section can't use `env`, so they must be entered manually
+  # Please make sure this version is included in the `matrix`, as the
+  # `matrix` section can't use `env`, so it must be entered manually
   DEFAULT_PYTHON_VERSION: '3.11'
-  DEFAULT_UBUNTU_VERSION: '20.04'
+  # It would be nice to be able to also define a DEFAULT_UBUNTU_VERSION
+  # but sadly `env` can't be used either in `runs-on`.
 
 jobs:
   nox:
@@ -56,7 +57,7 @@ jobs:
 
   build:
     name: Build distribution packages
-    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    runs-on: ubuntu-20.04
     steps:
       - name: Fetch sources
         uses: actions/checkout@v3
@@ -92,7 +93,7 @@ jobs:
       # discussions to create the release announcement in the discussion forums
       contents: write
       discussions: write
-    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    runs-on: ubuntu-20.04
     steps:
       - name: Download distribution files
         uses: actions/download-artifact@v3
@@ -134,7 +135,7 @@ jobs:
   publish-to-pypi:
     name: Publish packages to PyPI
     needs: ["create-github-release"]
-    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    runs-on: ubuntu-20.04
     permissions:
       # For trusted publishing. See:
       # https://blog.pypi.org/posts/2023-04-20-introducing-trusted-publishers/
