@@ -1,0 +1,27 @@
+{
+  "cookiecutter": {
+    "type": "lib",
+    "name": "repo-config",
+    "description": "Frequenz repository setup tools and common configuration",
+    "title": "Frequenz Repository Configuration",
+    "keywords": "frequenz,package,project,config,tool,repository,setuptools,nox,grpc,protobuf",
+    "github_org": "frequenz-floss",
+    "license": "MIT",
+    "author_name": "Frequenz Energy-as-a-Service GmbH",
+    "author_email": "floss@frequenz.com",
+    "python_package": "frequenz.repo.config",
+    "pypi_package_name": "frequenz-repo-config",
+    "github_repo_name": "frequenz-repo-config-python",
+    "default_codeowners": "@frequenz-floss/python-sdk-team",
+    "_extensions": [
+      "jinja2_time.TimeExtension",
+      "local_extensions.default_codeowners",
+      "local_extensions.github_repo_name",
+      "local_extensions.keywords",
+      "local_extensions.pypi_package_name",
+      "local_extensions.python_package",
+      "local_extensions.src_path",
+      "local_extensions.title"
+    ]
+  }
+}
