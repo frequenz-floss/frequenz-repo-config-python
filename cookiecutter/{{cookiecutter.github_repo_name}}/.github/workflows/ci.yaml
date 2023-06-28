@@ -16,6 +16,8 @@ on:
   workflow_dispatch:
 
 env:
+  # Please make sure these versions are included in the `matrix`, as the
+  # `matrix` section can't use `env`, so they must be entered manually
   DEFAULT_PYTHON_VERSION: '3.11'
   DEFAULT_UBUNTU_VERSION: '20.04'
 
@@ -26,9 +28,9 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+          - ubuntu-20.04
         python:
-          - "{{'${{ env.DEFAULT_PYTHON_VERSION }}'}}"
+          - "3.11"
     runs-on: {{'${{ matrix.os }}'}}
 
     steps:
