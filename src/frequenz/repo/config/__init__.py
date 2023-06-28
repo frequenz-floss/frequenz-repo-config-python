@@ -5,7 +5,7 @@ r"""Frequenz project setup tools and common configuration.
 
 The tools are provided to configure the main types of repositories most commonly used at
 Frequenz, defined in
-[`freq.repo.config.RepositoryType`][freq.repo.config.RepositoryType].
+[`frequenz.repo.config.RepositoryType`][].
 
 - actor: SDK actors
 - api: gRPC APIs
