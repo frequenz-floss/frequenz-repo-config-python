@@ -357,9 +357,6 @@ def finish_api_setup() -> None:
 
     * Rename `src` to `py`
     * Rename `tests` to `pytests`
-    * Create `submodules` folder
-    * Create `.gitmodules` file
-    * Initialize submodules
     """
     _pathlib.Path("src").rename("py")
     _pathlib.Path("tests").rename("pytests")
