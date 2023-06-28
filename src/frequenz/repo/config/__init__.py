@@ -180,7 +180,7 @@ plugins:
 ```
 
 By default this script will look for files in the `src/` directory and generate the
-documentation files in the `reference/` directory inside `mkdocs` output directory
+documentation files in the `python-reference/` directory inside `mkdocs` output directory
 (`site` by defaul).
 
 If you need to customize the above paths, you can create a new script to use with the
@@ -189,7 +189,7 @@ If you need to customize the above paths, you can create a new script to use wit
 ```python
 from frequenz.repo.config import mkdocs
 
-mkdocs.generate_api_pages("my_sources", "API")
+mkdocs.generate_python_api_pages("my_sources", "API")
 ```
 
 Where `my_sources` is the directory containing the source files and `API` is the
@@ -203,6 +203,16 @@ plugins:
   - gen-files:
       scripts:
         - path/to/my/custom/script.py
+```
+
+If your project also provides *protobuf* files, you can also generate the API
+documentation for them adding one more line to the previous script:
+
+```python
+from frequenz.repo.config import mkdocs
+
+mkdocs.generate_python_api_pages("my_sources", "API-py")
+mkdocs.generate_protobuf_api_pages("my_protos", "API-proto")
 ```
 
 # APIs

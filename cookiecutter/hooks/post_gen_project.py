@@ -68,6 +68,8 @@ def main() -> None:
     print("nox")
     print("# To generate and serve the documentation:")
     print("pip install .[dev-mkdocs]")
+    if cookiecutter.type == "api":
+        print("# Requires docker")
     print("mkdocs serve")
     print()
     if warnings := do_sanity_checks():
