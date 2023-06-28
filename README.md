@@ -125,3 +125,8 @@ templates update commit.
 
     Please remember to keep your replay file up to date if you change any
     metadata in the project.
+
+## Contributing
+
+If you want to know how to build this project and contribute to it, please
+check out the [Contributing Guide](CONTRIBUTING.md).

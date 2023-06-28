@@ -1,0 +1,48 @@
+# Configuration for the Labeler GitHub action, executed by
+# .github/workflows/labeler.yml.
+#
+# The basic syntax is [label]: [path patterns].
+#
+# For more details on the configuration please see:
+# https://github.com/marketplace/actions/labeler
+
+"part:docs":
+  - "**/*.md"
+  - "docs/**"
+  - "examples/**"
+  - LICENSE
+
+"part:tests":
+  - "tests/**"
+
+"part:tooling":
+  - "**/*.ini"
+  - "**/*.toml"
+  - "**/*.yaml"
+  - "**/*.yml"
+  - ".git*"
+  - ".git*/**"
+  - CODEOWNERS
+  - MANIFEST.in
+  - noxfile.py
+
+"part:ci":
+  - "**/.github/*labeler.*"
+  - "**/.github/dependabot.*"
+  - "**/.github/workflows/*"
+
+"part:cookiecutter":
+  - "cookiecutter/**"
+
+"part:mkdocs":
+  - "**/docs/*.py"
+  - "**/mkdocs.*"
+  - "src/frequenz/repo/config/mkdocs*"
+
+"part:nox":
+  - "**/noxfile.py"
+  - "src/frequenz/repo/config/nox/**"
+
+"part:protobuf":
+  - "src/frequenz/repo/config/setuptools/grpc*"
+  - "src/frequenz/repo/config/protobuf*"
