@@ -170,22 +170,16 @@ def default_codeowners(cookiecutter: dict[str, str]) -> str:
     if github_org != "frequenz-floss":
         return f"TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
 
-    match repo_type:
-        case "actor":
-            return (
-                "TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
-                "# Temporary, should probably change"
-            )
-        case "api":
-            return "@freqenz-floss/api-team"
-        case "lib":
-            return "@freqenz-floss/python-sdk-team"
-        case "app":
-            return (
-                "@freqenz-floss/python-sdk-team @frequenz-floss/datasci-team "
-                "# Temporary, should probably change"
-            )
-        case "model":
-            return "@freqenz-floss/datasci-team"
-        case _:
-            assert False, f"Unhandled repository type {repo_type!r}"
+    type_to_team = {
+        "actor": "TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
+        "# Temporary, should probably change",
+        "api": "@freqenz-floss/api-team",
+        "lib": "@freqenz-floss/python-sdk-team",
+        "app": "@freqenz-floss/python-sdk-team @frequenz-floss/datasci-team "
+        "# Temporary, should probably change",
+        "model": "@freqenz-floss/datasci-team",
+    }
+
+    assert repo_type in type_to_team, f"Unhandled repository type {repo_type!r}"
+
+    return type_to_team[repo_type]
