@@ -84,7 +84,7 @@ jobs:
 
   create-github-release:
     name: Create GitHub release
-    needs: ["publish-docs"]
+    needs: ["build"]
     # Create a release only on tags creation
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     permissions:
