@@ -37,7 +37,7 @@ def _get_from_json(key: str) -> str:
         The string from the cookiecutter.json file.
     """
     with open("../cookiecutter.json", encoding="utf8") as cookiecutter_json_file:
-        return _json.load(cookiecutter_json_file)[key]
+        return str(_json.load(cookiecutter_json_file)[key])
 
 
 # Ignoring because cookiecutter simple_filter decorator is not typed.
