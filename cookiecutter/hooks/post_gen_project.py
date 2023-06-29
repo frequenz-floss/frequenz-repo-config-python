@@ -92,6 +92,8 @@ def finish_setup() -> None:
     """
     was_repo_initialized = initialize_git_repo()
 
+    copy_replay_file()
+
     remove_unneeded_files()
 
     match cookiecutter.type:
@@ -108,6 +110,22 @@ def finish_setup() -> None:
 
     initialize_git_submodules()
     commit_git_changes(first_commit=was_repo_initialized)
+
+
+def copy_replay_file() -> None:
+    """Copy the replay file to the project root."""
+    src = _pathlib.Path("~/.cookiecutter_replay/cookiecutter.json").expanduser()
+    dst = _pathlib.Path(".cookiecutter-replay.json")
+    if not src.exists():
+        print(f"WARNING: No replay file found in {src}. Skipping...")
+
+    try:
+        _shutil.copyfile(src, dst)
+    except (OSError, IOError) as error:
+        print(
+            f"WARNING: Error copying the replay file {src} -> {dst} ({error}). "
+            "Skipping..."
+        )
 
 
 def initialize_git_submodules() -> bool:
@@ -357,12 +375,13 @@ def finish_api_setup() -> None:
 
     * Rename `src` to `py`
     * Rename `tests` to `pytests`
-    * Create `submodules` folder
-    * Create `.gitmodules` file
-    * Initialize submodules
     """
-    _pathlib.Path("src").rename("py")
-    _pathlib.Path("tests").rename("pytests")
+    # We can't do a simple rename because the target directory might not be empty if
+    # overwriting an existing project.
+    _shutil.copytree("src", "py", dirs_exist_ok=True)
+    _shutil.rmtree("src")
+    _shutil.copytree("tests", "pytests", dirs_exist_ok=True)
+    _shutil.rmtree("tests")
 
 
 def finish_app_setup() -> None:
