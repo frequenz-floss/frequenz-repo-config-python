@@ -177,12 +177,19 @@ def get() -> Config:
     return _config
 
 
-def configure(conf: Config, /) -> None:
+def configure(conf: Config, /, *, import_default_sessions: bool = True) -> None:
     """Configure nox using the provided configuration.
 
     Args:
         conf: The configuration to use to configure nox.
+        import_default_sessions: Whether to import the default sessions or not.
+            This is only necessary if you want to avoid using the default provided
+            sessions and use your own.
     """
+    # We need to make sure sessions are imported, otherwise they won't be visible to nox.
+    if import_default_sessions:
+        # pylint: disable=import-outside-toplevel,cyclic-import
+        from . import session as _
     global _config  # pylint: disable=global-statement
     _config = conf
     _nox.options.sessions = _config.sessions
