@@ -13,4 +13,4 @@ config.extra_paths.extend(
         "cookiecutter/local_extensions.py",
     ]
 )
-nox.configure(default.lib_config)
+nox.configure(config)
