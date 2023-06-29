@@ -173,11 +173,11 @@ def default_codeowners(cookiecutter: dict[str, str]) -> str:
     type_to_team = {
         "actor": "TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
         "# Temporary, should probably change",
-        "api": "@freqenz-floss/api-team",
-        "lib": "@freqenz-floss/python-sdk-team",
-        "app": "@freqenz-floss/python-sdk-team @frequenz-floss/datasci-team "
+        "api": "@frequenz-floss/api-team",
+        "lib": "@frequenz-floss/python-sdk-team",
+        "app": "@frequenz-floss/python-sdk-team @frequenz-floss/datasci-team "
         "# Temporary, should probably change",
-        "model": "@freqenz-floss/datasci-team",
+        "model": "@frequenz-floss/datasci-team",
     }
 
     assert repo_type in type_to_team, f"Unhandled repository type {repo_type!r}"
