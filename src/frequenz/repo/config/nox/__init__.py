@@ -10,9 +10,10 @@ You should call `configure()` using one of the default configurations provided
 in the [`default`][] module. For example:
 
 ```python
-from frequenz.repo import config
+from frequenz.repo.config import nox
+from frequenz.repo.config.nox import default
 
-config.nox.configure(config.nox.default.lib_config)
+nox.configure(default.lib_config)
 ```
 
 If you need to modify the configuration, you can copy one of the default
@@ -20,11 +21,12 @@ configurations by using the
 [`copy()`][frequenz.repo.config.nox.config.Config.copy] method:
 
 ```python
-from frequenz.repo import config
+from frequenz.repo.config import nox
+from frequenz.repo.config.nox import default
 
-conf = config.nox.default.lib_config.copy()
+conf = default.lib_config.copy()
 conf.opts.black.append("--diff")
-config.nox.configure(conf)
+nox.configure(conf)
 ```
 
 If you need further customization or to define new sessions, you can use the
@@ -41,13 +43,8 @@ following modules:
 - [`util`][]: General purpose utility functions.
 """
 
-from . import config, default, session, util
 from .config import configure
 
 __all__ = [
-    "config",
     "configure",
-    "default",
-    "session",
-    "util",
 ]

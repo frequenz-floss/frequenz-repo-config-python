@@ -31,8 +31,9 @@ in the [`frequenz.repo.config.nox.default`][] module. For example:
 
 ```python
 from frequenz.repo.config import nox
+from frequenz.repo.config.nox import default
 
-nox.configure(nox.default.lib_config)
+nox.configure(default.lib_config)
 ```
 
 Again, make sure to pick the correct default configuration based on the type of your
@@ -44,8 +45,9 @@ configurations by using the
 
 ```python
 from frequenz.repo.config import nox
+from frequenz.repo.config.nox import default
 
-config = nox.default.lib_config.copy()
+config = default.lib_config.copy()
 config.opts.black.append("--diff")
 nox.configure(config)
 ```
@@ -330,12 +332,8 @@ Please adapt the instructions above to your project structure if you need to cha
 defaults.
 """
 
-from . import mkdocs, nox, setuptools
 from ._core import RepositoryType
 
 __all__ = [
     "RepositoryType",
-    "mkdocs",
-    "nox",
-    "setuptools",
 ]
