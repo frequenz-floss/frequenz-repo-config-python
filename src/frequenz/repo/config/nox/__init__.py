@@ -6,27 +6,30 @@
 The main entry point is the [`configure()`][configure] function, which will
 configure all nox sessions according to some configuration.
 
-You should call `configure()` using one of the default configurations provided
-in the [`default`][] module. For example:
+To use the default options, you should call `configure()` using one of the [repository
+types][frequenz.repo.config.RepositoryType].  For example:
 
 ```python
-from frequenz.repo.config import nox
-from frequenz.repo.config.nox import default
+from frequenz.repo.config import RepositoryType, nox
 
-nox.configure(default.lib_config)
+nox.configure(RepositoryType.LIB)
 ```
 
-If you need to modify the configuration, you can copy one of the default
-configurations by using the
-[`copy()`][frequenz.repo.config.nox.config.Config.copy] method:
+Again, make sure to pick the correct project typedefault configuration based on the type of your
+project (`actor_config`, `api_config`, `app_config`, `lib_config`, `model_config`).
+
+If you need to use some custom configuration, you can start from the default settings in
+the [`frequenz.repo.config.nox.default`][] module,
+[copying][frequenz.repo.config.nox.config.Config.copy] it and changing whatever you
+need to customize.  For example:
 
 ```python
 from frequenz.repo.config import nox
 from frequenz.repo.config.nox import default
 
-conf = default.lib_config.copy()
-conf.opts.black.append("--diff")
-nox.configure(conf)
+config = default.lib_config.copy()
+config.opts.black.append("--diff")
+nox.configure(config)
 ```
 
 If you need further customization or to define new sessions, you can use the
