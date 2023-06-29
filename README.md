@@ -42,3 +42,16 @@ cookiecutter gh:frequenz-floss/frequenz-repo-config-python --directory=cookiecut
 
 This will prompt for the project type, name and other configuration and
 generate the whole project for you.
+
+After completing it and fixing the TODOs
+you can amend the previous commit using `git commit --amend`
+or create a new commit for the changes using `git commit`.
+You can make sure linting and tests pass by creating a virtual
+environment, installing the development dependencies and running `nox`:
+```sh
+# requires at least python version 3.11
+python3 -m venv .venv
+. .venv/bin/activate
+pip install .[dev-noxfile]
+nox
+```
