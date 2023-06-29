@@ -381,12 +381,8 @@ def finish_api_setup() -> None:
     * Rename `src` to `py`
     * Rename `tests` to `pytests`
     """
-    # We can't do a simple rename because the target directory might not be empty if
-    # overwriting an existing project.
-    _shutil.copytree("src", "py", dirs_exist_ok=True)
-    _shutil.rmtree("src")
-    _shutil.copytree("tests", "pytests", dirs_exist_ok=True)
-    _shutil.rmtree("tests")
+    recursive_overwrite_move(_pathlib.Path("src"), _pathlib.Path("py"))
+    recursive_overwrite_move(_pathlib.Path("tests"), _pathlib.Path("pytests"))
 
 
 def finish_app_setup() -> None:
@@ -469,6 +465,19 @@ def try_run(
         note(note_on_failure)
 
     return result
+
+
+def recursive_overwrite_move(src: _pathlib.Path, dst: _pathlib.Path) -> None:
+    """Recursively move a directory overwriting the target files if they exist.
+
+    Useful when overwriting an existing project to update it.
+
+    Args:
+        src: The source directory.
+        dst: The target directory.
+    """
+    _shutil.copytree(src, dst, dirs_exist_ok=True)
+    _shutil.rmtree(src)
 
 
 def success(message: str) -> None:
