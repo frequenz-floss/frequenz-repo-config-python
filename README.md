@@ -71,7 +71,7 @@ the files in your existing project by using `rsync` or similar tools:
 ```sh
 cd /tmp
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python --directory=cookiecutter
-rsync -r new-project/ /path/to/existing/project
+rsync -vr --exclude=.git/ new-project/ /path/to/existing/project
 cd /path/to/existing/project
 git diff
 # Fix all the `TODO`s and cleanup the generated files
@@ -82,6 +82,9 @@ git commit -a
 
     The trailing slash in `new-project/` and the lack of it in
     `/path/to/existing/project` are meaningful to `rsync`.
+
+    Also make sure to **exclude** the `.git/` directory to avoid messing up
+    with your local git repository.
 
 ## Update an existing project
 
