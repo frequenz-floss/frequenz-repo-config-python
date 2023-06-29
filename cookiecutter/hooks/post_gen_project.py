@@ -66,6 +66,11 @@ def main() -> None:
     print(". .venv/bin/activate")
     print("pip install .[dev-noxfile]")
     print("nox")
+    print("# To generate and serve the documentation:")
+    print("pip install .[dev-mkdocs]")
+    if cookiecutter.type == "api":
+        print("# Requires docker")
+    print("mkdocs serve")
     print()
     if warnings := do_sanity_checks():
         for warning in warnings:

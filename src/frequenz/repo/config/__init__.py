@@ -15,7 +15,7 @@ Frequenz, defined in
 
 # Common
 
-## `nox`
+## `nox` (running tests and linters)
 
 ### Writing the `noxfile.py`
 
@@ -130,16 +130,24 @@ name = "my-package"
 [project.optional-dependencies]
 dev-docstrings = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
 dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
+dev-mkdocs = [
+  "mike == 1.1.2",
+  "mkdocs-gen-files == 0.5.0",
+  "mkdocs-literate-nav == 0.6.0",
+  "mkdocs-material == 9.1.16",
+  "mkdocs-section-index == 0.3.5",
+  "mkdocstrings[python] == 0.22.0",
+]
 dev-mypy = [
   "mypy == 1.1.1",
   # For checking tests
-  "my-package[dev-pytest]",
+  "my-package[dev-mkdocs,dev-pytest]",
 ]
 dev-pylint = [
   "pylint == 2.17.1",
   "pylint-google-style-guide-imports-enforcing == 1.3.0",
   # For checking tests
-  "my-package[dev-pytest]",
+  "my-package[dev-mkdocs,dev-pytest]",
 ]
 dev-pytest = [
   "pytest == 7.2.2",
@@ -147,26 +155,112 @@ dev-pytest = [
   "pytest-mock == 3.10.0",
 ]
 dev = [
-  "my-package[dev-docstrings,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
+  "my-package[dev-mkdocs,dev-docstrings,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
 ]
+```
+
+## `mkdocs` (generating documentation)
+
+### API reference generation
+
+The API documnentation can be automatically generated from the source files using the
+[`freq.repo.config.mkdocs`][] package as when run as a
+[`mkdocs-gen-files`](https://oprypin.github.io/mkdocs-gen-files/) plugin script.
+
+To enable it you just need to make sure the `mkdocs-gen-files`, `mkdocs-literate-nav`
+and `mkdocstrings[python]` packages are installed (look at the `pyproject.toml`
+configuration in the `nox` section) and add the following configuration to the
+`mkdocs.yml` file:
+
+```yaml
+plugins:
+  - gen-files:
+      scripts:
+        - path/to/my/custom/script.py
+```
+
+By default this script will look for files in the `src/` directory and generate the
+documentation files in the `python-reference/` directory inside `mkdocs` output directory
+(`site` by defaul).
+
+If you need to customize the above paths, you can create a new script to use with the
+`mkdocs-gen-files` plugin as follows:
+
+```python
+from frequenz.repo.config import mkdocs
+
+mkdocs.generate_python_api_pages("my_sources", "API")
+```
+
+Where `my_sources` is the directory containing the source files and `API` is the
+directory where to generate the documentation files (relative to `mkdocs` output
+directory).
+
+And then replace this configuration in the `mkdocs.yml` file:
+
+```yaml
+plugins:
+  - gen-files:
+      scripts:
+        - path/to/my/custom/script.py
 ```
 
 # APIs
 
-## `setuptools` gRPC support
+## Protobuf configuation
+
+Support is provided to generate files from *protobuf* files.  To do this, it is possible
+to configure the options to use while generating the files for different purposes
+(language bindings, documentation, etc.).
+
+The configuration can be done in the `pyproject.toml` file as follows:
+
+```toml
+[tool.frequenz_repo_config.protobuf]
+# Location of the proto files relative to the root of the repository (default: "proto")
+proto_path = "proto_files"
+# Glob pattern to use to find the proto files in the proto_path (default: "*.proto")
+proto_glob = "*.prt"  # Default: "*.proto"
+# List of paths to pass to the protoc compiler as include paths (default:
+# ["submodules/api-common-protos", "submodules/frequenz-api-common/proto"])
+include_paths = ["submodules/api-common-protos"]
+# Path where to generate the Python files (default: "py")
+py_path = "generated"
+# Path where to generate the documentation files (default: "protobuf-reference")
+docs_path = "API"
+```
+
+If the defaults are not suitable for you (for example you need to use more or less
+submodules or your proto files are located somewhere else), please adjust the
+configuration to match your project structure.
+
+### `mkdocs` API reference generation
+
+If your project provides *protobuf* files, you can also generate the API
+documentation for them adding one more line to the script provided in the common
+section:
+
+```python
+from frequenz.repo.config import mkdocs
+
+mkdocs.generate_python_api_pages("my_sources", "API-py")
+mkdocs.generate_protobuf_api_pages()
+```
+
+This will use the configuration in the `pyproject.toml` file and requires `docker` to
+run (it uses the `pseudomuto/protoc-gen-doc` docker image.
+
+### `setuptools` gRPC support
 
 When configuring APIs it is assumed that they have a gRPC interface.
 
-The project structure is assumed to be as follows:
+The project structure is assumed to be as described in the *Protobuf configuration*
+section plus the following:
 
-- `proto/`: Directory containing the `.proto` files.
-- `py/`: Directory containing the Python code. It should only provide
-  a `py.typed` file and a `__init__.py` file. API repositories should not
-  contain any other Python code.
 - `pytests/`: Directory containing the tests for the Python code.
-- `submodules/api-common-protos`: Directory containing the submodule with the
+- `submodules/api-common-protos`: Directory containing the Git submodule with the
   `google/api-common-protos` repository.
-- `submodules/frequenz-api-common`: Directory containing the submodule with the
+- `submodules/frequenz-api-common`: Directory containing the Git submodule with the
   `frequenz-floss/frequenz-api-common` repository.
 
 Normally Frequenz APIs use basic types from
@@ -232,33 +326,16 @@ recursive-include submodules/api-common-protos/google *.proto
 recursive-include submodules/frequenz-api-common/proto *.proto
 ```
 
-If the defaults are not suitable for you (for example you need to use more or less
-submodules or your proto files are located somewhere else, you can customize how
-the protocol files are generated by adding the following section to your
-`pyproject.toml` file:
-
-```toml
-[tool.frequenz_repo_config.setuptools.grpc_tools]
-# Location of the proto files relative to the root of the repository (default: "proto")
-proto_path = "proto_files"
-# Glob pattern to use to find the proto files in the proto_path (default: "*.proto")
-proto_glob = "*.prt"  # Default: "*.proto"
-# List of paths to pass to the protoc compiler as include paths (default:
-# ["submodules/api-common-protos", "submodules/frequenz-api-common/proto"])
-include_paths = ["submodules/api-common-protos"]
-# Path where to generate the Python files (default: "py")
-py_path = "generated"
-```
-
 Please adapt the instructions above to your project structure if you need to change the
 defaults.
 """
 
-from . import nox, setuptools
+from . import mkdocs, nox, setuptools
 from ._core import RepositoryType
 
 __all__ = [
     "RepositoryType",
+    "mkdocs",
     "nox",
     "setuptools",
 ]

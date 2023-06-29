@@ -1,0 +1,112 @@
+# MkDocs configuration
+# For details see: https://www.mkdocs.org/user-guide/configuration/
+
+# Project information
+site_name: "{{cookiecutter.title}}"
+site_description: "{{cookiecutter.description}}"
+site_author: "{{cookiecutter.author_name}}"
+copyright: "Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}"
+repo_name: "{{cookiecutter.github_repo_name}}"
+repo_url: "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}"
+# TODO(cookiecutter): "main" is the GitHub repo default branch, you might want to update it
+# if the project uses a different default branch.
+edit_uri: "edit/main/docs/"
+
+# Build directories
+theme:
+  name: "material"
+  # TODO(cookiecutter): You might want to change the logo, the file is located in "docs/"
+  logo: logo.png
+  favicon: logo.png
+  language: en
+  icon:
+    edit: material/file-edit-outline
+    repo: fontawesome/brands/github
+  custom_dir: docs/overrides
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
+  palette:
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: indigo
+    accent: deep purple
+    toggle:
+      icon: material/weather-sunny
+      name: Switch to dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: black
+    accent: teal
+    toggle:
+      icon: material/weather-night
+      name: Switch to light mode
+
+extra:
+  social:  # TODO(cookiecutter): You probably want to update the links
+  - icon: fontawesome/brands/github
+    link: https://github.com/{{cookiecutter.github_org}}
+  - icon: fontawesome/brands/linkedin
+    link: https://www.linkedin.com/company/frequenz-com
+  version:
+    provider: mike
+    default: latest
+
+extra_css:
+  - css/style.css
+  - css/mkdocstrings.css
+
+# Formatting options
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist
+  - pymdownx.tabbed
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: "!!python/name:pymdownx.superfences.fence_code_format"
+  - toc:
+      permalink: "¤"
+
+plugins:
+  - gen-files:
+      scripts:
+        - docs/mkdocstrings_autoapi.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mike:
+      canonical_version: latest
+  - mkdocstrings:
+      custom_templates: templates
+      default_handler: python
+      handlers:
+        python:
+          options:
+            paths: ["{{cookiecutter | src_path}}"]
+            docstring_section_style: spacy
+            merge_init_into_class: false
+            show_category_heading: true
+            show_root_heading: true
+            show_root_members_full_path: true
+            show_source: true
+          import:
+            # TODO(cookiecutter): You might want to add other external references here
+            # See https://mkdocstrings.github.io/python/usage/#import for details
+            - https://docs.python.org/3/objects.inv
+  - search
+  - section-index
+
+# Preview controls
+watch:
+  - "{{cookiecutter | src_path}}"
+  - README.md
+  - CONTRIBUTING.md

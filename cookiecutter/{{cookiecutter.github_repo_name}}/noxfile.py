@@ -1,5 +1,5 @@
 # License: MIT
-# Copyright © {% now 'utc', '%Y' %} Frequenz Energy-as-a-Service GmbH
+# Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
 
 """Configuration file for nox."""
 

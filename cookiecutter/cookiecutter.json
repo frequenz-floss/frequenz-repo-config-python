@@ -28,6 +28,7 @@
 		"local_extensions.keywords",
 		"local_extensions.pypi_package_name",
 		"local_extensions.python_package",
+		"local_extensions.src_path",
 		"local_extensions.title"
 	]
 }
