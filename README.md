@@ -13,7 +13,7 @@ If offers:
 
 [Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable
 
-## Start a new projects
+## Start a new project
 
 To start a new project you should first [install
 Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html).
