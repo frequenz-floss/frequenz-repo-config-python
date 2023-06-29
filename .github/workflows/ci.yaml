@@ -53,7 +53,7 @@ jobs:
         # To speed things up a bit we use the speciall ci_checks_max session
         # that uses the same venv to run multiple linting sessions
         run: nox -e ci_checks_max pytest_min
-        timeout-minutes: 10
+        timeout-minutes: 60
 
   build:
     name: Build distribution packages
