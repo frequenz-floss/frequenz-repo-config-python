@@ -1,0 +1,29 @@
+# KeywordLabeler app configuration. For more information check:
+# https://github.com/ZeWaka/KeywordLabeler#readme
+
+# Determines if we search the title (optional). Defaults to true.
+matchTitle: true
+
+# Determines if we search the body (optional). Defaults to true.
+matchBody: true
+
+# Determines if label matching is case sensitive (optional). Defaults to true.
+caseSensitive: true
+
+# Explicit keyword mappings to labels. Form of match:label. Required.
+labelMappings:
+  "part:docs": "part:docs"
+  "part:tests": "part:tests"
+  "part:tooling": "part:tooling"
+  "part:❓": "part:❓"
+  "part:actor-only": "part:actor-only"
+  "part:api-only": "part:api-only"
+  "part:app-only": "part:app-only"
+  "part:ci": "part:ci"
+  "part:cli": "part:cli"
+  "part:cookiecutter": "part:cookiecutter"
+  "part:lib-only": "part:lib-only"
+  "part:mkdocs": "part:mkdocs"
+  "part:model-only": "part:model-only"
+  "part:nox": "part:nox"
+  "part:protobuf": "part:protobuf"
