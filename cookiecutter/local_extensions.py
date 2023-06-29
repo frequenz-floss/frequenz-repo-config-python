@@ -37,7 +37,7 @@ def _get_from_json(key: str) -> str:
         The string from the cookiecutter.json file.
     """
     with open("../cookiecutter.json", encoding="utf8") as cookiecutter_json_file:
-        return _json.load(cookiecutter_json_file)[key]
+        return str(_json.load(cookiecutter_json_file)[key])
 
 
 # Ignoring because cookiecutter simple_filter decorator is not typed.
@@ -170,22 +170,16 @@ def default_codeowners(cookiecutter: dict[str, str]) -> str:
     if github_org != "frequenz-floss":
         return f"TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
 
-    match repo_type:
-        case "actor":
-            return (
-                "TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
-                "# Temporary, should probably change"
-            )
-        case "api":
-            return "@freqenz-floss/api-team"
-        case "lib":
-            return "@freqenz-floss/python-sdk-team"
-        case "app":
-            return (
-                "@freqenz-floss/python-sdk-team @frequenz-floss/datasci-team "
-                "# Temporary, should probably change"
-            )
-        case "model":
-            return "@freqenz-floss/datasci-team"
-        case _:
-            assert False, f"Unhandled repository type {repo_type!r}"
+    type_to_team = {
+        "actor": "TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)"
+        "# Temporary, should probably change",
+        "api": "@frequenz-floss/api-team",
+        "lib": "@frequenz-floss/python-sdk-team",
+        "app": "@frequenz-floss/python-sdk-team @frequenz-floss/datasci-team "
+        "# Temporary, should probably change",
+        "model": "@frequenz-floss/datasci-team",
+    }
+
+    assert repo_type in type_to_team, f"Unhandled repository type {repo_type!r}"
+
+    return type_to_team[repo_type]

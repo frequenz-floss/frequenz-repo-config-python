@@ -14,10 +14,11 @@ The `configure()` function must be called before `get()` is used.
 
 import dataclasses as _dataclasses
 import itertools as _itertools
-from typing import Self
+from typing import Self, assert_never, overload
 
 import nox as _nox
 
+from .._core import RepositoryType
 from . import util as _util
 
 
@@ -177,12 +178,73 @@ def get() -> Config:
     return _config
 
 
-def configure(conf: Config, /) -> None:
+@overload
+def configure(conf: Config, /, *, import_default_sessions: bool = True) -> None:
     """Configure nox using the provided configuration.
 
     Args:
         conf: The configuration to use to configure nox.
+        import_default_sessions: Whether to import the default sessions or not.
+            This is only necessary if you want to avoid using the default provided
+            sessions and use your own.
+    """
+
+
+@overload
+def configure(
+    repo_type: RepositoryType, /, *, import_default_sessions: bool = True
+) -> None:
+    """Configure nox using the provided repository type.
+
+    Args:
+        repo_type: The repository type to use to configure nox.  This will use the
+            default configuration in [`frequenz.repo.config.nox.default`][] for that
+            type of repository.
+        import_default_sessions: Whether to import the default sessions or not.
+            This is only necessary if you want to avoid using the default provided
+            sessions and use your own.
+    """
+
+
+def configure(
+    conf: Config | RepositoryType, /, *, import_default_sessions: bool = True
+) -> None:
+    """Configure nox using the provided configuration or repository type.
+
+    Args:
+        conf: The configuration to use to configure nox, or the repository type to use
+            to configure nox.  The later will use the default configuration in
+            [`frequenz.repo.config.nox.default`][] for that type of repository.
+        import_default_sessions: Whether to import the default sessions or not.
+            This is only necessary if you want to avoid using the default provided
+            sessions and use your own.
     """
     global _config  # pylint: disable=global-statement
-    _config = conf
+
+    # We need to make sure sessions are imported, otherwise they won't be visible to nox.
+    if import_default_sessions:
+        # pylint: disable=import-outside-toplevel,cyclic-import
+        from . import session as _
+
+    match conf:
+        case Config():
+            _config = conf
+        case RepositoryType() as repo_type:
+            # pylint: disable=import-outside-toplevel,cyclic-import
+            from . import default
+
+            match repo_type:
+                case RepositoryType.ACTOR:
+                    _config = default.actor_config
+                case RepositoryType.API:
+                    _config = default.api_config
+                case RepositoryType.APP:
+                    _config = default.app_config
+                case RepositoryType.LIB:
+                    _config = default.lib_config
+                case RepositoryType.MODEL:
+                    _config = default.model_config
+                case _ as unhandled:
+                    assert_never(unhandled)
+
     _nox.options.sessions = _config.sessions

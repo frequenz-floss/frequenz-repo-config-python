@@ -3,6 +3,6 @@
 
 """Configuration file for nox."""
 
-from frequenz.repo.config import nox
+from frequenz.repo.config import RepositoryType, nox
 
-nox.configure(nox.default.{{cookiecutter.type}}_config)
+nox.configure(RepositoryType.{{cookiecutter.type | upper}})
