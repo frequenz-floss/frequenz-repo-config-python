@@ -4,6 +4,7 @@
 """Generation tests for cookiecutter."""
 
 import pathlib
+import re
 import subprocess
 
 import pytest
@@ -31,6 +32,10 @@ def test_generation(tmp_path: pathlib.Path, repo_type: str) -> None:
     repo_path = subdirs[0]
     _run(repo_path, "python3", "-m", "venv", ".venv")
 
+    _update_pyproject_repo_config_dep(
+        repo_config_path=cwd, repo_type=repo_type, repo_path=repo_path
+    )
+
     cmd = ". .venv/bin/activate; pip install .[dev-noxfile]; nox"
     print()
     print(f"Running in shell [{cwd}]: {cmd}")
@@ -43,3 +48,27 @@ def _run(cwd: pathlib.Path, *cmd: str) -> subprocess.CompletedProcess[bytes]:
     print(f"Running [{cwd}]: {' '.join(cmd)}")
     print()
     return subprocess.run(cmd, cwd=cwd, check=True)
+
+
+def _update_pyproject_repo_config_dep(
+    *, repo_config_path: pathlib.Path, repo_type: str, repo_path: pathlib.Path
+) -> None:
+    """Update the repo config dependency in the generated pyproject.toml.
+
+    This is necessary to make sure we are testing the local version of
+    `frequenz-repo-config`, otherwise tests will fail because they will be running with
+    an older (released) version of `frequenz-repo-config`.
+
+    Args:
+        repo_config_path: Path to the local `frequenz-repo-config` repo.
+        repo_type: Type of the repo to generate.
+        repo_path: Path to the generated repo.
+    """
+    repo_config_dep = f"frequenz-repo-config[{repo_type}] @ file://{repo_config_path}"
+    repo_config_dep_re = re.compile(rf"""frequenz-repo-config\[{repo_type}\][^"]+""")
+
+    with open(repo_path / "pyproject.toml", encoding="utf8") as pyproject_file:
+        pyproject_content = pyproject_file.read()
+
+    with open(repo_path / "pyproject.toml", "w", encoding="utf8") as pyproject_file:
+        pyproject_file.write(repo_config_dep_re.sub(repo_config_dep, pyproject_content))
