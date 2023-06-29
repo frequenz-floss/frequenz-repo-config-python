@@ -116,6 +116,11 @@ def copy_replay_file() -> None:
     """Copy the replay file to the project root."""
     src = _pathlib.Path("~/.cookiecutter_replay/cookiecutter.json").expanduser()
     dst = _pathlib.Path(".cookiecutter-replay.json")
+
+    if dst.exists():
+        print(f"Replay file {dst} already exists. Skipping...")
+        return
+
     if not src.exists():
         print(f"WARNING: No replay file found in {src}. Skipping...")
 
