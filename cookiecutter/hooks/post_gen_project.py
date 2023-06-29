@@ -406,8 +406,9 @@ def finish_lib_setup() -> None:
       - `lib`: `src/frequenz/{name}`
       - `rest`: `src/frequenz/{type}/{name}`
     """
-    _pathlib.Path(f"src/frequenz/{cookiecutter.type}/{cookiecutter.name}").rename(
-        f"src/frequenz/{cookiecutter.name}"
+    recursive_overwrite_move(
+        _pathlib.Path(f"src/frequenz/{cookiecutter.type}/{cookiecutter.name}"),
+        _pathlib.Path(f"src/frequenz/{cookiecutter.name}"),
     )
     _pathlib.Path(f"src/frequenz/{cookiecutter.type}").rmdir()
 
