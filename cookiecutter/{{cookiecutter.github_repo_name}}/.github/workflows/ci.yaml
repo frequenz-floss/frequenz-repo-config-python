@@ -86,7 +86,7 @@ jobs:
   test-docs:
     name: Test documentation website generation
     if: github.event_name != 'push'
-    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    runs-on: ubuntu-20.04
     steps:
       - name: Fetch sources
         uses: actions/checkout@v3
@@ -121,9 +121,9 @@ jobs:
 
   publish-docs:
     name: Publish documentation website to GitHub pages
-    needs: ["test", "build"]
+    needs: ["nox", "build"]
     if: github.event_name == 'push'
-    runs-on: ubuntu-{{'${{ env.DEFAULT_UBUNTU_VERSION }}'}}
+    runs-on: ubuntu-20.04
     permissions:
       contents: write
     steps:
