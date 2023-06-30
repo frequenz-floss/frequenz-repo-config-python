@@ -1,7 +1,7 @@
 # Frequenz repository common configuration for Python
 
 This is very opinionated set of tools and configurations to setup a Python
-repository for Frequenz projects.
+repository for [Frequenz](https://frequenz.com) projects.
 
 If offers:
 
