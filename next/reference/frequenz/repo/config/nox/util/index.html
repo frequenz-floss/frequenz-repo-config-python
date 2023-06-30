@@ -989,9 +989,7 @@ modules in this package.</p>
         <tr>
           <td><code>iterable</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The iterable to remove duplicates from.</p>
-            </div>
+            <p>The iterable to remove duplicates from.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1018,16 +1016,14 @@ modules in this package.</p>
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>The elements of <code>iterable</code>, without duplicates but preserving order.</p>
-            </div>
+            <p>The elements of <code>iterable</code>, without duplicates but preserving order.</p>
           </td>
         </tr>
     </tbody>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
@@ -1093,16 +1089,14 @@ modules in this package.</p>
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>The discovered paths to check.</p>
-            </div>
+            <p>The discovered paths to check.</p>
           </td>
         </tr>
     </tbody>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">208</span>
 <span class="normal">209</span>
 <span class="normal">210</span>
@@ -1183,9 +1177,7 @@ modules in this package.</p>
         <tr>
           <td><code>paths</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The paths to check and filter.</p>
-            </div>
+            <p>The paths to check and filter.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1212,9 +1204,7 @@ modules in this package.</p>
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>An iterable with the valid paths as <code>pathlib.Path</code> objects.</p>
-            </div>
+            <p>An iterable with the valid paths as <code>pathlib.Path</code> objects.</p>
           </td>
         </tr>
     </tbody>
@@ -1231,7 +1221,7 @@ modules in this package.</p>
 </blockquote>
 </details>
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
@@ -1290,9 +1280,7 @@ modules in this package.</p>
         <tr>
           <td><code>path</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The path to look for python packages.</p>
-            </div>
+            <p>The path to look for python packages.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1304,11 +1292,9 @@ modules in this package.</p>
         <tr>
           <td><code>root</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The part of the path that is considered the root and will be
+            <p>The part of the path that is considered the root and will be
 removed from the resulting path. If <code>None</code> then <code>path</code> is used as
 <code>root</code>.</p>
-            </div>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1339,9 +1325,7 @@ removed from the resulting path. If <code>None</code> then <code>path</code> is 
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>The top-level paths that contains a <code>__init__.py</code> file, with <code>root</code></p>
-            </div>
+            <p>The top-level paths that contains a <code>__init__.py</code> file, with <code>root</code></p>
           </td>
         </tr>
         <tr>
@@ -1351,9 +1335,7 @@ removed from the resulting path. If <code>None</code> then <code>path</code> is 
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>removed.</p>
-            </div>
+            <p>removed.</p>
           </td>
         </tr>
     </tbody>
@@ -1380,7 +1362,7 @@ removed from the resulting path. If <code>None</code> then <code>path</code> is 
 return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
 
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">127</span>
 <span class="normal">128</span>
 <span class="normal">129</span>
@@ -1515,9 +1497,7 @@ return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
         <tr>
           <td><code>iterables</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The iterables to flatten.</p>
-            </div>
+            <p>The iterables to flatten.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1544,9 +1524,7 @@ return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>The flattened iterable.</p>
-            </div>
+            <p>The flattened iterable.</p>
           </td>
         </tr>
     </tbody>
@@ -1563,7 +1541,7 @@ return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
 </blockquote>
 </details>
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
@@ -1620,9 +1598,7 @@ return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
         <tr>
           <td><code>path</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The path to check.</p>
-            </div>
+            <p>The path to check.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1649,16 +1625,14 @@ return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p><code>True</code> if the path is a Python file, <code>False</code> otherwise.</p>
-            </div>
+            <p><code>True</code> if the path is a Python file, <code>False</code> otherwise.</p>
           </td>
         </tr>
     </tbody>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">83</span>
 <span class="normal">84</span>
 <span class="normal">85</span>
@@ -1713,9 +1687,7 @@ return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>The minimun dependencies defined in pyproject.toml.</p>
-            </div>
+            <p>The minimun dependencies defined in pyproject.toml.</p>
           </td>
         </tr>
     </tbody>
@@ -1736,16 +1708,14 @@ return an iterator producing: <code>["frequenz/repo/config"]</code>.</p>
             </span>
           </td>
           <td class="doc-raises-details">
-            <div class="doc-md-description">
-              <p>If minimun dependencies are not properly set in pyproject.toml.</p>
-            </div>
+            <p>If minimun dependencies are not properly set in pyproject.toml.</p>
           </td>
         </tr>
     </tbody>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">181</span>
 <span class="normal">182</span>
 <span class="normal">183</span>
@@ -1831,9 +1801,7 @@ is removed (if present).</p>
         <tr>
           <td><code>path</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The path to convert.</p>
-            </div>
+            <p>The path to convert.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1845,10 +1813,8 @@ is removed (if present).</p>
         <tr>
           <td><code>root</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The root where the path is located. If <code>None</code>, then it is
+            <p>The root where the path is located. If <code>None</code>, then it is
 considered present in the current working directory.</p>
-            </div>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1879,9 +1845,7 @@ considered present in the current working directory.</p>
               </span>
           </td>
           <td class="doc-returns-details">
-            <div class="doc-md-description">
-              <p>The package name based on <code>path</code>.</p>
-            </div>
+            <p>The package name based on <code>path</code>.</p>
           </td>
         </tr>
     </tbody>
@@ -1894,7 +1858,7 @@ considered present in the current working directory.</p>
 </ul>
 
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
@@ -1985,9 +1949,7 @@ considered present in the current working directory.</p>
         <tr>
           <td><code>iterable</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The iterable to replace elements in.</p>
-            </div>
+            <p>The iterable to replace elements in.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -1999,9 +1961,7 @@ considered present in the current working directory.</p>
         <tr>
           <td><code>replacements</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>A mapping of elements to replace with other elements.</p>
-            </div>
+            <p>A mapping of elements to replace with other elements.</p>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -2028,9 +1988,7 @@ considered present in the current working directory.</p>
               </span>
           </td>
           <td class="doc-yields-details">
-            <div class="doc-md-description">
-              <p>The next element in the iterable, with the replacements applied.</p>
-            </div>
+            <p>The next element in the iterable, with the replacements applied.</p>
           </td>
         </tr>
     </tbody>
@@ -2047,7 +2005,7 @@ considered present in the current working directory.</p>
 </blockquote>
 </details>
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/util.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/util.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>

@@ -774,16 +774,17 @@
   <div class="doc doc-contents first">
   
       <p>Utilities to build noxfiles.</p>
-<p>The main entry point is the [<code>configure()</code>][configure] function, which will
-configure all nox sessions according to some configuration.</p>
+<p>The main entry point is the <a class="autorefs autorefs-internal" href="#frequenz.repo.config.nox.configure"><code>configure()</code></a>
+function, which will configure all nox sessions according to some configuration.</p>
 <p>To use the default options, you should call <code>configure()</code> using one of the <span data-autorefs-identifier="frequenz.repo.config.RepositoryType">repository
 types</span>.  For example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="n">nox</span>
 
 <span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">RepositoryType</span><span class="o">.</span><span class="n">LIB</span><span class="p">)</span>
 </code></pre></div>
-<p>Again, make sure to pick the correct project typedefault configuration based on the type of your
-project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>, <code>model_config</code>).</p>
+<p>Again, make sure to pick the correct project typedefault configuration based on the type
+of your project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>,
+<code>model_config</code>).</p>
 <p>If you need to use some custom configuration, you can start from the default settings in
 the <a class="autorefs autorefs-internal" href="default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
 <a class="autorefs autorefs-internal" href="config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
@@ -795,20 +796,21 @@ need to customize.  For example:</p>
 <span class="n">config</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">black</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--diff&quot;</span><span class="p">)</span>
 <span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </code></pre></div>
-<p>If you need further customization or to define new sessions, you can use the
-following modules:</p>
+<p>If you need further customization or to define new sessions, you can use the following
+modules:</p>
 <ul>
 <li>
-<p>[<code>config</code>][config]: Low-level utilities to configure nox sessions. It defines the
-  <code>Config</code> and CommandsOptions<code>classes and the actual implementation of the</code>configure()<code>function. It also defines the</code>get()` function, which can be
-  used to get the currently used configuration object.</p>
+<p><a class="autorefs autorefs-internal" href="config/#frequenz.repo.config.nox.config"><code>frequenz.repo.config.nox.config</code></a>: Low-level utilities to configure nox sessions.
+  It defines the <code>Config</code> and CommandsOptions<code>classes and the actual implementation of
+  the</code>configure()<code>function. It also defines the</code>get()` function, which can be used to
+  get the currently used configuration object.</p>
 </li>
 <li>
-<p>[<code>session</code>][session]: Predefined nox sessions. These are the sessions that are used
-  by default.</p>
+<p><a class="autorefs autorefs-internal" href="session/#frequenz.repo.config.nox.session"><code>frequenz.repo.config.nox.session</code></a>: Predefined nox sessions. These are the
+  sessions that are used by default.</p>
 </li>
 <li>
-<p>[<code>util</code>][util]: General purpose utility functions.</p>
+<p><a class="autorefs autorefs-internal" href="util/#frequenz.repo.config.nox.util"><code>frequenz.repo.config.nox.util</code></a>: General purpose utility functions.</p>
 </li>
 </ul>
 
@@ -849,11 +851,9 @@ following modules:</p>
         <tr>
           <td><code>conf</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>The configuration to use to configure nox, or the repository type to use
+            <p>The configuration to use to configure nox, or the repository type to use
 to configure nox.  The later will use the default configuration in
 <a class="autorefs autorefs-internal" href="default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> for that type of repository.</p>
-            </div>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -865,11 +865,9 @@ to configure nox.  The later will use the default configuration in
         <tr>
           <td><code>import_default_sessions</code></td>
           <td class="doc-param-details">
-            <div class="doc-md-description">
-              <p>Whether to import the default sessions or not.
+            <p>Whether to import the default sessions or not.
 This is only necessary if you want to avoid using the default provided
 sessions and use your own.</p>
-            </div>
             <p>
                 <span class="doc-param-annotation">
                   <b>TYPE:</b>
@@ -886,7 +884,7 @@ sessions and use your own.</p>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/nox/config.py</code></summary>
+        <summary>Source code in <code>src/frequenz/repo/config/nox/config.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">209</span>
 <span class="normal">210</span>
 <span class="normal">211</span>

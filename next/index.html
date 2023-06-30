@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#frequenz-repository-common-configuration-for-python" class="md-skip">
+        <a href="#frequenz-repository-configuration-for-python" class="md-skip">
           Skip to content
         </a>
       
@@ -363,15 +363,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#start-a-new-project" class="md-nav__link">
-    Start a new project
+  <a href="#introduction" class="md-nav__link">
+    Introduction
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#migrating-an-existing-project" class="md-nav__link">
-    Migrating an existing project
+  <a href="#start-a-new-project" class="md-nav__link">
+    Start a new project
+  </a>
+  
+    <nav class="md-nav" aria-label="Start a new project">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-the-local-development-environment" class="md-nav__link">
+    Create the local development environment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-the-new-repository-is-healthy-using-nox" class="md-nav__link">
+    Verify the new repository is healthy using nox
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-the-generated-documentation-works" class="md-nav__link">
+    Verify the generated documentation works
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize-the-github-pages-website" class="md-nav__link">
+    Initialize the GitHub pages website
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migrate-an-existing-project" class="md-nav__link">
+    Migrate an existing project
   </a>
   
 </li>
@@ -384,8 +425,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
-    Contributing
+  <a href="#advanced-usage" class="md-nav__link">
+    Advanced usage
   </a>
   
 </li>
@@ -761,15 +802,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#start-a-new-project" class="md-nav__link">
-    Start a new project
+  <a href="#introduction" class="md-nav__link">
+    Introduction
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#migrating-an-existing-project" class="md-nav__link">
-    Migrating an existing project
+  <a href="#start-a-new-project" class="md-nav__link">
+    Start a new project
+  </a>
+  
+    <nav class="md-nav" aria-label="Start a new project">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-the-local-development-environment" class="md-nav__link">
+    Create the local development environment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-the-new-repository-is-healthy-using-nox" class="md-nav__link">
+    Verify the new repository is healthy using nox
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-the-generated-documentation-works" class="md-nav__link">
+    Verify the generated documentation works
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize-the-github-pages-website" class="md-nav__link">
+    Initialize the GitHub pages website
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migrate-an-existing-project" class="md-nav__link">
+    Migrate an existing project
   </a>
   
 </li>
@@ -782,8 +864,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
-    Contributing
+  <a href="#advanced-usage" class="md-nav__link">
+    Advanced usage
   </a>
   
 </li>
@@ -806,9 +888,10 @@
   
 
 
-<h1 id="frequenz-repository-common-configuration-for-python">Frequenz repository common configuration for Python<a class="headerlink" href="#frequenz-repository-common-configuration-for-python" title="Permanent link">¤</a></h1>
+<h1 id="frequenz-repository-configuration-for-python">Frequenz repository configuration for Python<a class="headerlink" href="#frequenz-repository-configuration-for-python" title="Permanent link">¤</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">¤</a></h2>
 <p>This is very opinionated set of tools and configurations to setup a Python
-repository for Frequenz projects.</p>
+repository for <a href="https://frequenz.com">Frequenz</a> projects.</p>
 <p>If offers:</p>
 <ul>
 <li><a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> templates for scaffolding new projects</li>
@@ -838,18 +921,70 @@ cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-pytho
 </code></pre></div>
 <p>This will prompt for the project type, name and other configuration and
 generate the whole project for you.</p>
-<p>After completing it and fixing the TODOs
-you can amend the previous commit using <code>git commit --amend</code>
-or create a new commit for the changes using <code>git commit</code>.
-You can make sure linting and tests pass by creating a virtual
-environment, installing the development dependencies and running <code>nox</code>:
+<p>After completing it and fixing the <code>TODO</code>s you can amend the previous commit
+using <code>git commit --amend</code> or create a new commit for the changes using <code>git
+commit</code>.</p>
+<h3 id="create-the-local-development-environment">Create the local development environment<a class="headerlink" href="#create-the-local-development-environment" title="Permanent link">¤</a></h3>
+<p>To start the development, you need to make sure your environment is correctly
+setup. One way to do this is by using a virtual environment and installing all
+the dependencies there:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># requires at least python version 3.11</span>
 python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
 .<span class="w"> </span>.venv/bin/activate
-pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev-noxfile<span class="o">]</span>
-nox
-</code></pre></div></p>
-<h2 id="migrating-an-existing-project">Migrating an existing project<a class="headerlink" href="#migrating-an-existing-project" title="Permanent link">¤</a></h2>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</code></pre></div>
+<p>This will install you package in <a href="https://setuptools.pypa.io/en/latest/userguide/development_mode.html"><em>editable</em>
+mode</a>, so
+you can open a python interpreter and import your package modules and pick up
+any local changes without the need to reinstall.  You can now run tools
+directly, like <code>pytest</code>.</p>
+<h3 id="verify-the-new-repository-is-healthy-using-nox">Verify the new repository is healthy using <code>nox</code><a class="headerlink" href="#verify-the-new-repository-is-healthy-using-nox" title="Permanent link">¤</a></h3>
+<p>If you prefer to keep your virtual enviroment cleaner and avoid installing development dependencies, you can also use <code>nox</code> to create isolated environments for you:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-noxfile<span class="o">]</span>
+nox<span class="w"> </span>--install-only<span class="w">  </span><span class="c1"># Set up virtual environments once</span>
+nox<span class="w"> </span>-R<span class="w">  </span><span class="c1"># Run linting and testing reusing the already existing virtual environments</span>
+</code></pre></div>
+<p>This will only install you package in <em>editable</em> mode and the minimum
+dependencies to be able to run <code>nox</code>, and then run all <code>nox</code> default sessions,
+which will run linters and tests.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It's much faster to use <code>nox</code> with <code>--install-only</code> once (each time to
+change or update dependencies you need to run it again) and then using <code>nox
+-R</code> to run the sessions without re-creating the virtual environments.</p>
+<p>Otherwise <code>nox</code> will create many virtual environments each time you run it,
+which is <strong>very</strong> slow.</p>
+</div>
+<h3 id="verify-the-generated-documentation-works">Verify the generated documentation works<a class="headerlink" href="#verify-the-generated-documentation-works" title="Permanent link">¤</a></h3>
+<p>To generate the documentation you can use <code>mkdocs</code>:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
+mkdocs<span class="w"> </span>serve
+</code></pre></div>
+<p>If the command fails, look at the log warnings and errors and fix them.  If it
+worked, now there is a local web server serving the documentation, you can
+point your browser to Now you can point your browser to
+<a href="/http://127.0.0.1:8000/">http://127.0.0.1:8000</a> to have a look.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>For API projects <code>docker</code> is needed to generate and serve documentation, as
+the easiest way to use the <a href="https://github.com/pseudomuto/protoc-gen-doc">tool to generate the documentation from
+<code>.proto</code></a> files is using
+<code>docker</code>.</p>
+</div>
+<h3 id="initialize-the-github-pages-website">Initialize the GitHub pages website<a class="headerlink" href="#initialize-the-github-pages-website" title="Permanent link">¤</a></h3>
+<p>The generated documentation can be easily published via GitHub pages, and it
+will be automatically updated for new pushed and releases, but for that to work
+correctly, some initial setup is needed:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
+mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>next<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Creates the branch gh-pages locally</span>
+mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
+git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream so the website is published</span>
+</code></pre></div>
+<p>Then make sure that GitHub pages is enabled in
+<code>https://github.com/&lt;repo-owner&gt;/&lt;repo-name&gt;/settings/pages</code>.</p>
+<p>If all went well, your website should be available soon via
+<code>https://&lt;repo-owner&gt;.github.io//&lt;repo-name&gt;/</code>.</p>
+<h2 id="migrate-an-existing-project">Migrate an existing project<a class="headerlink" href="#migrate-an-existing-project" title="Permanent link">¤</a></h2>
 <p>The easiest way to migrate an existing project is to just generate a new one
 basing all the inputs in the current project metadata and then overwritting the
 existing files.</p>
@@ -872,11 +1007,17 @@ git<span class="w"> </span>commit<span class="w"> </span>-a
 <p>Also make sure to <strong>exclude</strong> the <code>.git/</code> directory to avoid messing up
 with your local git repository.</p>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Please have a look at the follow-up steps listed in the <a href="#create-the-local-development-environment">Start a new
+project</a> section to finish the
+setup.</p>
+</div>
 <h2 id="update-an-existing-project">Update an existing project<a class="headerlink" href="#update-an-existing-project" title="Permanent link">¤</a></h2>
 <p>To update an existing project you can use the <a href="https://cookiecutter.readthedocs.io/en/stable/advanced/replay.html">Cookiecutter <em>replay
 file</em></a> that
 was saved during the project generation.  The file is saved in
-<code>.cookiecutter-replay.json</code>.  Using this file you can re-run Cookiecutter
+<code>.cookiecutter-replay.json</code>.  Using this file you can re-run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a>
 without having to enter all the inputs again.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -910,9 +1051,20 @@ the replay file.</p>
 <p>Please remember to keep your replay file up to date if you change any
 metadata in the project.</p>
 </div>
-<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">¤</a></h2>
-<p>If you want to know how to build this project and contribute to it, please
-check out the <a href="CONTRIBUTING/">Contributing Guide</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Please have a look at the follow-up steps listed in the <a href="#create-the-local-development-environment">Start a new
+project</a> section to finish the
+setup.</p>
+</div>
+<h2 id="advanced-usage">Advanced usage<a class="headerlink" href="#advanced-usage" title="Permanent link">¤</a></h2>
+<p>The <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> template uses some tools provided as a library by this
+project.</p>
+<p>Usually users don't need deal with it directly, but if you project needs some
+extra customization (like disabling <code>nox</code> sessions or adding new ones, or using
+different CLI options for some tools), then you'll need to.</p>
+<p>You can find information about the extra features in the <a href="reference/frequenz/repo/config/">API
+refence</a>.</p>
 
 
 
