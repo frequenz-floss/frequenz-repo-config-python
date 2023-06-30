@@ -214,6 +214,18 @@ templates update commit.
     project](#create-the-local-development-environment) section to finish the
     setup.
 
+## Advanced usage
+
+The Cookiecutter template uses some tools provided as a library by this
+project.
+
+Usually users don't need deal with it directly, but if you project needs some
+extra customization (like disabling `nox` sessions or adding new ones, or using
+different CLI options for some tools), then you'll need to.
+
+You can find information about the extra features in the [API
+refence](reference/frequenz/repo/config/).
+
 ## Contributing
 
 If you want to know how to build this project and contribute to it, please
