@@ -1,4 +1,4 @@
-# Frequenz repository common configuration for Python
+# Frequenz repository configuration for Python
 
 [![Build Status](https://github.com/frequenz-floss/frequenz-repo-config-python/actions/workflows/ci.yaml/badge.svg)](https://github.com/frequenz-floss/frequenz-repo-config-python/actions/workflows/ci.yaml)
 [![PyPI Package](https://img.shields.io/pypi/v/frequenz-repo-config)](https://pypi.org/project/frequenz-repo-config/)

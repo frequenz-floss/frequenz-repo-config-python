@@ -1,4 +1,4 @@
-# Frequenz repository common configuration for Python
+# Frequenz repository configuration for Python
 
 ## Introduction
 
