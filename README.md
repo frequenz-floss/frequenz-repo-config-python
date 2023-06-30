@@ -1,5 +1,7 @@
 # Frequenz repository common configuration for Python
 
+## Introduction
+
 This is very opinionated set of tools and configurations to setup a Python
 repository for [Frequenz](https://frequenz.com) projects.
 
@@ -13,7 +15,9 @@ If offers:
 
 [Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable
 
-## Start a new project
+## Usage
+
+### Start a new project
 
 To start a new project you should first [install
 Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html).
@@ -47,7 +51,7 @@ After completing it and fixing the `TODO`s you can amend the previous commit
 using `git commit --amend` or create a new commit for the changes using `git
 commit`.
 
-### Create the local development environment
+#### Create the local development environment
 
 To start the development, you need to make sure your environment is correctly
 setup. One way to do this is by using a virtual environment and installing all
@@ -66,7 +70,7 @@ you can open a python interpreter and import your package modules and pick up
 any local changes without the need to reinstall.  You can now run tools
 directly, like `pytest`.
 
-### Verify the new repository is healthy using `nox`
+#### Verify the new repository is healthy using `nox`
 
 If you prefer to keep your virtual enviroment cleaner and avoid installing development dependencies, you can also use `nox` to create isolated environments for you:
 
@@ -89,7 +93,7 @@ which will run linters and tests.
     Otherwise `nox` will create many virtual environments each time you run it,
     which is **very** slow.
 
-### Verify the generated documentation works
+#### Verify the generated documentation works
 
 To generate the documentation you can use `mkdocs`:
 
@@ -110,7 +114,7 @@ point your browser to Now you can point your browser to
     `.proto`](https://github.com/pseudomuto/protoc-gen-doc) files is using
     `docker`.
 
-### Initialize the GitHub pages website
+#### Initialize the GitHub pages website
 
 The generated documentation can be easily published via GitHub pages, and it
 will be automatically updated for new pushed and releases, but for that to work
@@ -129,7 +133,7 @@ Then make sure that GitHub pages is enabled in
 If all went well, your website should be available soon via
 `https://<repo-owner>.github.io//<repo-name>/`.
 
-## Migrate an existing project
+### Migrate an existing project
 
 The easiest way to migrate an existing project is to just generate a new one
 basing all the inputs in the current project metadata and then overwritting the
@@ -165,7 +169,7 @@ git commit -a
     project](#create-the-local-development-environment) section to finish the
     setup.
 
-## Update an existing project
+### Update an existing project
 
 To update an existing project you can use the [Cookiecutter *replay
 file*](https://cookiecutter.readthedocs.io/en/stable/advanced/replay.html) that
