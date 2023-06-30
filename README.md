@@ -1,5 +1,9 @@
 # Frequenz repository common configuration for Python
 
+[![Build Status](https://github.com/frequenz-floss/frequenz-repo-config-python/actions/workflows/ci.yaml/badge.svg)](https://github.com/frequenz-floss/frequenz-repo-config-python/actions/workflows/ci.yaml)
+[![PyPI Package](https://img.shields.io/pypi/v/frequenz-repo-config)](https://pypi.org/project/frequenz-repo-config/)
+[![Docs](https://img.shields.io/badge/docs-latest-informational)](https://frequenz-floss.github.io/frequenz-repo-config-python/)
+
 ## Introduction
 
 This is very opinionated set of tools and configurations to setup a Python
