@@ -6,9 +6,9 @@ This release is a major step and adds many features and breaking changes.
 
 ## Upgrading
 
-Since this projects is still in very heavy devepoment, the easiest way to
-upgrade is to just regenerate the templates.  Please follow the instructions in
-the new documentation website about [updating
+Since this project is still in heavy development, the easiest way to upgrade is
+to regenerate the templates. Please follow the instructions in the new
+documentation website about [updating
 projects](https://frequenz-floss.github.io/frequenz-repo-config-python/next/#update-an-existing-project).
 
 ## New Features
@@ -22,7 +22,7 @@ This is just a quick (non-comprehensive) summary of the new features:
 * Cookiecutter template
 
   * Add `dependabot` configuration
-  * Add issue templates, keyword labeler and PR labeler
+  * Add issue templates, keyword labeler, and PR labeler
   * Add `CODEOWNERS` file
   * Add `direnv`-related files to `.gitignore`
   * Add GitHub CI workflow to `cookiecutter`
