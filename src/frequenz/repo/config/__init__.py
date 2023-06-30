@@ -166,7 +166,7 @@ dev = [
 ### API reference generation
 
 The API documnentation can be automatically generated from the source files using the
-[`freq.repo.config.mkdocs`][] package as when run as a
+[`frequenz.repo.config.mkdocs`][] package as when run as a
 [`mkdocs-gen-files`](https://oprypin.github.io/mkdocs-gen-files/) plugin script.
 
 To enable it you just need to make sure the `mkdocs-gen-files`, `mkdocs-literate-nav`

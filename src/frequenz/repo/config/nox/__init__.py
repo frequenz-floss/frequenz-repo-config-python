@@ -3,7 +3,7 @@
 
 """Utilities to build noxfiles.
 
-The main entry point is the [`configure()`][configure] function, which will
+The main entry point is the [`configure()`][frequenz.repo.config.nox.configure] function, which will
 configure all nox sessions according to some configuration.
 
 To use the default options, you should call `configure()` using one of the [repository
@@ -35,15 +35,15 @@ nox.configure(config)
 If you need further customization or to define new sessions, you can use the
 following modules:
 
-- [`config`][]: Low-level utilities to configure nox sessions. It defines the
+- [`frequenz.repo.config.nox.config`][]: Low-level utilities to configure nox sessions. It defines the
   `Config` and CommandsOptions` classes and the actual implementation of the
   `configure()` function. It also defines the `get()` function, which can be
   used to get the currently used configuration object.
 
-- [`session`][]: Predefined nox sessions. These are the sessions that are used
+- [`frequenz.repo.config.nox.session`][]: Predefined nox sessions. These are the sessions that are used
   by default.
 
-- [`util`][]: General purpose utility functions.
+- [`frequenz.repo.config.nox.util`][]: General purpose utility functions.
 """
 
 from .config import configure
