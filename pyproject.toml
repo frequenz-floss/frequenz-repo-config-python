@@ -11,20 +11,20 @@ description = "Frequenz repository setup tools and common configuration"
 readme = "README.md"
 license = { text = "MIT" }
 keywords = [
-  "frequenz",
-  "python",
-  "lib",
-  "repo-config",
-  "frequenz",
-  "package",
-  "project",
   "config",
-  "tool",
+  "frequenz",
+  "grpc",
+  "lib",
+  "library",
+  "mkdocs",
+  "nox",
+  "project",
+  "protobuf",
+  "python",
+  "repo-config",
   "repository",
   "setuptools",
-  "nox",
-  "grpc",
-  "protobuf",
+  "tool",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",

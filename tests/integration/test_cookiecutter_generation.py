@@ -36,7 +36,7 @@ def test_generation(tmp_path: pathlib.Path, repo_type: str) -> None:
         repo_config_path=cwd, repo_type=repo_type, repo_path=repo_path
     )
 
-    cmd = ". .venv/bin/activate; pip install .[dev-noxfile]; nox"
+    cmd = ". .venv/bin/activate; pip install .[dev-noxfile]; nox -e ci_checks_max pytest_min"
     print()
     print(f"Running in shell [{cwd}]: {cmd}")
     subprocess.run(cmd, shell=True, cwd=repo_path, check=True)

@@ -66,11 +66,27 @@ def main() -> None:
     print(". .venv/bin/activate")
     print("pip install .[dev-noxfile]")
     print("nox")
-    print("# To generate and serve the documentation:")
+    print()
+    print("To generate and serve the documentation:")
     print("pip install .[dev-mkdocs]")
     if cookiecutter.type == "api":
         print("# Requires docker")
     print("mkdocs serve")
+    print()
+    print("To initialize the GitHub pages website:")
+    print("mike deploy --update-aliases next latest")
+    print("mike set-default latest")
+    print("git push upstream gh-pages  # or origin if you haven't forked the repo")
+    print()
+    print("Make sure that GitHub pages is enabled in your repository settings:")
+    print(
+        f"https://github.com/{cookiecutter.github_org}/{cookiecutter.github_repo_name}"
+        "/settings/pages"
+    )
+    print("If all went well, your new website should be available soon at:")
+    print(
+        f"https://{cookiecutter.github_org}.github.io/{cookiecutter.github_repo_name}/"
+    )
     print()
     if warnings := do_sanity_checks():
         for warning in warnings:
@@ -80,7 +96,9 @@ def main() -> None:
         "If you had any issues or find any errors in the generated files, "
         "please report them!"
     )
-    note("https://github.com/frequenz-floss/frequenz-repo-config-python/issues/new")
+    note(
+        "https://github.com/frequenz-floss/frequenz-repo-config-python/issues/new/choose"
+    )
     print()
 
 

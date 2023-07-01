@@ -11,6 +11,7 @@ repo_url: "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_
 # TODO(cookiecutter): "main" is the GitHub repo default branch, you might want to update it
 # if the project uses a different default branch.
 edit_uri: "edit/main/docs/"
+strict: true  # Treat warnings as errors
 
 # Build directories
 theme:

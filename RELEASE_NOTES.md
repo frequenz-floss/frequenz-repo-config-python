@@ -2,16 +2,39 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release is a major step and adds many features and breaking changes.
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with --> 
+Since this project is still in heavy development, the easiest way to upgrade is
+to regenerate the templates. Please follow the instructions in the new
+documentation website about [updating
+projects](https://frequenz-floss.github.io/frequenz-repo-config-python/next/#update-an-existing-project).
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+This is just a quick (non-comprehensive) summary of the new features:
+
+* Add `--diff` as a default argument for `isort`
+* Improve `README`
+* Don't import modules into packages
+* Support migrating and updating existing projects with Cookiecutter
+* Cookiecutter template
+
+  * Add `dependabot` configuration
+  * Add issue templates, keyword labeler, and PR labeler
+  * Add `CODEOWNERS` file
+  * Add `direnv`-related files to `.gitignore`
+  * Add GitHub CI workflow to `cookiecutter`
+  * Add `CONTRIBUTING` guide to `cookiecutter`
+  * Add `RELEASE_NOTES` to `cookiecutter`
+  * Add support to generate documentation using `mkdocs`
+
+* Apply all the Cookiecutter template improvements to this project
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+This is just a quick (non-comprehensive) summary of bug fixes:
+
+* Fix some comments about creating labels
+* Fix tests
