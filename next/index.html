@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#frequenz-repository-configuration-for-python" class="md-skip">
+        <a href="#frequenz-repository-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -400,7 +400,7 @@
         
           <li class="md-nav__item">
   <a href="#initialize-the-github-pages-website" class="md-nav__link">
-    Initialize the GitHub pages website
+    Initialize the GitHub Pages website
   </a>
   
 </li>
@@ -839,7 +839,7 @@
         
           <li class="md-nav__item">
   <a href="#initialize-the-github-pages-website" class="md-nav__link">
-    Initialize the GitHub pages website
+    Initialize the GitHub Pages website
   </a>
   
 </li>
@@ -888,25 +888,25 @@
   
 
 
-<h1 id="frequenz-repository-configuration-for-python">Frequenz repository configuration for Python<a class="headerlink" href="#frequenz-repository-configuration-for-python" title="Permanent link">¤</a></h1>
+<h1 id="frequenz-repository-configuration">Frequenz Repository Configuration<a class="headerlink" href="#frequenz-repository-configuration" title="Permanent link">¤</a></h1>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">¤</a></h2>
-<p>This is very opinionated set of tools and configurations to setup a Python
+<p>This is a highly opinionated set of tools and configurations to set up a Python
 repository for <a href="https://frequenz.com">Frequenz</a> projects.</p>
-<p>If offers:</p>
+<p>It offers:</p>
 <ul>
 <li><a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> templates for scaffolding new projects</li>
-<li>Trivial build of <code>noxfile.py</code> with some predefined sessions with all common
-  checks.</li>
+<li>Trivial build of <code>noxfile.py</code> with some predefined sessions that include all
+  common checks.</li>
 <li>Tools to build protobuf/grpc files as Python, including type information.</li>
 </ul>
 <h2 id="start-a-new-project">Start a new project<a class="headerlink" href="#start-a-new-project" title="Permanent link">¤</a></h2>
-<p>To start a new project you should first <a href="https://cookiecutter.readthedocs.io/en/stable/installation.html">install
+<p>To start a new project, you should first <a href="https://cookiecutter.readthedocs.io/en/stable/installation.html">install
 Cookiecutter</a>.
 It is normally available in any Linux distribution, but some have a very old
-version (for example, Ubuntu/Debian).  You can <a href="https://repology.org/project/cookiecutter/versions">check which version your distro
-has in Repology</a>. You need
-<strong>at least version 2.1.0</strong>.  To make sure to get an up to date version you can
-always uses <code>pip</code> and install in a <code>venv</code>:</p>
+version (for example, Ubuntu/Debian). You can <a href="https://repology.org/project/cookiecutter/versions">check which version your distro
+has on Repology</a>. You need
+<strong>at least version 2.1.0</strong>. To ensure you get an up-to-date version, you can
+always use <code>pip</code> and install it in a <code>venv</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>cookiecutter
 <span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>cookiecutter
 <span class="gp">$ </span>.<span class="w"> </span>bin/activate
@@ -914,80 +914,81 @@ always uses <code>pip</code> and install in a <code>venv</code>:</p>
 <span class="go">Collecting cookiecutter</span>
 <span class="go">...</span>
 </code></pre></div>
-<p>Then just run cookiecutter where you want to create the new project. A new
+<p>Then simply run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> where you want to create the new project. A new
 directory will be created with the generated project name. For example:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/devel
 cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span>--directory<span class="o">=</span>cookiecutter
 </code></pre></div>
-<p>This will prompt for the project type, name and other configuration and
-generate the whole project for you.</p>
-<p>After completing it and fixing the <code>TODO</code>s you can amend the previous commit
-using <code>git commit --amend</code> or create a new commit for the changes using <code>git
-commit</code>.</p>
+<p>This command will prompt you for the project type, name, and other
+configuration options, and it will generate the entire project for you.</p>
+<p>After completing the project and fixing the <code>TODO</code>s, you can either amend the
+previous commit using <code>git commit --amend</code> or create a new commit for the
+changes using <code>git commit</code>.</p>
 <h3 id="create-the-local-development-environment">Create the local development environment<a class="headerlink" href="#create-the-local-development-environment" title="Permanent link">¤</a></h3>
-<p>To start the development, you need to make sure your environment is correctly
-setup. One way to do this is by using a virtual environment and installing all
-the dependencies there:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># requires at least python version 3.11</span>
+<p>To start development, you need to make sure your environment is correctly set
+up. One way to do this is by using a virtual environment and installing all the
+dependencies there:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># requires at least Python version 3.11</span>
 python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
 .<span class="w"> </span>.venv/bin/activate
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
 </code></pre></div>
-<p>This will install you package in <a href="https://setuptools.pypa.io/en/latest/userguide/development_mode.html"><em>editable</em>
+<p>This will install your package in <a href="https://setuptools.pypa.io/en/latest/userguide/development_mode.html"><em>editable</em>
 mode</a>, so
-you can open a python interpreter and import your package modules and pick up
-any local changes without the need to reinstall.  You can now run tools
+you can open a Python interpreter and import your package modules, picking up
+any local changes without the need to reinstall. Now you can run tools
 directly, like <code>pytest</code>.</p>
 <h3 id="verify-the-new-repository-is-healthy-using-nox">Verify the new repository is healthy using <code>nox</code><a class="headerlink" href="#verify-the-new-repository-is-healthy-using-nox" title="Permanent link">¤</a></h3>
-<p>If you prefer to keep your virtual enviroment cleaner and avoid installing development dependencies, you can also use <code>nox</code> to create isolated environments for you:</p>
+<p>If you prefer to keep your virtual environment cleaner and avoid installing
+development dependencies, you can also use <code>nox</code> to create isolated
+environments:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-noxfile<span class="o">]</span>
 nox<span class="w"> </span>--install-only<span class="w">  </span><span class="c1"># Set up virtual environments once</span>
-nox<span class="w"> </span>-R<span class="w">  </span><span class="c1"># Run linting and testing reusing the already existing virtual environments</span>
+nox<span class="w"> </span>-R<span class="w">  </span><span class="c1"># Run linting and testing reusing the existing virtual environments</span>
 </code></pre></div>
-<p>This will only install you package in <em>editable</em> mode and the minimum
-dependencies to be able to run <code>nox</code>, and then run all <code>nox</code> default sessions,
-which will run linters and tests.</p>
+<p>This will only install your package in <em>editable</em> mode and the minimum
+dependencies required to run <code>nox</code>. It will then run all <code>nox</code> default
+sessions, which include running linters and tests.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It's much faster to use <code>nox</code> with <code>--install-only</code> once (each time to
-change or update dependencies you need to run it again) and then using <code>nox
--R</code> to run the sessions without re-creating the virtual environments.</p>
-<p>Otherwise <code>nox</code> will create many virtual environments each time you run it,
-which is <strong>very</strong> slow.</p>
+<p>It's much faster to use <code>nox</code> with <code>--install-only</code> once (each time you
+change or update dependencies, you need to run it again) and then use <code>nox
+-R</code> to run the sessions without recreating the virtual environments.</p>
+<p>Otherwise, <code>nox</code> will create many virtual environments each time you run
+it, which is <strong>very</strong> slow.</p>
 </div>
 <h3 id="verify-the-generated-documentation-works">Verify the generated documentation works<a class="headerlink" href="#verify-the-generated-documentation-works" title="Permanent link">¤</a></h3>
-<p>To generate the documentation you can use <code>mkdocs</code>:</p>
+<p>To generate the documentation, you can use <code>mkdocs</code>:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
 mkdocs<span class="w"> </span>serve
 </code></pre></div>
-<p>If the command fails, look at the log warnings and errors and fix them.  If it
-worked, now there is a local web server serving the documentation, you can
-point your browser to Now you can point your browser to
-<a href="/http://127.0.0.1:8000/">http://127.0.0.1:8000</a> to have a look.</p>
+<p>If the command fails, look at the log warnings and errors and fix them. If it
+worked, now there is a local web server serving the documentation. You can
+point your browser to <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> to have
+a look.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>For API projects <code>docker</code> is needed to generate and serve documentation, as
-the easiest way to use the <a href="https://github.com/pseudomuto/protoc-gen-doc">tool to generate the documentation from
-<code>.proto</code></a> files is using
+<p>For API projects, <code>docker</code> is needed to generate and serve documentation,
+as the easiest way to use the <a href="https://github.com/pseudomuto/protoc-gen-doc">tool to generate the documentation from
+<code>.proto</code> files</a> is using
 <code>docker</code>.</p>
 </div>
-<h3 id="initialize-the-github-pages-website">Initialize the GitHub pages website<a class="headerlink" href="#initialize-the-github-pages-website" title="Permanent link">¤</a></h3>
-<p>The generated documentation can be easily published via GitHub pages, and it
-will be automatically updated for new pushed and releases, but for that to work
-correctly, some initial setup is needed:</p>
+<h3 id="initialize-the-github-pages-website">Initialize the GitHub Pages website<a class="headerlink" href="#initialize-the-github-pages-website" title="Permanent link">¤</a></h3>
+<p>The generated documentation can be easily published via GitHub Pages, and it
+will be automatically updated for new pushes and releases. However, some
+initial setup is needed for it to work correctly:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
 mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>next<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Creates the branch gh-pages locally</span>
 mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
-git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream so the website is published</span>
+git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream to publish the website</span>
 </code></pre></div>
-<p>Then make sure that GitHub pages is enabled in
+<p>Then make sure that GitHub Pages is enabled in
 <code>https://github.com/&lt;repo-owner&gt;/&lt;repo-name&gt;/settings/pages</code>.</p>
 <p>If all went well, your website should be available soon via
-<code>https://&lt;repo-owner&gt;.github.io//&lt;repo-name&gt;/</code>.</p>
+<code>https://&lt;repo-owner&gt;.github.io/&lt;repo-name&gt;/</code>.</p>
 <h2 id="migrate-an-existing-project">Migrate an existing project<a class="headerlink" href="#migrate-an-existing-project" title="Permanent link">¤</a></h2>
-<p>The easiest way to migrate an existing project is to just generate a new one
-basing all the inputs in the current project metadata and then overwritting the
-existing files.</p>
+<p>The easiest way to migrate an existing project is to generate a new one based
+on the current project metadata and then overwrite the existing files.</p>
 <p>It is recommended to commit all changes before doing this, so you can then use
 <code>git</code> to look at the changes.</p>
 <p>If you generate the new repo in a temporary directory, you can easily overwrite
@@ -997,15 +998,15 @@ cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-pytho
 rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
 <span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
 git<span class="w"> </span>diff
-<span class="c1"># Fix all the `TODO`s and cleanup the generated files</span>
+<span class="c1"># Fix all the `TODO`s and clean up the generated files</span>
 git<span class="w"> </span>commit<span class="w"> </span>-a
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The trailing slash in <code>new-project/</code> and the lack of it in
 <code>/path/to/existing/project</code> are meaningful to <code>rsync</code>.</p>
-<p>Also make sure to <strong>exclude</strong> the <code>.git/</code> directory to avoid messing up
-with your local git repository.</p>
+<p>Also, make sure to <strong>exclude</strong> the <code>.git/</code> directory to avoid messing up
+with your local Git repository.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -1014,10 +1015,10 @@ project</a> section to finish the
 setup.</p>
 </div>
 <h2 id="update-an-existing-project">Update an existing project<a class="headerlink" href="#update-an-existing-project" title="Permanent link">¤</a></h2>
-<p>To update an existing project you can use the <a href="https://cookiecutter.readthedocs.io/en/stable/advanced/replay.html">Cookiecutter <em>replay
+<p>To update an existing project, you can use the <a href="https://cookiecutter.readthedocs.io/en/stable/advanced/replay.html">Cookiecutter <em>replay
 file</em></a> that
-was saved during the project generation.  The file is saved in
-<code>.cookiecutter-replay.json</code>.  Using this file you can re-run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a>
+was saved during the project generation. The file is saved as
+<code>.cookiecutter-replay.json</code>. Using this file, you can re-run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a>
 without having to enter all the inputs again.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1034,16 +1035,16 @@ cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-pytho
 </code></pre></div>
 <p>This will create a new commit with all the changes to the overwritten files.
 Bear in mind that all the <code>TODO</code>s will come back, so there will be quite a bit
-of cleanup to do.  You can easily check what was changed using <code>git show</code>, and
+of cleanup to do. You can easily check what was changed using <code>git show</code>, and
 you can use <code>git commit --amend</code> to amend the previous commit with the template
-updates, or create a new commit with the fixes.  You can also use <code>git citool</code>
-or <code>git gui</code> to easily add, remove or even discard (revert) changes in the
+updates, or create a new commit with the fixes. You can also use <code>git citool</code>
+or <code>git gui</code> to easily add, remove, or even discard (revert) changes in the
 templates update commit.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The <code>project-directory</code> is the directory of your previously generated
 project. If you renamed it, then the files will be generated in a new
-directory with the original name.  You can update the target directory in
+directory with the original name. You can update the target directory in
 the replay file.</p>
 </div>
 <div class="admonition note">
@@ -1060,11 +1061,11 @@ setup.</p>
 <h2 id="advanced-usage">Advanced usage<a class="headerlink" href="#advanced-usage" title="Permanent link">¤</a></h2>
 <p>The <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> template uses some tools provided as a library by this
 project.</p>
-<p>Usually users don't need deal with it directly, but if you project needs some
-extra customization (like disabling <code>nox</code> sessions or adding new ones, or using
-different CLI options for some tools), then you'll need to.</p>
+<p>Usually, users don't need to deal with it directly, but if your project needs
+some extra customization (like disabling <code>nox</code> sessions or adding new ones, or
+using different CLI options for some tools), then you'll need to.</p>
 <p>You can find information about the extra features in the <a href="reference/frequenz/repo/config/">API
-refence</a>.</p>
+reference</a>.</p>
 
 
 
