@@ -141,10 +141,37 @@ def copy_replay_file() -> None:
 
     if not src.exists():
         print(f"WARNING: No replay file found in {src}. Skipping...")
+        return
 
     try:
-        _shutil.copyfile(src, dst)
-    except (OSError, IOError) as error:
+        with src.open("r", encoding="utf8") as input_file:
+            replay_data = _json.load(input_file)
+
+        # Remove the _output_dir key from the replay data because it is an absolute path
+        # that depends on the current environment and we don't want to add it as part of
+        # the generated project.
+        replay_data["cookiecutter"].pop("_output_dir", None)
+
+        if template := replay_data["cookiecutter"].get("_template"):
+            if not template.startswith(("gh:", "git@", "https://")):
+                print(
+                    f"WARNING: The replay file's `_template` ({template}) doesn't seem "
+                    "to be a remote repository, it won't be saved to avoid storing a "
+                    "local template in the new repository. If this is incorrect, "
+                    f"please add it back manually to {dst}."
+                )
+                replay_data["cookiecutter"].pop("_template", None)
+
+        with dst.open("w", encoding="utf8") as output_file:
+            _json.dump(replay_data, output_file, indent=2)
+    except KeyError as error:
+        print(
+            f"WARNING: Error parsing the replay file {src} -> {dst} ({error}). "
+            "Skipping..."
+        )
+    # We want to catch a broad range of exceptions here because we don't want to fail
+    # the whole generation process just because the replay file is broken.
+    except Exception as error:  # pylint: disable=broad-except
         print(
             f"WARNING: Error copying the replay file {src} -> {dst} ({error}). "
             "Skipping..."
