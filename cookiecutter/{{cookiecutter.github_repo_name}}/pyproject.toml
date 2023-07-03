@@ -67,6 +67,7 @@ dev-mkdocs = [
   "mkdocs-material == 9.1.16",
   "mkdocs-section-index == 0.3.5",
   "mkdocstrings[python] == 0.22.0",
+  "frequenz-repo-config[{{cookiecutter.type}}] == 0.3.0",
 ]
 dev-mypy = [
   "mypy == 1.2.0",
@@ -93,7 +94,7 @@ dev-pytest = [
 ]
 {%- endif %}
 dev = [
-  "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-docstrings,dev-formatting,dev-gen-docs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
+  "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-docstrings,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
 ]
 
 [project.urls]
