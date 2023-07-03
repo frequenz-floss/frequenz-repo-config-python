@@ -286,7 +286,7 @@ dependencies to your project, for example:
 requires = [
   "setuptools >= 67.3.2, < 68",
   "setuptools_scm[toml] >= 7.1.0, < 8",
-  "frequenz-repo-config[api] >= 0.1.0, < 0.2.0",
+  "frequenz-repo-config[api] >= 0.1.0, < 0.3.0",
 ]
 build-backend = "setuptools.build_meta"
 
