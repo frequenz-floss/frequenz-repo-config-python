@@ -152,6 +152,16 @@ def copy_replay_file() -> None:
         # the generated project.
         replay_data["cookiecutter"].pop("_output_dir", None)
 
+        if template := replay_data["cookiecutter"].get("_template"):
+            if not template.startswith(("gh:", "git@", "https://")):
+                print(
+                    f"WARNING: The replay file's `_template` ({template}) doesn't seem "
+                    "to be a remote repository, it won't be saved to avoid storing a "
+                    "local template in the new repository. If this is incorrect, "
+                    f"please add it back manually to {dst}."
+                )
+                replay_data["cookiecutter"].pop("_template", None)
+
         with dst.open("w", encoding="utf8") as output_file:
             _json.dump(replay_data, output_file, indent=2)
     except KeyError as error:
