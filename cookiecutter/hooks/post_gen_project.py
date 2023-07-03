@@ -141,6 +141,7 @@ def copy_replay_file() -> None:
 
     if not src.exists():
         print(f"WARNING: No replay file found in {src}. Skipping...")
+        return
 
     try:
         _shutil.copyfile(src, dst)
