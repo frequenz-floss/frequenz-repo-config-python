@@ -109,6 +109,12 @@ plugins:
             # TODO(cookiecutter): You might want to add other external references here
             # See https://mkdocstrings.github.io/python/usage/#import for details
             - https://docs.python.org/3/objects.inv
+{%- if cookiecutter.type in ("actor", "app", "model") %}
+            - https://frequenz-floss.github.io/frequenz-channels-python/v0.14/objects.inv
+            - https://frequenz-floss.github.io/frequenz-sdk-python/v0.20/objects.inv
+{%- elif cookiecutter.type == "api" %}
+            - https://grpc.github.io/grpc/python/objects.inv
+{%- endif %}
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv
   - search
   - section-index

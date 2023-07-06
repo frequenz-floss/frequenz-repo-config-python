@@ -34,6 +34,9 @@ requires-python = ">= 3.11, < 4"
 {%- if cookiecutter.type in ("app", "actor", "model") %}
 dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
   "typing-extensions == 4.5.0",
+  # Make sure to update the mkdocs.yml file when
+  # changing the version
+  # (plugins.mkdocstrings.handlers.python.import)
   "frequenz-sdk == 0.20.0",
 ]
 {%- elif cookiecutter.type == "api" %}
