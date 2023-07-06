@@ -25,6 +25,8 @@ theme:
     repo: fontawesome/brands/github
   custom_dir: docs/overrides
   features:
+    - content.code.annotate
+    - content.code.copy
     - navigation.instant
     - navigation.tabs
     - navigation.top
