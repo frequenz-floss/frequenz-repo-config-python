@@ -102,6 +102,7 @@ plugins:
             # TODO(cookiecutter): You might want to add other external references here
             # See https://mkdocstrings.github.io/python/usage/#import for details
             - https://docs.python.org/3/objects.inv
+            - https://typing-extensions.readthedocs.io/en/stable/objects.inv
   - search
   - section-index
 
