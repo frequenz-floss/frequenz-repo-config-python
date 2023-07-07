@@ -14,6 +14,7 @@ The `configure()` function must be called before `get()` is used.
 
 import dataclasses as _dataclasses
 import itertools as _itertools
+from pathlib import Path
 from typing import Self, assert_never, overload
 
 import nox as _nox
@@ -86,6 +87,13 @@ class Config:
     tools invoked by the sessions.
     """
 
+    root_path: str | None = _dataclasses.field(default_factory=lambda: None)
+    """Path to the root of the repository source files.
+
+    Specifies the portion of the path to be removed from the source paths when
+    calculating the package name for the found packages.
+    """
+
     def __post_init__(self) -> None:
         """Initialize the configuration object.
 
@@ -142,8 +150,23 @@ class Config:
         if session.posargs:
             return session.posargs
 
+        root_path_list = (
+            list(_util.existing_paths([self.root_path])) if self.root_path else []
+        )
+        root_path: Path | None = None
+
+        if len(root_path_list) != 0:
+            root_path = root_path_list[0]
+        elif self.root_path:
+            raise ValueError(
+                f"Root path {self.root_path} does not exist, " "or is not a directory."
+            )
+
         sources_package_dirs_with_roots = (
-            (p, _util.find_toplevel_package_dirs(p))
+            (
+                p if root_path is None else root_path,
+                _util.find_toplevel_package_dirs(p, root=root_path),
+            )
             for p in _util.existing_paths(self.source_paths)
         )
 
