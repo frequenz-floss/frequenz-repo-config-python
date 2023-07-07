@@ -34,6 +34,9 @@ requires-python = ">= 3.11, < 4"
 {%- if cookiecutter.type in ("app", "actor", "model") %}
 dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
   "typing-extensions == 4.5.0",
+  # Make sure to update the mkdocs.yml file when
+  # changing the version
+  # (plugins.mkdocstrings.handlers.python.import)
   "frequenz-sdk == 0.20.0",
 ]
 {%- elif cookiecutter.type == "api" %}
@@ -114,7 +117,7 @@ include = '\.pyi?$'
 profile = "black"
 line_length = 88
 {#- We don't include "py" here for API because we don't want to check generated files #}
-src_paths = ["src", "examples", "tests"]
+src_paths = ["benchmarks", "examples", "src", "tests"]
 
 [tool.pylint.similarities]
 ignore-comments = ['yes']
@@ -128,6 +131,9 @@ disable = [
   # disabled because it conflicts with isort
   "wrong-import-order",
   "ungrouped-imports",
+  # pylint's unsubscriptable check is buggy and is not needed because
+  # it is a type-check, for which we already have mypy.
+  "unsubscriptable-object",
 ]
 
 [tool.pytest.ini_options]
