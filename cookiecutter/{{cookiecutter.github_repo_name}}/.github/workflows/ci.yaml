@@ -23,6 +23,30 @@ env:
   # but sadly `env` can't be used either in `runs-on`.
 
 jobs:
+  {% if cookiecutter.type == "api" -%}
+  protolint:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Fetch sources
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Run protolint
+        # Only use hashes here, as we are passing the github token, we want to
+        # make sure updates are done conciously to avoid security issues if the
+        # action repo gets hacked
+        uses: yoheimuta/action-protolint@e94cc01b1ad085ed9427098442f66f2519c723eb # v1.0.0
+        with:
+          fail_on_error: true
+          filter_mode: nofilter
+          github_token: {{'${{ secrets.github_token }}'}}
+          protolint_flags: proto/
+          protolint_version: "0.45.0"
+          reporter: github-check
+
+  {% endif -%}
   nox:
     name: Test with nox
     strategy:
@@ -121,7 +145,7 @@ jobs:
 
   publish-docs:
     name: Publish documentation website to GitHub pages
-    needs: ["nox", "build"]
+    needs: ["nox", "build"{{', "protolint"' if cookiecutter.type == "api"}}]
     if: github.event_name == 'push'
     runs-on: ubuntu-20.04
     permissions:

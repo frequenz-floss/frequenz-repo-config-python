@@ -10,7 +10,7 @@
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+* cookiecutter: Add linting to the CI with `protolint` for API projects.
 
 ## Bug Fixes
 
