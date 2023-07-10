@@ -14,6 +14,7 @@
 
 * Add linting to the CI with `protolint` for API projects.
 * Bump SDK version to v0.22.0.
+* Capitalize project name in title and expand shortened words.
 
 ## Bug Fixes
 
