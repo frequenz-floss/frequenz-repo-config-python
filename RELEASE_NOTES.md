@@ -10,7 +10,10 @@
 
 ## New Features
 
-* cookiecutter: Add linting to the CI with `protolint` for API projects.
+### Cookiecutter templates
+
+* Add linting to the CI with `protolint` for API projects.
+* Bump SDK version to v0.22.0.
 
 ## Bug Fixes
 
