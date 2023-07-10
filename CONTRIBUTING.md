@@ -60,6 +60,41 @@ nox -R -s pylint -- test/test_*.py
 nox -R -s mypy -- test/test_*.py
 ```
 
+### Golden Tests
+
+To test the generated files using the Cookiecutter templates, the [golden
+testing](https://en.wikipedia.org/wiki/Characterization_test) technique is used
+to ensure that changes in the templates don't occur unexpectedly.
+
+If a golden test fails, a `diff` of the contents will be provided in the test
+results.
+
+Failures in the golden tests could indicate two things:
+
+1. The generated files don't match the golden files because an unintended
+   change was introduced. For example, there may be a bug that needs to be fixed
+   so that the generated files match the golden files again.
+
+2. The generated files don't match the golden files because an intended change
+   was introduced. In this case, the golden files need to be updated.
+
+In the latter case, manually updating files is complicated and error-prone, so
+a simpler (though hacky) way is provided.
+
+To update the golden files, simply edit the
+`tests/integration/test_cookiecutter_generation.py` file and temporarily set
+`UPDATE_GOLDEN` to `True`. Then, run the test again using `pytest` as usual.
+This will replace the existing golden files (stored in `tests_golden/`) with
+the newly generated files.
+
+Note that if you rename, or remove golden files, you should also manually
+remove the files that were affected. An easy way to make sure there are no old
+unused golden files left is to just wipe the whole `tests_golden/` directory
+before running `pytest` to generate the new ones.
+
+**Please ensure that all introduced changes are intended before updating the
+golden files.**
+
 ### Building the documentation
 
 To build the documentation, first install the dependencies (if you didn't
