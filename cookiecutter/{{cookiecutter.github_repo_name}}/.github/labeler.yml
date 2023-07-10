@@ -15,6 +15,14 @@
 # "part:other":
 #   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name}}/other/**"
 #
+# # For excluding some files (in this example, label "part:complicated"
+# # everything inside src/ with a .py suffix, except for src/__init__.py)
+# "part:complicated":
+#   - any:
+#       - "src/**/*.py"
+#   - all:
+#       - "!src/__init__.py"
+#
 # Please have in mind that that the part:xxx labels need to
 # be created in the GitHub repository.
 
