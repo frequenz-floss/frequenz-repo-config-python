@@ -3,6 +3,7 @@
 
 """Generation tests for cookiecutter."""
 
+import os
 import pathlib
 import re
 import shutil
@@ -73,6 +74,7 @@ def _generate_repo(
     /,
     *,
     capture_output: bool = False,
+    env: dict[str, str] | None = None,
 ) -> tuple[pathlib.Path, subprocess.CompletedProcess[bytes]]:
     cwd = pathlib.Path().cwd()
     run_result = _run(
@@ -84,6 +86,7 @@ def _generate_repo(
         "name=test",
         "description=Test description",
         capture_output=capture_output,
+        env=env,
     )
 
     subdirs = list(tmp_path.iterdir())
@@ -93,14 +96,21 @@ def _generate_repo(
 
 
 def _run(
-    cwd: pathlib.Path, /, *cmd: str, capture_output: bool = False, check: bool = True
+    cwd: pathlib.Path,
+    /,
+    *cmd: str,
+    capture_output: bool = False,
+    check: bool = True,
+    env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[bytes]:
     """Run a command in a subprocess."""
     print()
     print("-" * 80)
     print(f"Running [{cwd}]: {' '.join(cmd)}")
     print()
-    return subprocess.run(cmd, cwd=cwd, check=check, capture_output=capture_output)
+    return subprocess.run(
+        cmd, cwd=cwd, check=check, capture_output=capture_output, env=env
+    )
 
 
 def _read_golden_file(golden_path: pathlib.Path, name: str) -> str:
