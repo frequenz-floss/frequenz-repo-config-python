@@ -8,7 +8,7 @@
 // Copyright {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
 //
 // License:
-// MIT
+// {{cookiecutter.license}}
 
 syntax = "proto3";
 

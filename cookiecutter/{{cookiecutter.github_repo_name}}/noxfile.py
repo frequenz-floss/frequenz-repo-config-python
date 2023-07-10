@@ -1,4 +1,4 @@
-# License: MIT
+# License: {{cookiecutter.license}}
 # Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
 
 """Configuration file for nox."""
