@@ -16,6 +16,6 @@ package frequenz.api.{{cookiecutter.name}}.{{cookiecutter.name}};
 //
 // TODO(cookiecutter): Remove this message.
 message HelloWorld {
-  // The lower bound.
+  // The greeting.
   string greet = 1;
 }
