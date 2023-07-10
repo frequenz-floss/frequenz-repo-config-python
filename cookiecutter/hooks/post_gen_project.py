@@ -398,12 +398,13 @@ def print_todos() -> None:
     """Print all TODOs in the generated project."""
     todo_str = "TODO(cookiecutter):"
     repo = cookiecutter.github_repo_name
-    cmd = ["grep", "-r", "--color", rf"\<{todo_str}.*", "."]
+    cmd = rf"grep -r --color '\<{todo_str}.*' . | sort"
     try_run(
         cmd,
         warn_on_error=True,
-        warn_on_bad_status=f"No `{todo_str}` found using `{' '.join(cmd)}`",
+        warn_on_bad_status=f"No `{todo_str}` found using `{cmd}`",
         note_on_failure=f"Please search for `{todo_str}` in `{repo}/` manually.",
+        shell=True,
     )
     print()
     note(
@@ -489,13 +490,14 @@ def finish_model_setup() -> None:
 
 
 def try_run(
-    cmd: list[str],
+    cmd: list[str] | str,
     /,
     *,
     warn_on_error: bool = False,
     warn_on_bad_status: str | None = None,
     note_on_failure: str | None = None,
     verbose: bool = False,
+    shell: bool = False,
 ) -> _subprocess.CompletedProcess[Any] | None:
     """Try to run a command.
 
@@ -516,12 +518,13 @@ def try_run(
         The result of the command or `None` if the command could not be run because
         of an error.
     """
+    assert isinstance(cmd, str) and shell or isinstance(cmd, list) and not shell
     result = None
     failed = False
     if verbose:
         print(f"Executing: {' '.join(cmd)}")
     try:
-        result = _subprocess.run(cmd, check=False)
+        result = _subprocess.run(cmd, check=False, shell=shell)
     except (OSError, _subprocess.CalledProcessError) as exc:
         if warn_on_error:
             warn(f"Failed to run the search command `{' '.join(cmd)}`: {exc}")
