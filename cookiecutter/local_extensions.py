@@ -139,8 +139,15 @@ def keywords(cookiecutter: dict[str, str]) -> str:
     """
     repo_type = cookiecutter["type"]
     extended_keywords = ["frequenz", "python", repo_type]
-    if repo_type == "api":
-        extended_keywords.extend(["grpc", "protobuf", "rpc"])
+    match repo_type:
+        case "api":
+            extended_keywords.extend(["grpc", "protobuf", "rpc"])
+        case "app":
+            extended_keywords.extend(["application"])
+        case "lib":
+            extended_keywords.extend(["library"])
+        case "model":
+            extended_keywords.extend(["ai", "ml", "machine-learning"])
     extended_keywords.append(cookiecutter["name"])
     default = _get_from_json("keywords")
     cookiecutter_keywords = cookiecutter["keywords"]
