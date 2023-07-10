@@ -92,17 +92,18 @@ def title(cookiecutter: dict[str, str]) -> str:
     Returns:
         The default site name.
     """
+    name = cookiecutter["name"].capitalize()
     match cookiecutter["type"]:
         case "actor":
-            return f"Frequenz {cookiecutter['name']} actor"
+            return f"Frequenz {name} Actor"
         case "api":
-            return f"Frequenz {cookiecutter['name']} API"
+            return f"Frequenz {name} API"
         case "lib":
-            return f"Freqenz {cookiecutter['name']} library"
+            return f"Freqenz {name} Library"
         case "app":
-            return f"Frequenz {cookiecutter['name']} app"
+            return f"Frequenz {name} Application"
         case "model":
-            return f"Frequenz {cookiecutter['name']} AI model"
+            return f"Frequenz {name} AI Model"
         case _ as repo_type:
             assert False, f"Unhandled repository type {repo_type!r}"
 
