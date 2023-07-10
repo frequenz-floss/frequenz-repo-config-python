@@ -19,4 +19,6 @@
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+### Cookiecutter
+
+* Fix hardcoded MIT license headers. Now the user selected license is used instead.
