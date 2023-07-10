@@ -32,6 +32,10 @@ def test_golden(
     """Test generation of a new repo comparing it to a golden tree."""
     env = os.environ.copy()
     env.update(
+        # Make sure file sorting, dates, etc. are deterministic.
+        LANG="C",
+        LANGUAGE="C",
+        LC_ALL="C",
         # Signal to the cookiecutter template that it is running in a golden test, so
         # some flaky outputs can be disabled.
         GOLDEN_TEST="1",
