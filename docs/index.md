@@ -31,20 +31,37 @@ Collecting cookiecutter
 ...
 ```
 
-Then simply run [Cookiecutter] where you want to create the new project. A new
-directory will be created with the generated project name. For example:
+Then simply run [Cookiecutter] where you want to create the new project:
 
 ```sh
-cd ~/devel
-cookiecutter gh:frequenz-floss/frequenz-repo-config-python --directory=cookiecutter
+cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
+    --directory=cookiecutter
 ```
 
 This command will prompt you for the project type, name, and other
-configuration options, and it will generate the entire project for you.
+configuration options, and it will generate the entire project for you in a new
+subdirectory.
+
+!!! warning
+
+    This command needs to be typed literally!
+
+    `frequenz-floss/frequenz-repo-config-python` is the GitHub repository with
+    the cookiecutter template that will be downloaded, and
+    `--directory=cookiecutter` is needed because the cookiecutter template
+    doesn't live at the top-level of that repository, but in a subdirectory
+    called `cookiecutter`.
+
+    All information about your project will be prompted interactively by that
+    command.
 
 After completing the project and fixing the `TODO`s, you can either amend the
 previous commit using `git commit --amend` or create a new commit for the
 changes using `git commit`.
+
+### Template variables reference
+
+--8<-- "cookiecutter/variable-reference.md"
 
 ### Create the local development environment
 
