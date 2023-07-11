@@ -378,6 +378,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#template-variables-reference" class="md-nav__link">
+    Template variables reference
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#create-the-local-development-environment" class="md-nav__link">
     Create the local development environment
   </a>
@@ -817,6 +824,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#template-variables-reference" class="md-nav__link">
+    Template variables reference
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#create-the-local-development-environment" class="md-nav__link">
     Create the local development environment
   </a>
@@ -914,16 +928,91 @@ always use <code>pip</code> and install it in a <code>venv</code>:</p>
 <span class="go">Collecting cookiecutter</span>
 <span class="go">...</span>
 </code></pre></div>
-<p>Then simply run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> where you want to create the new project. A new
-directory will be created with the generated project name. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/devel
-cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span>--directory<span class="o">=</span>cookiecutter
+<p>Then simply run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> where you want to create the new project:</p>
+<div class="highlight"><pre><span></span><code>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--directory<span class="o">=</span>cookiecutter
 </code></pre></div>
 <p>This command will prompt you for the project type, name, and other
-configuration options, and it will generate the entire project for you.</p>
+configuration options, and it will generate the entire project for you in a new
+subdirectory.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This command needs to be typed literally!</p>
+<p><code>frequenz-floss/frequenz-repo-config-python</code> is the GitHub repository with
+the cookiecutter template that will be downloaded, and
+<code>--directory=cookiecutter</code> is needed because the cookiecutter template
+doesn't live at the top-level of that repository, but in a subdirectory
+called <code>cookiecutter</code>.</p>
+<p>All information about your project will be prompted interactively by that
+command.</p>
+</div>
 <p>After completing the project and fixing the <code>TODO</code>s, you can either amend the
 previous commit using <code>git commit --amend</code> or create a new commit for the
 changes using <code>git commit</code>.</p>
+<h3 id="template-variables-reference">Template variables reference<a class="headerlink" href="#template-variables-reference" title="Permanent link">¤</a></h3>
+<ul>
+<li>
+<p><code>type</code>: The type of repository. It must be chosen from the list.</p>
+</li>
+<li>
+<p><code>name</code>: The name of the project. This will be used to build defaults for
+  other inputs, such as <code>title</code>, <code>python_package</code>, etc. It should be one word,
+  using only alphanumeric characters (and starting with a letter).</p>
+</li>
+<li>
+<p><code>description</code>: A short description of the project. It will be used as the
+  description in the <code>README.md</code>, <code>pyproject.toml</code>, <code>mkdocs.yml</code>, etc.</p>
+</li>
+<li>
+<p><code>title</code>: A human-readable name or title for the project. It will be used in
+  the <code>README.md</code>, <code>CONTRIBUTING.md</code>, and other files to refer to the project,
+  as well as the site title in <code>mkdocs.yml</code>.</p>
+</li>
+<li>
+<p><code>keywords</code>: A comma-separated list of keywords that will be used in the
+  <code>pyproject.toml</code> file. If left untouched, it will use only some predefined
+  keywords. If anything else is entered, it will be <strong>added</strong> to the default
+  keywords.</p>
+</li>
+<li>
+<p><code>github_org</code>: The GitHub handle of the organization where the project will
+  reside. This will be used to generate links to the project on GitHub.</p>
+</li>
+<li>
+<p><code>license</code>: Currently, only two options are provided: <code>MIT</code>, which should be
+  used for open-source projects, and <code>Proprietary</code>, which should be used for
+  closed-source projects. This will be added to file headers and used as the
+  license in <code>pyproject.toml</code>.</p>
+</li>
+<li>
+<p><code>author_name</code>, <code>author_email</code>: The name and email address of the author of
+  the project. They will be used in the copyright notice in file headers and
+  as the author in <code>pyproject.toml</code>.</p>
+</li>
+<li>
+<p><code>python_package</code>: The Python package in which this project will reside. All
+  files provided by this project should be located in this package. This needs
+  to be a list of valid Python identifiers separated by dots. The source file
+  structure will be derived from this. For example, <code>frequenz.actor.example</code>
+  will generate files in <code>src/frequenz/actor/example</code>.</p>
+</li>
+<li>
+<p><code>pypi_package_name</code>: The name of the PyPI/wheel/distribution package. This
+  should be consistent with the <code>python_package</code>, usually replacing <code>.</code> with
+  <code>-</code>. For example, <code>frequenz-actor-example</code>.</p>
+</li>
+<li>
+<p><code>github_repo_name</code>: The handle of the GitHub repository where the project
+  will reside. This will be used to generate links to the project on GitHub and
+  as the top-level directory name.</p>
+</li>
+<li>
+<p><code>default_codeowners</code>: A space-separated list of GitHub teams (<code>@org/team</code>) or
+  users (<code>@user</code>) that will be the default code owners for this project. This
+  will be used to build the <code>CODEOWNERS</code> file. Please refer to the <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners">code owners
+  documentation</a> for more details on the valid syntax.</p>
+</li>
+</ul>
 <h3 id="create-the-local-development-environment">Create the local development environment<a class="headerlink" href="#create-the-local-development-environment" title="Permanent link">¤</a></h3>
 <p>To start development, you need to make sure your environment is correctly set
 up. One way to do this is by using a virtual environment and installing all the
