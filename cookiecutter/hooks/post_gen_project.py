@@ -30,7 +30,7 @@ def to_named_tuple(dictionary: dict[Any, Any], /) -> Any:
     return namedtuple("Cookiecutter", filtered.keys())(*filtered.values())
 
 
-cookiecutter = to_named_tuple(_json.loads("""{{cookiecutter | tojson}}"""))
+cookiecutter = to_named_tuple(_json.loads(r"""{{cookiecutter | tojson}}"""))
 
 
 def main() -> None:
