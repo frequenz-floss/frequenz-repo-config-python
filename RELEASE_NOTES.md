@@ -16,6 +16,7 @@
 * Bump SDK version to v0.22.0.
 * Capitalize project name in title and expand shortened words.
 * Add a few more default keywords.
+* Add variable reference documentation.
 
 ## Bug Fixes
 
