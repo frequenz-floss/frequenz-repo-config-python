@@ -1,0 +1,122 @@
+# MkDocs configuration
+# For details see: https://www.mkdocs.org/user-guide/configuration/
+
+# Project information
+site_name: "Frequenz Test AI Model"
+site_description: "Test description"
+site_author: "Frequenz Energy-as-a-Service GmbH"
+copyright: "Copyright © 2023 Frequenz Energy-as-a-Service GmbH"
+repo_name: "frequenz-model-test"
+repo_url: "https://github.com/frequenz-floss/frequenz-model-test"
+# TODO(cookiecutter): "main" is the GitHub repo default branch, you might want to update it
+# if the project uses a different default branch.
+edit_uri: "edit/main/docs/"
+strict: true  # Treat warnings as errors
+
+# Build directories
+theme:
+  name: "material"
+  # TODO(cookiecutter): You might want to change the logo, the file is located in "docs/"
+  logo: logo.png
+  favicon: logo.png
+  language: en
+  icon:
+    edit: material/file-edit-outline
+    repo: fontawesome/brands/github
+  custom_dir: docs/overrides
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - navigation.instant
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
+  palette:
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: indigo
+    accent: deep purple
+    toggle:
+      icon: material/weather-sunny
+      name: Switch to dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: black
+    accent: teal
+    toggle:
+      icon: material/weather-night
+      name: Switch to light mode
+
+extra:
+  social:  # TODO(cookiecutter): You probably want to update the links
+  - icon: fontawesome/brands/github
+    link: https://github.com/frequenz-floss
+  - icon: fontawesome/brands/linkedin
+    link: https://www.linkedin.com/company/frequenz-com
+  version:
+    provider: mike
+    default: latest
+
+extra_css:
+  - css/style.css
+  - css/mkdocstrings.css
+
+# Formatting options
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.keys
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: "!!python/name:pymdownx.superfences.fence_code_format"
+  - pymdownx.tabbed
+  - pymdownx.tasklist
+  - toc:
+      permalink: "¤"
+
+plugins:
+  - gen-files:
+      scripts:
+        - docs/mkdocstrings_autoapi.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mike:
+      canonical_version: latest
+  - mkdocstrings:
+      custom_templates: templates
+      default_handler: python
+      handlers:
+        python:
+          options:
+            paths: ["src"]
+            docstring_section_style: spacy
+            merge_init_into_class: false
+            show_category_heading: true
+            show_root_heading: true
+            show_root_members_full_path: true
+            show_source: true
+          import:
+            # TODO(cookiecutter): You might want to add other external references here
+            # See https://mkdocstrings.github.io/python/usage/#import for details
+            - https://docs.python.org/3/objects.inv
+            - https://frequenz-floss.github.io/frequenz-channels-python/v0.14/objects.inv
+            - https://frequenz-floss.github.io/frequenz-sdk-python/v0.22/objects.inv
+            - https://typing-extensions.readthedocs.io/en/stable/objects.inv
+  - search
+  - section-index
+
+# Preview controls
+watch:
+  - "src"
+  - README.md
+  - CONTRIBUTING.md

@@ -1,0 +1,48 @@
+# Configuration for the Labeler GitHub action, executed by
+# .github/workflows/labeler.yml.
+#
+# The basic syntax is [label]: [path patterns].
+#
+# For more details on the configuration please see:
+# https://github.com/marketplace/actions/labeler
+
+# TODO(cookiecutter): Add different parts of the source
+# For example:
+#
+# "part:module":
+#   - "src/frequenz/api/test/module/**"
+#
+# "part:other":
+#   - "src/frequenz/api/test/other/**"
+#
+# # For excluding some files (in this example, label "part:complicated"
+# # everything inside src/ with a .py suffix, except for src/__init__.py)
+# "part:complicated":
+#   - any:
+#       - "src/**/*.py"
+#   - all:
+#       - "!src/__init__.py"
+#
+# Please have in mind that that the part:xxx labels need to
+# be created in the GitHub repository.
+
+"part:docs":
+  - "**/*.md"
+  - "docs/**"
+  - "examples/**"
+  - LICENSE
+
+"part:tests":
+  - "pytests/**"
+
+"part:tooling":
+  - "**/*.ini"
+  - "**/*.toml"
+  - "**/*.yaml"
+  - "**/*.yml"
+  - ".git*"
+  - ".git*/**"
+  - "docs/*.py"
+  - CODEOWNERS
+  - MANIFEST.in
+  - noxfile.py

@@ -1,0 +1,54 @@
+./.github/ISSUE_TEMPLATE/bug.yml:        # TODO(cookiecutter): Add other parts
+./.github/ISSUE_TEMPLATE/config.yml:    # TODO(cookiecutter): Make sure the GitHub repository has a discussion category "Support"
+./.github/keylabeler.yml:  # TODO(cookiecutter): Add other parts
+./.github/labeler.yml:# TODO(cookiecutter): Add different parts of the source
+./CODEOWNERS:# TODO(cookiecutter): Add more specific code-owners, check if the default is correct
+./CODEOWNERS:* TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)# Temporary, should probably change
+./README.md:TODO(cookiecutter): Improve the README file
+./mkdocs.yml:            # TODO(cookiecutter): You might want to add other external references here
+./mkdocs.yml:  # TODO(cookiecutter): You might want to change the logo, the file is located in "docs/"
+./mkdocs.yml:  social:  # TODO(cookiecutter): You probably want to update the links
+./mkdocs.yml:# TODO(cookiecutter): "main" is the GitHub repo default branch, you might want to update it
+./pyproject.toml:[project.optional-dependencies] # TODO(cookiecutter): Remove and add more if appropriate
+./pyproject.toml:classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
+./pyproject.toml:dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+./src/frequenz/actor/test/__init__.py:# TODO(cookiecutter): Remove this function
+./src/frequenz/actor/test/__init__.py:TODO(cookiecutter): Add a more descriptive module description.
+./tests/test_test.py:def test_test_fails() -> None:  # TODO(cookiecutter): Remove
+./tests/test_test.py:def test_test_succeeds() -> None:  # TODO(cookiecutter): Remove
+
+--------------------------------------------------------------------------------
+
+[32mYour 🍪 frequenz-actor-test has been cut![0m
+
+Here is a list of things that should be reviewed and FIXED:
+
+[36mMake sure to (create and) configure your GitHub repository too: https://github.com/frequenz-floss/frequenz-repo-config-python/wiki/Configuring-a-new-GitHub-repository[0m
+
+After completing it you can amend the previous commit using `git commit --amend` or create a new commit for the changes using `git commit`.
+
+You can make sure linting and tests pass by creating a virtual environment, installing the development dependencies and running `nox`:
+
+cd frequenz-actor-test
+# Requires at least python version 3.11
+python3 -m venv .venv
+. .venv/bin/activate
+pip install .[dev-noxfile]
+nox
+
+To generate and serve the documentation:
+pip install .[dev-mkdocs]
+mkdocs serve
+
+To initialize the GitHub pages website:
+mike deploy --update-aliases next latest
+mike set-default latest
+git push upstream gh-pages  # or origin if you haven't forked the repo
+
+Make sure that GitHub pages is enabled in your repository settings:
+https://github.com/frequenz-floss/frequenz-actor-test/settings/pages
+If all went well, your new website should be available soon at:
+https://frequenz-floss.github.io/frequenz-actor-test/
+
+[36mIf you had any issues or find any errors in the generated files, please report them![0m
+[36mhttps://github.com/frequenz-floss/frequenz-repo-config-python/issues/new/choose[0m

@@ -1,0 +1,124 @@
+# License: MIT
+# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
+
+[build-system]
+requires = [
+  "setuptools == 67.7.2",
+  "setuptools_scm[toml] == 7.1.0",
+  "frequenz-repo-config[actor] == 0.3.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "frequenz-actor-test"
+description = "Test description"
+readme = "README.md"
+license = { text = "MIT" }
+keywords = ["frequenz", "python", "actor", "test", ""]
+classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+requires-python = ">= 3.11, < 4"
+dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+  "typing-extensions == 4.5.0",
+  # Make sure to update the mkdocs.yml file when
+  # changing the version
+  # (plugins.mkdocstrings.handlers.python.import)
+  "frequenz-sdk == 0.22.0",
+]
+dynamic = ["version"]
+
+[[project.authors]]
+name = "Frequenz Energy-as-a-Service GmbH"
+email = "floss@frequenz.com"
+
+[project.optional-dependencies] # TODO(cookiecutter): Remove and add more if appropriate
+dev-docstrings = [
+  "pydocstyle == 6.3.0",
+  "darglint == 1.8.1",
+  "tomli == 2.0.1",      # Needed by pydocstyle to read pyproject.toml
+]
+dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
+dev-mkdocs = [
+  "mike == 1.1.2",
+  "mkdocs-gen-files == 0.5.0",
+  "mkdocs-literate-nav == 0.6.0",
+  "mkdocs-material == 9.1.16",
+  "mkdocs-section-index == 0.3.5",
+  "mkdocstrings[python] == 0.22.0",
+  "frequenz-repo-config[actor] == 0.3.0",
+]
+dev-mypy = [
+  "mypy == 1.2.0",
+  # For checking the noxfile, docs/ script, and tests
+  "frequenz-actor-test[dev-mkdocs,dev-noxfile,dev-pytest]",
+]
+dev-noxfile = [
+  "nox == 2023.4.22",
+  "frequenz-repo-config[actor] == 0.3.0",
+]
+dev-pylint = [
+  "pylint == 2.17.3",
+  # For checking the noxfile, docs/ script, and tests
+  "frequenz-actor-test[dev-mkdocs,dev-noxfile,dev-pytest]",
+]
+dev-pytest = [
+  "pytest == 7.3.1",
+  "pytest-mock == 3.10.0",
+  "pytest-asyncio == 0.21.0",
+  "async-solipsism == 0.5",
+]
+dev = [
+  "frequenz-actor-test[dev-mkdocs,dev-docstrings,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
+]
+
+[project.urls]
+Changelog = "https://github.com/frequenz-floss/frequenz-actor-test/releases"
+Issues = "https://github.com/frequenz-floss/frequenz-actor-test/issues"
+Repository = "https://github.com/frequenz-floss/frequenz-actor-test"
+Support = "https://github.com/frequenz-floss/frequenz-actor-test/discussions/categories/support"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+src_paths = ["benchmarks", "examples", "src", "tests"]
+
+[tool.pylint.similarities]
+ignore-comments = ['yes']
+ignore-docstrings = ['yes']
+ignore-imports = ['no']
+min-similarity-lines = 40
+
+[tool.pylint.messages_control]
+disable = [
+  "too-few-public-methods",
+  # disabled because it conflicts with isort
+  "wrong-import-order",
+  "ungrouped-imports",
+  # pylint's unsubscriptable check is buggy and is not needed because
+  # it is a type-check, for which we already have mypy.
+  "unsubscriptable-object",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+required_plugins = ["pytest-asyncio", "pytest-mock"]
+
+[[tool.mypy.overrides]]
+module = ["async_solipsism", "async_solipsism.*"]
+ignore_missing_imports = true
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
