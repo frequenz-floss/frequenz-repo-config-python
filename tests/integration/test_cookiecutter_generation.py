@@ -30,6 +30,13 @@ def test_golden(
     request: pytest.FixtureRequest,
 ) -> None:
     """Test generation of a new repo comparing it to a golden tree."""
+    env = os.environ.copy()
+    env.update(
+        # Signal to the cookiecutter template that it is running in a golden test, so
+        # some flaky outputs can be disabled.
+        GOLDEN_TEST="1",
+    )
+
     cwd = pathlib.Path().cwd()
     golden_path = (
         cwd
@@ -39,7 +46,7 @@ def test_golden(
     )
 
     generated_repo_path, run_result = _generate_repo(
-        repo_type, tmp_path, capture_output=True
+        repo_type, tmp_path, capture_output=True, env=env
     )
     stdout, stderr = _filter_generation_output(run_result)
     _assert_golden_file(golden_path, "cookiecutter-stdout", stdout)
