@@ -48,6 +48,19 @@ def _get_from_json(key: str) -> str:
 
 # Ignoring because cookiecutter simple_filter decorator is not typed.
 @_simple_filter  # type: ignore[misc]
+def as_identifier(name: str) -> str:
+    """Convert a name to a valid identifier.
+
+    Args:
+        name: The name to convert.
+
+    Returns:
+        The converted identifier.
+    """
+    return name.lower().replace("-", "_")
+
+
+@_simple_filter  # type: ignore[misc]
 def python_package(cookiecutter: dict[str, str]) -> str:
     """Generate the Python package (import) depending on the repository type.
 

@@ -10,10 +10,10 @@
 # For example:
 #
 # "part:module":
-#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name}}/module/**"
+#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name | as_identifier}}/module/**"
 #
 # "part:other":
-#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name}}/other/**"
+#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name | as_identifier}}/other/**"
 #
 # # For excluding some files (in this example, label "part:complicated"
 # # everything inside src/ with a .py suffix, except for src/__init__.py)
