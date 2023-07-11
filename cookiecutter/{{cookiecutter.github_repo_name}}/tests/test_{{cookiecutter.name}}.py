@@ -1,7 +1,7 @@
 # License: {{cookiecutter.license}}
 # Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
 
-"""Tests for the {{cookiecutter.name}} package."""
+"""Tests for the {{cookiecutter.python_package}} package."""
 
 {%- if cookiecutter.type == "api" %}
 
