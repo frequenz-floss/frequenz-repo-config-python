@@ -2,7 +2,9 @@
 
 * `name`: The name of the project. This will be used to build defaults for
   other inputs, such as `title`, `python_package`, etc. It should be one word,
-  using only alphanumeric characters (and starting with a letter).
+  using only alphanumeric characters (and starting with a letter). It can
+  include also `_` and `-` which will be handled differently when building
+  other variables from it (replaced by spaces in titles for example).
 
 * `description`: A short description of the project. It will be used as the
   description in the `README.md`, `pyproject.toml`, `mkdocs.yml`, etc.

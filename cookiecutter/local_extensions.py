@@ -24,6 +24,11 @@ def _build_identifier(repo_type: str, name: str, separator: str) -> str:
     Returns:
         The built identifier.
     """
+    if separator == ".":
+        name = name.replace("-", "_")
+    if separator == "-":
+        name = name.replace("_", "-")
+    name = name.lower()
     middle = f"{repo_type}{separator}" if repo_type != "lib" else ""
     return f"frequenz{separator}{middle}{name}"
 
@@ -93,7 +98,7 @@ def title(cookiecutter: dict[str, str]) -> str:
     Returns:
         The default site name.
     """
-    name = cookiecutter["name"].capitalize()
+    name = cookiecutter["name"].replace("_", " ").replace("-", " ").title()
     match cookiecutter["type"]:
         case "actor":
             return f"Frequenz {name} Actor"
