@@ -8,6 +8,7 @@ project structure.
 """
 
 import json as _json
+import pathlib as _pathlib
 
 from cookiecutter.utils import simple_filter as _simple_filter
 
@@ -191,3 +192,30 @@ def default_codeowners(cookiecutter: dict[str, str]) -> str:
     assert repo_type in type_to_team, f"Unhandled repository type {repo_type!r}"
 
     return type_to_team[repo_type]
+
+
+@_simple_filter  # type: ignore[misc]
+def introduction(
+    cookiecutter: dict[str, str]  # pylint: disable=unused-argument
+) -> str:
+    """Build an introduction text for the project generation.
+
+    Args:
+        cookiecutter: The cookiecutter context.
+
+    Returns:
+        The introduction text.
+    """
+    with (_pathlib.Path(__file__).parent / "variable-reference.md").open() as doc_file:
+        variable_reference = doc_file.read()
+    return f"""]
+
+Welcome to repo-config Cookiecutter template!
+
+This template will help you to create a new repository for your project. You will be asked to provide some information about your project.
+
+Here is an explanation of what each variable is for and will be used for:
+
+{variable_reference}
+
+[Please press any key to continue"""

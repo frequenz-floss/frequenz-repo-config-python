@@ -46,6 +46,10 @@ After completing the project and fixing the `TODO`s, you can either amend the
 previous commit using `git commit --amend` or create a new commit for the
 changes using `git commit`.
 
+### Template variables reference
+
+--8<-- "cookiecutter/variable-reference.md"
+
 ### Create the local development environment
 
 To start development, you need to make sure your environment is correctly set
