@@ -957,7 +957,9 @@ changes using <code>git commit</code>.</p>
 <li>
 <p><code>name</code>: The name of the project. This will be used to build defaults for
   other inputs, such as <code>title</code>, <code>python_package</code>, etc. It should be one word,
-  using only alphanumeric characters (and starting with a letter).</p>
+  using only alphanumeric characters (and starting with a letter). It can
+  include also <code>_</code> and <code>-</code> which will be handled differently when building
+  other variables from it (replaced by spaces in titles for example).</p>
 </li>
 <li>
 <p><code>description</code>: A short description of the project. It will be used as the
