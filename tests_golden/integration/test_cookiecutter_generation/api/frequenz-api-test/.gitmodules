@@ -1,0 +1,6 @@
+[submodule "submodules/api-common-protos"]
+	path = submodules/api-common-protos
+	url = https://github.com/googleapis/api-common-protos.git
+[submodule "submodules/frequenz-api-common"]
+	path = submodules/frequenz-api-common
+	url = https://github.com/frequenz-floss/frequenz-api-common.git

@@ -10,6 +10,7 @@ different types of projects and do some final checks and configuration.
 import configparser as _configparser
 import dataclasses as _dataclasses
 import json as _json
+import os
 import pathlib as _pathlib
 import shutil as _shutil
 import subprocess as _subprocess
@@ -189,6 +190,11 @@ def initialize_git_submodules() -> bool:
     Returns:
         Whether any git submodules were initialized.
     """
+    if is_golden_testing():
+        # We don't use external tools when running tests because they are too flaky, as
+        # different versions emit different outputs
+        return False
+
     gitmodules_path = _pathlib.Path(".gitmodules")
 
     if not gitmodules_path.exists():
@@ -287,8 +293,14 @@ def initialize_git_repo() -> bool:
     Returns:
         Whether the project was initialized as a git repository.
     """
+    if is_golden_testing():
+        # We don't use external tools when running tests because they are too flaky, as
+        # different versions emit different outputs
+        return False
+
     if _pathlib.Path(".git").exists():
         return False
+
     print()
     note("Initializing git repository...")
     try_run(
@@ -309,6 +321,11 @@ def commit_git_changes(*, first_commit: bool) -> None:
     Args:
         first_commit: Whether this is the first commit in the git repository.
     """
+    if is_golden_testing():
+        # We don't use external tools when running tests because they are too flaky, as
+        # different versions emit different outputs
+        return
+
     if not try_run(["git", "status", "--porcelain"]):
         return
 
@@ -367,6 +384,11 @@ def is_file_empty(path: _pathlib.Path) -> bool:
 
 def print_generated_tree() -> None:
     """Print the generated files tree."""
+    if is_golden_testing():
+        # We don't use external tools when running tests because they are too flaky, as
+        # different versions emit different outputs
+        return
+
     result = try_run(["tree"])
     if result is not None and result.returncode == 0:
         print()
@@ -376,12 +398,13 @@ def print_todos() -> None:
     """Print all TODOs in the generated project."""
     todo_str = "TODO(cookiecutter):"
     repo = cookiecutter.github_repo_name
-    cmd = ["grep", "-r", "--color", rf"\<{todo_str}.*", "."]
+    cmd = rf"grep -r --color '\<{todo_str}.*' . | sort"
     try_run(
         cmd,
         warn_on_error=True,
-        warn_on_bad_status=f"No `{todo_str}` found using `{' '.join(cmd)}`",
+        warn_on_bad_status=f"No `{todo_str}` found using `{cmd}`",
         note_on_failure=f"Please search for `{todo_str}` in `{repo}/` manually.",
+        shell=True,
     )
     print()
     note(
@@ -467,13 +490,14 @@ def finish_model_setup() -> None:
 
 
 def try_run(
-    cmd: list[str],
+    cmd: list[str] | str,
     /,
     *,
     warn_on_error: bool = False,
     warn_on_bad_status: str | None = None,
     note_on_failure: str | None = None,
     verbose: bool = False,
+    shell: bool = False,
 ) -> _subprocess.CompletedProcess[Any] | None:
     """Try to run a command.
 
@@ -487,17 +511,20 @@ def try_run(
         note_on_failure: If not `None`, print this note if the command fails (either
             because of an error or a non-zero status code).
         verbose: Whether to print the command before running it.
+        shell: Whether to run the command in a shell. If `True`, `cmd` must be a
+            string, otherwise it must be a list of strings.
 
     Returns:
         The result of the command or `None` if the command could not be run because
         of an error.
     """
+    assert isinstance(cmd, str) and shell or isinstance(cmd, list) and not shell
     result = None
     failed = False
     if verbose:
         print(f"Executing: {' '.join(cmd)}")
     try:
-        result = _subprocess.run(cmd, check=False)
+        result = _subprocess.run(cmd, check=False, shell=shell)
     except (OSError, _subprocess.CalledProcessError) as exc:
         if warn_on_error:
             warn(f"Failed to run the search command `{' '.join(cmd)}`: {exc}")
@@ -511,6 +538,15 @@ def try_run(
         note(note_on_failure)
 
     return result
+
+
+def is_golden_testing() -> bool:
+    """Return `True` if we are running as part of a golden testing.
+
+    Returns:
+        Whether we are running as part of a golden testing.
+    """
+    return os.environ.get("GOLDEN_TEST", None) is not None
 
 
 def recursive_overwrite_move(src: _pathlib.Path, dst: _pathlib.Path) -> None:

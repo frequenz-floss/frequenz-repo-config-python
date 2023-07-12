@@ -7,42 +7,71 @@
 # https://github.com/marketplace/actions/labeler
 
 "part:docs":
-  - "**/*.md"
-  - "docs/**"
-  - "examples/**"
-  - LICENSE
+  - any:
+      - "**/*.md"
+      - "docs/**"
+      - "examples/**"
+      - LICENSE
+    all:
+      - "!tests/**"
+      - "!tests_golden/**"
 
 "part:tests":
   - "tests/**"
+  - "tests_golden/**"
 
 "part:tooling":
-  - "**/*.ini"
-  - "**/*.toml"
-  - "**/*.yaml"
-  - "**/*.yml"
-  - ".git*"
-  - ".git*/**"
-  - CODEOWNERS
-  - MANIFEST.in
-  - noxfile.py
+  - any:
+      - "**/*.ini"
+      - "**/*.toml"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - ".git*"
+      - ".git*/**"
+      - CODEOWNERS
+      - MANIFEST.in
+      - noxfile.py
+    all:
+      - "!tests/**"
+      - "!tests_golden/**"
 
 "part:ci":
-  - "**/.github/*labeler.*"
-  - "**/.github/dependabot.*"
-  - "**/.github/workflows/*"
+  - any:
+      - "**/.github/*labeler.*"
+      - "**/.github/dependabot.*"
+      - "**/.github/workflows/*"
+    all:
+      - "!tests/**"
+      - "!tests_golden/**"
 
 "part:cookiecutter":
-  - "cookiecutter/**"
+  - any:
+      - "cookiecutter/**"
+    all:
+      - "!tests/**"
+      - "!tests_golden/**"
 
 "part:mkdocs":
-  - "**/docs/*.py"
-  - "**/mkdocs.*"
-  - "src/frequenz/repo/config/mkdocs*"
+  - any:
+      - "**/docs/*.py"
+      - "**/mkdocs.*"
+      - "src/frequenz/repo/config/mkdocs*"
+    all:
+      - "!tests/**"
+      - "!tests_golden/**"
 
 "part:nox":
-  - "**/noxfile.py"
-  - "src/frequenz/repo/config/nox/**"
+  - any:
+      - "**/noxfile.py"
+      - "src/frequenz/repo/config/nox/**"
+    all:
+      - "!tests/**"
+      - "!tests_golden/**"
 
 "part:protobuf":
-  - "src/frequenz/repo/config/setuptools/grpc*"
-  - "src/frequenz/repo/config/protobuf*"
+  - any:
+      - "src/frequenz/repo/config/setuptools/grpc*"
+      - "src/frequenz/repo/config/protobuf*"
+    all:
+      - "!tests/**"
+      - "!tests_golden/**"
