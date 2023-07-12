@@ -12,7 +12,7 @@
 
 syntax = "proto3";
 
-package frequenz.api.{{cookiecutter.name}}.{{cookiecutter.name}};
+package frequenz.api.{{cookiecutter.name | as_identifier}}.{{cookiecutter.name | as_identifier}};
 
 // An example message.
 //

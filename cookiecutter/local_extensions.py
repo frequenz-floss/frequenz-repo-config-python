@@ -24,6 +24,11 @@ def _build_identifier(repo_type: str, name: str, separator: str) -> str:
     Returns:
         The built identifier.
     """
+    if separator == ".":
+        name = name.replace("-", "_")
+    if separator == "-":
+        name = name.replace("_", "-")
+    name = name.lower()
     middle = f"{repo_type}{separator}" if repo_type != "lib" else ""
     return f"frequenz{separator}{middle}{name}"
 
@@ -42,6 +47,19 @@ def _get_from_json(key: str) -> str:
 
 
 # Ignoring because cookiecutter simple_filter decorator is not typed.
+@_simple_filter  # type: ignore[misc]
+def as_identifier(name: str) -> str:
+    """Convert a name to a valid identifier.
+
+    Args:
+        name: The name to convert.
+
+    Returns:
+        The converted identifier.
+    """
+    return name.lower().replace("-", "_")
+
+
 @_simple_filter  # type: ignore[misc]
 def python_package(cookiecutter: dict[str, str]) -> str:
     """Generate the Python package (import) depending on the repository type.
@@ -93,7 +111,7 @@ def title(cookiecutter: dict[str, str]) -> str:
     Returns:
         The default site name.
     """
-    name = cookiecutter["name"].capitalize()
+    name = cookiecutter["name"].replace("_", " ").replace("-", " ").title()
     match cookiecutter["type"]:
         case "actor":
             return f"Frequenz {name} Actor"
