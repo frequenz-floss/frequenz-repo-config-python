@@ -87,7 +87,7 @@ dev-pytest = [
   "cookiecutter == 2.1.1", # For checking the cookiecutter scripts
 ]
 dev = [
-  "frequenz-repo-config[dev-mkdocs,dev-docstrings,dev-formatting,dev-gen-docs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
+  "frequenz-repo-config[dev-mkdocs,dev-docstrings,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
 ]
 
 [project.urls]
@@ -104,7 +104,7 @@ include = '\.pyi?$'
 [tool.isort]
 profile = "black"
 line_length = 88
-src_paths = ["src", "examples", "tests"]
+src_paths = ["benchmarks", "examples", "src", "tests"]
 
 [tool.pylint.similarities]
 ignore-comments = ['yes']
