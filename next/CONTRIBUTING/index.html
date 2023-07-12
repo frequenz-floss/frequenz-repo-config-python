@@ -721,6 +721,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#golden-tests" class="md-nav__link">
+    Golden Tests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#building-the-documentation" class="md-nav__link">
     Building the documentation
   </a>
@@ -791,6 +798,13 @@
           <li class="md-nav__item">
   <a href="#running-tests-checks-individually" class="md-nav__link">
     Running tests / checks individually
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#golden-tests" class="md-nav__link">
+    Golden Tests
   </a>
   
 </li>
@@ -869,6 +883,37 @@ pytest<span class="w"> </span>tests/test_*.py
 <div class="highlight"><pre><span></span><code>nox<span class="w"> </span>-R<span class="w"> </span>-s<span class="w"> </span>pylint<span class="w"> </span>--<span class="w"> </span>test/test_*.py
 nox<span class="w"> </span>-R<span class="w"> </span>-s<span class="w"> </span>mypy<span class="w"> </span>--<span class="w"> </span>test/test_*.py
 </code></pre></div>
+<h3 id="golden-tests">Golden Tests<a class="headerlink" href="#golden-tests" title="Permanent link">¤</a></h3>
+<p>To test the generated files using the Cookiecutter templates, the <a href="https://en.wikipedia.org/wiki/Characterization_test">golden
+testing</a> technique is used
+to ensure that changes in the templates don't occur unexpectedly.</p>
+<p>If a golden test fails, a <code>diff</code> of the contents will be provided in the test
+results.</p>
+<p>Failures in the golden tests could indicate two things:</p>
+<ol>
+<li>
+<p>The generated files don't match the golden files because an unintended
+   change was introduced. For example, there may be a bug that needs to be fixed
+   so that the generated files match the golden files again.</p>
+</li>
+<li>
+<p>The generated files don't match the golden files because an intended change
+   was introduced. In this case, the golden files need to be updated.</p>
+</li>
+</ol>
+<p>In the latter case, manually updating files is complicated and error-prone, so
+a simpler (though hacky) way is provided.</p>
+<p>To update the golden files, simply edit the
+<code>tests/integration/test_cookiecutter_generation.py</code> file and temporarily set
+<code>UPDATE_GOLDEN</code> to <code>True</code>. Then, run the test again using <code>pytest</code> as usual.
+This will replace the existing golden files (stored in <code>tests_golden/</code>) with
+the newly generated files.</p>
+<p>Note that if you rename, or remove golden files, you should also manually
+remove the files that were affected. An easy way to make sure there are no old
+unused golden files left is to just wipe the whole <code>tests_golden/</code> directory
+before running <code>pytest</code> to generate the new ones.</p>
+<p><strong>Please ensure that all introduced changes are intended before updating the
+golden files.</strong></p>
 <h3 id="building-the-documentation">Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permanent link">¤</a></h3>
 <p>To build the documentation, first install the dependencies (if you didn't
 install all <code>dev</code> dependencies):</p>
