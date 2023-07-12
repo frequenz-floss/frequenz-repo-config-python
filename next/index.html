@@ -921,17 +921,17 @@ version (for example, Ubuntu/Debian). You can <a href="https://repology.org/proj
 has on Repology</a>. You need
 <strong>at least version 2.1.0</strong>. To ensure you get an up-to-date version, you can
 always use <code>pip</code> and install it in a <code>venv</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>cookiecutter
-<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>cookiecutter
-<span class="gp">$ </span>.<span class="w"> </span>bin/activate
-<span class="gp">[cookiecutter] $ </span>pip<span class="w"> </span>install<span class="w"> </span>cookiecutter
-<span class="go">Collecting cookiecutter</span>
-<span class="go">...</span>
-</code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>cookiecutter
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>cookiecutter
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">$ </span>.<span class="w"> </span>bin/activate
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">[cookiecutter] $ </span>pip<span class="w"> </span>install<span class="w"> </span>cookiecutter
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">Collecting cookiecutter</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">...</span>
+</span></code></pre></div>
 <p>Then simply run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> where you want to create the new project:</p>
-<div class="highlight"><pre><span></span><code>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--directory<span class="o">=</span>cookiecutter
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter
+</span></code></pre></div>
 <p>This command will prompt you for the project type, name, and other
 configuration options, and it will generate the entire project for you in a new
 subdirectory.</p>
@@ -1019,11 +1019,11 @@ changes using <code>git commit</code>.</p>
 <p>To start development, you need to make sure your environment is correctly set
 up. One way to do this is by using a virtual environment and installing all the
 dependencies there:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># requires at least Python version 3.11</span>
-python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
-.<span class="w"> </span>.venv/bin/activate
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># requires at least Python version 3.11</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>.<span class="w"> </span>.venv/bin/activate
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</span></code></pre></div>
 <p>This will install your package in <a href="https://setuptools.pypa.io/en/latest/userguide/development_mode.html"><em>editable</em>
 mode</a>, so
 you can open a Python interpreter and import your package modules, picking up
@@ -1033,10 +1033,10 @@ directly, like <code>pytest</code>.</p>
 <p>If you prefer to keep your virtual environment cleaner and avoid installing
 development dependencies, you can also use <code>nox</code> to create isolated
 environments:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-noxfile<span class="o">]</span>
-nox<span class="w"> </span>--install-only<span class="w">  </span><span class="c1"># Set up virtual environments once</span>
-nox<span class="w"> </span>-R<span class="w">  </span><span class="c1"># Run linting and testing reusing the existing virtual environments</span>
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-noxfile<span class="o">]</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>nox<span class="w"> </span>--install-only<span class="w">  </span><span class="c1"># Set up virtual environments once</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>nox<span class="w"> </span>-R<span class="w">  </span><span class="c1"># Run linting and testing reusing the existing virtual environments</span>
+</span></code></pre></div>
 <p>This will only install your package in <em>editable</em> mode and the minimum
 dependencies required to run <code>nox</code>. It will then run all <code>nox</code> default
 sessions, which include running linters and tests.</p>
@@ -1050,9 +1050,9 @@ it, which is <strong>very</strong> slow.</p>
 </div>
 <h3 id="verify-the-generated-documentation-works">Verify the generated documentation works<a class="headerlink" href="#verify-the-generated-documentation-works" title="Permanent link">¤</a></h3>
 <p>To generate the documentation, you can use <code>mkdocs</code>:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
-mkdocs<span class="w"> </span>serve
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>mkdocs<span class="w"> </span>serve
+</span></code></pre></div>
 <p>If the command fails, look at the log warnings and errors and fix them. If it
 worked, now there is a local web server serving the documentation. You can
 point your browser to <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> to have
@@ -1068,11 +1068,11 @@ as the easiest way to use the <a href="https://github.com/pseudomuto/protoc-gen-
 <p>The generated documentation can be easily published via GitHub Pages, and it
 will be automatically updated for new pushes and releases. However, some
 initial setup is needed for it to work correctly:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
-mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>next<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Creates the branch gh-pages locally</span>
-mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
-git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream to publish the website</span>
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>next<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Creates the branch gh-pages locally</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream to publish the website</span>
+</span></code></pre></div>
 <p>Then make sure that GitHub Pages is enabled in
 <code>https://github.com/&lt;repo-owner&gt;/&lt;repo-name&gt;/settings/pages</code>.</p>
 <p>If all went well, your website should be available soon via
@@ -1084,14 +1084,14 @@ on the current project metadata and then overwrite the existing files.</p>
 <code>git</code> to look at the changes.</p>
 <p>If you generate the new repo in a temporary directory, you can easily overwrite
 the files in your existing project by using <code>rsync</code> or similar tools:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp
-cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span>--directory<span class="o">=</span>cookiecutter
-rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
-<span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
-git<span class="w"> </span>diff
-<span class="c1"># Fix all the `TODO`s and clean up the generated files</span>
-git<span class="w"> </span>commit<span class="w"> </span>-a
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span>--directory<span class="o">=</span>cookiecutter
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>git<span class="w"> </span>diff
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># Fix all the `TODO`s and clean up the generated files</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>git<span class="w"> </span>commit<span class="w"> </span>-a
+</span></code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The trailing slash in <code>new-project/</code> and the lack of it in
@@ -1116,14 +1116,14 @@ without having to enter all the inputs again.</p>
 <p>Don't forget to commit all changes in your repository before doing this!
 Files will be overwritten!</p>
 </div>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w">  </span><span class="c1"># commit all changes</span>
-<span class="nb">cd</span><span class="w"> </span>..
-cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--force<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w">  </span><span class="c1"># commit all changes</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span>--force<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
+</span></code></pre></div>
 <p>This will create a new commit with all the changes to the overwritten files.
 Bear in mind that all the <code>TODO</code>s will come back, so there will be quite a bit
 of cleanup to do. You can easily check what was changed using <code>git show</code>, and
@@ -1229,7 +1229,7 @@ reference</a>.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.instant", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow"], "search": "assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.code.copy", "navigation.instant", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow"], "search": "assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
       <script src="assets/javascripts/bundle.a51614de.min.js"></script>

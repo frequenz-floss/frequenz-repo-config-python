@@ -946,23 +946,23 @@ package and use the <a class="autorefs autorefs-internal" href="nox/#frequenz.re
 which will configure all nox sessions.</p>
 <p>To use the default options, you should call <code>configure()</code> using one of the <span data-autorefs-identifier="frequenz.repo.config.RepositoryType">repository
 types</span>.  For example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="n">nox</span>
-
-<span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">RepositoryType</span><span class="o">.</span><span class="n">LIB</span><span class="p">)</span>
-</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="n">nox</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">RepositoryType</span><span class="o">.</span><span class="n">LIB</span><span class="p">)</span>
+</span></code></pre></div>
 <p>Again, make sure to pick the correct project typedefault configuration based on the type of your
 project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>, <code>model_config</code>).</p>
 <p>If you need to use some custom configuration, you can start from the default settings in
 the <a class="autorefs autorefs-internal" href="nox/default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
 <a class="autorefs autorefs-internal" href="nox/config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
 need to customize.  For example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">nox</span>
-<span class="kn">from</span> <span class="nn">frequenz.repo.config.nox</span> <span class="kn">import</span> <span class="n">default</span>
-
-<span class="n">config</span> <span class="o">=</span> <span class="n">default</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">config</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">black</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--diff&quot;</span><span class="p">)</span>
-<span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">nox</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config.nox</span> <span class="kn">import</span> <span class="n">default</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">config</span> <span class="o">=</span> <span class="n">default</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">config</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">black</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--diff&quot;</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</span></code></pre></div>
 <p>If you need further customization or to define new sessions, you can use the
 following modules:</p>
 <ul>
@@ -1037,48 +1037,48 @@ include it in the <code>dev-pytest</code> optional dependency.</p>
 dependency that includes all the other optional dependencies, so users can
 install all the dependencies needed while developing the project without having
 to run <code>nox</code>, which might be a bit slow if you want to do quick iterations.</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
-<span class="go">...</span>
-<span class="gp">$ </span>pytest
-<span class="go">...</span>
-</code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">...</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">$ </span>pytest
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="go">...</span>
+</span></code></pre></div>
 <p>Here is a sample <code>pyproject.toml</code> file that defines all the optional
 dependencies:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
-<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my-package&quot;</span>
-<span class="c1"># ...</span>
-
-<span class="k">[project.optional-dependencies]</span>
-<span class="n">dev-docstrings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;pydocstyle == 6.3.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;darglint == 1.8.1&quot;</span><span class="p">]</span>
-<span class="n">dev-formatting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;black == 23.3.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isort == 5.12.0&quot;</span><span class="p">]</span>
-<span class="n">dev-mkdocs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s">&quot;mike == 1.1.2&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;mkdocs-gen-files == 0.5.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;mkdocs-literate-nav == 0.6.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;mkdocs-material == 9.1.16&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;mkdocs-section-index == 0.3.5&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;mkdocstrings[python] == 0.22.0&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">dev-mypy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s">&quot;mypy == 1.1.1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="c1"># For checking tests</span>
-<span class="w">  </span><span class="s">&quot;my-package[dev-mkdocs,dev-pytest]&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">dev-pylint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s">&quot;pylint == 2.17.1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;pylint-google-style-guide-imports-enforcing == 1.3.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="c1"># For checking tests</span>
-<span class="w">  </span><span class="s">&quot;my-package[dev-mkdocs,dev-pytest]&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">dev-pytest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s">&quot;pytest == 7.2.2&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;pytest-asyncio == 0.21.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;pytest-mock == 3.10.0&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s">&quot;my-package[dev-mkdocs,dev-docstrings,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-</code></pre></div>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">[project]</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my-package&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># ...</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">[project.optional-dependencies]</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">dev-docstrings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;pydocstyle == 6.3.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;darglint == 1.8.1&quot;</span><span class="p">]</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">dev-formatting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;black == 23.3.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;isort == 5.12.0&quot;</span><span class="p">]</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">dev-mkdocs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="s">&quot;mike == 1.1.2&quot;</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="s">&quot;mkdocs-gen-files == 0.5.0&quot;</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="s">&quot;mkdocs-literate-nav == 0.6.0&quot;</span><span class="p">,</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="s">&quot;mkdocs-material == 9.1.16&quot;</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="s">&quot;mkdocs-section-index == 0.3.5&quot;</span><span class="p">,</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="s">&quot;mkdocstrings[python] == 0.22.0&quot;</span><span class="p">,</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">]</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">dev-mypy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="s">&quot;mypy == 1.1.1&quot;</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="c1"># For checking tests</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">  </span><span class="s">&quot;my-package[dev-mkdocs,dev-pytest]&quot;</span><span class="p">,</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="p">]</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="n">dev-pylint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">  </span><span class="s">&quot;pylint == 2.17.1&quot;</span><span class="p">,</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">  </span><span class="s">&quot;pylint-google-style-guide-imports-enforcing == 1.3.0&quot;</span><span class="p">,</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">  </span><span class="c1"># For checking tests</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">  </span><span class="s">&quot;my-package[dev-mkdocs,dev-pytest]&quot;</span><span class="p">,</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="p">]</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="n">dev-pytest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">  </span><span class="s">&quot;pytest == 7.2.2&quot;</span><span class="p">,</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">  </span><span class="s">&quot;pytest-asyncio == 0.21.0&quot;</span><span class="p">,</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">  </span><span class="s">&quot;pytest-mock == 3.10.0&quot;</span><span class="p">,</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="p">]</span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">  </span><span class="s">&quot;my-package[dev-mkdocs,dev-docstrings,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]&quot;</span><span class="p">,</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="p">]</span>
+</span></code></pre></div>
 <h4 id="frequenz.repo.config--mkdocs-generating-documentation"><code>mkdocs</code> (generating documentation)<a class="headerlink" href="#frequenz.repo.config--mkdocs-generating-documentation" title="Permanent link">¤</a></h4>
 <h5 id="frequenz.repo.config--api-reference-generation">API reference generation<a class="headerlink" href="#frequenz.repo.config--api-reference-generation" title="Permanent link">¤</a></h5>
 <p>The API documnentation can be automatically generated from the source files using the
@@ -1088,48 +1088,48 @@ dependencies:</p>
 and <code>mkdocstrings[python]</code> packages are installed (look at the <code>pyproject.toml</code>
 configuration in the <code>nox</code> section) and add the following configuration to the
 <code>mkdocs.yml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">gen-files</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">scripts</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/my/custom/script.py</span>
-</code></pre></div>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">plugins</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">gen-files</span><span class="p">:</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">      </span><span class="nt">scripts</span><span class="p">:</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/my/custom/script.py</span>
+</span></code></pre></div>
 <p>By default this script will look for files in the <code>src/</code> directory and generate the
 documentation files in the <code>python-reference/</code> directory inside <code>mkdocs</code> output directory
 (<code>site</code> by defaul).</p>
 <p>If you need to customize the above paths, you can create a new script to use with the
 <code>mkdocs-gen-files</code> plugin as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">mkdocs</span>
-
-<span class="n">mkdocs</span><span class="o">.</span><span class="n">generate_python_api_pages</span><span class="p">(</span><span class="s2">&quot;my_sources&quot;</span><span class="p">,</span> <span class="s2">&quot;API&quot;</span><span class="p">)</span>
-</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">mkdocs</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">mkdocs</span><span class="o">.</span><span class="n">generate_python_api_pages</span><span class="p">(</span><span class="s2">&quot;my_sources&quot;</span><span class="p">,</span> <span class="s2">&quot;API&quot;</span><span class="p">)</span>
+</span></code></pre></div>
 <p>Where <code>my_sources</code> is the directory containing the source files and <code>API</code> is the
 directory where to generate the documentation files (relative to <code>mkdocs</code> output
 directory).</p>
 <p>And then replace this configuration in the <code>mkdocs.yml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">gen-files</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">scripts</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/my/custom/script.py</span>
-</code></pre></div>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">plugins</span><span class="p">:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">gen-files</span><span class="p">:</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">      </span><span class="nt">scripts</span><span class="p">:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/my/custom/script.py</span>
+</span></code></pre></div>
 <h3 id="frequenz.repo.config--apis">APIs<a class="headerlink" href="#frequenz.repo.config--apis" title="Permanent link">¤</a></h3>
 <h4 id="frequenz.repo.config--protobuf-configuation">Protobuf configuation<a class="headerlink" href="#frequenz.repo.config--protobuf-configuation" title="Permanent link">¤</a></h4>
 <p>Support is provided to generate files from <em>protobuf</em> files.  To do this, it is possible
 to configure the options to use while generating the files for different purposes
 (language bindings, documentation, etc.).</p>
 <p>The configuration can be done in the <code>pyproject.toml</code> file as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[tool.frequenz_repo_config.protobuf]</span>
-<span class="c1"># Location of the proto files relative to the root of the repository (default: &quot;proto&quot;)</span>
-<span class="n">proto_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;proto_files&quot;</span>
-<span class="c1"># Glob pattern to use to find the proto files in the proto_path (default: &quot;*.proto&quot;)</span>
-<span class="n">proto_glob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.prt&quot;</span><span class="w">  </span><span class="c1"># Default: &quot;*.proto&quot;</span>
-<span class="c1"># List of paths to pass to the protoc compiler as include paths (default:</span>
-<span class="c1"># [&quot;submodules/api-common-protos&quot;, &quot;submodules/frequenz-api-common/proto&quot;])</span>
-<span class="n">include_paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;submodules/api-common-protos&quot;</span><span class="p">]</span>
-<span class="c1"># Path where to generate the Python files (default: &quot;py&quot;)</span>
-<span class="n">py_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;generated&quot;</span>
-<span class="c1"># Path where to generate the documentation files (default: &quot;protobuf-reference&quot;)</span>
-<span class="n">docs_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;API&quot;</span>
-</code></pre></div>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">[tool.frequenz_repo_config.protobuf]</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># Location of the proto files relative to the root of the repository (default: &quot;proto&quot;)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">proto_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;proto_files&quot;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Glob pattern to use to find the proto files in the proto_path (default: &quot;*.proto&quot;)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">proto_glob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.prt&quot;</span><span class="w">  </span><span class="c1"># Default: &quot;*.proto&quot;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># List of paths to pass to the protoc compiler as include paths (default:</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># [&quot;submodules/api-common-protos&quot;, &quot;submodules/frequenz-api-common/proto&quot;])</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="n">include_paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;submodules/api-common-protos&quot;</span><span class="p">]</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># Path where to generate the Python files (default: &quot;py&quot;)</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">py_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;generated&quot;</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="c1"># Path where to generate the documentation files (default: &quot;protobuf-reference&quot;)</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="n">docs_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;API&quot;</span>
+</span></code></pre></div>
 <p>If the defaults are not suitable for you (for example you need to use more or less
 submodules or your proto files are located somewhere else), please adjust the
 configuration to match your project structure.</p>
@@ -1137,11 +1137,11 @@ configuration to match your project structure.</p>
 <p>If your project provides <em>protobuf</em> files, you can also generate the API
 documentation for them adding one more line to the script provided in the common
 section:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">mkdocs</span>
-
-<span class="n">mkdocs</span><span class="o">.</span><span class="n">generate_python_api_pages</span><span class="p">(</span><span class="s2">&quot;my_sources&quot;</span><span class="p">,</span> <span class="s2">&quot;API-py&quot;</span><span class="p">)</span>
-<span class="n">mkdocs</span><span class="o">.</span><span class="n">generate_protobuf_api_pages</span><span class="p">()</span>
-</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">mkdocs</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">mkdocs</span><span class="o">.</span><span class="n">generate_python_api_pages</span><span class="p">(</span><span class="s2">&quot;my_sources&quot;</span><span class="p">,</span> <span class="s2">&quot;API-py&quot;</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">mkdocs</span><span class="o">.</span><span class="n">generate_protobuf_api_pages</span><span class="p">()</span>
+</span></code></pre></div>
 <p>This will use the configuration in the <code>pyproject.toml</code> file and requires <code>docker</code> to
 run (it uses the <code>pseudomuto/protoc-gen-doc</code> docker image.</p>
 <h5 id="frequenz.repo.config--setuptools-grpc-support"><code>setuptools</code> gRPC support<a class="headerlink" href="#frequenz.repo.config--setuptools-grpc-support" title="Permanent link">¤</a></h5>
@@ -1159,52 +1159,52 @@ section plus the following:</p>
 <a href="https://github.com/googleapis/api-common-protos"><code>google/api-common-protos</code></a> and
 <a href="https://github.com/frequenz-floss/frequenz-api-common"><code>frequenz-floss/frequenz-api-common</code></a>,
 so you need to make sure the proper submodules are added to your project:</p>
-<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>submodules
-git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/googleapis/api-common-protos.git<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>submodules/api-common-protos
-git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/frequenz-floss/frequenz-api-common.git<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>submodules/frequenz-api-common
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add api-common-protos and frequenz-api-common submodules&quot;</span><span class="w"> </span>submodules
-</code></pre></div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mkdir<span class="w"> </span>submodules
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/googleapis/api-common-protos.git<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">        </span>submodules/api-common-protos
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/frequenz-floss/frequenz-api-common.git<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">        </span>submodules/frequenz-api-common
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add api-common-protos and frequenz-api-common submodules&quot;</span><span class="w"> </span>submodules
+</span></code></pre></div>
 <p>Then you need to add this package as a build dependency and a few extra
 dependencies to your project, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s">&quot;setuptools &gt;= 67.3.2, &lt; 68&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;setuptools_scm[toml] &gt;= 7.1.0, &lt; 8&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;frequenz-repo-config[api] &gt;= 0.1.0, &lt; 0.3.0&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;setuptools.build_meta&quot;</span>
-
-<span class="k">[project]</span>
-<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s">&quot;frequenz-api-common &gt;= 0.2.0, &lt; 0.3.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;googleapis-common-protos &gt;= 1.56.2, &lt; 2&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;grpcio &gt;= 1.51.1, &lt; 2&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-</code></pre></div>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="s">&quot;setuptools &gt;= 67.3.2, &lt; 68&quot;</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="s">&quot;setuptools_scm[toml] &gt;= 7.1.0, &lt; 8&quot;</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="s">&quot;frequenz-repo-config[api] &gt;= 0.3.0, &lt; 0.4.0&quot;</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">]</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;setuptools.build_meta&quot;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">[project]</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="s">&quot;frequenz-api-common &gt;= 0.2.0, &lt; 0.3.0&quot;</span><span class="p">,</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span><span class="s">&quot;googleapis-common-protos &gt;= 1.56.2, &lt; 2&quot;</span><span class="p">,</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">  </span><span class="s">&quot;grpcio &gt;= 1.51.1, &lt; 2&quot;</span><span class="p">,</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="p">]</span>
+</span></code></pre></div>
 <p>Note the <code>api</code> extra in <code>frequenz-repo-config[api]</code>, this will ensure all
 dependencies to build the protocol files will be installed when building the
 package. Of course you need to replace the version numbers with the correct
 ones too.</p>
 <p>You should also add the following configuration to your <code>pyproject.toml</code> file
 to make sure the generated files are included in the wheel:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[tool.setuptools.package-dir]</span>
-<span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;py&quot;</span>
-
-<span class="k">[tool.setuptools.package-data]</span>
-<span class="s">&quot;*&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;*.pyi&quot;</span><span class="p">]</span>
-
-<span class="k">[tools.pytest.ini_options]</span>
-<span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;pytests&quot;</span><span class="p">]</span>
-</code></pre></div>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">[tool.setuptools.package-dir]</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;py&quot;</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">[tool.setuptools.package-data]</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s">&quot;*&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;*.pyi&quot;</span><span class="p">]</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="k">[tools.pytest.ini_options]</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;pytests&quot;</span><span class="p">]</span>
+</span></code></pre></div>
 <p>Finally you need to make sure to include the generated <code>*.pyi</code> files in the
 source distribution, as well as the Google api-common-protos files, as it
 is not handled automatically yet
 (<a href="https://github.com/frequenz-floss/frequenz-repo-config-python/issues/13">#13</a>).
 Make sure to include these lines in the <code>MANIFEST.in</code> file:</p>
-<div class="highlight"><pre><span></span><code>recursive-include submodules/api-common-protos/google *.proto
-recursive-include submodules/frequenz-api-common/proto *.proto
-</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>recursive-include submodules/api-common-protos/google *.proto
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>recursive-include submodules/frequenz-api-common/proto *.proto
+</span></code></pre></div>
 <p>Please adapt the instructions above to your project structure if you need to change the
 defaults.</p>
 
@@ -1240,40 +1240,40 @@ defaults.</p>
 
         <details class="quote">
           <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/_core.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RepositoryType</span><span class="p">(</span><span class="n">_enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supported types of repository.&quot;&quot;&quot;</span>
-
-    <span class="n">ACTOR</span> <span class="o">=</span> <span class="s2">&quot;actor&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;SDK actor repository.&quot;&quot;&quot;</span>
-
-    <span class="n">API</span> <span class="o">=</span> <span class="s2">&quot;api&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;gRPC API repository.&quot;&quot;&quot;</span>
-
-    <span class="n">APP</span> <span class="o">=</span> <span class="s2">&quot;app&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;SDK application repository.&quot;&quot;&quot;</span>
-
-    <span class="n">LIB</span> <span class="o">=</span> <span class="s2">&quot;lib&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;General purpose library repository.&quot;&quot;&quot;</span>
-
-    <span class="n">MODEL</span> <span class="o">=</span> <span class="s2">&quot;model&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;SDK machine learning model repository.&quot;&quot;&quot;</span>
-</code></pre></div></td></tr></table></div>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="k">class</span> <span class="nc">RepositoryType</span><span class="p">(</span><span class="n">_enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Supported types of repository.&quot;&quot;&quot;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="n">ACTOR</span> <span class="o">=</span> <span class="s2">&quot;actor&quot;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;SDK actor repository.&quot;&quot;&quot;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="n">API</span> <span class="o">=</span> <span class="s2">&quot;api&quot;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;gRPC API repository.&quot;&quot;&quot;</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="n">APP</span> <span class="o">=</span> <span class="s2">&quot;app&quot;</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;SDK application repository.&quot;&quot;&quot;</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a>    <span class="n">LIB</span> <span class="o">=</span> <span class="s2">&quot;lib&quot;</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;General purpose library repository.&quot;&quot;&quot;</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a>    <span class="n">MODEL</span> <span class="o">=</span> <span class="s2">&quot;model&quot;</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;SDK machine learning model repository.&quot;&quot;&quot;</span>
+</span></code></pre></div></td></tr></table></div>
         </details>
 
   
@@ -1486,7 +1486,7 @@ defaults.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.annotate", "content.code.copy", "navigation.instant", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.a51614de.min.js"></script>
