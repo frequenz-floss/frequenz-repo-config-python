@@ -25,6 +25,7 @@ env:
 jobs:
   {% if cookiecutter.type == "api" -%}
   protolint:
+    name: Check proto files with protolint
     runs-on: ubuntu-20.04
 
     steps:
