@@ -200,7 +200,7 @@ git commit -a  # commit all changes
 cd ..
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
     --directory=cookiecutter \
-    --force \
+    --overwrite-if-exists \
     --replay \
     --replay-file project-directory/.cookiecutter-replay.json
 ```
