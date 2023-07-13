@@ -40,7 +40,9 @@ directory will be created with the generated project name. For example:
 
 ```sh
 cd ~/devel
-cookiecutter gh:frequenz-floss/frequenz-repo-config-python --directory=cookiecutter
+cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
+    --directory=cookiecutter \
+    --checkout v0.4.0
 ```
 
 This command will prompt you for the project type, name, and other
