@@ -13,7 +13,11 @@ import pytest
 
 from frequenz.repo import config
 
-UPDATE_GOLDEN: bool = False
+UPDATE_GOLDEN: bool = os.environ.get("UPDATE_GOLDEN", "").lower() in (
+    "1",
+    "true",
+    "yes",
+)
 """Set to True to update the golden files.
 
 After setting to True you need to run the tests once to update the golden files.

@@ -81,9 +81,13 @@ Failures in the golden tests could indicate two things:
 In the latter case, manually updating files is complicated and error-prone, so
 a simpler (though hacky) way is provided.
 
-To update the golden files, simply edit the
-`tests/integration/test_cookiecutter_generation.py` file and temporarily set
-`UPDATE_GOLDEN` to `True`. Then, run the test again using `pytest` as usual.
+To update the golden files, simply run `pytest` for the tests using golden
+files setting the environment variable `UPDATE_GOLDEN` to `1`:
+
+```sh
+UPDATE_GOLDEN=1 pytest tests/integration/test_cookiecutter_generation.py::test_golden
+```
+
 This will replace the existing golden files (stored in `tests_golden/`) with
 the newly generated files.
 
