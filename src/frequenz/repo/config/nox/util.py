@@ -198,7 +198,7 @@ def min_dependencies() -> list[str]:
 
     for dep in dependencies:
         min_dep = dep.split(",")[0]
-        if any(op in min_dep for op in (">=", "==")):
+        if any(op in min_dep for op in (">=", "==", "@")):
             min_deps.append(min_dep.replace(">=", "=="))
         else:
             raise RuntimeError(f"Minimum requirement is not set: {dep}")
