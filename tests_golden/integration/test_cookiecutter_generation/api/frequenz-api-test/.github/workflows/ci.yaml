@@ -24,6 +24,7 @@ env:
 
 jobs:
   protolint:
+    name: Check proto files with protolint
     runs-on: ubuntu-20.04
 
     steps:

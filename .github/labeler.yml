@@ -13,12 +13,10 @@
       - "examples/**"
       - LICENSE
     all:
-      - "!tests/**"
-      - "!tests_golden/**"
+      - "!tests*/**"
 
 "part:tests":
-  - "tests/**"
-  - "tests_golden/**"
+  - "tests*/**"
 
 "part:tooling":
   - any:
@@ -32,8 +30,7 @@
       - MANIFEST.in
       - noxfile.py
     all:
-      - "!tests/**"
-      - "!tests_golden/**"
+      - "!tests*/**"
 
 "part:ci":
   - any:
@@ -41,8 +38,7 @@
       - "**/.github/dependabot.*"
       - "**/.github/workflows/*"
     all:
-      - "!tests/**"
-      - "!tests_golden/**"
+      - "!tests*/**"
 
 "part:cookiecutter":
   - any:
@@ -57,21 +53,18 @@
       - "**/mkdocs.*"
       - "src/frequenz/repo/config/mkdocs*"
     all:
-      - "!tests/**"
-      - "!tests_golden/**"
+      - "!tests*/**"
 
 "part:nox":
   - any:
       - "**/noxfile.py"
       - "src/frequenz/repo/config/nox/**"
     all:
-      - "!tests/**"
-      - "!tests_golden/**"
+      - "!tests*/**"
 
 "part:protobuf":
   - any:
       - "src/frequenz/repo/config/setuptools/grpc*"
       - "src/frequenz/repo/config/protobuf*"
     all:
-      - "!tests/**"
-      - "!tests_golden/**"
+      - "!tests*/**"
