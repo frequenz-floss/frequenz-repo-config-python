@@ -930,7 +930,7 @@ always use <code>pip</code> and install it in a <code>venv</code>:</p>
 </span></code></pre></div>
 <p>Then simply run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> where you want to create the new project:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.4.0
 </span></code></pre></div>
 <p>This command will prompt you for the project type, name, and other
 configuration options, and it will generate the entire project for you in a new
@@ -942,7 +942,9 @@ subdirectory.</p>
 the cookiecutter template that will be downloaded, and
 <code>--directory=cookiecutter</code> is needed because the cookiecutter template
 doesn't live at the top-level of that repository, but in a subdirectory
-called <code>cookiecutter</code>.</p>
+called <code>cookiecutter</code>. The <code>--checkout</code> option is provided to use
+a template from a released version, otherwise the default (development)
+branch will be used.</p>
 <p>All information about your project will be prompted interactively by that
 command.</p>
 </div>
@@ -1085,12 +1087,13 @@ on the current project metadata and then overwrite the existing files.</p>
 <p>If you generate the new repo in a temporary directory, you can easily overwrite
 the files in your existing project by using <code>rsync</code> or similar tools:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span>--directory<span class="o">=</span>cookiecutter
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>git<span class="w"> </span>diff
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># Fix all the `TODO`s and clean up the generated files</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>git<span class="w"> </span>commit<span class="w"> </span>-a
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.4.0
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>git<span class="w"> </span>diff
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Fix all the `TODO`s and clean up the generated files</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>git<span class="w"> </span>commit<span class="w"> </span>-a
 </span></code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1120,9 +1123,10 @@ Files will be overwritten!</p>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>..
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span>--force<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.4.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span>--overwrite-if-exists<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
 </span></code></pre></div>
 <p>This will create a new commit with all the changes to the overwritten files.
 Bear in mind that all the <code>TODO</code>s will come back, so there will be quite a bit

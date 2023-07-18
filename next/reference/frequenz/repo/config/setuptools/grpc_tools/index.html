@@ -1019,7 +1019,7 @@
 
 
 <h2 id="frequenz.repo.config.setuptools.grpc_tools" class="doc doc-heading">
-          <code>frequenz.repo.config.setuptools.grpc_tools</code>
+            <code>frequenz.repo.config.setuptools.grpc_tools</code>
 
 
 <a href="#frequenz.repo.config.setuptools.grpc_tools" class="headerlink" title="Permanent link">¤</a></h2>
@@ -1048,23 +1048,22 @@ protocol buffer files are compiled automatically before the project is built.</p
 
 
 <h4 id="frequenz.repo.config.setuptools.grpc_tools.CompileProto" class="doc doc-heading">
-        <code>frequenz.repo.config.setuptools.grpc_tools.CompileProto</code>
+          <code>frequenz.repo.config.setuptools.grpc_tools.CompileProto</code>
 
 
 <a href="#frequenz.repo.config.setuptools.grpc_tools.CompileProto" class="headerlink" title="Permanent link">¤</a></h4>
 
 
   <div class="doc doc-contents ">
-      <p class="doc doc-class-bases">
-        Bases: <code><span title="setuptools">_setuptools</span>.<a class="autorefs autorefs-external" title="setuptools.Command" href="https://setuptools.pypa.io/en/latest/userguide/extension.html#setuptools.Command">Command</a></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="setuptools">_setuptools</span>.<a class="autorefs autorefs-external" title="setuptools.Command" href="https://setuptools.pypa.io/en/latest/userguide/extension.html#setuptools.Command">Command</a></code></p>
 
   
       <p>Build the Python protobuf files.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-24">24</a></span>
+            <details class="quote">
+              <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-24">24</a></span>
 <span class="normal"><a href="#__codelineno-0-25">25</a></span>
 <span class="normal"><a href="#__codelineno-0-26">26</a></span>
 <span class="normal"><a href="#__codelineno-0-27">27</a></span>
@@ -1216,7 +1215,7 @@ protocol buffer files are compiled automatically before the project is built.</p
 </span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compiling proto files via: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">protoc_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99"></a>        <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">protoc_cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
@@ -1236,8 +1235,8 @@ protocol buffer files are compiled automatically before the project is built.</p
 <code class="highlight language-python"><span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;compile protobuf files&#39;</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
 <a href="#frequenz.repo.config.setuptools.grpc_tools.CompileProto.description" class="headerlink" title="Permanent link">¤</a></h6>
@@ -1342,8 +1341,8 @@ protocol buffer files are compiled automatically before the project is built.</p
 <code class="highlight language-python"><span class="n">user_options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;proto-path=&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;path of the root directory containing the protobuf files&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;proto-glob=&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;glob pattern to use to find the protobuf files&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;include-paths=&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;comma-separated list of paths to include when compiling the protobuf files&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;py-path=&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;path of the root directory where the Python files will be generated&#39;</span><span class="p">)]</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
 <a href="#frequenz.repo.config.setuptools.grpc_tools.CompileProto.user_options" class="headerlink" title="Permanent link">¤</a></h6>
@@ -1357,6 +1356,7 @@ protocol buffer files are compiled automatically before the project is built.</p
 </div>
 
 <h5 id="frequenz.repo.config.setuptools.grpc_tools.CompileProto-functions">Functions<a href="#frequenz.repo.config.setuptools.grpc_tools.CompileProto-functions" class="headerlink" title="Permanent link">¤</a></h5>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1372,16 +1372,17 @@ protocol buffer files are compiled automatically before the project is built.</p
   
       <p>Finalize options.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-71">71</a></span>
+          <details class="quote">
+            <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-71">71</a></span>
 <span class="normal"><a href="#__codelineno-0-72">72</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="k">def</span> <span class="nf">finalize_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Finalize options.&quot;&quot;&quot;</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1397,9 +1398,9 @@ protocol buffer files are compiled automatically before the project is built.</p
   
       <p>Initialize options.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-62">62</a></span>
+          <details class="quote">
+            <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-62">62</a></span>
 <span class="normal"><a href="#__codelineno-0-63">63</a></span>
 <span class="normal"><a href="#__codelineno-0-64">64</a></span>
 <span class="normal"><a href="#__codelineno-0-65">65</a></span>
@@ -1415,10 +1416,11 @@ protocol buffer files are compiled automatically before the project is built.</p
 </span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">include_paths</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">include_paths</span><span class="p">)</span>
 </span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">py_path</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">py_path</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1434,9 +1436,9 @@ protocol buffer files are compiled automatically before the project is built.</p
   
       <p>Compile the Python protobuf files.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-74">74</a></span>
+          <details class="quote">
+            <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/setuptools/grpc_tools.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-74">74</a></span>
 <span class="normal"><a href="#__codelineno-0-75">75</a></span>
 <span class="normal"><a href="#__codelineno-0-76">76</a></span>
 <span class="normal"><a href="#__codelineno-0-77">77</a></span>
@@ -1488,7 +1490,7 @@ protocol buffer files are compiled automatically before the project is built.</p
 </span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compiling proto files via: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">protoc_cmd</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="n">_subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">protoc_cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>

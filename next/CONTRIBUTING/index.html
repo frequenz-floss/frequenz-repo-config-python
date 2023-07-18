@@ -903,10 +903,11 @@ results.</p>
 </ol>
 <p>In the latter case, manually updating files is complicated and error-prone, so
 a simpler (though hacky) way is provided.</p>
-<p>To update the golden files, simply edit the
-<code>tests/integration/test_cookiecutter_generation.py</code> file and temporarily set
-<code>UPDATE_GOLDEN</code> to <code>True</code>. Then, run the test again using <code>pytest</code> as usual.
-This will replace the existing golden files (stored in <code>tests_golden/</code>) with
+<p>To update the golden files, simply run <code>pytest</code> for the tests using golden
+files setting the environment variable <code>UPDATE_GOLDEN</code> to <code>1</code>:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">UPDATE_GOLDEN</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>pytest<span class="w"> </span>tests/integration/test_cookiecutter_generation.py::test_golden
+</span></code></pre></div>
+<p>This will replace the existing golden files (stored in <code>tests_golden/</code>) with
 the newly generated files.</p>
 <p>Note that if you rename, or remove golden files, you should also manually
 remove the files that were affected. An easy way to make sure there are no old
@@ -917,14 +918,14 @@ golden files.</strong></p>
 <h3 id="building-the-documentation">Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permanent link">¤</a></h3>
 <p>To build the documentation, first install the dependencies (if you didn't
 install all <code>dev</code> dependencies):</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span>
 </span></code></pre></div>
 <p>Then you can build the documentation (it will be written in the <code>site/</code>
 directory):</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mkdocs<span class="w"> </span>build
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mkdocs<span class="w"> </span>build
 </span></code></pre></div>
 <p>Or you can just serve the documentation without building it using:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mkdocs<span class="w"> </span>serve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 <p>Your site will be updated <strong>live</strong> when you change your files (provided that
 you used <code>pip install -e .</code>, beware of a common pitfall of using <code>pip install</code>
@@ -933,9 +934,9 @@ without <code>-e</code>, in that case the API reference won't change unless you 
 <p>To build multi-version documentation, we use
 <a href="https://github.com/jimporter/mike">mike</a>. If you want to see how the
 multi-version sites looks like locally, you can use:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mike<span class="w"> </span>deploy<span class="w"> </span>my-version
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mike<span class="w"> </span>set-default<span class="w"> </span>my-version
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>mike<span class="w"> </span>serve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>mike<span class="w"> </span>deploy<span class="w"> </span>my-version
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>mike<span class="w"> </span>set-default<span class="w"> </span>my-version
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>mike<span class="w"> </span>serve
 </span></code></pre></div>
 <p><code>mike</code> works in mysterious ways. Some basic information:</p>
 <ul>
@@ -972,7 +973,7 @@ GitHub pages produced for your fork.</p>
    for example:</p>
 </li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-s<span class="w"> </span>--cleanup<span class="o">=</span>whitespace<span class="w"> </span>-F<span class="w"> </span>RELEASE_NOTES.md<span class="w"> </span>v0.0.1
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-s<span class="w"> </span>--cleanup<span class="o">=</span>whitespace<span class="w"> </span>-F<span class="w"> </span>RELEASE_NOTES.md<span class="w"> </span>v0.0.1
 </span></code></pre></div>
 <ol>
 <li>
@@ -990,7 +991,7 @@ GitHub pages produced for your fork.</p>
 <p>Once this is done, reset the <code>RELEASE_NOTES.md</code> with the template:</p>
 </li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cp<span class="w"> </span>.github/RELEASE_NOTES.template.md<span class="w"> </span>RELEASE_NOTES.md
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>cp<span class="w"> </span>.github/RELEASE_NOTES.template.md<span class="w"> </span>RELEASE_NOTES.md
 </span></code></pre></div>
 <p>Commit the new release notes and create a PR (this step should be automated
    eventually too).</p>

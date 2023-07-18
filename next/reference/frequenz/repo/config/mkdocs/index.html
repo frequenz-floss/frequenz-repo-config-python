@@ -841,7 +841,7 @@
 
 
 <h2 id="frequenz.repo.config.mkdocs" class="doc doc-heading">
-          <code>frequenz.repo.config.mkdocs</code>
+            <code>frequenz.repo.config.mkdocs</code>
 
 
 <a href="#frequenz.repo.config.mkdocs" class="headerlink" title="Permanent link">¤</a></h2>
@@ -869,6 +869,7 @@ https://mkdocstrings.github.io/recipes/#automatic-code-reference-pages</p>
 
 <h3 id="frequenz.repo.config.mkdocs-functions">Functions<a href="#frequenz.repo.config.mkdocs-functions" class="headerlink" title="Permanent link">¤</a></h3>
 
+
 <div class="doc doc-object doc-function">
 
 
@@ -887,11 +888,13 @@ not included.</p>
 <p>A summary page is generated as <code>SUMMARY.md</code> which is compatible with the
 <code>mkdocs-literary-nav</code> plugin.</p>
 
+
+
   <table>
     <thead>
       <tr>
         <th><b>PARAMETER</b></th>
-        <th><b>DESCRIPTION</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
@@ -935,9 +938,9 @@ to the output directory of mkdocs.</p>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/mkdocs.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
+          <details class="quote">
+            <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/mkdocs.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
 <span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
 <span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
 <span class="normal"><a href="#__codelineno-0-88"> 88</a></span>
@@ -1061,10 +1064,11 @@ to the output directory of mkdocs.</p>
 </span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145"></a>    <span class="k">with</span> <span class="n">mkdocs_gen_files</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">docs_path</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;SUMMARY.md&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">nav_file</span><span class="p">:</span>
 </span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146"></a>        <span class="n">nav_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">nav</span><span class="o">.</span><span class="n">build_literate_nav</span><span class="p">())</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1084,11 +1088,13 @@ not included.</p>
 <p>A summary page is generated as <code>SUMMARY.md</code> which is compatible with the
 <code>mkdocs-literary-nav</code> plugin.</p>
 
+
+
   <table>
     <thead>
       <tr>
         <th><b>PARAMETER</b></th>
-        <th><b>DESCRIPTION</b></th>
+        <th><b> DESCRIPTION</b></th>
       </tr>
     </thead>
     <tbody>
@@ -1132,9 +1138,9 @@ to the output directory of mkdocs.</p>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/mkdocs.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-41">41</a></span>
+          <details class="quote">
+            <summary>Source code in <code>/opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/frequenz/repo/config/mkdocs.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-41">41</a></span>
 <span class="normal"><a href="#__codelineno-0-42">42</a></span>
 <span class="normal"><a href="#__codelineno-0-43">43</a></span>
 <span class="normal"><a href="#__codelineno-0-44">44</a></span>
@@ -1218,7 +1224,7 @@ to the output directory of mkdocs.</p>
 </span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81"></a>    <span class="k">with</span> <span class="n">mkdocs_gen_files</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dst_path</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;SUMMARY.md&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">nav_file</span><span class="p">:</span>
 </span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a>        <span class="n">nav_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">nav</span><span class="o">.</span><span class="n">build_literate_nav</span><span class="p">())</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
