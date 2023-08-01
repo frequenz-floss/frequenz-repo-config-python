@@ -41,7 +41,7 @@ class ProtobufConfig:
 
     @classmethod
     def from_pyproject_toml(
-        cls, /, path: str = "pyproject.toml", **defaults: Any
+        cls, path: str = "pyproject.toml", /, **defaults: Any
     ) -> Self:
         """Create a new configuration by loading the options from a `pyproject.toml` file.
 
