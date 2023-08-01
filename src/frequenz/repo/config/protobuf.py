@@ -70,7 +70,8 @@ class ProtobufConfig:
         except KeyError:
             return cls(**defaults)
 
-        known_keys = frozenset(defaults.keys())
+        default = cls(**defaults)
+        known_keys = frozenset(dataclasses.asdict(default).keys())
         config_keys = frozenset(config.keys())
         if unknown_keys := config_keys - known_keys:
             _logger.warning(
@@ -80,4 +81,4 @@ class ProtobufConfig:
             )
 
         attrs = dict(defaults, **{k: config[k] for k in (known_keys & config_keys)})
-        return cls(**attrs)
+        return dataclasses.replace(default, **attrs)
