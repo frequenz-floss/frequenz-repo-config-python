@@ -410,6 +410,26 @@
     Initialize the GitHub Pages website
   </a>
   
+    <nav class="md-nav" aria-label="Initialize the GitHub Pages website">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#website-versions-using-mike" class="md-nav__link">
+    Website versions using Mike
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-generation-of-pages-via-github-actions" class="md-nav__link">
+    Auto-generation of pages via GitHub Actions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -856,6 +876,26 @@
     Initialize the GitHub Pages website
   </a>
   
+    <nav class="md-nav" aria-label="Initialize the GitHub Pages website">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#website-versions-using-mike" class="md-nav__link">
+    Website versions using Mike
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-generation-of-pages-via-github-actions" class="md-nav__link">
+    Auto-generation of pages via GitHub Actions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -1079,6 +1119,28 @@ initial setup is needed for it to work correctly:</p>
 <code>https://github.com/&lt;repo-owner&gt;/&lt;repo-name&gt;/settings/pages</code>.</p>
 <p>If all went well, your website should be available soon via
 <code>https://&lt;repo-owner&gt;.github.io/&lt;repo-name&gt;/</code>.</p>
+<h4 id="website-versions-using-mike">Website versions using Mike<a class="headerlink" href="#website-versions-using-mike" title="Permanent link">¤</a></h4>
+<p>The above commands create a new documentation version using
+<a href="https://pypi.org/project/mike/">Mike</a>, which is used to keep multiple versions
+of the website.</p>
+<p>The new documentation version is called <code>next</code>, which is used as the name for
+the currently in-development branch. The <code>next</code> branch has an alias called
+<code>latest</code>, which is set as the <em>default</em>.</p>
+<p>If the website is visited without specifying an explicit version, the <code>latest</code>
+version will be displayed. It is recommended to point <code>latest</code> to the latest
+stable version instead of the currently in-devepoment version, so as soon as
+you make a release, you should update the alias.</p>
+<h4 id="auto-generation-of-pages-via-github-actions">Auto-generation of pages via GitHub Actions<a class="headerlink" href="#auto-generation-of-pages-via-github-actions" title="Permanent link">¤</a></h4>
+<p>New versions of the documentation will be automatically generated and published
+via GitHub Actions on any push.</p>
+<p>If a push is to a branch with semver-like format (vX.Y.Z), then the generated
+version will replace the current <code>next</code> version.</p>
+<p>If a tag is pushed instead, then the generated version will replace the current
+<code>vX.Y</code> version (if there was any), and the aliases <code>vX</code> and <code>latest</code> will be
+updated to point to the new version.</p>
+<p>To summarize, we don't create versions for patch releases, only for minor
+versions, and we have an alias to point to the latest version of a major
+version too.</p>
 <h2 id="migrate-an-existing-project">Migrate an existing project<a class="headerlink" href="#migrate-an-existing-project" title="Permanent link">¤</a></h2>
 <p>The easiest way to migrate an existing project is to generate a new one based
 on the current project metadata and then overwrite the existing files.</p>
