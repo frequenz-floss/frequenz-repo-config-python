@@ -149,6 +149,37 @@ Then make sure that GitHub Pages is enabled in
 If all went well, your website should be available soon via
 `https://<repo-owner>.github.io/<repo-name>/`.
 
+#### Website versions using Mike
+
+The above commands create a new documentation version using
+[Mike](https://pypi.org/project/mike/), which is used to keep multiple versions
+of the website.
+
+The new documentation version is called `next`, which is used as the name for
+the currently in-development branch. The `next` branch has an alias called
+`latest`, which is set as the *default*.
+
+If the website is visited without specifying an explicit version, the `latest`
+version will be displayed. It is recommended to point `latest` to the latest
+stable version instead of the currently in-devepoment version, so as soon as
+you make a release, you should update the alias.
+
+#### Auto-generation of pages via GitHub Actions
+
+New versions of the documentation will be automatically generated and published
+via GitHub Actions on any push.
+
+If a push is to a branch with semver-like format (vX.Y.Z), then the generated
+version will replace the current `next` version.
+
+If a tag is pushed instead, then the generated version will replace the current
+`vX.Y` version (if there was any), and the aliases `vX` and `latest` will be
+updated to point to the new version.
+
+To summarize, we don't create versions for patch releases, only for minor
+versions, and we have an alias to point to the latest version of a major
+version too.
+
 ## Migrate an existing project
 
 The easiest way to migrate an existing project is to generate a new one based
