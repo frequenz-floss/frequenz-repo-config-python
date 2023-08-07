@@ -226,8 +226,13 @@ without having to enter all the inputs again.
 
 !!! warning
 
-    Don't forget to commit all changes in your repository before doing this!
-    Files will be overwritten!
+    * Don't forget to commit all changes in your repository before doing this!
+      Files will be overwritten!
+    * Don't forget to check all the [release
+      notes](https://github.com/frequenz-floss/frequenz-repo-config-python/releases)
+      for all the versions you are going to update, in particular the
+      **Upgrading** section, as there might be steps necessary before even
+      running the `cookiecutter` command for the update.
 
 ```sh
 git commit -a  # commit all changes
