@@ -2,6 +2,7 @@
 ./.github/ISSUE_TEMPLATE/config.yml:    # TODO(cookiecutter): Make sure the GitHub repository has a discussion category "Support"
 ./.github/keylabeler.yml:  # TODO(cookiecutter): Add other parts
 ./.github/labeler.yml:# TODO(cookiecutter): Add different parts of the source
+./.github/workflows/release-notes-check.yml:          # TODO(cookiecutter): Uncomment the following line for private repositories, otherwise remove it and remove it
 ./CODEOWNERS:# TODO(cookiecutter): Add more specific code-owners, check if the default is correct
 ./CODEOWNERS:* TODO(cookiecutter): Add codeowners (like @{github_org}/some-team)# Temporary, should probably change
 ./README.md:TODO(cookiecutter): Improve the README file
