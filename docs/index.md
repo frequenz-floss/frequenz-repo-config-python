@@ -109,6 +109,50 @@ sessions, which include running linters and tests.
     Otherwise, `nox` will create many virtual environments each time you run
     it, which is **very** slow.
 
+### Configure the release notes check GitHub workflow
+
+By default a workflow to check if the release notes were updated is
+included. This workflow will check PRs to see if a change was done in the
+`src/` directory, and if so, it will fail if the `RELEASE_NOTES.md` wasn't also
+updated.
+
+But this check will not be enforced unless some extra configuration is done. To
+enforce the check for PRs to be merged you need to go to the *GitHub repository
+-> Settings -> Branches* and select the rule for the branch you want to protect.
+
+Then in the rules search for the *Require status checks to pass before merging*
+checkbox and search for *"Check release notes are updated"* in the search box.
+
+As sometimes it is OK for PRs not to have release notes, as maybe some changes
+don't impact the end user, this workflow can be overridden by assigning the
+label `cmd:skip-release-notes` to the PR. To be able to do this, you also need
+to add that label to the repository.
+
+You can do this from the GitHub web interface, or using one of the following
+commands:
+
+```sh
+repo=...  # org/repo
+token=... # GitHub token with the correct permissions
+name="cmd:skip-release-notes"
+desc="It is not necessary to update release notes for this PR"
+color="930F79"
+
+# Using cURL
+curl -L \
+    -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer $token" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    -d '{"name":"'"$name"'","description":"'"$desc"'","color":"'"$color"'"}' \
+    "https://api.github.com/repos/$repo/labels"
+
+# Using the gh tool (no need for a token if you already have it configured)
+gh api -X POST \
+    -f name="$name" -f description="$desc" -f color="$color" \
+    "repos/$repo/labels"
+```
+
 ### Verify the generated documentation works
 
 To generate the documentation, you can use `mkdocs`:
