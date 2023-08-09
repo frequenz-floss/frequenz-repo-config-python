@@ -399,6 +399,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#configure-the-release-notes-check-github-workflow" class="md-nav__link">
+    Configure the release notes check GitHub workflow
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#verify-the-generated-documentation-works" class="md-nav__link">
     Verify the generated documentation works
   </a>
@@ -865,6 +872,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#configure-the-release-notes-check-github-workflow" class="md-nav__link">
+    Configure the release notes check GitHub workflow
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#verify-the-generated-documentation-works" class="md-nav__link">
     Verify the generated documentation works
   </a>
@@ -1090,10 +1104,46 @@ change or update dependencies, you need to run it again) and then use <code>nox
 <p>Otherwise, <code>nox</code> will create many virtual environments each time you run
 it, which is <strong>very</strong> slow.</p>
 </div>
+<h3 id="configure-the-release-notes-check-github-workflow">Configure the release notes check GitHub workflow<a class="headerlink" href="#configure-the-release-notes-check-github-workflow" title="Permanent link">¤</a></h3>
+<p>By default a workflow to check if the release notes were updated is
+included. This workflow will check PRs to see if a change was done in the
+<code>src/</code> directory, and if so, it will fail if the <code>RELEASE_NOTES.md</code> wasn't also
+updated.</p>
+<p>But this check will not be enforced unless some extra configuration is done. To
+enforce the check for PRs to be merged you need to go to the <em>GitHub repository
+-&gt; Settings -&gt; Branches</em> and select the rule for the branch you want to protect.</p>
+<p>Then in the rules search for the <em>Require status checks to pass before merging</em>
+checkbox and search for <em>"Check release notes are updated"</em> in the search box.</p>
+<p>As sometimes it is OK for PRs not to have release notes, as maybe some changes
+don't impact the end user, this workflow can be overridden by assigning the
+label <code>cmd:skip-release-notes</code> to the PR. To be able to do this, you also need
+to add that label to the repository.</p>
+<p>You can do this from the GitHub web interface, or using one of the following
+commands:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">repo</span><span class="o">=</span>...<span class="w">  </span><span class="c1"># org/repo</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">token</span><span class="o">=</span>...<span class="w"> </span><span class="c1"># GitHub token with the correct permissions</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">name</span><span class="o">=</span><span class="s2">&quot;cmd:skip-release-notes&quot;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nv">desc</span><span class="o">=</span><span class="s2">&quot;It is not necessary to update release notes for this PR&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nv">color</span><span class="o">=</span><span class="s2">&quot;930F79&quot;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Using cURL</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>curl<span class="w"> </span>-L<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/vnd.github+json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$token</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;X-GitHub-Api-Version: 2022-11-28&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;:&quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$name</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;,&quot;description&quot;:&quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$desc</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;,&quot;color&quot;:&quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$color</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="s2">&quot;https://api.github.com/repos/</span><span class="nv">$repo</span><span class="s2">/labels&quot;</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="c1"># Using the gh tool (no need for a token if you already have it configured)</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span>-f<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$name</span><span class="s2">&quot;</span><span class="w"> </span>-f<span class="w"> </span><span class="nv">description</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$desc</span><span class="s2">&quot;</span><span class="w"> </span>-f<span class="w"> </span><span class="nv">color</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$color</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="s2">&quot;repos/</span><span class="nv">$repo</span><span class="s2">/labels&quot;</span>
+</span></code></pre></div>
 <h3 id="verify-the-generated-documentation-works">Verify the generated documentation works<a class="headerlink" href="#verify-the-generated-documentation-works" title="Permanent link">¤</a></h3>
 <p>To generate the documentation, you can use <code>mkdocs</code>:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>mkdocs<span class="w"> </span>serve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
 <p>If the command fails, look at the log warnings and errors and fix them. If it
 worked, now there is a local web server serving the documentation. You can
@@ -1110,10 +1160,10 @@ as the easiest way to use the <a href="https://github.com/pseudomuto/protoc-gen-
 <p>The generated documentation can be easily published via GitHub Pages, and it
 will be automatically updated for new pushes and releases. However, some
 initial setup is needed for it to work correctly:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>next<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Creates the branch gh-pages locally</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream to publish the website</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>next<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Creates the branch gh-pages locally</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream to publish the website</span>
 </span></code></pre></div>
 <p>Then make sure that GitHub Pages is enabled in
 <code>https://github.com/&lt;repo-owner&gt;/&lt;repo-name&gt;/settings/pages</code>.</p>
@@ -1148,14 +1198,14 @@ on the current project metadata and then overwrite the existing files.</p>
 <code>git</code> to look at the changes.</p>
 <p>If you generate the new repo in a temporary directory, you can easily overwrite
 the files in your existing project by using <code>rsync</code> or similar tools:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.4.0
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>git<span class="w"> </span>diff
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Fix all the `TODO`s and clean up the generated files</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>git<span class="w"> </span>commit<span class="w"> </span>-a
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.4.0
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>git<span class="w"> </span>diff
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Fix all the `TODO`s and clean up the generated files</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>git<span class="w"> </span>commit<span class="w"> </span>-a
 </span></code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1188,14 +1238,14 @@ without having to enter all the inputs again.</p>
   running the <code>cookiecutter</code> command for the update.</li>
 </ul>
 </div>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w">  </span><span class="c1"># commit all changes</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>..
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.4.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span>--overwrite-if-exists<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w">  </span><span class="c1"># commit all changes</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.4.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>--overwrite-if-exists<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
 </span></code></pre></div>
 <p>This will create a new commit with all the changes to the overwritten files.
 Bear in mind that all the <code>TODO</code>s will come back, so there will be quite a bit
