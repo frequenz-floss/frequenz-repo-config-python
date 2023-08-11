@@ -1,0 +1,8 @@
+exclude .gitignore
+exclude .gitmodules
+exclude CODEOWNERS
+exclude noxfile.py
+recursive-exclude .github *
+recursive-exclude pytests *
+recursive-include py *.pyi
+recursive-include submodules *.proto

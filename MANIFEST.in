@@ -1,0 +1,6 @@
+exclude CODEOWNERS
+exclude noxfile.py
+recursive-exclude .github *
+recursive-exclude tests *
+recursive-exclude tests_golden *
+recursive-include py *.pyi

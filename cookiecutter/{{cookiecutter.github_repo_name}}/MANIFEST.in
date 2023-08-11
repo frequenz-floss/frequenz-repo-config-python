@@ -1,0 +1,16 @@
+exclude .gitignore
+{%- if cookiecutter.type == "api" %}
+exclude .gitmodules
+{%- endif %}
+exclude CODEOWNERS
+exclude noxfile.py
+recursive-exclude .github *
+{%- if cookiecutter.type == "api" %}
+recursive-exclude pytests *
+{%- else %}
+recursive-exclude tests *
+{%- endif %}
+recursive-include py *.pyi
+{%- if cookiecutter.type == "api" %}
+recursive-include submodules *.proto
+{%- endif %}
