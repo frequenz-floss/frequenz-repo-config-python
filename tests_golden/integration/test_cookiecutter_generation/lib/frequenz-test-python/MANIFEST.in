@@ -1,0 +1,6 @@
+exclude .gitignore
+exclude CODEOWNERS
+exclude noxfile.py
+recursive-exclude .github *
+recursive-exclude tests *
+recursive-include py *.pyi

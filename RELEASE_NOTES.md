@@ -32,11 +32,17 @@
 
 ## New Features
 
-- Cookiecutter: Add a new GitHub workflow to check that release notes were updated.
+### Cookietutter template
+
+- Add a new GitHub workflow to check that release notes were updated.
 
   This workflow will check PRs to see if a change was done in the `src/` directory, and if so, it will fail if the `RELEASE_NOTES.md` wasn't also updated.
 
   Users can override this by assigning the label `cmd:skip-release-notes` to the PR for changes that don't really need a release notes update.
+
+- Add `MANIFEST.in` file.
+
+  This makes sure that we don't ship useless files when building the distribution package and that we include all the relevant files too, like generated *.pyi files for API repositories.
 
 ## Bug Fixes
 
