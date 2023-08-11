@@ -40,4 +40,6 @@
 
 ## Bug Fixes
 
+- The distribution package doesn't include tests and other useless files anymore.
+
 - Cookiecutter: Now the CI workflow will checkout the submodules.
