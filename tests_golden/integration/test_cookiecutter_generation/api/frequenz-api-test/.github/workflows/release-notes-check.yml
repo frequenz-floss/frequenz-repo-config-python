@@ -25,6 +25,6 @@ jobs:
           # TODO(cookiecutter): Uncomment the following line for private repositories, otherwise remove it and remove it
           # token: ${{ secrets.github_token }}
           file-pattern: "RELEASE_NOTES.md"
-          prereq-pattern: "src/**"
+          prereq-pattern: "{proto,py}/**"
           skip-label: "cmd:skip-release-notes"
           failure-message: "Missing a release notes update. Please add one or apply the ${skip-label} label to the pull request"
