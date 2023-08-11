@@ -6,6 +6,8 @@
 
 ## Upgrading
 
+### Cookiecutter template
+
 - To make the new workflow to check if release notes were updated you should add the check to the branch protection rules of your repository to require this check to pass. You should also add a new label *"cmd:skip-release-notes"* to be able to override the check. You can use the following script to do it:
 
   ```sh
@@ -32,7 +34,7 @@
 
 ## New Features
 
-### Cookietutter template
+### Cookiecutter template
 
 - Add a new GitHub workflow to check that release notes were updated.
 
@@ -48,4 +50,6 @@
 
 - The distribution package doesn't include tests and other useless files anymore.
 
-- Cookiecutter: Now the CI workflow will checkout the submodules.
+### Cookiecutter template
+
+- Now the CI workflow will checkout the submodules.
