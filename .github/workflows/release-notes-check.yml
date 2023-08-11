@@ -23,6 +23,6 @@ jobs:
         uses: brettcannon/check-for-changed-files@4170644959a21843b31f1181f2a1761d65ef4791 # v1.2.0
         with:
           file-pattern: "RELEASE_NOTES.md"
-          prereq-pattern: "src/**"
+          prereq-pattern: "{src,cookiecutter}/**"
           skip-label: "cmd:skip-release-notes"
           failure-message: "Missing a release notes update. Please add one or apply the ${skip-label} label to the pull request"
