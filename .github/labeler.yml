@@ -24,6 +24,7 @@
       - "**/*.toml"
       - "**/*.yaml"
       - "**/*.yml"
+      - ".editorconfig"
       - ".git*"
       - ".git*/**"
       - CODEOWNERS
