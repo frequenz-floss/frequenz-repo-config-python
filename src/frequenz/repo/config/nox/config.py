@@ -92,7 +92,7 @@ class Config:
         This will add extra paths discovered in config files and other sources.
         """
         for path in _util.discover_paths():
-            if path not in self.extra_paths:
+            if path not in self.extra_paths and path not in self.source_paths:
                 self.extra_paths.append(path)
 
     def copy(self, /) -> Self:

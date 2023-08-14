@@ -52,6 +52,8 @@
 
 - The distribution package doesn't include tests and other useless files anymore.
 
+- nox: When discovering path *extra paths*, now paths will not be added if they are also *source paths*, as we don't want any duplicates.
+
 ### Cookiecutter template
 
 - Now the CI workflow will checkout the submodules.
