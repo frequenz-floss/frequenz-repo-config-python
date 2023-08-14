@@ -55,6 +55,10 @@ def get_sybil_arguments() -> dict[str, Any]:
     return {
         "parsers": [_CustomPythonCodeBlockParser()],
         "patterns": ["*.py"],
+        # This is a hack because Sybil seems to have issues with `__init__.py` files.
+        # See https://github.com/frequenz-floss/frequenz-repo-config-python/issues/113
+        # for details
+        "excludes": ["__init__.py"],
     }
 
 
