@@ -35,7 +35,7 @@ Then simply run [Cookiecutter] where you want to create the new project:
 
 ```sh
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter --checkout v0.4.0
+    --directory=cookiecutter --checkout v0.5.0
 ```
 
 This command will prompt you for the project type, name, and other
