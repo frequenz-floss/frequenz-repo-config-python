@@ -35,7 +35,9 @@ def _is_internal(path_parts: Tuple[str, ...]) -> bool:
     def with_underscore_not_init(part: str) -> bool:
         return part.startswith("_") and part != "__init__"
 
-    return any(p for p in path_parts if with_underscore_not_init(p))
+    is_conftest = len(path_parts) == 1 and path_parts[0] == "conftest"
+
+    return is_conftest or any(p for p in path_parts if with_underscore_not_init(p))
 
 
 def generate_python_api_pages(
