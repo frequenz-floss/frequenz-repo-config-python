@@ -25,7 +25,6 @@ method.
 """
 
 from . import config as _config
-from . import util as _util
 
 common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     black=[
@@ -89,16 +88,11 @@ api_config: _config.Config = common_config.copy()
 """Default configuration for APIs.
 
 Same as `common_config`, but with an empty `source_paths` (as the sources are
-automatically generated, we don't want to test anything in there) and replacing `"src"`
-with `"py"` and `extra_paths` replacing `"tests"` with `"pytests"`.
+automatically generated, we don't want to test anything in there).
 """
 
 # We don't check the sources at all because they are automatically generated.
 api_config.source_paths = []
-# We adapt the path to the tests.
-api_config.extra_paths = list(
-    _util.replace(common_config.extra_paths, {"tests": "pytests"})
-)
 
 app_command_options: _config.CommandsOptions = common_command_options.copy()
 """Default command-line options for applications."""

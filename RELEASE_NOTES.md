@@ -6,6 +6,10 @@
 
 ## Upgrading
 
+- nox: Now the default configuration for API repositories will not automatically add `pytests` as an `extra_path`
+
+  The `pytests` directory is not a standard directory that will be auto-discovered by `pytest`, so it should always be included in the `pyproject.toml` file, in the `tool.pytest.ini_options.testpaths` array. Please check your API project is properly configured.
+
 ### Cookiecutter template
 
 - To make the new workflow to check if release notes were updated you should add the check to the branch protection rules of your repository to require this check to pass. You should also add a new label *"cmd:skip-release-notes"* to be able to override the check. You can use the following script to do it:
