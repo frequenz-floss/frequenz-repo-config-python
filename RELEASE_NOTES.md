@@ -38,6 +38,12 @@
 
 ## New Features
 
+- Add support for linting code examples found in *docstrings*.
+
+  A new module `frequenz.repo.config.pytest.examples` is added with an utility function to be able to easily collect and lint code examples in *docstrings*.
+
+  There is also a new optional dependency `extra-lint-examples` to easily pull the dependencies needed to do this linting. Please have a look at the documentation in the `frequenz.repo.config` package for more details.
+
 ### Cookiecutter template
 
 - Add a new GitHub workflow to check that release notes were updated.

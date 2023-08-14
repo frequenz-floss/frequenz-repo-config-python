@@ -19,6 +19,6 @@ def test_optional_dependencies() -> None:
     defined = {
         k
         for k in pyproject_toml["project"]["optional-dependencies"].keys()
-        if k != "dev" and not k.startswith("dev-")
+        if k != "dev" and not k.startswith("dev-") and not k.startswith("extra-")
     }
     assert defined == expected, utils.MSG_UNEXPECTED_REPO_TYPES
