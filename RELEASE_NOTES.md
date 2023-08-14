@@ -46,6 +46,8 @@
 
   This makes sure that we don't ship useless files when building the distribution package and that we include all the relevant files too, like generated *.pyi files for API repositories.
 
+- Add an `.editorconfig` file to ensure a common basic editor configuration for different file types.
+
 ## Bug Fixes
 
 - The distribution package doesn't include tests and other useless files anymore.
