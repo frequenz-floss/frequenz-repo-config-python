@@ -61,6 +61,7 @@ body:
         - Tools to configure nox (part:nox)
         - Tools to configure protobufs (part:protobuf)
         - Tools to configure the CI (part:ci)
+        - Tools to configure pytest (part:pytest)
     validations:
       required: true
   - type: textarea

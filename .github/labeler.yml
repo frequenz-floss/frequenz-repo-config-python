@@ -69,3 +69,9 @@
       - "src/frequenz/repo/config/protobuf*"
     all:
       - "!tests*/**"
+
+"part:pytest":
+  - any:
+      - "src/frequenz/repo/config/pytest"
+    all:
+      - "!tests*/**"
