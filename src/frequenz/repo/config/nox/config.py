@@ -53,7 +53,16 @@ class CommandsOptions:
         Returns:
             The copy of self.
         """
-        return _dataclasses.replace(self)
+        return _dataclasses.replace(
+            self,
+            black=self.black.copy(),
+            darglint=self.darglint.copy(),
+            isort=self.isort.copy(),
+            mypy=self.mypy.copy(),
+            pydocstyle=self.pydocstyle.copy(),
+            pylint=self.pylint.copy(),
+            pytest=self.pytest.copy(),
+        )
 
 
 @_dataclasses.dataclass(kw_only=True, slots=True)
@@ -101,7 +110,13 @@ class Config:
         Returns:
             The copy of self.
         """
-        return _dataclasses.replace(self)
+        return _dataclasses.replace(
+            self,
+            opts=self.opts.copy(),
+            sessions=self.sessions.copy(),
+            source_paths=self.source_paths.copy(),
+            extra_paths=self.extra_paths.copy(),
+        )
 
     def path_args(self, session: _nox.Session, /) -> list[str]:
         """Return the file paths to run the checks on.
