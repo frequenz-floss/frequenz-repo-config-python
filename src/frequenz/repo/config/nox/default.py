@@ -88,8 +88,9 @@ api_command_options: _config.CommandsOptions = common_command_options.copy()
 api_config: _config.Config = common_config.copy()
 """Default configuration for APIs.
 
-Same as `common_config`, but with `source_paths` replacing `"src"` with `"py"`
-and `extra_paths` replacing `"tests"` with `"pytests"`.
+Same as `common_config`, but with an empty `source_paths` (as the sources are
+automatically generated, we don't want to test anything in there) and replacing `"src"`
+with `"py"` and `extra_paths` replacing `"tests"` with `"pytests"`.
 """
 
 # We don't check the sources at all because they are automatically generated.
