@@ -86,16 +86,15 @@ dev-pylint = [
   # For checking the noxfile, docs/ script, and tests
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
-{%- if cookiecutter.type == "api" %}
-dev-pytest = ["pytest == 7.3.1"]
-{%- else %}
 dev-pytest = [
   "pytest == 7.3.1",
+  "frequenz-repo-config[extra-lint-examples] == 0.5.0",
+{%- if cookiecutter.type != "api" %}
   "pytest-mock == 3.10.0",
   "pytest-asyncio == 0.21.0",
   "async-solipsism == 0.5",
-]
 {%- endif %}
+]
 dev = [
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-docstrings,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
 ]
@@ -138,7 +137,7 @@ disable = [
 
 [tool.pytest.ini_options]
 {%- if cookiecutter.type != "api" %}
-testpaths = ["tests"]
+testpaths = ["tests", "src"]
 asyncio_mode = "auto"
 required_plugins = ["pytest-asyncio", "pytest-mock"]
 {%- else %}
@@ -147,7 +146,7 @@ testpaths = ["pytests"]
 {%- if cookiecutter.type != "api" %}
 
 [[tool.mypy.overrides]]
-module = ["async_solipsism", "async_solipsism.*"]
+module = ["async_solipsism", "async_solipsism.*", "sybil", "sybil.*"]
 ignore_missing_imports = true
 {%- endif %}
 {%- if cookiecutter.type == "api" %}

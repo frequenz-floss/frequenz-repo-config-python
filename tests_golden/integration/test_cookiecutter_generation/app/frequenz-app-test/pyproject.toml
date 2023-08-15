@@ -69,6 +69,7 @@ dev-pylint = [
 ]
 dev-pytest = [
   "pytest == 7.3.1",
+  "frequenz-repo-config[extra-lint-examples] == 0.5.0",
   "pytest-mock == 3.10.0",
   "pytest-asyncio == 0.21.0",
   "async-solipsism == 0.5",
@@ -111,12 +112,12 @@ disable = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "src"]
 asyncio_mode = "auto"
 required_plugins = ["pytest-asyncio", "pytest-mock"]
 
 [[tool.mypy.overrides]]
-module = ["async_solipsism", "async_solipsism.*"]
+module = ["async_solipsism", "async_solipsism.*", "sybil", "sybil.*"]
 ignore_missing_imports = true
 
 [tool.setuptools_scm]

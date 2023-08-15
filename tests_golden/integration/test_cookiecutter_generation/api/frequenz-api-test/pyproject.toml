@@ -66,7 +66,10 @@ dev-pylint = [
   # For checking the noxfile, docs/ script, and tests
   "frequenz-api-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
-dev-pytest = ["pytest == 7.3.1"]
+dev-pytest = [
+  "pytest == 7.3.1",
+  "frequenz-repo-config[extra-lint-examples] == 0.5.0",
+]
 dev = [
   "frequenz-api-test[dev-mkdocs,dev-docstrings,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
 ]

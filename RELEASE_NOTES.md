@@ -58,6 +58,14 @@
 
 - Add an `.editorconfig` file to ensure a common basic editor configuration for different file types.
 
+- Add a `pytest` hook to collect and lint code examples found in *docstrings* using `pylint`.
+
+  Examples found in code *docstrings* in the `src/` directory will now be collected and checked using `pylint`. This is done via the file `src/conftest.py`, which hooks into `pytest`, so to only check the examples you can run `pylint src`.
+
+  !!! info
+
+      There is a bug in the library used to extract the examples that prevents from collecting examples from `__init__.py` files. See https://github.com/frequenz-floss/frequenz-repo-config-python/issues/113 for more details.
+
 ## Bug Fixes
 
 - The distribution package doesn't include tests and other useless files anymore.
