@@ -1086,7 +1086,7 @@ method.</p>
 
 
 <h4 id="frequenz.repo.config.nox.default.api_config" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">frequenz</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">nox</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">api_config</span><span class="p">:</span> <span class="n">_config</span><span class="o">.</span><span class="n">Config</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">common_config</span><span class="p">,</span> <span class="n">opts</span><span class="o">=</span><span class="n">api_command_options</span><span class="p">,</span> <span class="n">source_paths</span><span class="o">=</span><span class="p">[],</span> <span class="n">extra_paths</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">_util</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">common_config</span><span class="o">.</span><span class="n">extra_paths</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;tests&#39;</span><span class="p">:</span> <span class="s1">&#39;pytests&#39;</span><span class="p">})))</span></code>
+<code class="highlight language-python"><span class="n">frequenz</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">nox</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">api_config</span><span class="p">:</span> <span class="n">_config</span><span class="o">.</span><span class="n">Config</span> <span class="o">=</span> <span class="n">common_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
@@ -1098,8 +1098,8 @@ method.</p>
   <div class="doc doc-contents ">
   
       <p>Default configuration for APIs.</p>
-<p>Same as <code>common_config</code>, but with <code>source_paths</code> replacing <code>"src"</code> with <code>"py"</code>
-and <code>extra_paths</code> replacing <code>"tests"</code> with <code>"pytests"</code>.</p>
+<p>Same as <code>common_config</code>, but with an empty <code>source_paths</code> (as the sources are
+automatically generated, we don't want to test anything in there).</p>
   </div>
 
 </div>
