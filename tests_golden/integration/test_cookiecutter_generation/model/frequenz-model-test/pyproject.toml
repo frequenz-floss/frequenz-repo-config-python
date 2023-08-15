@@ -14,7 +14,7 @@ name = "frequenz-model-test"
 description = "Test description"
 readme = "README.md"
 license = { text = "MIT" }
-keywords = ["frequenz", "python", "model", "ai", "ml", "machine-learning", "test", ""]
+keywords = ["frequenz", "python", "model", "ai", "ml", "machine-learning", "test"]
 classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",

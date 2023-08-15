@@ -65,3 +65,5 @@
 ### Cookiecutter template
 
 - Now the CI workflow will checkout the submodules.
+
+- Fix adding of an empty keyword.

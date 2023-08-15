@@ -172,7 +172,7 @@ def keywords(cookiecutter: dict[str, str]) -> str:
     cookiecutter_keywords = cookiecutter["keywords"]
     if cookiecutter_keywords == default:
         cookiecutter_keywords = ""
-    extended_keywords.extend(k.strip() for k in cookiecutter_keywords.split(","))
+    extended_keywords.extend(k.strip() for k in cookiecutter_keywords.split(",") if k)
     return _json.dumps(extended_keywords)
 
 
