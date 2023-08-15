@@ -6,6 +6,10 @@
 
 ## Upgrading
 
+- nox: Now the default configuration for API repositories will not automatically add `pytests` as an `extra_path`
+
+  The `pytests` directory is not a standard directory that will be auto-discovered by `pytest`, so it should always be included in the `pyproject.toml` file, in the `tool.pytest.ini_options.testpaths` array. Please check your API project is properly configured.
+
 ### Cookiecutter template
 
 - To make the new workflow to check if release notes were updated you should add the check to the branch protection rules of your repository to require this check to pass. You should also add a new label *"cmd:skip-release-notes"* to be able to override the check. You can use the following script to do it:
@@ -52,6 +56,16 @@
 
 - The distribution package doesn't include tests and other useless files anymore.
 
+- nox
+
+  * When discovering path *extra paths*, now paths will not be added if they are also *source paths*, as we don't want any duplicates.
+
+  * Fix copying of `Config` and `CommandOptions` objects.
+
 ### Cookiecutter template
 
 - Now the CI workflow will checkout the submodules.
+
+- Fix adding of an empty keyword.
+
+- Don't distribute development files in the source distribution.

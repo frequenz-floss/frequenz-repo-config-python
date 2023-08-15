@@ -24,10 +24,7 @@ They can be modified before being passed to
 method.
 """
 
-import dataclasses
-
 from . import config as _config
-from . import util as _util
 
 common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     black=[
@@ -87,19 +84,15 @@ actor_config: _config.Config = common_config.copy()
 api_command_options: _config.CommandsOptions = common_command_options.copy()
 """Default command-line options for APIs."""
 
-api_config: _config.Config = dataclasses.replace(
-    common_config,
-    opts=api_command_options,
-    # We don't check the sources at all because they are automatically generated.
-    source_paths=[],
-    # We adapt the path to the tests.
-    extra_paths=list(_util.replace(common_config.extra_paths, {"tests": "pytests"})),
-)
+api_config: _config.Config = common_config.copy()
 """Default configuration for APIs.
 
-Same as `common_config`, but with `source_paths` replacing `"src"` with `"py"`
-and `extra_paths` replacing `"tests"` with `"pytests"`.
+Same as `common_config`, but with an empty `source_paths` (as the sources are
+automatically generated, we don't want to test anything in there).
 """
+
+# We don't check the sources at all because they are automatically generated.
+api_config.source_paths = []
 
 app_command_options: _config.CommandsOptions = common_command_options.copy()
 """Default command-line options for applications."""

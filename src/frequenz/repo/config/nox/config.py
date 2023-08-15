@@ -53,7 +53,16 @@ class CommandsOptions:
         Returns:
             The copy of self.
         """
-        return _dataclasses.replace(self)
+        return _dataclasses.replace(
+            self,
+            black=self.black.copy(),
+            darglint=self.darglint.copy(),
+            isort=self.isort.copy(),
+            mypy=self.mypy.copy(),
+            pydocstyle=self.pydocstyle.copy(),
+            pylint=self.pylint.copy(),
+            pytest=self.pytest.copy(),
+        )
 
 
 @_dataclasses.dataclass(kw_only=True, slots=True)
@@ -92,7 +101,7 @@ class Config:
         This will add extra paths discovered in config files and other sources.
         """
         for path in _util.discover_paths():
-            if path not in self.extra_paths:
+            if path not in self.extra_paths and path not in self.source_paths:
                 self.extra_paths.append(path)
 
     def copy(self, /) -> Self:
@@ -101,7 +110,13 @@ class Config:
         Returns:
             The copy of self.
         """
-        return _dataclasses.replace(self)
+        return _dataclasses.replace(
+            self,
+            opts=self.opts.copy(),
+            sessions=self.sessions.copy(),
+            source_paths=self.source_paths.copy(),
+            extra_paths=self.extra_paths.copy(),
+        )
 
     def path_args(self, session: _nox.Session, /) -> list[str]:
         """Return the file paths to run the checks on.

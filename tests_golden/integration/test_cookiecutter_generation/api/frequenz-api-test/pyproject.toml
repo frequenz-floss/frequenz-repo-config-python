@@ -14,7 +14,7 @@ name = "frequenz-api-test"
 description = "Test description"
 readme = "README.md"
 license = { text = "MIT" }
-keywords = ["frequenz", "python", "api", "grpc", "protobuf", "rpc", "test", ""]
+keywords = ["frequenz", "python", "api", "grpc", "protobuf", "rpc", "test"]
 classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
