@@ -2,7 +2,7 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release adds linting of code examples in *docstrings*, a workflow to check if PRs have updated the release notes and an [editorconfig](https://editorconfig.org/) file, as well as a bunch of bug fixes.
 
 ## Upgrading
 
