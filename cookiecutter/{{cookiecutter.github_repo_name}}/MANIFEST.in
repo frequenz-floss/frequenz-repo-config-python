@@ -1,10 +1,16 @@
+exclude .cookiecutter-replay.json
+exclude .darglint
+exclude .editorconfig
 exclude .gitignore
 {%- if cookiecutter.type == "api" %}
 exclude .gitmodules
 {%- endif %}
 exclude CODEOWNERS
+exclude CONTRIBUTING.md
+exclude mkdocs.yml
 exclude noxfile.py
 recursive-exclude .github *
+recursive-exclude docs *
 {%- if cookiecutter.type == "api" %}
 recursive-exclude pytests *
 {%- else %}
