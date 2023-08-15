@@ -56,6 +56,11 @@ api = [
 app = []
 lib = []
 model = []
+extra-lint-examples = [
+  "pylint >= 2.17.3, < 3",
+  "pytest >= 7.3.0, < 8",
+  "sybil >= 5.0.3, < 6",
+]
 dev-docstrings = [
   "pydocstyle == 6.3.0",
   "darglint == 1.8.1",
@@ -78,13 +83,15 @@ dev-mypy = [
 ]
 dev-noxfile = ["nox == 2023.4.22"]
 dev-pylint = [
-  "pylint == 2.17.3",
+  # dev-pytest already defines a dependency to pylint because of the examples
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 7.3.1",
+  "pytest == 7.4.0",
+  "pylint == 2.17.3",      # We need this to check for the examples
   "cookiecutter == 2.1.1", # For checking the cookiecutter scripts
+  "sybil == 5.0.3",        # Should be consistent with the extra-lint-examples dependency
 ]
 dev = [
   "frequenz-repo-config[dev-mkdocs,dev-docstrings,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
@@ -124,11 +131,11 @@ disable = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["cookiecutter", "cookiecutter.*"]
+module = ["cookiecutter", "cookiecutter.*", "sybil", "sybil.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["src", "tests"]
 markers = [
   "integration: integration tests (deselect with '-m \"not integration\"')",
 ]

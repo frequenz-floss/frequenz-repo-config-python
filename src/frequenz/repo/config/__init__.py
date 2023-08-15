@@ -207,6 +207,77 @@ plugins:
         - path/to/my/custom/script.py
 ```
 
+## `pytest` (running tests)
+
+### Linting examples in the source code's *docstrings*
+
+To make sure the examples included in your source code's *docstrings* are valid, you can
+use [`pytest`](https://pypi.org/project/pytest/) to automatically collect all the
+examples wrapped in triple backticks (````python`) within our docstrings and validate
+them using [`pylint`](https://pypi.org/project/pylint/).
+
+To do so there is some setup that's needed:
+
+1. Add a `conftest.py` file to the root directory containing your source code with the
+   following contents:
+
+    ```python
+    from frequenz.repo.config.pytest import examples
+    from sybil import Sybil
+
+    pytest_collect_file = Sybil(**examples.get_sybil_arguments()).pytest()
+    ```
+
+    Unfortunately, because of how Sybil works, the [`Sybil`][sybil.Sybil] class needs to
+    be instantiated in the `conftest.py` file. To easily do this, the convenience
+    function
+    [`get_sybil_arguments()`][frequenz.repo.config.pytest.examples.get_sybil_arguments]
+    is provided to get the arguments to pass to the `Sybil()` constructor to be able to
+    collect and lint the examples.
+
+2. Add the following configuration to your `pyproject.toml` file (see
+   the [`nox` section](#pyprojecttoml-configuration) for details on how to configure
+   dependencies to play nicely with `nox`):
+
+    ```toml
+    [project.optional-dependencies]
+    # ...
+    dev-pytest = [
+        # ...
+        "frequenz-repo-config[extra-lint-examples] == 0.5.0",
+    ]
+    # ...
+    [[tool.mypy.overrides]]
+    module = [
+        # ...
+        "sybil",
+        "sybil.*",
+    ]
+    ignore_missing_imports = true
+    # ...
+    [tool.pytest.ini_options]
+    testpaths = [
+        # ...
+        "src",
+    ]
+    ```
+
+   This will make sure that you have the appropriate dependencies installed to run the
+   the tests linting and that `mypy` doesn't complain about the `sybil` module not being
+   typed.
+
+3. Exclude the `src/conftest.py` file from the distribution package, as it shouldn't be
+   shipped with the code, it is only for delelopment purposes. To do so, add the
+   following line to the `MANIFEST.in` file:
+
+    ```
+    # ...
+    exclude src/conftest.py
+    ```
+
+Now you should be able to run `nox -s pytest` (or `pytest` directly) and see the tests
+linting the examples in your code's *docstrings*.
+
 # APIs
 
 ## Protobuf configuation
@@ -286,7 +357,7 @@ dependencies to your project, for example:
 requires = [
   "setuptools >= 67.3.2, < 68",
   "setuptools_scm[toml] >= 7.1.0, < 8",
-  "frequenz-repo-config[api] >= 0.3.0, < 0.4.0",
+  "frequenz-repo-config[api] >= 0.5.0, < 0.6.0",
 ]
 build-backend = "setuptools.build_meta"
 

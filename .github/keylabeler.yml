@@ -27,3 +27,4 @@ labelMappings:
   "part:model-only": "part:model-only"
   "part:nox": "part:nox"
   "part:protobuf": "part:protobuf"
+  "part:pytest": "part:pytest"

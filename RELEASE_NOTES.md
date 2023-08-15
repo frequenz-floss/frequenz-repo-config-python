@@ -2,7 +2,7 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release adds linting of code examples in *docstrings*, a workflow to check if PRs have updated the release notes and an [editorconfig](https://editorconfig.org/) file, as well as a bunch of bug fixes.
 
 ## Upgrading
 
@@ -38,6 +38,12 @@
 
 ## New Features
 
+- Add support for linting code examples found in *docstrings*.
+
+  A new module `frequenz.repo.config.pytest.examples` is added with an utility function to be able to easily collect and lint code examples in *docstrings*.
+
+  There is also a new optional dependency `extra-lint-examples` to easily pull the dependencies needed to do this linting. Please have a look at the documentation in the `frequenz.repo.config` package for more details.
+
 ### Cookiecutter template
 
 - Add a new GitHub workflow to check that release notes were updated.
@@ -51,6 +57,14 @@
   This makes sure that we don't ship useless files when building the distribution package and that we include all the relevant files too, like generated *.pyi files for API repositories.
 
 - Add an `.editorconfig` file to ensure a common basic editor configuration for different file types.
+
+- Add a `pytest` hook to collect and lint code examples found in *docstrings* using `pylint`.
+
+  Examples found in code *docstrings* in the `src/` directory will now be collected and checked using `pylint`. This is done via the file `src/conftest.py`, which hooks into `pytest`, so to only check the examples you can run `pylint src`.
+
+  !!! info
+
+      There is a bug in the library used to extract the examples that prevents from collecting examples from `__init__.py` files. See https://github.com/frequenz-floss/frequenz-repo-config-python/issues/113 for more details.
 
 ## Bug Fixes
 

@@ -109,6 +109,7 @@ plugins:
             - https://nox.thea.codes/en/stable/objects.inv
             - https://oprypin.github.io/mkdocs-gen-files/objects.inv
             - https://setuptools.pypa.io/en/latest/objects.inv
+            - https://sybil.readthedocs.io/en/stable/objects.inv
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv
   - search
   - section-index

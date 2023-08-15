@@ -283,12 +283,8 @@ def _update_pyproject_repo_config_dep(
         repo_type: Type of the repo to generate.
         repo_path: Path to the generated repo.
     """
-    repo_config_dep = (
-        f"frequenz-repo-config[{repo_type.value}] @ file://{repo_config_path}"
-    )
-    repo_config_dep_re = re.compile(
-        rf"""frequenz-repo-config\[{repo_type.value}\][^"]+"""
-    )
+    repo_config_dep = rf"frequenz-repo-config[\1] @ file://{repo_config_path}"
+    repo_config_dep_re = re.compile(r"""frequenz-repo-config\[([^]]+)\][^"]+""")
 
     with open(repo_path / "pyproject.toml", encoding="utf8") as pyproject_file:
         pyproject_content = pyproject_file.read()
