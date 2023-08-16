@@ -22,7 +22,7 @@
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+- Fix outdated version number in the migrating and upgrading documentation.
 
 ### Cookiecutter template
 

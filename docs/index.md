@@ -238,7 +238,7 @@ the files in your existing project by using `rsync` or similar tools:
 ```sh
 cd /tmp
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter --checkout v0.4.0
+    --directory=cookiecutter --checkout v0.5.0
 rsync -vr --exclude=.git/ new-project/ /path/to/existing/project
 cd /path/to/existing/project
 git diff
@@ -283,7 +283,7 @@ git commit -a  # commit all changes
 cd ..
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
     --directory=cookiecutter \
-    --checkout v0.4.0 \
+    --checkout v0.5.0 \
     --overwrite-if-exists \
     --replay \
     --replay-file project-directory/.cookiecutter-replay.json
