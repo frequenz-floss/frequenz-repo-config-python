@@ -244,7 +244,7 @@ To do so there is some setup that's needed:
     # ...
     dev-pytest = [
         # ...
-        "frequenz-repo-config[extra-lint-examples] == 0.5.0",
+        "frequenz-repo-config[extra-lint-examples] == 0.5.1",
     ]
     # ...
     [[tool.mypy.overrides]]
@@ -357,7 +357,7 @@ dependencies to your project, for example:
 requires = [
   "setuptools >= 67.3.2, < 68",
   "setuptools_scm[toml] >= 7.1.0, < 8",
-  "frequenz-repo-config[api] >= 0.5.0, < 0.6.0",
+  "frequenz-repo-config[api] >= 0.5.1, < 0.6.0",
 ]
 build-backend = "setuptools.build_meta"
 
