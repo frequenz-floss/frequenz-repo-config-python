@@ -18,7 +18,12 @@
 
 ### Cookiecutter template
 
+
 - Generated project's dependencies were bumped.
+
+- Move `TODO`s so they are in their own line.
+
+  This makes it easier to upgrade projects to new templates, as removing whole lines is easier than having to edit them.
 
 ## Bug Fixes
 

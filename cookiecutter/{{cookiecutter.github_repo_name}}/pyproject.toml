@@ -15,7 +15,8 @@ description = "{{cookiecutter.description}}"
 readme = "README.md"
 license = { text = "{{cookiecutter.license}}" }
 keywords = {{cookiecutter | keywords}}
-classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
+# TODO(cookiecutter): Remove and add more classifiers if appropriate
+classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
   {%- if cookiecutter.license == "MIT" %}
@@ -31,8 +32,9 @@ classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
   "Typing :: Typed",
 ]
 requires-python = ">= 3.11, < 4"
+# TODO(cookiecutter): Remove and add more dependencies if appropriate
 {%- if cookiecutter.type in ("app", "actor", "model") %}
-dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+dependencies = [
   "typing-extensions == 4.5.0",
   # Make sure to update the mkdocs.yml file when
   # changing the version
@@ -40,13 +42,13 @@ dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
   "frequenz-sdk == 0.24.0",
 ]
 {%- elif cookiecutter.type == "api" %}
-dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+dependencies = [
   "frequenz-api-common >= 0.3.1, < 0.4.0",
   "googleapis-common-protos >= 1.56.2, < 2",
   "grpcio >= 1.51.1, < 2",
 ]
 {%- else %}
-dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+dependencies = [
   "typing-extensions >= 4.5.0, < 5",
 ]
 {%- endif %}
@@ -56,7 +58,8 @@ dynamic = ["version"]
 name = "{{cookiecutter.author_name}}"
 email = "{{cookiecutter.author_email}}"
 
-[project.optional-dependencies] # TODO(cookiecutter): Remove and add more if appropriate
+# TODO(cookiecutter): Remove and add more optional dependencies if appropriate
+[project.optional-dependencies]
 dev-docstrings = [
   "pydocstyle == 6.3.0",
   "darglint == 1.8.1",

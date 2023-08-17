@@ -49,7 +49,8 @@ theme:
       name: Switch to light mode
 
 extra:
-  social:  # TODO(cookiecutter): You probably want to update the links
+  # TODO(cookiecutter): You probably want to update the social links
+  social:
   - icon: fontawesome/brands/github
     link: https://github.com/frequenz-floss
   - icon: fontawesome/brands/linkedin
