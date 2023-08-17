@@ -2,11 +2,9 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This version focus on some bug fixes and final polishing of v0.5.x.
 
 ## Upgrading
-
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
@@ -15,8 +13,6 @@
 - If your replay file contains a long `Introduction` key, you can replace it with an empty string (`""`), it doesn't need to have any particular content and it increases the size and noise in the replay file.
 
 ## New Features
-
-<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ### Cookiecutter template
 
@@ -43,8 +39,6 @@
 - API: The common-api documentation now is cross-linked.
 
 ## Bug Fixes
-
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
 
 ### Cookiecutter template
 
