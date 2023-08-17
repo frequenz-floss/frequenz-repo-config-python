@@ -20,7 +20,6 @@
 
 ### Cookiecutter template
 
-
 - Generated project's dependencies were bumped.
 
 - Move `TODO`s so they are in their own line.
@@ -40,6 +39,8 @@
 - Add a `\n` to the end of the replay file.
 
   This is just to be nice to most editors and text files conventions, that likes it more if there is a `\n` at the end of the file.
+
+- API: The common-api documentation now is cross-linked.
 
 ## Bug Fixes
 
