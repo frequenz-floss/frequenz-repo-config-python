@@ -2,11 +2,9 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This version focus on some bug fixes and final polishing of v0.5.x.
 
 ## Upgrading
-
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
@@ -16,10 +14,7 @@
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
-
 ### Cookiecutter template
-
 
 - Generated project's dependencies were bumped.
 
@@ -41,9 +36,9 @@
 
   This is just to be nice to most editors and text files conventions, that likes it more if there is a `\n` at the end of the file.
 
-## Bug Fixes
+- API: The common-api documentation now is cross-linked.
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+## Bug Fixes
 
 ### Cookiecutter template
 
