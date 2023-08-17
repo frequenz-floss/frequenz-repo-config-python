@@ -18,7 +18,7 @@ jobs:
         # only use hashes to pick the action to execute (instead of tags or branches).
         # For more details read:
         # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
-        uses: actions/labeler@0776a679364a9a16110aac8d0f40f5e11009e327  # 4.0.4
+        uses: actions/labeler@ac9175f8a1f3625fd0d4fb234536d26811351594  # 4.3.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           dot: true
