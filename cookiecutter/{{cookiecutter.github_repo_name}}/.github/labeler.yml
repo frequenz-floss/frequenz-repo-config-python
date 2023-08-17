@@ -33,6 +33,7 @@
   - LICENSE
 
 "part:tests":
+  - "**/conftest.py"
 {%- if cookiecutter.type == "api" %}
   - "pytests/**"
 {%- else %}
@@ -44,6 +45,7 @@
   - "**/*.toml"
   - "**/*.yaml"
   - "**/*.yml"
+  - "**/conftest.py"
   - ".editorconfig"
   - ".git*"
   - ".git*/**"

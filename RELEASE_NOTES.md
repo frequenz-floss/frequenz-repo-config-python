@@ -31,4 +31,4 @@
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- Properly label `conftest.py` files.
