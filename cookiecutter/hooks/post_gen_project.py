@@ -160,6 +160,11 @@ def clean_replay_file(
     # This should ease upgrading.
     replay_data["cookiecutter"].pop("_extensions", None)
 
+    # Overwrite the Introduction (which contains just a long description of the
+    # cookiecutter variables) with an empty string to reduce the replay file size and
+    # avoid noise.
+    replay_data["cookiecutter"]["Introduction"] = ""
+
     if template := replay_data["cookiecutter"].get("_template"):
         if not template.startswith(("gh:", "git@", "https://")):
             print(
