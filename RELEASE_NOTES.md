@@ -18,7 +18,7 @@
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Generated project's dependencies were bumped.
 
 ## Bug Fixes
 

@@ -3,7 +3,7 @@
 
 [build-system]
 requires = [
-  "setuptools == 67.7.2",
+  "setuptools == 68.1.0",
   "setuptools_scm[toml] == 7.1.0",
   "frequenz-repo-config[lib] == 0.5.1",
 ]
@@ -40,18 +40,18 @@ dev-docstrings = [
   "darglint == 1.8.1",
   "tomli == 2.0.1",      # Needed by pydocstyle to read pyproject.toml
 ]
-dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
+dev-formatting = ["black == 23.7.0", "isort == 5.12.0"]
 dev-mkdocs = [
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.5.0",
   "mkdocs-literate-nav == 0.6.0",
-  "mkdocs-material == 9.1.16",
+  "mkdocs-material == 9.1.21",
   "mkdocs-section-index == 0.3.5",
   "mkdocstrings[python] == 0.22.0",
   "frequenz-repo-config[lib] == 0.5.1",
 ]
 dev-mypy = [
-  "mypy == 1.2.0",
+  "mypy == 1.5.1",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
@@ -60,15 +60,15 @@ dev-noxfile = [
   "frequenz-repo-config[lib] == 0.5.1",
 ]
 dev-pylint = [
-  "pylint == 2.17.3",
+  "pylint == 2.17.5",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 7.3.1",
+  "pytest == 7.4.0",
   "frequenz-repo-config[extra-lint-examples] == 0.5.1",
-  "pytest-mock == 3.10.0",
-  "pytest-asyncio == 0.21.0",
+  "pytest-mock == 3.11.1",
+  "pytest-asyncio == 0.21.1",
   "async-solipsism == 0.5",
 ]
 dev = [
