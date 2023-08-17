@@ -37,6 +37,10 @@
 
   This is just a hack to be able to show a help about the template variables, keeping that text only increases the size and noise in the replay file.
 
+- Add a `\n` to the end of the replay file.
+
+  This is just to be nice to most editors and text files conventions, that likes it more if there is a `\n` at the end of the file.
+
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->

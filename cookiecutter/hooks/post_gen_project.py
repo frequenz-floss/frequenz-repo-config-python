@@ -199,6 +199,7 @@ def copy_replay_file() -> None:
 
         with dst.open("w", encoding="utf8") as output_file:
             _json.dump(replay_data, output_file, indent=2)
+            output_file.write("\n")
     except KeyError as error:
         print(
             f"WARNING: Error parsing the replay file {src} -> {dst} ({error}). "
