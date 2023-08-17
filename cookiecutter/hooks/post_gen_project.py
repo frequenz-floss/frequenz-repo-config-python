@@ -155,6 +155,11 @@ def clean_replay_file(
     # the generated project.
     replay_data["cookiecutter"].pop("_output_dir", None)
 
+    # Remove the _extensions key from the replay data because it is not needed in the
+    # generated project, we always want to use the ones from the repo-config template.
+    # This should ease upgrading.
+    replay_data["cookiecutter"].pop("_extensions", None)
+
     if template := replay_data["cookiecutter"].get("_template"):
         if not template.startswith(("gh:", "git@", "https://")):
             print(

@@ -10,7 +10,7 @@
 
 ### Cookiecutter template
 
-<!-- Here upgrade steps for cookiecutter specifically -->
+- If your replay file contains a `_extensions` key, you should remove it, as you most likely want to use the extensions declared by the repo-config cookiecutter template you are upgrading to, otherwise you could get errors about missing extensions.
 
 ## New Features
 
@@ -24,6 +24,12 @@
 - Move `TODO`s so they are in their own line.
 
   This makes it easier to upgrade projects to new templates, as removing whole lines is easier than having to edit them.
+
+- Clean up `_extensions` from the generated replay file.
+
+  It is not needed in the generated project, we always want to use the ones from the repo-config template.
+
+  This should ease upgrading projects, making it less likely to have errors about missing extensions.
 
 ## Bug Fixes
 

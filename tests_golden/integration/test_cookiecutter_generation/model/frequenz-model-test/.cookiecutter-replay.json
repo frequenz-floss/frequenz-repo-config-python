@@ -13,17 +13,6 @@
     "python_package": "frequenz.model.test",
     "pypi_package_name": "frequenz-model-test",
     "github_repo_name": "frequenz-model-test",
-    "default_codeowners": "(like @some-org/some-team; defaults to a team based on the repo type)",
-    "_extensions": [
-      "local_extensions.as_identifier",
-      "local_extensions.default_codeowners",
-      "local_extensions.github_repo_name",
-      "local_extensions.introduction",
-      "local_extensions.keywords",
-      "local_extensions.pypi_package_name",
-      "local_extensions.python_package",
-      "local_extensions.src_path",
-      "local_extensions.title"
-    ]
+    "default_codeowners": "(like @some-org/some-team; defaults to a team based on the repo type)"
   }
 }
