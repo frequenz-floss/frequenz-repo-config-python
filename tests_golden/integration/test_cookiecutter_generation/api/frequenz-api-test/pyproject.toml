@@ -15,7 +15,8 @@ description = "Test description"
 readme = "README.md"
 license = { text = "MIT" }
 keywords = ["frequenz", "python", "api", "grpc", "protobuf", "rpc", "test"]
-classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
+# TODO(cookiecutter): Remove and add more classifiers if appropriate
+classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
@@ -25,7 +26,8 @@ classifiers = [ # TODO(cookiecutter): Remove and add more if appropriate
   "Typing :: Typed",
 ]
 requires-python = ">= 3.11, < 4"
-dependencies = [ # TODO(cookiecutter): Remove and add more if appropriate
+# TODO(cookiecutter): Remove and add more dependencies if appropriate
+dependencies = [
   "frequenz-api-common >= 0.3.1, < 0.4.0",
   "googleapis-common-protos >= 1.56.2, < 2",
   "grpcio >= 1.51.1, < 2",
@@ -36,7 +38,8 @@ dynamic = ["version"]
 name = "Frequenz Energy-as-a-Service GmbH"
 email = "floss@frequenz.com"
 
-[project.optional-dependencies] # TODO(cookiecutter): Remove and add more if appropriate
+# TODO(cookiecutter): Remove and add more optional dependencies if appropriate
+[project.optional-dependencies]
 dev-docstrings = [
   "pydocstyle == 6.3.0",
   "darglint == 1.8.1",
