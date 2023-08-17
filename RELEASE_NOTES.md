@@ -20,6 +20,8 @@
 
 - Generated project's dependencies were bumped.
 
+- API: The common-api documentation now is cross-linked.
+
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->
