@@ -230,7 +230,8 @@ def introduction(
 
 Welcome to repo-config Cookiecutter template!
 
-This template will help you to create a new repository for your project. You will be asked to provide some information about your project.
+This template will help you to create a new repository for your project. \
+You will be asked to provide some information about your project.
 
 Here is an explanation of what each variable is for and will be used for:
 

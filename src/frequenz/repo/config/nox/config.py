@@ -235,7 +235,7 @@ def configure(
     # We need to make sure sessions are imported, otherwise they won't be visible to nox.
     if import_default_sessions:
         # pylint: disable=import-outside-toplevel,cyclic-import
-        from . import session as _
+        from . import session as _  # noqa: F401
 
     match conf:
         case Config():
