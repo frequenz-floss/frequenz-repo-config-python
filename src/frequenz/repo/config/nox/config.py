@@ -29,17 +29,14 @@ class CommandsOptions:
     black: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `black` command."""
 
-    darglint: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `darglint` command."""
+    flake8: list[str] = _dataclasses.field(default_factory=lambda: [])
+    """Command-line options for the `flake8` command."""
 
     isort: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `isort` command."""
 
     mypy: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `mypy` command."""
-
-    pydocstyle: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `pydocstyle` command."""
 
     pylint: list[str] = _dataclasses.field(default_factory=lambda: [])
     """Command-line options for the `pylint` command."""
@@ -56,10 +53,9 @@ class CommandsOptions:
         return _dataclasses.replace(
             self,
             black=self.black.copy(),
-            darglint=self.darglint.copy(),
+            flake8=self.flake8.copy(),
             isort=self.isort.copy(),
             mypy=self.mypy.copy(),
-            pydocstyle=self.pydocstyle.copy(),
             pylint=self.pylint.copy(),
             pytest=self.pytest.copy(),
         )

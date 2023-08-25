@@ -28,7 +28,7 @@ def ci_checks_max(session: nox.Session) -> None:
     formatting(session, False)
     mypy(session, False)
     pylint(session, False)
-    docstrings(session, False)
+    flake8(session, False)
     pytest_max(session, False)
 
 
@@ -84,30 +84,18 @@ def pylint(session: nox.Session, install_deps: bool = True) -> None:
 
 
 @nox.session
-def docstrings(session: nox.Session, install_deps: bool = True) -> None:
-    """Check docstring tone with pydocstyle and param descriptions with darglint.
+def flake8(session: nox.Session, install_deps: bool = True) -> None:
+    """Check for common errors and in particular documentation format and style.
 
     Args:
         session: the nox session.
         install_deps: True if dependencies should be installed.
     """
     if install_deps:
-        session.install("-e", ".[dev-docstrings]")
+        session.install("-e", ".[dev-flake8]")
 
     conf = _config.get()
-    session.run("pydocstyle", *conf.opts.pydocstyle, *conf.path_args(session))
-
-    # Darglint checks that function argument and return values are documented.
-    # This is needed only for the `src` dir, so we exclude the other top level
-    # dirs that contain code, unless some paths were specified by argument, in
-    # which case we use those untouched.
-    darglint_paths = session.posargs or filter(
-        # pylint: disable=fixme
-        # TODO: Make these exclusions configurable
-        lambda path: not (path.startswith("tests") or path.startswith("benchmarks")),
-        conf.path_args(session),
-    )
-    session.run("darglint", *conf.opts.darglint, *darglint_paths)
+    session.run("flake8", *conf.opts.flake8, *conf.path_args(session))
 
 
 @nox.session

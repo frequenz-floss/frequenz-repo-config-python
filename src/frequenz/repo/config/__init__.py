@@ -73,12 +73,12 @@ sessions.
 
 The following optional dependencies are used and must be defined:
 
-- `dev-docstrings`: Dependencies to lint the documentation.
+- `dev-flake8`: Dependencies to do flake8 lint, including the documentation.
 
   At least these packages should be included:
 
   - `pydocstyle`: To check the docstrings' format.
-  - `darglint`: To check the docstrings' content.
+  - `pydoclint`: To check the docstrings' content.
 
 - `dev-formatting`: Dependencies to check the code's formatting.
 
@@ -130,7 +130,13 @@ name = "my-package"
 # ...
 
 [project.optional-dependencies]
-dev-docstrings = ["pydocstyle == 6.3.0", "darglint == 1.8.1"]
+dev-flake8 = [
+  "flake8 == 6.1.0",
+  "flake8-docstrings == 1.7.0",
+  "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
+  "pydoclint == 0.2.4",
+  "pydocstyle == 6.3.0",
+]
 dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
 dev-mkdocs = [
   "mike == 1.1.2",
@@ -157,7 +163,7 @@ dev-pytest = [
   "pytest-mock == 3.10.0",
 ]
 dev = [
-  "my-package[dev-mkdocs,dev-docstrings,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
+  "my-package[dev-mkdocs,dev-flake8,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
 ]
 ```
 
