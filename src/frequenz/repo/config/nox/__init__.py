@@ -33,8 +33,8 @@ config.opts.black.append("--diff")
 nox.configure(config)
 ```
 
-If you need further customization or to define new sessions, you can use the following
-modules:
+If you need further customization or to define new sessions, you can use the
+following modules:
 
 - [`frequenz.repo.config.nox.config`][]: Low-level utilities to configure nox sessions.
   It defines the `Config` and CommandsOptions` classes and the actual implementation of
