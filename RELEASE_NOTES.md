@@ -18,7 +18,7 @@
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Now dependabot updates will be done weekly and grouped by *required* and *optional* for minor and patch updates (major updates are still done individually for each dependency).
 
 ## Bug Fixes
 
