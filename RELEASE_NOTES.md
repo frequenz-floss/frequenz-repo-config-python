@@ -18,7 +18,12 @@
 
 ### Cookiecutter template
 
+
 - Now dependabot updates will be done weekly and grouped by *required* and *optional* for minor and patch updates (major updates are still done individually for each dependency).
+
+- ci: Add debug information when installing pip packages.
+
+  The output of `pip freeze` is printed to be able to more easily debug different behaviours between GitHub workflow runs and local runs.
 
 ## Bug Fixes
 
