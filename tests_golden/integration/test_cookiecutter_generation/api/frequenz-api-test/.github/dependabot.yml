@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
       time: "07:00"
     labels:
       - "part:tooling"
@@ -17,7 +17,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
       time: "06:00"
     labels:
       - "part:tooling"
@@ -34,10 +34,8 @@ updates:
     # + `allow` one doesn't seem to work.
     ignore:
       - dependency-name: "submodules/frequenz-api-common"
-    # The google api common repo changes very seldom, so there is no need to
-    # check very often.
     schedule:
-      interval: "monthly"
+      interval: "weekly"
       time: "06:00"
     labels:
       - "part:tooling"
