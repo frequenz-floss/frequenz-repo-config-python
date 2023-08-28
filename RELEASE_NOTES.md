@@ -16,6 +16,8 @@
 
 ### Cookiecutter template
 
+- CI: The `nox` job now uses a matrix to run the different `nox` sessions in parallel. If you use branch projection with the `nox` job you need to update the rules to include each matrix job.
+
 - See the general upgrading section.
 
 ## New Features
