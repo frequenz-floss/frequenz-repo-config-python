@@ -145,6 +145,12 @@ required_plugins = ["pytest-asyncio", "pytest-mock"]
 [tool.mypy]
 explicit_package_bases = true
 namespace_packages = true
+# This option disables mypy cache, and it is sometimes useful to enable it if
+# you are getting weird intermittent error, or error in the CI but not locally
+# (or vice versa). In particular errors saying that type: ignore is not
+# used but getting the original ignored error when removing the type: ignore.
+# See for example: https://github.com/python/mypy/issues/2960
+#no_incremental = true
 packages = ["frequenz.app.test"]
 strict = true
 

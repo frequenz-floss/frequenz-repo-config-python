@@ -34,6 +34,8 @@
 
   The output of `pip freeze` is printed to be able to more easily debug different behaviours between GitHub workflow runs and local runs.
 
+- `mypy`: Add a commented out `no-incremental` option, which makes the run slower but prevents some issues with `mypy` giving different results on different runs.
+
 - See the general new features section.
 
 ## Bug Fixes
