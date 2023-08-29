@@ -2,7 +2,7 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release replaces [`darglint`](https://github.com/terrencepreilly/darglint) (not maintained anymore) with [`pydoclint`](https://github.com/jsh9/pydoclint) which brings performance and checks improvements. It also adds basic `flake8` checks and `mypy` fixes.
 
 ## Upgrading
 
@@ -60,7 +60,6 @@
         # ...
         ```
 
-
 ### Cookiecutter template
 
 - CI: The `nox` job now uses a matrix to run the different `nox` sessions in parallel. If you use branch projection with the `nox` job you need to update the rules to include each matrix job.
@@ -86,11 +85,3 @@
 - `mypy`: Add a commented out `no-incremental` option, which makes the run slower but prevents some issues with `mypy` giving different results on different runs.
 
 - See the general new features section.
-
-## Bug Fixes
-
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
-### Cookiecutter template
-
-<!-- Here bug fixes for cookiecutter specifically -->
