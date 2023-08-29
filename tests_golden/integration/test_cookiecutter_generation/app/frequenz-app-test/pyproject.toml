@@ -142,6 +142,11 @@ testpaths = ["tests", "src"]
 asyncio_mode = "auto"
 required_plugins = ["pytest-asyncio", "pytest-mock"]
 
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+strict = true
+
 [[tool.mypy.overrides]]
 module = ["async_solipsism", "async_solipsism.*", "sybil", "sybil.*"]
 ignore_missing_imports = true

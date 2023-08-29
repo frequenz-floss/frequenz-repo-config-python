@@ -135,6 +135,11 @@ disable = [
 [tool.pytest.ini_options]
 testpaths = ["pytests"]
 
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+strict = true
+
 [tool.setuptools.package-dir]
 "" = "py"
 

@@ -169,6 +169,11 @@ required_plugins = ["pytest-asyncio", "pytest-mock"]
 {%- else %}
 testpaths = ["pytests"]
 {%- endif %}
+
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+strict = true
 {%- if cookiecutter.type != "api" %}
 
 [[tool.mypy.overrides]]

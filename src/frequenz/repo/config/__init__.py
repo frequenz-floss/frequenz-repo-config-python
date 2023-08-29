@@ -52,6 +52,12 @@ config.opts.black.append("--diff")
 nox.configure(config)
 ```
 
+!!! note
+
+    When possible, it is recommended to define options in the `pyproject.toml` file
+    (most tools can do this), so they can be consistently used even if the tool is used
+    outside of `nox`.
+
 If you need further customization or to define new sessions, you can use the
 following modules:
 
@@ -165,6 +171,18 @@ dev-pytest = [
 dev = [
   "my-package[dev-mkdocs,dev-flake8,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
 ]
+```
+
+## `mypy` (static type checking)
+
+To configure `mypy` you can add the recommended options to the `pyproject.toml` file as
+follows:
+
+```toml
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+strict = true
 ```
 
 ## `mkdocs` (generating documentation)

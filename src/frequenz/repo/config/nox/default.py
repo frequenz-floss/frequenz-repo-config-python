@@ -37,10 +37,7 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     ],
     mypy=[
         "--install-types",
-        "--namespace-packages",
         "--non-interactive",
-        "--explicit-package-bases",
-        "--strict",
     ],
     # SDK: pylint "--extension-pkg-whitelist=pydantic"
     pytest=[

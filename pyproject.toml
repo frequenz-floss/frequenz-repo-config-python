@@ -153,6 +153,11 @@ disable = [
   "unnecessary-lambda-assignment",
 ]
 
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+strict = true
+
 [[tool.mypy.overrides]]
 module = ["cookiecutter", "cookiecutter.*", "sybil", "sybil.*"]
 ignore_missing_imports = true
