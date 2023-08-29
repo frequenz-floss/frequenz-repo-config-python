@@ -79,6 +79,9 @@ dev-mkdocs = [
 ]
 dev-mypy = [
   "mypy == 1.5.1",
+{%- if cookiecutter.type == "api" %}
+  "grpc-stubs == 1.53.0.2",
+{%- endif %}
   # For checking the noxfile, docs/ script, and tests
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]

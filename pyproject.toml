@@ -79,7 +79,11 @@ dev-mkdocs = [
 ]
 dev-mypy = [
   "mypy == 1.5.1",
-  "types-setuptools >= 67.6.0, < 68", # Should match the global dependency
+  "types-setuptools == 68.1.0.0", # Should match the build dependency
+  "types-Markdown == 3.4.2.10",
+  "types-PyYAML == 6.0.12.11",
+  "types-babel == 2.11.0.15",
+  "types-colorama == 0.4.15.12",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]

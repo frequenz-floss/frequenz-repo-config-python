@@ -59,6 +59,7 @@ dev-mkdocs = [
 ]
 dev-mypy = [
   "mypy == 1.5.1",
+  "grpc-stubs == 1.53.0.2",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-api-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]

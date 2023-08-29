@@ -35,10 +35,7 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
         "--diff",
         "--check",
     ],
-    mypy=[
-        "--install-types",
-        "--non-interactive",
-    ],
+    mypy=[],
     pytest=[
         "-W=all",
         "-vv",

@@ -189,6 +189,23 @@ strict = true
 You can just call `mypy` to check the package of your sources or you can use `mypy
 tests` to check the tests, for example.
 
+You might also need to extra optional dependencies to install type checking stubs for
+some packages.  For example for API projects you need the `grpc-stubs` package:
+
+```toml
+[project.optional-dependencies]
+# ...
+dev-mypy = [
+    # ...
+    "grpc-stubs == 1.53.0.2",
+    # ...
+]
+```
+
+You can use `mypy --install-types` to install to get a list of missing stubs, `mypy`
+will list them for you and ask if you want to proceed with the installation.  You can
+answer no and copy the list of missing stubs to the `pyproject.toml` file.
+
 ## `mkdocs` (generating documentation)
 
 ### API reference generation
