@@ -39,7 +39,6 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
         "--install-types",
         "--non-interactive",
     ],
-    # SDK: pylint "--extension-pkg-whitelist=pydantic"
     pytest=[
         "-W=all",
         "-vv",
