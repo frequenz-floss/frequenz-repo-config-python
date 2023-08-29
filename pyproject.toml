@@ -61,10 +61,12 @@ extra-lint-examples = [
   "pytest >= 7.3.0, < 8",
   "sybil >= 5.0.3, < 6",
 ]
-dev-docstrings = [
+dev-flake8 = [
+  "flake8 == 6.1.0",
+  "flake8-docstrings == 1.7.0",
+  "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
+  "pydoclint == 0.3.0",
   "pydocstyle == 6.3.0",
-  "darglint == 1.8.1",
-  "tomli == 2.0.1",      # Needed by pydocstyle to read pyproject.toml
 ]
 dev-formatting = ["black == 23.7.0", "isort == 5.12.0"]
 dev-mkdocs = [
@@ -94,7 +96,7 @@ dev-pytest = [
   "sybil == 5.0.3",        # Should be consistent with the extra-lint-examples dependency
 ]
 dev = [
-  "frequenz-repo-config[dev-mkdocs,dev-docstrings,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
+  "frequenz-repo-config[dev-mkdocs,dev-flake8,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
 ]
 
 [project.urls]
@@ -112,6 +114,23 @@ include = '\.pyi?$'
 profile = "black"
 line_length = 88
 src_paths = ["benchmarks", "examples", "src", "tests"]
+
+[tool.flake8]
+# We give some flexibility to go over 88, there are cases like long URLs or
+# code in documenation that have extra indentation. Black will still take care
+# of making everything that can be 88 wide, 88 wide.
+max-line-length = 100
+extend-ignore = [
+  "E203", # Whitespace before ':' (conflicts with black)
+  "W503", # Line break before binary operator (conflicts with black)
+]
+# pydoclint options
+style = "google"
+check-return-types = false
+check-yield-types = false
+arg-type-hints-in-docstring = false
+arg-type-hints-in-signature = true
+allow-init-docstring = true
 
 [tool.pylint.similarities]
 ignore-comments = ['yes']

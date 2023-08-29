@@ -30,9 +30,7 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     black=[
         "--check",
     ],
-    darglint=[
-        "-v2",  # for verbose error messages.
-    ],
+    flake8=[],
     isort=[
         "--diff",
         "--check",
@@ -56,9 +54,9 @@ common_config = _config.Config(
     opts=common_command_options.copy(),
     sessions=[
         "formatting",
+        "flake8",
         "mypy",
         "pylint",
-        "docstrings",
         "pytest_min",
         "pytest_max",
     ],

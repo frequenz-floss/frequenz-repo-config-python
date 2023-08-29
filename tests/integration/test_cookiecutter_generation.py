@@ -154,6 +154,7 @@ def _write_golden_file(golden_path: pathlib.Path, name: str, contents: str) -> i
     Args:
         golden_path: The path to the directory containing the golden files.
         name: The name of the golden file.
+        contents: The contents of the golden file to write.
 
     Returns:
         The number of bytes written.
@@ -259,9 +260,9 @@ def _filter_generation_output(
     the generated repo (a temporary directory).
     """
     stdout = b"\n".join(
-        l
-        for l in result.stdout.splitlines()
-        if not l.startswith((b"WARNING: The replay file's `_template` (",))
+        line
+        for line in result.stdout.splitlines()
+        if not line.startswith((b"WARNING: The replay file's `_template` (",))
     )
     return stdout, result.stderr
 

@@ -13,7 +13,6 @@ protocol buffer files are compiled automatically before the project is built.
 import pathlib as _pathlib
 import subprocess as _subprocess
 import sys as _sys
-import tomllib as _tomllib
 
 import setuptools as _setuptools
 import setuptools.command.build as _build_command
