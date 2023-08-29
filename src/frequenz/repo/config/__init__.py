@@ -182,8 +182,12 @@ follows:
 [tool.mypy]
 explicit_package_bases = true
 namespace_packages = true
+packages = ["your_package_name"]  # Use the actual package name here
 strict = true
 ```
+
+You can just call `mypy` to check the package of your sources or you can use `mypy
+tests` to check the tests, for example.
 
 ## `mkdocs` (generating documentation)
 

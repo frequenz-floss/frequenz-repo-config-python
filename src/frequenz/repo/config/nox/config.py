@@ -114,7 +114,14 @@ class Config:
             extra_paths=self.extra_paths.copy(),
         )
 
-    def path_args(self, session: _nox.Session, /) -> list[str]:
+    def path_args(
+        self,
+        session: _nox.Session,
+        /,
+        *,
+        include_sources: bool = True,
+        include_extra: bool = True,
+    ) -> list[str]:
         """Return the file paths to run the checks on.
 
         If positional arguments are present in the nox session, those are used
@@ -123,6 +130,8 @@ class Config:
 
         Args:
             session: The nox session to use to look for command-line arguments.
+            include_sources: Whether to include the source paths or not.
+            include_extra: Whether to include the extra paths or not.
 
         Returns:
             The file paths to run the checks on.
@@ -130,9 +139,13 @@ class Config:
         if session.posargs:
             return session.posargs
 
-        return list(
-            str(p) for p in _util.existing_paths(self.source_paths + self.extra_paths)
-        )
+        paths: list[str] = []
+        if include_sources:
+            paths.extend(self.source_paths)
+        if include_extra:
+            paths.extend(self.extra_paths)
+
+        return list(str(p) for p in _util.existing_paths(paths))
 
     def package_args(self, session: _nox.Session, /) -> list[str]:
         """Return the package names to run the checks on.

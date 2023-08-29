@@ -146,6 +146,7 @@ required_plugins = ["pytest-asyncio", "pytest-mock"]
 [tool.mypy]
 explicit_package_bases = true
 namespace_packages = true
+packages = ["frequenz.model.test"]
 strict = true
 
 [[tool.mypy.overrides]]

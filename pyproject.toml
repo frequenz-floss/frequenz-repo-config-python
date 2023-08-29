@@ -156,6 +156,7 @@ disable = [
 [tool.mypy]
 explicit_package_bases = true
 namespace_packages = true
+packages = ["frequenz.repo.config"]
 strict = true
 
 [[tool.mypy.overrides]]

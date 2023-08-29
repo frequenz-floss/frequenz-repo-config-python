@@ -173,6 +173,7 @@ testpaths = ["pytests"]
 [tool.mypy]
 explicit_package_bases = true
 namespace_packages = true
+packages = ["{{cookiecutter.python_package}}"]
 strict = true
 {%- if cookiecutter.type != "api" %}
 

@@ -138,6 +138,7 @@ testpaths = ["pytests"]
 [tool.mypy]
 explicit_package_bases = true
 namespace_packages = true
+packages = ["frequenz.api.test"]
 strict = true
 
 [tool.setuptools.package-dir]
