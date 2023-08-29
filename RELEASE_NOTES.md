@@ -8,9 +8,11 @@ This release replaces [`darglint`](https://github.com/terrencepreilly/darglint) 
 
 - `flake8` basic checks are enabled now. Most are already covered by `pylint`, but there are a few differences, so you might need to fix your code if `flake8` find some issues.
 
-- `darglint` was replaced by `pydoclint`, `pydoclint` can find a few more issues than `darglint`, so your code might need adjusting.
+- `darglint`:
 
-- `darglint` is not used anymore, but if it is installed, it will make `flake8` run extremely slowly anyways, so it is extremely recommended to uninstall it (`pip uninstall darglint`) and rebuild you `nox` *venvs* if you use `-R`.
+  * Replaced by `pydoclint`, `pydoclint` can find a few more issues than `darglint`, so your code might need adjusting.
+
+  * It is recommended to remove the `darglint` configuration file `.darglint` and the `darglint` `pip` package, if it is kept installed, it will make `flake8` run extremely slowly even if not used: `pip uninstall darglint`) and rebuild you `nox` *venvs* if you use `-R`.
 
 - If you are upgrading without regenerating the cookiecutter templates, you'll need to adjust the dependencies accordingly.
 
