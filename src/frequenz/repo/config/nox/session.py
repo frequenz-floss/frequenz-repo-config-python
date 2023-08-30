@@ -26,9 +26,9 @@ def ci_checks_max(session: nox.Session) -> None:
     session.install("-e", ".[dev]")
 
     formatting(session, False)
+    flake8(session, False)
     mypy(session, False)
     pylint(session, False)
-    flake8(session, False)
     pytest_max(session, False)
 
 
