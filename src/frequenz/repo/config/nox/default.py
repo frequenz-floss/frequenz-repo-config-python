@@ -35,14 +35,7 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
         "--diff",
         "--check",
     ],
-    mypy=[
-        "--install-types",
-        "--namespace-packages",
-        "--non-interactive",
-        "--explicit-package-bases",
-        "--strict",
-    ],
-    # SDK: pylint "--extension-pkg-whitelist=pydantic"
+    mypy=[],
     pytest=[
         "-W=all",
         "-vv",

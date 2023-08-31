@@ -26,9 +26,9 @@ def ci_checks_max(session: nox.Session) -> None:
     session.install("-e", ".[dev]")
 
     formatting(session, False)
+    flake8(session, False)
     mypy(session, False)
     pylint(session, False)
-    flake8(session, False)
     pytest_max(session, False)
 
 
@@ -62,8 +62,22 @@ def mypy(session: nox.Session, install_deps: bool = True) -> None:
         session.install("-e", ".[dev-mypy]")
 
     conf = _config.get()
-    pkg_args = _util.flatten(("-p", p) for p in conf.package_args(session))
-    session.run("mypy", *conf.opts.mypy, *pkg_args)
+
+    # If we get CLI options, we run mypy on those, but still passing the
+    # configured options (they can be overridden by the CLI options).
+    if session.posargs:
+        session.run("mypy", *conf.opts.mypy, *session.posargs)
+        return
+
+    # We separate running the mypy checks into two runs, one is the default, as
+    # configured in `pyproject.toml`, which should run against the sources.
+    session.run("mypy", *conf.opts.mypy)
+
+    # The second run checks development files, like tests, benchmarks, etc.
+    # This is an attempt to minimize mypy internal errors.
+    session.run(
+        "mypy", *conf.opts.mypy, *conf.path_args(session, include_sources=False)
+    )
 
 
 @nox.session

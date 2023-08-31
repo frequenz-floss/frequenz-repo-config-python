@@ -13,7 +13,6 @@ The `configure()` function must be called before `get()` is used.
 """
 
 import dataclasses as _dataclasses
-import itertools as _itertools
 from typing import Self, assert_never, overload
 
 import nox as _nox
@@ -114,7 +113,14 @@ class Config:
             extra_paths=self.extra_paths.copy(),
         )
 
-    def path_args(self, session: _nox.Session, /) -> list[str]:
+    def path_args(
+        self,
+        session: _nox.Session,
+        /,
+        *,
+        include_sources: bool = True,
+        include_extra: bool = True,
+    ) -> list[str]:
         """Return the file paths to run the checks on.
 
         If positional arguments are present in the nox session, those are used
@@ -123,6 +129,8 @@ class Config:
 
         Args:
             session: The nox session to use to look for command-line arguments.
+            include_sources: Whether to include the source paths or not.
+            include_extra: Whether to include the extra paths or not.
 
         Returns:
             The file paths to run the checks on.
@@ -130,47 +138,13 @@ class Config:
         if session.posargs:
             return session.posargs
 
-        return list(
-            str(p) for p in _util.existing_paths(self.source_paths + self.extra_paths)
-        )
+        paths: list[str] = []
+        if include_sources:
+            paths.extend(self.source_paths)
+        if include_extra:
+            paths.extend(self.extra_paths)
 
-    def package_args(self, session: _nox.Session, /) -> list[str]:
-        """Return the package names to run the checks on.
-
-        If positional arguments are present in the nox session, those are used
-        as the file paths verbatim, and if not, all **existing** `source_paths`
-        are searched for python packges by looking for `__init__.py` files.
-        `extra_paths` are used as is, only converting the paths to python
-        package names (replacing `/` with `.` and removing the suffix `.pyi?`
-        if it exists.
-
-        Args:
-            session: The nox session to use to look for command-line arguments.
-
-        Returns:
-            The package names found in the `source_paths`.
-        """
-        if session.posargs:
-            return session.posargs
-
-        sources_package_dirs_with_roots = (
-            (p, _util.find_toplevel_package_dirs(p))
-            for p in _util.existing_paths(self.source_paths)
-        )
-
-        source_packages = (
-            _util.path_to_package(pkg_path, root=root)
-            for root, pkg_paths in sources_package_dirs_with_roots
-            for pkg_path in pkg_paths
-        )
-
-        extra_packages = (
-            _util.path_to_package(p) for p in _util.existing_paths(self.extra_paths)
-        )
-
-        return list(
-            _util.deduplicate(_itertools.chain(source_packages, extra_packages))
-        )
+        return list(str(p) for p in _util.existing_paths(paths))
 
 
 _config: Config | None = None

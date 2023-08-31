@@ -52,6 +52,12 @@ config.opts.black.append("--diff")
 nox.configure(config)
 ```
 
+!!! note
+
+    When possible, it is recommended to define options in the `pyproject.toml` file
+    (most tools can do this), so they can be consistently used even if the tool is used
+    outside of `nox`.
+
 If you need further customization or to define new sessions, you can use the
 following modules:
 
@@ -134,7 +140,7 @@ dev-flake8 = [
   "flake8 == 6.1.0",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
-  "pydoclint == 0.2.4",
+  "pydoclint == 0.3.1",
   "pydocstyle == 6.3.0",
 ]
 dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
@@ -166,6 +172,39 @@ dev = [
   "my-package[dev-mkdocs,dev-flake8,dev-formatting,dev-mypy,dev-nox,dev-pylint,dev-pytest]",
 ]
 ```
+
+## `mypy` (static type checking)
+
+To configure `mypy` you can add the recommended options to the `pyproject.toml` file as
+follows:
+
+```toml
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+packages = ["your_package_name"]  # Use the actual package name here
+strict = true
+```
+
+You can just call `mypy` to check the package of your sources or you can use `mypy
+tests` to check the tests, for example.
+
+You might also need to extra optional dependencies to install type checking stubs for
+some packages.  For example for API projects you need the `grpc-stubs` package:
+
+```toml
+[project.optional-dependencies]
+# ...
+dev-mypy = [
+    # ...
+    "grpc-stubs == 1.53.0.2",
+    # ...
+]
+```
+
+You can use `mypy --install-types` to install to get a list of missing stubs, `mypy`
+will list them for you and ask if you want to proceed with the installation.  You can
+answer no and copy the list of missing stubs to the `pyproject.toml` file.
 
 ## `mkdocs` (generating documentation)
 

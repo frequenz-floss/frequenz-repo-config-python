@@ -65,7 +65,7 @@ dev-flake8 = [
   "flake8 == 6.1.0",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
-  "pydoclint == 0.3.0",
+  "pydoclint == 0.3.1",
   "pydocstyle == 6.3.0",
 ]
 dev-formatting = ["black == 23.7.0", "isort == 5.12.0"]
@@ -79,7 +79,11 @@ dev-mkdocs = [
 ]
 dev-mypy = [
   "mypy == 1.5.1",
-  "types-setuptools >= 67.6.0, < 68", # Should match the global dependency
+  "types-setuptools == 68.1.0.0", # Should match the build dependency
+  "types-Markdown == 3.4.2.10",
+  "types-PyYAML == 6.0.12.11",
+  "types-babel == 2.11.0.15",
+  "types-colorama == 0.4.15.12",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
@@ -147,7 +151,23 @@ disable = [
   # pylint's unsubscriptable check is buggy and is not needed because
   # it is a type-check, for which we already have mypy.
   "unsubscriptable-object",
+  # Checked by flake8
+  "line-too-long",
+  "unused-variable",
+  "unnecessary-lambda-assignment",
 ]
+
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+# This option disables mypy cache, and it is sometimes useful to enable it if
+# you are getting weird intermittent error, or error in the CI but not locally
+# (or vice versa). In particular errors saying that type: ignore is not
+# used but getting the original ignored error when removing the type: ignore.
+# See for example: https://github.com/python/mypy/issues/2960
+#no_incremental = true
+packages = ["frequenz.repo.config"]
+strict = true
 
 [[tool.mypy.overrides]]
 module = ["cookiecutter", "cookiecutter.*", "sybil", "sybil.*"]
