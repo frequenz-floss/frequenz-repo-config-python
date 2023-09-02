@@ -26,4 +26,4 @@
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- Fix typo in dependabot's configuration for grouping.
