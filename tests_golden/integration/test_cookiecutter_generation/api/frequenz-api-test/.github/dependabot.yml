@@ -19,7 +19,7 @@ updates:
     # Major updates are still managed, but they'll create one PR per
     # dependency, as major updates are expected to be breaking, it is better to
     # manage them individually.
-    grups:
+    groups:
       required:
         dependency-type: "production"
         update-types:
