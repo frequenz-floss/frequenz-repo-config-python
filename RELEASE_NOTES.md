@@ -1,7 +1,29 @@
 # Frequenz Repository Configuration Release Notes
 
-## Bug Fixes
+## Summary
+
+<!-- Here goes a general summary of what this release is about -->
+
+## Upgrading
+
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
-- Fix typo in dependabot's configuration for grouping.
+<!-- Here upgrade steps for cookiecutter specifically -->
+
+## New Features
+
+<!-- Here goes the main new features and examples or instructions on how to use them -->
+
+### Cookiecutter template
+
+<!-- Here new features for cookiecutter specifically -->
+
+## Bug Fixes
+
+<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+
+### Cookiecutter template
+
+<!-- Here bug fixes for cookiecutter specifically -->
