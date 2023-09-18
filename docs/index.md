@@ -35,7 +35,7 @@ Then simply run [Cookiecutter] where you want to create the new project:
 
 ```sh
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter --checkout v0.5.2
+    --directory=cookiecutter --checkout v0.6.2
 ```
 
 This command will prompt you for the project type, name, and other
@@ -238,7 +238,7 @@ the files in your existing project by using `rsync` or similar tools:
 ```sh
 cd /tmp
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter --checkout v0.5.2
+    --directory=cookiecutter --checkout v0.6.2
 rsync -vr --exclude=.git/ new-project/ /path/to/existing/project
 cd /path/to/existing/project
 git diff
@@ -283,7 +283,7 @@ git commit -a  # commit all changes
 cd ..
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
     --directory=cookiecutter \
-    --checkout v0.5.2 \
+    --checkout v0.6.2 \
     --overwrite-if-exists \
     --replay \
     --replay-file project-directory/.cookiecutter-replay.json
