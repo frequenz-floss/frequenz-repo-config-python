@@ -27,6 +27,7 @@ theme:
   features:
     - content.code.annotate
     - content.code.copy
+    - navigation.indexes
     - navigation.instant
     - navigation.tabs
     - navigation.top
@@ -114,7 +115,6 @@ plugins:
             - https://frequenz-floss.github.io/frequenz-sdk-python/v0.22/objects.inv
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv
   - search
-  - section-index
 
 # Preview controls
 watch:
