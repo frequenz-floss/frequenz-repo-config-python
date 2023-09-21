@@ -105,6 +105,7 @@ plugins:
           options:
             paths: ["py"]
             docstring_section_style: spacy
+            inherited_members: true
             merge_init_into_class: false
             show_category_heading: true
             show_root_heading: true
