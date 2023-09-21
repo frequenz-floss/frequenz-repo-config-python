@@ -50,15 +50,18 @@ dev-flake8 = [
 ]
 dev-formatting = ["black == 23.7.0", "isort == 5.12.0"]
 dev-mkdocs = [
+  "Markdown==3.4.4",
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.5.0",
   "mkdocs-literate-nav == 0.6.0",
+  "mkdocs-macros-plugin == 1.0.4",
   "mkdocs-material == 9.1.21",
   "mkdocstrings[python] == 0.22.0",
   "frequenz-repo-config[app] == 0.6.2",
 ]
 dev-mypy = [
   "mypy == 1.5.1",
+  "types-Markdown == 3.4.2.10",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-app-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
@@ -154,7 +157,13 @@ packages = ["frequenz.app.test"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["async_solipsism", "async_solipsism.*", "sybil", "sybil.*"]
+module = [
+  "cookiecutter",
+  "cookiecutter.*",
+  "mkdocs_macros.*",
+  "sybil",
+  "sybil.*",
+]
 ignore_missing_imports = true
 
 [tool.setuptools_scm]

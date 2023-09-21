@@ -123,6 +123,13 @@ plugins:
             - https://grpc.github.io/grpc/python/objects.inv
 {%- endif %}
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv
+  # Note this plugin must be loaded after mkdocstrings to be able to use macros
+  # inside docstrings. See the comment in `docs/_scripts/macros.py` for more
+  # details
+  - macros:
+      module_name: docs/_scripts/macros
+      on_undefined: strict
+      on_error_fail: true
   - search
 
 # Preview controls

@@ -49,9 +49,11 @@ dev-flake8 = [
 ]
 dev-formatting = ["black == 23.7.0", "isort == 5.12.0"]
 dev-mkdocs = [
+  "Markdown==3.4.4",
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.5.0",
   "mkdocs-literate-nav == 0.6.0",
+  "mkdocs-macros-plugin == 1.0.4",
   "mkdocs-material == 9.1.21",
   "mkdocstrings[python] == 0.22.0",
   "frequenz-repo-config[api] == 0.6.2",
@@ -59,6 +61,7 @@ dev-mkdocs = [
 dev-mypy = [
   "mypy == 1.5.1",
   "grpc-stubs == 1.53.0.2",
+  "types-Markdown == 3.4.2.10",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-api-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
