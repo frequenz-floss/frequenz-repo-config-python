@@ -64,6 +64,8 @@ extra_css:
 markdown_extensions:
   - admonition
   - attr_list
+  - def_list
+  - footnotes
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
@@ -78,7 +80,8 @@ markdown_extensions:
           class: mermaid
           format: "!!python/name:pymdownx.superfences.fence_code_format"
   - pymdownx.tabbed
-  - pymdownx.tasklist
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - toc:
       permalink: "¤"
 
