@@ -129,5 +129,4 @@ plugins:
 watch:
   - "cookiecutter/variable-reference.md"
   - "src"
-  - README.md
   - CONTRIBUTING.md
