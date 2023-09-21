@@ -14,13 +14,13 @@ strict: true  # Treat warnings as errors
 # Build directories
 theme:
   name: "material"
-  logo: logo.png
-  favicon: logo.png
+  logo: _img/logo.png
+  favicon: _img/logo.png
   language: en
   icon:
     edit: material/file-edit-outline
     repo: fontawesome/brands/github
-  custom_dir: docs/overrides
+  custom_dir: docs/_overrides
   features:
     - content.code.annotate
     - content.code.copy
@@ -57,8 +57,8 @@ extra:
     default: latest
 
 extra_css:
-  - css/style.css
-  - css/mkdocstrings.css
+  - _css/style.css
+  - _css/mkdocstrings.css
 
 # Formatting options
 markdown_extensions:

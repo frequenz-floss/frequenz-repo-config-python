@@ -17,13 +17,13 @@ strict: true  # Treat warnings as errors
 theme:
   name: "material"
   # TODO(cookiecutter): You might want to change the logo, the file is located in "docs/"
-  logo: logo.png
-  favicon: logo.png
+  logo: _img/logo.png
+  favicon: _img/logo.png
   language: en
   icon:
     edit: material/file-edit-outline
     repo: fontawesome/brands/github
-  custom_dir: docs/overrides
+  custom_dir: docs/_overrides
   features:
     - content.code.annotate
     - content.code.copy
@@ -61,8 +61,8 @@ extra:
     default: latest
 
 extra_css:
-  - css/style.css
-  - css/mkdocstrings.css
+  - _css/style.css
+  - _css/mkdocstrings.css
 
 # Formatting options
 markdown_extensions:
