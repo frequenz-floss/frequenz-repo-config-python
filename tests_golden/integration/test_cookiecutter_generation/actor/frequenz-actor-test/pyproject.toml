@@ -32,7 +32,7 @@ dependencies = [
   # Make sure to update the version for cross-referencing also in the
   # mkdocs.yml file when changing the version here (look for the config key
   # plugins.mkdocstrings.handlers.python.import)
-  "frequenz-sdk == 0.24.0",
+  "frequenz-sdk == 0.25.0",
 ]
 dynamic = ["version"]
 
