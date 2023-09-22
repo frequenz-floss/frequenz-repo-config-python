@@ -16,6 +16,14 @@ It offers:
   common checks.
 * Tools to build protobuf/grpc files as Python, including type information.
 
+## Supported Platforms
+
+The following platforms are officially supported (test):
+
+- **Python:** 3.11
+- **Operating System:** Ubuntu Linux 20.04
+- **Architectures:** amd64, arm64
+
 ## Quick Example
 
 To start a new project, you should first [install
