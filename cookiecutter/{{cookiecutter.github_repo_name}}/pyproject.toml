@@ -186,18 +186,10 @@ namespace_packages = true
 #no_incremental = true
 packages = ["{{cookiecutter.python_package}}"]
 strict = true
-{%- if cookiecutter.type != "api" %}
 
 [[tool.mypy.overrides]]
-module = [
-  "cookiecutter",
-  "cookiecutter.*",
-  "mkdocs_macros.*",
-  "sybil",
-  "sybil.*",
-]
+module = ["mkdocs_macros.*", "sybil", "sybil.*"]
 ignore_missing_imports = true
-{%- endif %}
 {%- if cookiecutter.type == "api" %}
 
 [tool.setuptools.package-dir]

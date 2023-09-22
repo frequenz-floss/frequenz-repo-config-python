@@ -150,6 +150,10 @@ namespace_packages = true
 packages = ["frequenz.api.test"]
 strict = true
 
+[[tool.mypy.overrides]]
+module = ["mkdocs_macros.*", "sybil", "sybil.*"]
+ignore_missing_imports = true
+
 [tool.setuptools.package-dir]
 "" = "py"
 
