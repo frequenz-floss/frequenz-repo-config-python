@@ -23,6 +23,7 @@
 - CI
 
   - You can now make your branch protection rule only require the "Test with nox" CI job to pass. All the matrix expansions will merge into it, so there is no need to change branch protection rules if matrix elements are added or removed.
+  - Dependabot now will check for updates monthly and on a random day and time.
 
 ## New Features
 
@@ -43,6 +44,7 @@
   - Add CI job to test package installation on multiple platforms (amd64 and arm64).
   - Add CI job to run the tests in arm64.
   - Add a CI job to *join* all `nox` runs, so only one branch protection rule needs to be used.
+  - Dependabot now will check for updates monthly and on a random day and time. This is to avoid all repositories updating at the same time.
 
 ## Bug Fixes
 
