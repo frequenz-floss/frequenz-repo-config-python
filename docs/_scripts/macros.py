@@ -3,11 +3,16 @@
 
 """This module defines macros for use in Markdown files."""
 
+import logging
 from typing import Any
 
 import markdown as md
 from markdown.extensions import toc
 from mkdocs_macros import plugin as macros
+
+from frequenz.repo.config import github
+
+_logger = logging.getLogger(__name__)
 
 _CODE_ANNOTATION_MARKER: str = (
     r'<span class="md-annotation">'
@@ -31,6 +36,29 @@ def _slugify(text: str) -> str:
     # Also for some reason `mypy` thinks the `toc` module doesn't have a
     # `slugify_unicode` function, but it definitely does.
     return toc.slugify_unicode(text, "-")  # type: ignore[attr-defined,no-any-return]
+
+
+def _add_version_variables(env: macros.MacrosPlugin) -> None:
+    """Add variables with git information to the environment.
+
+    Args:
+        env: The environment to add the variables to.
+    """
+    env.variables["version"] = None
+    env.variables["version_requirement"] = ""
+    try:
+        version_info = github.get_repo_version_info()
+    except Exception as exc:  # pylint: disable=broad-except
+        _logger.warning("Failed to get version info: %s", exc)
+    else:
+        env.variables["version"] = version_info
+        if version_info.current_tag:
+            env.variables["version_requirement"] = f" == {version_info.current_tag}"
+        elif version_info.current_branch:
+            env.variables["version_requirement"] = (
+                " @ git+https://github.com/frequenz-floss/frequenz-repo-config-python"
+                f"@{version_info.current_branch}"
+            )
 
 
 def _hook_macros_plugin(env: macros.MacrosPlugin) -> None:
@@ -76,6 +104,8 @@ def define_env(env: macros.MacrosPlugin) -> None:
     # A variable to easily show an example code annotation from mkdocs-material.
     # https://squidfunk.github.io/mkdocs-material/reference/code-blocks/#adding-annotations
     env.variables["code_annotation_marker"] = _CODE_ANNOTATION_MARKER
+
+    _add_version_variables(env)
 
     # This hook needs to be done at the end of the `define_env` function.
     _hook_macros_plugin(env)
