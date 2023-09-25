@@ -59,6 +59,8 @@ class RepoConfigExtension(_Extension):
             and name.endswith(self._FILTER_SUFFIX)
         ]
         for filer_name in filters:
+            if filer_name in self.environment.filters:
+                raise ValueError(f"Filter {filer_name!r} already registered")
             attr_name = f"{self._FILTER_PREFIX}{filer_name}{self._FILTER_SUFFIX}"
             self.environment.filters[filer_name] = getattr(self, attr_name)
 
@@ -139,7 +141,7 @@ class RepoConfigExtension(_Extension):
         end = "-python" if cookiecutter["type"] == "lib" else ""
         return f"{pypi}{end}"
 
-    def _title_filter(self, cookiecutter: dict[str, str]) -> str:
+    def _proj_title_filter(self, cookiecutter: dict[str, str]) -> str:
         """Build a default mkdocs site name for the project.
 
         Args:

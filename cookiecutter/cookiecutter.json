@@ -9,7 +9,7 @@
   ],
   "name": null,
   "description": null,
-  "title": "{{cookiecutter | title}}",
+  "title": "{{cookiecutter | proj_title}}",
   "keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
   "github_org": "frequenz-floss",
   "license": [
