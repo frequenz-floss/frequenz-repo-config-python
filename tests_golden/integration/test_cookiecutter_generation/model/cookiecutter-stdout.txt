@@ -5,6 +5,7 @@
 ./.github/workflows/release-notes-check.yml:          # TODO(cookiecutter): Uncomment the following line for private repositories, otherwise remove it and remove it
 ./CODEOWNERS:# TODO(cookiecutter): Add more specific code-owners, check if the default is correct
 ./README.md:TODO(cookiecutter): Improve the README file
+./docs/_scripts/macros.py:    # TODO(cookiecutter): Add any other macros, variables and filters here.
 ./mkdocs.yml:            # TODO(cookiecutter): You might want to add other external references here
 ./mkdocs.yml:  # TODO(cookiecutter): You might want to change the logo, the file is located in "docs/"
 ./mkdocs.yml:  # TODO(cookiecutter): You probably want to update the social links

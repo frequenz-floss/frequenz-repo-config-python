@@ -39,7 +39,7 @@ dependencies = [
   # Make sure to update the version for cross-referencing also in the
   # mkdocs.yml file when changing the version here (look for the config key
   # plugins.mkdocstrings.handlers.python.import)
-  "frequenz-sdk == 0.24.0",
+  "frequenz-sdk == 0.25.0",
 ]
 {%- elif cookiecutter.type == "api" %}
 dependencies = [
@@ -64,16 +64,18 @@ dev-flake8 = [
   "flake8 == 6.1.0",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
-  "pydoclint == 0.3.1",
+  "pydoclint == 0.3.2",
   "pydocstyle == 6.3.0",
 ]
-dev-formatting = ["black == 23.7.0", "isort == 5.12.0"]
+dev-formatting = ["black == 23.9.1", "isort == 5.12.0"]
 dev-mkdocs = [
+  "Markdown==3.4.4",
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.5.0",
-  "mkdocs-literate-nav == 0.6.0",
-  "mkdocs-material == 9.1.21",
-  "mkdocstrings[python] == 0.22.0",
+  "mkdocs-literate-nav == 0.6.1",
+  "mkdocs-macros-plugin == 1.0.4",
+  "mkdocs-material == 9.3.1",
+  "mkdocstrings[python] == 0.23.0",
   "frequenz-repo-config[{{cookiecutter.type}}] == 0.6.2",
 ]
 dev-mypy = [
@@ -81,6 +83,7 @@ dev-mypy = [
 {%- if cookiecutter.type == "api" %}
   "grpc-stubs == 1.53.0.2",
 {%- endif %}
+  "types-Markdown == 3.4.2.10",
   # For checking the noxfile, docs/ script, and tests
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
@@ -94,7 +97,7 @@ dev-pylint = [
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 7.4.0",
+  "pytest == 7.4.2",
   "frequenz-repo-config[extra-lint-examples] == 0.6.2",
 {%- if cookiecutter.type != "api" %}
   "pytest-mock == 3.11.1",
@@ -183,12 +186,10 @@ namespace_packages = true
 #no_incremental = true
 packages = ["{{cookiecutter.python_package}}"]
 strict = true
-{%- if cookiecutter.type != "api" %}
 
 [[tool.mypy.overrides]]
-module = ["async_solipsism", "async_solipsism.*", "sybil", "sybil.*"]
+module = ["mkdocs_macros.*", "sybil", "sybil.*"]
 ignore_missing_imports = true
-{%- endif %}
 {%- if cookiecutter.type == "api" %}
 
 [tool.setuptools.package-dir]

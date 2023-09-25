@@ -17,13 +17,13 @@ strict: true  # Treat warnings as errors
 theme:
   name: "material"
   # TODO(cookiecutter): You might want to change the logo, the file is located in "docs/"
-  logo: logo.png
-  favicon: logo.png
+  logo: _img/logo.png
+  favicon: _img/logo.png
   language: en
   icon:
     edit: material/file-edit-outline
     repo: fontawesome/brands/github
-  custom_dir: docs/overrides
+  custom_dir: docs/_overrides
   features:
     - content.code.annotate
     - content.code.copy
@@ -61,13 +61,15 @@ extra:
     default: latest
 
 extra_css:
-  - css/style.css
-  - css/mkdocstrings.css
+  - _css/style.css
+  - _css/mkdocstrings.css
 
 # Formatting options
 markdown_extensions:
   - admonition
   - attr_list
+  - def_list
+  - footnotes
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
@@ -80,16 +82,17 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: "!!python/name:pymdownx.superfences.fence_code_format"
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed
-  - pymdownx.tasklist
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - toc:
       permalink: "¤"
 
 plugins:
   - gen-files:
       scripts:
-        - docs/mkdocstrings_autoapi.py
+        - docs/_scripts/mkdocstrings_autoapi.py
   - literate-nav:
       nav_file: SUMMARY.md
   - mike:
@@ -102,6 +105,7 @@ plugins:
           options:
             paths: ["src"]
             docstring_section_style: spacy
+            inherited_members: true
             merge_init_into_class: false
             show_category_heading: true
             show_root_heading: true
@@ -111,9 +115,16 @@ plugins:
             # TODO(cookiecutter): You might want to add other external references here
             # See https://mkdocstrings.github.io/python/usage/#import for details
             - https://docs.python.org/3/objects.inv
-            - https://frequenz-floss.github.io/frequenz-channels-python/v0.14/objects.inv
-            - https://frequenz-floss.github.io/frequenz-sdk-python/v0.22/objects.inv
+            - https://frequenz-floss.github.io/frequenz-channels-python/v0.16/objects.inv
+            - https://frequenz-floss.github.io/frequenz-sdk-python/v0.25/objects.inv
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv
+  # Note this plugin must be loaded after mkdocstrings to be able to use macros
+  # inside docstrings. See the comment in `docs/_scripts/macros.py` for more
+  # details
+  - macros:
+      module_name: docs/_scripts/macros
+      on_undefined: strict
+      on_error_fail: true
   - search
 
 # Preview controls

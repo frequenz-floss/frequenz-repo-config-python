@@ -32,7 +32,7 @@ dependencies = [
   # Make sure to update the version for cross-referencing also in the
   # mkdocs.yml file when changing the version here (look for the config key
   # plugins.mkdocstrings.handlers.python.import)
-  "frequenz-sdk == 0.24.0",
+  "frequenz-sdk == 0.25.0",
 ]
 dynamic = ["version"]
 
@@ -46,20 +46,23 @@ dev-flake8 = [
   "flake8 == 6.1.0",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
-  "pydoclint == 0.3.1",
+  "pydoclint == 0.3.2",
   "pydocstyle == 6.3.0",
 ]
-dev-formatting = ["black == 23.7.0", "isort == 5.12.0"]
+dev-formatting = ["black == 23.9.1", "isort == 5.12.0"]
 dev-mkdocs = [
+  "Markdown==3.4.4",
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.5.0",
-  "mkdocs-literate-nav == 0.6.0",
-  "mkdocs-material == 9.1.21",
-  "mkdocstrings[python] == 0.22.0",
+  "mkdocs-literate-nav == 0.6.1",
+  "mkdocs-macros-plugin == 1.0.4",
+  "mkdocs-material == 9.3.1",
+  "mkdocstrings[python] == 0.23.0",
   "frequenz-repo-config[model] == 0.6.2",
 ]
 dev-mypy = [
   "mypy == 1.5.1",
+  "types-Markdown == 3.4.2.10",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-model-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
@@ -73,7 +76,7 @@ dev-pylint = [
   "frequenz-model-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 7.4.0",
+  "pytest == 7.4.2",
   "frequenz-repo-config[extra-lint-examples] == 0.6.2",
   "pytest-mock == 3.11.1",
   "pytest-asyncio == 0.21.1",
@@ -155,7 +158,7 @@ packages = ["frequenz.model.test"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["async_solipsism", "async_solipsism.*", "sybil", "sybil.*"]
+module = ["mkdocs_macros.*", "sybil", "sybil.*"]
 ignore_missing_imports = true
 
 [tool.setuptools_scm]
