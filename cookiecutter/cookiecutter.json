@@ -9,7 +9,7 @@
   ],
   "name": null,
   "description": null,
-  "title": "{{cookiecutter | title}}",
+  "title": "{{cookiecutter | proj_title}}",
   "keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
   "github_org": "frequenz-floss",
   "license": [
@@ -23,14 +23,6 @@
   "github_repo_name": "{{cookiecutter | github_repo_name}}",
   "default_codeowners": "(like @some-org/some-team; defaults to a team based on the repo type)",
   "_extensions": [
-    "local_extensions.as_identifier",
-    "local_extensions.default_codeowners",
-    "local_extensions.github_repo_name",
-    "local_extensions.introduction",
-    "local_extensions.keywords",
-    "local_extensions.pypi_package_name",
-    "local_extensions.python_package",
-    "local_extensions.src_path",
-    "local_extensions.title"
+    "local_extensions.RepoConfigExtension"
   ]
 }
