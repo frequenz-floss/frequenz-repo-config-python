@@ -36,7 +36,11 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.11, < 4"
-dependencies = ["nox >= 2022.11.21", "mkdocs-gen-files >= 0.4.0, < 0.6.0"]
+dependencies = [
+  "nox >= 2022.11.21",
+  "mkdocs-gen-files >= 0.4.0, < 0.6.0",
+  "semver >= 3.0.1, < 4",
+]
 dynamic = ["version"]
 
 [[project.authors]]
@@ -176,6 +180,7 @@ module = [
   "cookiecutter",
   "cookiecutter.*",
   "mkdocs_macros.*",
+  "semver.version",
   "sybil",
   "sybil.*",
 ]
