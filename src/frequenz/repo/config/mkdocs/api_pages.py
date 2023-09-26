@@ -19,7 +19,7 @@ from typing import Tuple
 
 import mkdocs_gen_files
 
-from . import protobuf as _protobuf
+from .. import protobuf as _protobuf
 
 
 def _is_internal(path_parts: Tuple[str, ...]) -> bool:
