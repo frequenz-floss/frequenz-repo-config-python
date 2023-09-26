@@ -376,13 +376,31 @@ jobs:
         if: steps.mike-metadata.outputs.version
         run: git fetch origin gh-pages --depth=1
 
+      - name: Build site
+        if: steps.mike-metadata.outputs.version
+        env:
+          VERSION: ${{ steps.mike-metadata.outputs.version }}
+          ALIASES: ${{ steps.mike-metadata.outputs.aliases }}
+        run: |
+          mike deploy --update-aliases "$VERSION" $ALIASES
+
+      - name: Sort site versions
+        if: steps.mike-metadata.outputs.version
+        env:
+          VERSION: ${{ steps.mike-metadata.outputs.version }}
+          ALIASES: ${{ steps.mike-metadata.outputs.aliases }}
+        run: |
+          git checkout gh-pages
+          python -m frequenz.repo.config.mkdocs.sort_versions versions.json
+          git commit -a -m "Sort versions.json"
+
       - name: Publish site
         if: steps.mike-metadata.outputs.version
         env:
           VERSION: ${{ steps.mike-metadata.outputs.version }}
           ALIASES: ${{ steps.mike-metadata.outputs.aliases }}
         run: |
-          mike deploy --push --update-aliases "$VERSION" $ALIASES
+          git push origin gh-pages
 
   create-github-release:
     name: Create GitHub release
