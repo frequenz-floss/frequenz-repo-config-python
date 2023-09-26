@@ -25,6 +25,10 @@
   - You can now make your branch protection rule only require the "Test with nox" CI job to pass. All the matrix expansions will merge into it, so there is no need to change branch protection rules if matrix elements are added or removed.
   - Dependabot now will check for updates monthly and on a random day and time.
 
+- The `src/conftest.py` file was moved to `src/<project_path>/conftest.py`.
+
+  This is to leave the `src` directory free of any files, so it is easier to navigate using auto-completion and GitHub file browser.
+
 ## New Features
 
 <!-- Here goes the main new features and examples or instructions on how to use them -->
