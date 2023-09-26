@@ -3,9 +3,9 @@
 
 """Generate the code reference pages."""
 
-from frequenz.repo.config import mkdocs
+from frequenz.repo.config.mkdocs import api_pages
 
-mkdocs.generate_python_api_pages("{{cookiecutter | src_path}}", "{{'python-' if cookiecutter.type == 'api'}}reference")
+api_pages.generate_python_api_pages("{{cookiecutter | src_path}}", "{{'python-' if cookiecutter.type == 'api'}}reference")
 {%- if cookiecutter.type == 'api' %}
-mkdocs.generate_protobuf_api_pages()
+api_pages.generate_protobuf_api_pages()
 {%- endif %}
