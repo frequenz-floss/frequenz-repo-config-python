@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      time: "07:00"
+      day: "monday"
     labels:
       - "part:tooling"
       - "type:tech-debt"
@@ -34,8 +34,8 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      time: "06:00"
+      interval: "monthly"
+      day: "monday"
     labels:
       - "part:tooling"
       - "type:tech-debt"

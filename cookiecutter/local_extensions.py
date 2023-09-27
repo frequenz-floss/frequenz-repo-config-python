@@ -8,7 +8,9 @@ project structure.
 """
 
 import json as _json
+import os as _os
 import pathlib as _pathlib
+import random as _random
 
 from jinja2 import Environment as _Environment
 from jinja2.ext import Extension as _Extension
@@ -35,6 +37,11 @@ class RepoConfigExtension(_Extension):
         """
         super().__init__(environment)
         self._register_filters()
+        self.environment.globals.update(
+            {
+                "random_weekday": self._get_random_weekday(),
+            }
+        )
 
     def parse(self, parser: _Parser) -> _Node | list[_Node]:
         """Parse tags declared by this extension.
@@ -94,6 +101,27 @@ class RepoConfigExtension(_Extension):
         """
         with open("../cookiecutter.json", encoding="utf8") as cookiecutter_json_file:
             return str(_json.load(cookiecutter_json_file)[key])
+
+    def _get_random_weekday(self) -> str:
+        """Get a random weekday.
+
+        Returns:
+            A random weekday.
+        """
+        # Make sure tests are reproduceable
+        if _os.environ.get("PYTEST_CURRENT_TEST") is not None:
+            return "monday"
+        return _random.choice(
+            [
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday",
+            ]
+        )
 
     def _as_identifier_filter(self, name: str) -> str:
         """Convert a name to a valid identifier.
