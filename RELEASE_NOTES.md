@@ -37,6 +37,7 @@
   - New [`mkdocs-macros`](https://mkdocs-macros-plugin.readthedocs.io/en/latest/) extension.
   - Show inherited attributes in the documentation.
   - Make code annotations numbered. This is useful to hint about the order one should read the annotations.
+  - Add a navigation footer to show previous and next pages. This is specially useful when reading the documentation in a mobile device since the navigation bar is hidden.
   - Updated dependencies.
 
 - CI
