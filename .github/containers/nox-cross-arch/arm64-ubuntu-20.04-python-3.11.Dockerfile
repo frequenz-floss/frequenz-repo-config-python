@@ -18,15 +18,21 @@ RUN apt-get update -y && \
         curl \
         git \
         python3.11 \
-        python3.11-distutils && \
+        python3.11-distutils \
+        python3.11-venv && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Install pip
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
+# Link python3.11 to python and python3.
+# This is needed because we want users of this image to use python3.11 as the
+# default python version.
 RUN update-alternatives --install \
         /usr/local/bin/python python /usr/bin/python3.11 1 && \
+    update-alternatives --install \
+        /usr/local/bin/python3 python3 /usr/bin/python3.11 1 && \
     python -m pip install --upgrade --no-cache-dir pip
 
 COPY entrypoint.bash /usr/bin/entrypoint.bash
