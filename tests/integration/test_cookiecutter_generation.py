@@ -27,6 +27,7 @@ Make sure to review the changes before committing them and setting this back to 
 
 
 @pytest.mark.integration
+@pytest.mark.cookiecutter
 @pytest.mark.parametrize("repo_type", [*config.RepositoryType])
 def test_golden(
     tmp_path: pathlib.Path,
@@ -66,6 +67,7 @@ def test_golden(
 
 
 @pytest.mark.integration
+@pytest.mark.cookiecutter
 @pytest.mark.parametrize("repo_type", [*config.RepositoryType])
 def test_generation(tmp_path: pathlib.Path, repo_type: config.RepositoryType) -> None:
     """Test generation of a new repo."""
