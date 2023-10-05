@@ -13,6 +13,7 @@ on:
       # We only want to test the merge commit (`merge_group` event), the hashes
       # in the push were already tested by the PR checks
       - 'gh-readonly-queue/**'
+      - 'dependabot/**'
   workflow_dispatch:
 
 env:
