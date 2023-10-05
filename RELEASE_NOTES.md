@@ -58,3 +58,5 @@
   - Fixed mermaid diagrams not rendering in the documentation.
   - `mypy` ignores for `cookiecutter` have been removed. They should have never be there as generated projects don't use `cookiecutter`.
   - `mypy` overrides now are applied to API projects too.
+
+- Dependabot branches are now not tested for `push` events, as they are already tested by `pull` events.
