@@ -20,6 +20,14 @@
     - `docs/overrides` -> `docs/_overrides`
     - `logo.png` -> `docs/_img/logo.png`
 
+  - You might need to remove old `mike` version aliases. Probably removing `next` should be enough:
+
+    ```bash
+    mike delete -p next
+    ```
+
+    You can use `mike list` to list all versions and aliases.
+
 - CI
 
   - You can now make your branch protection rule only require the "Test with nox" CI job to pass. All the matrix expansions will merge into it, so there is no need to change branch protection rules if matrix elements are added or removed.
@@ -43,6 +51,11 @@
   - Make code annotations numbered. This is useful to hint about the order one should read the annotations.
   - Add a navigation footer to show previous and next pages. This is specially useful when reading the documentation in a mobile device since the navigation bar is hidden.
   - Updated dependencies.
+  - We use a new `mike` versioning scheme:
+
+    - Versions now have a title with the full tag name for tags and includes the (short) commit SHA for branches so users can know exactly which version they are reading.
+    - Pre-releases are now published too as `vX.Y-pre`. They have aliases to point to the latest pre-release in a major (`vX-pre`) and the absolute latest pre-release (`latest-pre`).
+    - All branches are now published with their own version as `vX.Y-dev`. They have aliases to point to the latest version in a major (`vX-dev`) and the absolute latest version (`latest-dev`). This means the old `next` becomes `latest-dev`.
 
 - CI
 
@@ -62,5 +75,6 @@
   - Fixed mermaid diagrams not rendering in the documentation.
   - `mypy` ignores for `cookiecutter` have been removed. They should have never be there as generated projects don't use `cookiecutter`.
   - `mypy` overrides now are applied to API projects too.
+  - Now the `latest` `mike` version will point to the highest stable version available, not the latest version published.
 
 - Dependabot branches are now not tested for `push` events, as they are already tested by `pull` events.
