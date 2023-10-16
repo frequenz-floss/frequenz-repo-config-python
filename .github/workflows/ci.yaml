@@ -312,7 +312,7 @@ jobs:
       contents: write
     steps:
       - name: Calculate and check version
-        id: mike-metadata
+        id: mike-version
         env:
           REF: ${{ github.ref }}
           REF_NAME: ${{ github.ref_name }}
@@ -349,50 +349,50 @@ jobs:
           echo "aliases=$aliases" >> $GITHUB_OUTPUT
 
       - name: Fetch sources
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         uses: actions/checkout@v4
         with:
           submodules: true
 
       - name: Setup Git user and e-mail
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         uses: frequenz-floss/setup-git-user@v2
 
       - name: Set up Python
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
           cache: 'pip'
 
       - name: Install build dependencies
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         run: |
           python -m pip install -U pip
           python -m pip install .[dev-mkdocs]
           pip freeze
 
       - name: Fetch the gh-pages branch
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         run: git fetch origin gh-pages --depth=1
 
       - name: Build site
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         env:
-          VERSION: ${{ steps.mike-metadata.outputs.version }}
-          ALIASES: ${{ steps.mike-metadata.outputs.aliases }}
+          VERSION: ${{ steps.mike-version.outputs.version }}
+          ALIASES: ${{ steps.mike-version.outputs.aliases }}
         run: |
           mike deploy --update-aliases "$VERSION" $ALIASES
 
       - name: Sort site versions
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         run: |
           git checkout gh-pages
           python -m frequenz.repo.config.mkdocs.sort_versions versions.json
           git commit -a -m "Sort versions.json"
 
       - name: Publish site
-        if: steps.mike-metadata.outputs.version
+        if: steps.mike-version.outputs.version
         run: |
           git push origin gh-pages
 
