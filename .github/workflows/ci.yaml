@@ -311,6 +311,26 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Fetch sources
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Git user and e-mail
+        uses: frequenz-floss/setup-git-user@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install .[dev-mkdocs]
+          pip freeze
+
       - name: Calculate and check version
         id: mike-version
         env:
@@ -320,30 +340,6 @@ jobs:
           GIT_SHA: ${{ github.sha }}
         run: |
           python -m frequenz.repo.config.cli.version.mike.info
-
-      - name: Fetch sources
-        if: steps.mike-version.outputs.version
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Setup Git user and e-mail
-        if: steps.mike-version.outputs.version
-        uses: frequenz-floss/setup-git-user@v2
-
-      - name: Set up Python
-        if: steps.mike-version.outputs.version
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
-          cache: 'pip'
-
-      - name: Install build dependencies
-        if: steps.mike-version.outputs.version
-        run: |
-          python -m pip install -U pip
-          python -m pip install .[dev-mkdocs]
-          pip freeze
 
       - name: Fetch the gh-pages branch
         if: steps.mike-version.outputs.version
