@@ -182,10 +182,12 @@ initial setup is needed for it to work correctly:
 
 ```sh
 pip install -e .[dev-mkdocs]  # Not necessary if you already installed .[dev]
-mike deploy --update-aliases next latest  # Creates the branch gh-pages locally
+mike deploy --update-aliases v0.1-dev latest-dev latest # Creates the branch gh-pages locally
 mike set-default latest  # Makes the latest alias the default version
 git push upstream gh-pages  # Pushes the new branch upstream to publish the website
 ```
+
+This assumes your branch is called `v0.x.x` and your first release will be `v0.1.0`.
 
 Then make sure that GitHub Pages is enabled in
 `https://github.com/<repo-owner>/<repo-name>/settings/pages`.
@@ -199,9 +201,10 @@ The above commands create a new documentation version using
 [Mike](https://pypi.org/project/mike/), which is used to keep multiple versions
 of the website.
 
-The new documentation version is called `next`, which is used as the name for
-the currently in-development branch. The `next` branch has an alias called
-`latest`, which is set as the *default*.
+The new documentation version is called `v0.1-dev`, which is used as the name for
+the currently in-development branch. The `v0.1-dev` branch has an alias called
+`latest-dev` that points to the latest in-development version, and `latest`
+alias, which is set as the *default*.
 
 If the website is visited without specifying an explicit version, the `latest`
 version will be displayed. It is recommended to point `latest` to the latest
@@ -214,7 +217,8 @@ New versions of the documentation will be automatically generated and published
 via GitHub Actions on any push.
 
 If a push is to a branch with semver-like format (vX.Y.Z), then the generated
-version will replace the current `next` version.
+version will replace the current `vX.Y-dev` version (and `vX-dev` and
+`latest-dev` alias).
 
 If a tag is pushed instead, then the generated version will replace the current
 `vX.Y` version (if there was any), and the aliases `vX` and `latest` will be

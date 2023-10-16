@@ -75,7 +75,7 @@ def main() -> None:
     print("mkdocs serve")
     print()
     print("To initialize the GitHub pages website:")
-    print("mike deploy --update-aliases next latest")
+    print("mike deploy --update-aliases v0.1-dev latest-dev latest")
     print("mike set-default latest")
     print("git push upstream gh-pages  # or origin if you haven't forked the repo")
     print()

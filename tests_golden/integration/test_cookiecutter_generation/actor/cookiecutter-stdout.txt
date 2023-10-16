@@ -43,7 +43,7 @@ pip install .[dev-mkdocs]
 mkdocs serve
 
 To initialize the GitHub pages website:
-mike deploy --update-aliases next latest
+mike deploy --update-aliases v0.1-dev latest-dev latest
 mike set-default latest
 git push upstream gh-pages  # or origin if you haven't forked the repo
 
