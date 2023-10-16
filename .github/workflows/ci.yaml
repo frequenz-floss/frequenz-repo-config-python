@@ -386,9 +386,6 @@ jobs:
 
       - name: Sort site versions
         if: steps.mike-metadata.outputs.version
-        env:
-          VERSION: ${{ steps.mike-metadata.outputs.version }}
-          ALIASES: ${{ steps.mike-metadata.outputs.aliases }}
         run: |
           git checkout gh-pages
           python -m frequenz.repo.config.mkdocs.sort_versions versions.json
@@ -396,9 +393,6 @@ jobs:
 
       - name: Publish site
         if: steps.mike-metadata.outputs.version
-        env:
-          VERSION: ${{ steps.mike-metadata.outputs.version }}
-          ALIASES: ${{ steps.mike-metadata.outputs.aliases }}
         run: |
           git push origin gh-pages
 
