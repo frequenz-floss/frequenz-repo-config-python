@@ -131,9 +131,12 @@ def _build_branches(branches: list[str]) -> dict[str, BranchVersion]:
         return branch[1] is not None
 
     return dict(
-        filter(
-            branch_not_none,
-            ((branch, BranchVersion.parse(branch)) for branch in (branches or [])),
+        sorted(
+            filter(
+                branch_not_none,
+                ((branch, BranchVersion.parse(branch)) for branch in (branches or [])),
+            ),
+            key=lambda branch: branch[1],
         )
     )
 
@@ -202,12 +205,26 @@ class BranchVersion:
         """
         if not isinstance(other, BranchVersion):
             return NotImplemented
-        minor = (
-            other.minor + 1
-            if self.minor is None and other.minor is not None
-            else self.minor
+        if self.minor is None and other.minor is None:
+            self_minor = 0
+            other_minor = 0
+        elif self.minor is None and other.minor is not None:
+            self_minor = other.minor + 1
+            other_minor = other.minor
+        elif other.minor is None and self.minor is not None:
+            self_minor = self.minor
+            other_minor = self.minor + 1
+        elif self.minor is not None and other.minor is not None:
+            self_minor = self.minor
+            other_minor = other.minor
+        else:
+            # We need this because mypy is not smart enough to figure it out
+            assert False, "unreachable"
+        return (self.major, self_minor, self.name) < (
+            other.major,
+            other_minor,
+            other.name,
         )
-        return (self.major, minor, self.name) < (other.major, other.minor, other.name)
 
 
 class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
