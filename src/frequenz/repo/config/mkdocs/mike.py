@@ -143,13 +143,16 @@ _dev_to_semver_re = re.compile(r"^v(\d+).(\d+)-dev$")
 
 
 def _to_fake_sortable_semver(version: str) -> str:
-    """Convert a version string to a semver string.
+    """Convert a branch version string to a semver string.
 
     The following transformations are applied:
 
     - `vX.Y`     -> `X.Y.0`
     - `vX.Y-pre` -> `X.Y.99999`
     - `vX.Y-dev` -> `X.Y.999999`
+
+    The idea is to convert the version string to a semver string that can be sorted
+    together with proper semver tags using the semver built-in sorting.
 
     Args:
         version: The version string to convert.
