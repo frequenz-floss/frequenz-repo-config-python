@@ -234,9 +234,9 @@ If you need to customize the above paths, you can create a new script to use wit
 `mkdocs-gen-files` plugin as follows:
 
 ```python
-from frequenz.repo.config import mkdocs
+from frequenz.repo.config.mkdocs import api_pages
 
-mkdocs.generate_python_api_pages("my_sources", "API")
+api_pages.generate_python_api_pages("my_sources", "API")
 ```
 
 Where `my_sources` is the directory containing the source files and `API` is the
@@ -359,10 +359,10 @@ documentation for them adding one more line to the script provided in the common
 section:
 
 ```python
-from frequenz.repo.config import mkdocs
+from frequenz.repo.config.mkdocs import api_pages
 
-mkdocs.generate_python_api_pages("my_sources", "API-py")
-mkdocs.generate_protobuf_api_pages()
+api_pages.generate_python_api_pages("my_sources", "API-py")
+api_pages.generate_protobuf_api_pages()
 ```
 
 This will use the configuration in the `pyproject.toml` file and requires `docker` to
