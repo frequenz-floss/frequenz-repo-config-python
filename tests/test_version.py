@@ -176,6 +176,7 @@ class _Expected:  # pylint: disable=too-many-instance-attributes
     is_tag: bool = False
     is_tag_last_minor_for_major: bool = False
     is_tag_latest: bool = False
+    last_tag: semver.Version | None = None
     # Branch
     current_branch: BranchVersion | None = None
     is_branch: bool = False
@@ -212,6 +213,7 @@ _test_cases = [
             current_tag=semver.Version(1, 0, 1),
             is_tag=True,
             is_tag_last_minor_for_major=True,
+            last_tag=semver.Version(1, 0, 1),
         ),
     ),
     _TestCase(
@@ -223,6 +225,7 @@ _test_cases = [
             current_tag=semver.Version(1, 1, 0),
             is_tag=True,
             is_tag_last_minor_for_major=True,
+            last_tag=semver.Version(1, 1, 0),
         ),
     ),
     _TestCase(
@@ -234,6 +237,7 @@ _test_cases = [
             current_tag=semver.Version(2, 0, 1),
             is_tag=True,
             is_tag_last_minor_for_major=False,
+            last_tag=semver.Version(2, 0, 1),
         ),
     ),
     _TestCase(
@@ -247,6 +251,7 @@ _test_cases = [
             is_tag=True,
             is_tag_last_minor_for_major=True,
             is_tag_latest=True,
+            last_tag=semver.Version(3, 0, 0),
         ),
     ),
     _TestCase(
@@ -259,6 +264,7 @@ _test_cases = [
             is_tag=True,
             is_tag_last_minor_for_major=True,
             is_tag_latest=True,
+            last_tag=semver.Version(2, 1, 0),
         ),
     ),
     _TestCase(
@@ -272,6 +278,7 @@ _test_cases = [
             is_tag=True,
             is_tag_last_minor_for_major=True,
             is_tag_latest=True,
+            last_tag=semver.Version(2, 1, 1),
         ),
     ),
     _TestCase(
@@ -283,6 +290,7 @@ _test_cases = [
             ref_name="v1.0.2-alpha.1",
             current_tag=semver.Version(1, 0, 2, "alpha.1"),
             is_tag=True,
+            last_tag=semver.Version(1, 0, 2, "alpha.1"),
         ),
     ),
     _TestCase(
@@ -295,6 +303,7 @@ _test_cases = [
             current_tag=semver.Version(1, 1, 0, "beta"),
             is_tag=True,
             is_tag_last_minor_for_major=True,
+            last_tag=semver.Version(1, 1, 0, "beta"),
         ),
     ),
     _TestCase(
@@ -308,6 +317,7 @@ _test_cases = [
             is_tag=True,
             is_tag_last_minor_for_major=True,
             is_tag_latest=True,
+            last_tag=semver.Version(3, 0, 0, "rc1"),
         ),
     ),
     _TestCase(
@@ -321,6 +331,7 @@ _test_cases = [
             is_tag=True,
             is_tag_last_minor_for_major=True,
             is_tag_latest=True,
+            last_tag=semver.Version(2, 1, 0, "alpha.1"),
         ),
     ),
     _TestCase(
@@ -334,6 +345,7 @@ _test_cases = [
             is_tag=True,
             is_tag_last_minor_for_major=True,
             is_tag_latest=True,
+            last_tag=semver.Version(2, 0, 1, "rc1"),
         ),
     ),
     _TestCase(
@@ -355,6 +367,7 @@ _test_cases = [
             current_branch=BranchVersion(major=1, minor=None, name="v1.x.x"),
             is_branch=True,
             next_minor_for_major_branch=1,
+            last_tag=semver.Version(1, 1, 0, "rc"),
         ),
     ),
     _TestCase(
@@ -365,6 +378,7 @@ _test_cases = [
             ref_name="v1.0.x",
             current_branch=BranchVersion(major=1, minor=0, name="v1.0.x"),
             is_branch=True,
+            last_tag=semver.Version(1, 0, 2, "alpha.1"),
         ),
     ),
     _TestCase(
@@ -377,6 +391,7 @@ _test_cases = [
             current_tag=semver.Version(1, 0, 0),
             is_tag=True,
             is_tag_last_minor_for_major=True,
+            last_tag=semver.Version(1, 0, 0),
         ),
     ),
     _TestCase(
@@ -389,6 +404,7 @@ _test_cases = [
             current_tag=semver.Version(1, 0, 2),
             is_tag=True,
             is_tag_last_minor_for_major=True,
+            last_tag=semver.Version(1, 0, 2),
         ),
     ),
     _TestCase(
@@ -400,6 +416,7 @@ _test_cases = [
             ref_name="v2.0.1",
             current_tag=semver.Version(2, 0, 1),
             is_tag=True,
+            last_tag=semver.Version(2, 0, 1),
         ),
     ),
     _TestCase(
@@ -413,6 +430,7 @@ _test_cases = [
             current_tag=semver.Version(1, 0, 0),
             is_tag=True,
             is_tag_last_minor_for_major=True,
+            last_tag=semver.Version(1, 0, 0),
         ),
     ),
     _TestCase(
@@ -437,6 +455,7 @@ _test_cases = [
             current_branch=BranchVersion(major=1, minor=None, name="v1.x.x"),
             is_branch=True,
             next_minor_for_major_branch=1,
+            last_tag=semver.Version(1, 1, 0, "rc"),
         ),
     ),
     _TestCase(
@@ -488,3 +507,9 @@ def test_repo_version(
     )
     assert repo_version_info.is_tag_latest() == case.expected.is_tag_latest
     assert repo_version_info.is_branch_latest() == case.expected.is_branch_latest
+    if case.expected.last_tag is None:
+        assert repo_version_info.find_last_tag() is None
+    else:
+        last_tag = repo_version_info.find_last_tag()
+        assert last_tag is not None
+        assert last_tag == case.expected.last_tag

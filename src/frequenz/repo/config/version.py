@@ -326,6 +326,27 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         """
         return self._branches
 
+    def find_last_tag(self) -> semver.Version | None:
+        """Find the last tag.
+
+        Returns:
+            If we are at a tag, return the [current
+                tag][frequenz.repo.config.version.RepoVersionInfo.current_tag]. If we
+                are at a branch, return the last tag matching the branch major and minor
+                (if any). If there are no matching tags, return `None`.
+        """
+        if self._current_tag:
+            return self._current_tag
+        branch = self.current_branch
+        if branch is None:
+            return None
+        tags = [t for t in self._tags.values() if t.major == branch.major]
+        if branch.minor is not None:
+            tags = [t for t in tags if t.minor == branch.minor]
+        if not tags:
+            return None
+        return max(tags)
+
     def find_next_minor_for_major_branch(self) -> int | None:
         """Find the next minor version for the current major branch.
 
