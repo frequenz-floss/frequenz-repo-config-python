@@ -33,20 +33,16 @@ def _slugify(text: str) -> str:
     return toc.slugify_unicode(text, "-")  # type: ignore[attr-defined,no-any-return]
 
 
-def define_env(env: macros.MacrosPlugin) -> None:
-    """Define the hook to create macro functions for use in Markdown.
+def _hook_macros_plugin(env: macros.MacrosPlugin) -> None:
+    """Integrate the `mkdocs-macros` plugin into `mkdocstrings`.
+
+    This is a temporary workaround to make `mkdocs-macros` work with
+    `mkdocstrings` until a proper `mkdocs-macros` *pluglet* is available. See
+    https://github.com/mkdocstrings/mkdocstrings/issues/615 for details.
 
     Args:
-        env: The environment to define the macro functions in.
+        env: The environment to hook the plugin into.
     """
-    # A variable to easily show an example code annotation from mkdocs-material.
-    # https://squidfunk.github.io/mkdocs-material/reference/code-blocks/#adding-annotations
-    env.variables["code_annotation_marker"] = _CODE_ANNOTATION_MARKER
-
-    # The code below is a temporary workaround to make `mkdocs-macros` work with
-    # `mkdocstrings` until a proper `mkdocs-macros` *pluglet* is available. See
-    # https://github.com/mkdocstrings/mkdocstrings/issues/615 for details.
-
     # get mkdocstrings' Python handler
     python_handler = env.conf["plugins"]["mkdocstrings"].get_handler("python")
 
@@ -69,3 +65,17 @@ def define_env(env: macros.MacrosPlugin) -> None:
 
     # patch the method
     python_handler.update_env = patched_update_env
+
+
+def define_env(env: macros.MacrosPlugin) -> None:
+    """Define the hook to create macro functions for use in Markdown.
+
+    Args:
+        env: The environment to define the macro functions in.
+    """
+    # A variable to easily show an example code annotation from mkdocs-material.
+    # https://squidfunk.github.io/mkdocs-material/reference/code-blocks/#adding-annotations
+    env.variables["code_annotation_marker"] = _CODE_ANNOTATION_MARKER
+
+    # This hook needs to be done at the end of the `define_env` function.
+    _hook_macros_plugin(env)
