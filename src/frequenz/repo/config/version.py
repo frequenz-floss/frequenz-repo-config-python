@@ -347,6 +347,43 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
             return None
         return max(tags)
 
+    def find_next_breaking_branch(self) -> BranchVersion | None:
+        """Find the next branch potentially introducing breaking changes.
+
+        Returns:
+            If there is a last tag, use that as a base, otherwise use the current branch
+                as a base. If none is available, return `None`. If there is a base, the
+                major is incremented by one and the minor is set to `None`, unless the
+                major is 0 (an "initial development version" for semver), in which case
+                the major is set to 0 and the minor is incremented by one, as the next
+                minor could be a breaking change. Technically semver allows breaking
+                changes in patches for major version 0, but we assume patches maintain
+                backwards compatibility.
+        """
+        v_prefix = "v" if self._ref_name.startswith("v") else ""
+        last_tag = self.find_last_tag()
+        if last_tag is None:
+            branch = self.current_branch
+            if branch is None:
+                _logger.warning(
+                    "Trying to get the next breaking branch but there is no (valid) "
+                    "last tag nor current branch for %r",
+                    self._ref,
+                )
+                return None
+            major = branch.major + 1
+            minor = branch.minor or 1
+        else:
+            major = last_tag.major + 1
+            minor = last_tag.minor + 1
+
+        # If the next major is 1, then the current is 0, so the next minor could be
+        # a breaking change.
+        if major == 1:
+            return BranchVersion(major=0, minor=minor, name=f"{v_prefix}0.{minor}.x")
+
+        return BranchVersion(major=major, name=f"{v_prefix}{major}.x.x")
+
     def find_next_minor_for_major_branch(self) -> int | None:
         """Find the next minor version for the current major branch.
 
