@@ -9,6 +9,7 @@ import json
 import sys
 from typing import TextIO
 
+from .... import github
 from ....mkdocs.mike import MikeVersionInfo, sort_mike_versions
 
 
@@ -61,6 +62,8 @@ def main() -> None:
     If more than one argument is given, then an error is printed to stderr and the
     program exits with a non-zero exit code.
     """
+    github.configure_logging()
+
     match len(sys.argv):
         case 1:
             _dump_versions_to(_load_and_sort_versions_from(sys.stdin), sys.stdout)
