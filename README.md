@@ -48,13 +48,16 @@ directory will be created with the generated project name. For example:
 
 ```sh
 cd ~/devel
-cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter \
-    --checkout v0.6.2
+cookiecutter gh:frequenz-floss/frequenz-repo-config-python --directory=cookiecutter
 ```
 
 This command will prompt you for the project type, name, and other
 configuration options, and it will generate the entire project for you.
+
+It is recommended to use a released version, you can do that by adding the
+option `--checkout <version>` to the command above. You can check which is the
+latest version
+[here](https://github.com/frequenz-floss/frequenz-repo-config-python/releases/latest).
 
 After completing the project and fixing the `TODO`s, you can either amend the
 previous commit using `git commit --amend` or create a new commit for the
