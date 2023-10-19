@@ -371,6 +371,14 @@ jobs:
           VERSION: ${{ steps.mike-version.outputs.version }}
           TITLE: ${{ steps.mike-version.outputs.title }}
           ALIASES: ${{ steps.mike-version.outputs.aliases }}
+          # This is not ideal, we need to define all these variables here
+          # because we need to calculate all the repository version information
+          # to be able to show the correct versions in the documentation when
+          # building it.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          GIT_REF: ${{ github.ref }}
+          GIT_SHA: ${{ github.sha }}
         run: |
           mike deploy --update-aliases --title "$TITLE" "$VERSION" $ALIASES
 
