@@ -2,13 +2,13 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release focuses on improving the documentation generation and the CI. In particular it brings a new versioning scheme for the documentation that supports multiple development branches and exposes pre-releases.
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
-
 ### Cookiecutter template
+
+- The recommended `cookiecutter` version was bumped to 2.4.0 to avoid some buggy old versions.
 
 - `mkdocs`
 
@@ -39,7 +39,13 @@
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+- `frequenz_repo_config.version`: New module to get the version information for a repository.
+- `frequnz_repo_config.github`: New module to interact with GitHub.
+- `frequenz.repo_config.mkdocs.mike`: New module to manage `mike` versions and aliases.
+- `frequenz.repo_config.cli`: New package to implement CLI commands.
+
+  - `frequenz.repo.config.cli.version.mike.info`: New command to print GitHub Action variables with for the current `mike` version.
+  - `frequenz.repo.config.cli.version.mike.sort`: New command to sort `mike` versions file (`versions.json`).
 
 ### Cookiecutter template
 
@@ -51,6 +57,8 @@
   - Make code annotations numbered. This is useful to hint about the order one should read the annotations.
   - Add a navigation footer to show previous and next pages. This is specially useful when reading the documentation in a mobile device since the navigation bar is hidden.
   - Updated dependencies.
+  - The hooking of `mkdocstrings` to `macros` plugins is moved to a separate function to avoid the noise in the `define_env()` function.
+  - Improve formatting of signatures to show the types.
   - We use a new `mike` versioning scheme:
 
     - Versions now have a title with the full tag name for tags and includes the (short) commit SHA for branches so users can know exactly which version they are reading.
@@ -64,9 +72,9 @@
   - Add a CI job to *join* all `nox` runs, so only one branch protection rule needs to be used.
   - Dependabot now will check for updates monthly and on a random day and time. This is to avoid all repositories updating at the same time.
 
-## Bug Fixes
+- Add a section about cross-arch testing to `CONTRIBUTING.md`.
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+## Bug Fixes
 
 ### Cookiecutter template
 
