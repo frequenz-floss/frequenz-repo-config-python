@@ -35,7 +35,7 @@ Then simply run [Cookiecutter] where you want to create the new project:
 
 ```sh
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter --checkout v0.6.2
+    --directory=cookiecutter{{" --checkout " + version.ref_name if version}}
 ```
 
 This command will prompt you for the project type, name, and other
@@ -50,9 +50,9 @@ subdirectory.
     the cookiecutter template that will be downloaded, and
     `--directory=cookiecutter` is needed because the cookiecutter template
     doesn't live at the top-level of that repository, but in a subdirectory
-    called `cookiecutter`. The `--checkout` option is provided to use
+    called `cookiecutter`.{{" The `--checkout` option is provided to use
     a template from a released version, otherwise the default (development)
-    branch will be used.
+    branch will be used." if version}}
 
     All information about your project will be prompted interactively by that
     command.
@@ -242,7 +242,7 @@ the files in your existing project by using `rsync` or similar tools:
 ```sh
 cd /tmp
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter --checkout v0.6.2
+    --directory=cookiecutter{{(" --checkout " + version.ref_name) if version}}
 rsync -vr --exclude=.git/ new-project/ /path/to/existing/project
 cd /path/to/existing/project
 git diff
@@ -286,8 +286,8 @@ without having to enter all the inputs again.
 git commit -a  # commit all changes
 cd ..
 cookiecutter gh:frequenz-floss/frequenz-repo-config-python \
-    --directory=cookiecutter \
-    --checkout v0.6.2 \
+    --directory=cookiecutter \{{ """
+    --checkout """ + version.ref_name + " \\" if version}}
     --overwrite-if-exists \
     --replay \
     --replay-file project-directory/.cookiecutter-replay.json

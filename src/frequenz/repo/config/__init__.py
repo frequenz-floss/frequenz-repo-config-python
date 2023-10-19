@@ -289,7 +289,7 @@ To do so there is some setup that's needed:
     # ...
     dev-pytest = [
         # ...
-        "frequenz-repo-config[extra-lint-examples] == 0.6.2",
+        "frequenz-repo-config[extra-lint-examples]{{version_requirement}}",
     ]
     # ...
     [[tool.mypy.overrides]]
@@ -398,11 +398,12 @@ git commit -m "Add api-common-protos and frequenz-api-common submodules" submodu
 Then you need to add this package as a build dependency and a few extra
 dependencies to your project, for example:
 
+
 ```toml
 requires = [
   "setuptools >= 67.3.2, < 68",
   "setuptools_scm[toml] >= 7.1.0, < 8",
-  "frequenz-repo-config[api] >= 0.6.2, < 0.7.0",
+  "frequenz-repo-config[api]{{version_requirement}}",
 ]
 build-backend = "setuptools.build_meta"
 
