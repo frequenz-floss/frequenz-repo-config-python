@@ -21,43 +21,13 @@ variables should be set:
 """
 
 import logging
-import os
-import subprocess
-import sys
-from typing import NoReturn
 
 import github_action_utils as gha
 
-from .... import version
+from .... import github
 from ....mkdocs import mike
 
 _logger = logging.getLogger(__name__)
-
-
-class GitHubActionsFormatter(logging.Formatter):
-    """A formatter for GitHub Actions."""
-
-    level_mapping: dict[int, str] = {
-        logging.CRITICAL: "error",
-        logging.ERROR: "error",
-        logging.WARNING: "warning",
-        logging.INFO: "notice",
-        logging.DEBUG: "debug",
-    }
-    """The mapping from logging levels to GitHub Actions levels."""
-
-    def format(self, record: logging.LogRecord) -> str:
-        """Format the record using GitHub Actions commands.
-
-        Args:
-            record: The record to format.
-
-        Returns:
-            The formatted record.
-        """
-        github_level = self.level_mapping.get(record.levelno, "notice")
-        github_command = f"::{github_level}::{record.getMessage()}"
-        return github_command
 
 
 def _output_gha_vars(mike_version: mike.MikeVersionInfo) -> None:
@@ -72,160 +42,14 @@ def _output_gha_vars(mike_version: mike.MikeVersionInfo) -> None:
     gha.set_output("aliases", " ".join(mike_version.aliases))
 
 
-def abort(  # pylint: disable=too-many-arguments
-    message: str,
-    title: str | None = None,
-    file: str | None = None,
-    col: int | None = None,
-    end_column: int | None = None,
-    line: int | None = None,
-    end_line: int | None = None,
-    use_subprocess: bool = False,
-    error_code: int = 1,
-) -> NoReturn:
-    """Print an error message using GitHub Actions commands and exit.
-
-    Args:
-        message: The message of the error.
-        title: The title of the error.
-        file: The file where the error occurred.
-        col: The column where the error occurred.
-        end_column: The end column where the error occurred.
-        line: The line where the error occurred.
-        end_line: The end line where the error occurred.
-        use_subprocess: Whether to use subprocess to print the error.
-        error_code: The error code to exit with.
-    """
-    gha.error(
-        message,
-        title=title,
-        file=file,
-        col=col,
-        end_column=end_column,
-        line=line,
-        end_line=end_line,
-        use_subprocess=use_subprocess,
-    )
-    sys.exit(error_code)
-
-
-def require_env(name: str) -> str:
-    """Get the environment variable.
-
-    Exit with an error if the environment variable is not defined.
-
-    Args:
-        name: The name of the environment variable.
-
-    Returns:
-        The environment variable.
-    """
-    value = os.environ.get(name)
-    if value is None:
-        abort(f"{name} is not defined", title="Environment variable not defined")
-    return value
-
-
-def _get_tags(repository: str) -> list[str]:
-    """Get the tags of the repository.
-
-    Args:
-        repository: The repository to get the tags of.
-
-    Returns:
-        The tags of the repository.
-    """
-    tags_str: list[str]
-    if env_tags := os.environ.get("TAGS", None):
-        tags_str = env_tags.split()
-    else:
-        tags_str = (
-            subprocess.check_output(
-                [
-                    "gh",
-                    "api",
-                    "-q",
-                    ".[].name",
-                    "-H",
-                    "Accept: application/vnd.github+json",
-                    "-H",
-                    "X-GitHub-Api-Version: 2022-11-28",
-                    f"/repos/{repository}/tags",
-                ]
-            )
-            .decode("utf-8")
-            .splitlines()
-        )
-
-    _logger.debug("Got tags: %r", tags_str)
-    return tags_str
-
-
-def _get_branches(repository: str) -> list[str]:
-    """Get the branches of the repository.
-
-    Args:
-        repository: The repository to get the branches of.
-
-    Returns:
-        The branches of the repository.
-    """
-    branches_str: list[str]
-    if env_branches := os.environ.get("BRANCHES", None):
-        branches_str = env_branches.split()
-    else:
-        branches_str = (
-            subprocess.check_output(
-                [
-                    "gh",
-                    "api",
-                    "-q",
-                    ".[].name",
-                    "-H",
-                    "Accept: application/vnd.github+json",
-                    "-H",
-                    "X-GitHub-Api-Version: 2022-11-28",
-                    f"/repos/{repository}/branches",
-                ]
-            )
-            .decode("utf-8")
-            .splitlines()
-        )
-    _logger.debug("Got branches: %r", branches_str)
-    return branches_str
-
-
-def _configure_logging(is_debug_run: bool) -> None:
-    """Configure logging for GitHub Actions.
-
-    Args:
-        is_debug_run: Whether the run is a debug run.
-    """
-    handler = logging.StreamHandler()
-    handler.setFormatter(GitHubActionsFormatter())
-    level = logging.DEBUG if is_debug_run else logging.INFO
-    logging.basicConfig(level=level, handlers=[handler])
-
-
 def main() -> None:
     """Output mike version variables for GitHub Actions."""
-    is_debug_run = os.environ.get("RUNNER_DEBUG", None) == "1"
-    _configure_logging(is_debug_run)
-
-    repository = require_env("GITHUB_REPO")
-    repo_info = version.RepoVersionInfo(
-        ref=require_env("GIT_REF"),
-        sha=require_env("GIT_SHA"),
-        tags=_get_tags(repository),
-        branches=_get_branches(repository),
-    )
-    # Just for checking it is defined, github_action_utils deals with it automatically.
-    require_env("GITHUB_OUTPUT")
+    github.configure_logging()
 
     try:
-        mike_version = mike.build_mike_version(repo_info)
+        mike_version = mike.build_mike_version(github.get_repo_version_info())
     except ValueError as error:
-        abort(f"{error}.", title="Documentation was not published")
+        github.abort(f"{error}.", title="Documentation was not published")
 
     _output_gha_vars(mike_version)
 
