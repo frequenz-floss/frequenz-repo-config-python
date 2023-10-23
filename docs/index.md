@@ -19,7 +19,7 @@ Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html).
 It is normally available in any Linux distribution, but some have a very old
 version (for example, Ubuntu/Debian). You can [check which version your distro
 has on Repology](https://repology.org/project/cookiecutter/versions). You need
-**at least version 2.1.0**. To ensure you get an up-to-date version, you can
+**at least version 2.4.0**. To ensure you get an up-to-date version, you can
 always use `pip` and install it in a `venv`:
 
 ```console
