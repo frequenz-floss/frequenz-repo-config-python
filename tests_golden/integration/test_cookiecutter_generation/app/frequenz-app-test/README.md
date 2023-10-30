@@ -12,7 +12,7 @@ TODO(cookiecutter): Improve the README file
 
 ## Supported Platforms
 
-The following platforms are officially supported (test):
+The following platforms are officially supported (tested):
 
 - **Python:** 3.11
 - **Operating System:** Ubuntu Linux 20.04
