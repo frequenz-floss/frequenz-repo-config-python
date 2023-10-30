@@ -111,6 +111,7 @@ dev = [
 ]
 
 [project.urls]
+Documentation = "https://{{cookiecutter.github_org}}.github.io/{{cookiecutter.github_repo_name}}/"
 Changelog = "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}/releases"
 Issues = "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}/issues"
 Repository = "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}"
