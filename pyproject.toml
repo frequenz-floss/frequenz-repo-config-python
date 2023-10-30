@@ -112,6 +112,7 @@ dev = [
 ]
 
 [project.urls]
+Documentation = "https://frequenz-floss.github.io/frequenz-repo-config-python/"
 Changelog = "https://github.com/frequenz-floss/frequenz-repo-config-python/releases"
 Issues = "https://github.com/frequenz-floss/frequenz-repo-config-python/issues"
 Repository = "https://github.com/frequenz-floss/frequenz-repo-config-python"

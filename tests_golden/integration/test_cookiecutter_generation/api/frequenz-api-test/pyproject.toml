@@ -84,6 +84,7 @@ dev = [
 ]
 
 [project.urls]
+Documentation = "https://frequenz-floss.github.io/frequenz-api-test/"
 Changelog = "https://github.com/frequenz-floss/frequenz-api-test/releases"
 Issues = "https://github.com/frequenz-floss/frequenz-api-test/issues"
 Repository = "https://github.com/frequenz-floss/frequenz-api-test"
