@@ -18,7 +18,7 @@
 
 ### Cookiecutter template
 
-- Show a link to the documentation in PyPI.
+<!-- Here new features for cookiecutter specifically -->
 
 ## Bug Fixes
 
