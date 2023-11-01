@@ -1,8 +1,8 @@
 # License: MIT
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
-# This Dockerfile is used to test the installation of the python package in
-# multiple platforms in the CI. It is not used to build the package itself.
+# This Dockerfile is used to run the tests in arm64, which is not supported by
+# GitHub Actions at the moment.
 
 FROM docker.io/library/ubuntu:20.04
 
