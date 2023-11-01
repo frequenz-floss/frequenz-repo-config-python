@@ -525,7 +525,7 @@ def finish_model_setup() -> None:
     """
 
 
-def try_run(
+def try_run(  # pylint: disable=too-many-arguments
     cmd: list[str] | str,
     /,
     *,
