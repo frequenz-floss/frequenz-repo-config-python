@@ -1,28 +1,29 @@
 # Frequenz Repository Configuration Release Notes
 
+## Summary
+
+<!-- Here goes a general summary of what this release is about -->
+
 ## Upgrading
+
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
-Instead of regenerating the templates, you can simply:
+<!-- Here upgrade steps for cookiecutter specifically -->
 
-- Run this command to fix the typo and wrong `cli` package:
+## New Features
 
-  ```sh
-  sed -i 's/annothations/annotations/' docs/_css/style.css
-  sed -i 's/frequenz\.repo\.config\.cli\.version\.mkdocs\.sort/frequenz.repo.config.cli.version.mike.sort/' .github/workflows/ci.yaml
-  ```
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
-- Replace the comment after the copyright notice in `.github/containers/nox-cross-arch/arm64-ubuntu-20.04-python-3.11.Dockerfile` with:
+### Cookiecutter template
 
-  ```Dockerfile
-  # This Dockerfile is used to run the tests in arm64, which is not supported by
-  # GitHub Actions at the moment.
-  ```
+<!-- Here new features for cookiecutter specifically -->
 
 ## Bug Fixes
 
+<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+
 ### Cookiecutter template
 
-- docs: Fix typo in `docs/_css/style.css` ("annothations" -> "annotations")
-- ci: Fix the description of the arm64 `Dockerfile`
+<!-- Here bug fixes for cookiecutter specifically -->
