@@ -2,8 +2,8 @@
 # Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
 {% raw -%}
 
-# This Dockerfile is used to run the tests in architectures not supported by
-# GitHub Actions.
+# This Dockerfile is used to run the tests in arm64, which is not supported by
+# GitHub Actions at the moment.
 
 FROM docker.io/library/ubuntu:20.04
 
