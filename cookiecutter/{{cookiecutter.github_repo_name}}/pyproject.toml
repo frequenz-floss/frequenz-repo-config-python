@@ -93,7 +93,7 @@ dev-noxfile = [
   "frequenz-repo-config[{{cookiecutter.type}}] == 0.7.0",
 ]
 dev-pylint = [
-  "pylint == 2.17.5",
+  "pylint == 3.0.2",
   # For checking the noxfile, docs/ script, and tests
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
