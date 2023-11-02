@@ -11,3 +11,7 @@ If upgrading `pylint` you might get a few new check errors.
 ### Cookiecutter template
 
 There is no need to regenerate any templates with this release.
+
+## Bug Fixes
+
+- `mkdocs`: The `conftest` module is now properly hidden from the documentation again.
