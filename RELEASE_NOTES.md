@@ -2,11 +2,11 @@
 
 ## Summary
 
-This release adds support for `pylint` 3, so downstream projects can upgrade their `pylint` version.
+This release fixes a bug in `mike` version sorting.
 
 ## Upgrading
 
-If upgrading `pylint` you might get a few new check errors.
+- `frequenz.repo.config.mkdocs.mike.`: The `sort_versions()` function now takes plain `str`s as arguments instead of `MikeVersionInfo` objects.
 
 ### Cookiecutter template
 
@@ -14,4 +14,4 @@ There is no need to regenerate any templates with this release.
 
 ## Bug Fixes
 
-- `mkdocs`: The `conftest` module is now properly hidden from the documentation again.
+- CI / `mkdocs`: `mike` version sorting now properly sort pre-releases as older than stable releases for the same major and minor version.

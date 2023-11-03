@@ -10,12 +10,17 @@ from unittest import mock
 import pytest
 import semver
 
-from frequenz.repo.config.mkdocs.mike import MikeVersionInfo, build_mike_version
+from frequenz.repo.config.mkdocs.mike import (
+    MikeVersionInfo,
+    build_mike_version,
+    compare_mike_version,
+    sort_mike_versions,
+)
 from frequenz.repo.config.version import BranchVersion, RepoVersionInfo
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class _TestCase:  # pylint: disable=too-many-instance-attributes
+class _BuildVersionTestCase:  # pylint: disable=too-many-instance-attributes
     title: str
     # Common
     ref_name: str
@@ -32,14 +37,14 @@ class _TestCase:  # pylint: disable=too-many-instance-attributes
     expected: MikeVersionInfo | Exception
 
 
-_test_cases = [
-    _TestCase(
+_build_version_test_cases = [
+    _BuildVersionTestCase(
         title="invalid-release",
         ref_name="vx.x.x",
         is_tag=True,
         expected=ValueError("The tag 'vx.x.x' is not a valid semver version"),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="pre-release-latest",
         ref_name="v1.2.3-rc.1",
         is_tag=True,
@@ -51,7 +56,7 @@ _test_cases = [
             aliases=["v1-pre", "latest-pre"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="pre-release-last-minor-for-major",
         ref_name="v1.2.3-rc.1",
         is_tag=True,
@@ -62,7 +67,7 @@ _test_cases = [
             aliases=["v1-pre"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="pre-release-old-minor",
         ref_name="v1.2.3-rc.1",
         is_tag=True,
@@ -72,7 +77,7 @@ _test_cases = [
             aliases=[],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="release-latest",
         ref_name="v1.2.3",
         is_tag=True,
@@ -84,7 +89,7 @@ _test_cases = [
             aliases=["v1", "latest"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="release-last-minor-for-major-branch",
         ref_name="v1.2.3",
         is_tag=True,
@@ -95,7 +100,7 @@ _test_cases = [
             aliases=["v1"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="release-old-minor",
         ref_name="v1.2.3",
         is_tag=True,
@@ -105,7 +110,7 @@ _test_cases = [
             aliases=[],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="released-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -116,7 +121,7 @@ _test_cases = [
             aliases=["v1-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="unreleased-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -127,7 +132,7 @@ _test_cases = [
             aliases=["v1-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="released-latest-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -139,7 +144,7 @@ _test_cases = [
             aliases=["v1-dev", "latest-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="unreleased-latest-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -151,7 +156,7 @@ _test_cases = [
             aliases=["v1-dev", "latest-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="minor-branch",
         ref_name="v1.0.x",
         is_branch=True,
@@ -161,20 +166,20 @@ _test_cases = [
             aliases=[],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="invalid-ref",  # Not a tag nor a branch
         ref_name="vx.x.x",
         expected=ValueError(
             "Don't know how to handle 'mock-ref' to make 'mike' version"
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="invalid-tag",
         ref_name="vx1.0.x",
         is_tag=True,
         expected=ValueError("The tag 'vx1.0.x' is not a valid semver version"),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="invalid-branch",
         ref_name="feature-branch",
         is_branch=True,
@@ -183,9 +188,9 @@ _test_cases = [
 ]
 
 
-@pytest.mark.parametrize("case", _test_cases, ids=lambda c: c.title)
-def test_get_mike_version(
-    case: _TestCase,
+@pytest.mark.parametrize("case", _build_version_test_cases, ids=lambda c: c.title)
+def test_build_mike_version(
+    case: _BuildVersionTestCase,
 ) -> None:
     """Test build_mike_version()."""
     repo_info = mock.MagicMock(spec=RepoVersionInfo)
@@ -227,3 +232,154 @@ def test_get_mike_version(
             assert mike_version == expected_mike_version
         case _ as unhandled:
             assert_never(unhandled)
+
+
+@pytest.mark.parametrize(
+    "version1, version2, expected",
+    [
+        ("v1.0", "v1.0", 0),
+        ("v1.0-dev", "v1.0-dev", 0),
+        ("v1.0-pre", "v1.0-pre", 0),
+        ("v1.0", "v1.0-dev", -1),
+        ("v1.0", "v1.0-pre", 1),
+        ("v1.0-dev", "v1.0-pre", 1),
+        ("v1.0-dev", "v1.0", 1),
+        ("v1.0-pre", "v1.0", -1),
+        ("v1.0-pre", "v1.0-dev", -1),
+        ("v1.0", "v1.1", -1),
+        ("v1.0", "v1.1-dev", -1),
+        ("v1.0", "v1.1-pre", -1),
+        ("v1.0-dev", "v1.1", -1),
+        ("v1.0-dev", "v1.1-dev", -1),
+        ("v1.0-dev", "v1.1-pre", -1),
+        ("v1.0-pre", "v1.1", -1),
+        ("v1.0-pre", "v1.1-dev", -1),
+        ("v1.0-pre", "v1.1-pre", -1),
+        ("v1.1", "v1.0", 1),
+        ("v1.1", "v1.0-dev", 1),
+        ("v1.1", "v1.0-pre", 1),
+        ("v1.1-dev", "v1.0", 1),
+        ("v2.0-dev", "v1.0-dev", 1),
+        ("v2.0-pre", "v1.0-dev", 1),
+        ("v2.0", "v1.0-dev", 1),
+        ("v2.0-dev", "v1.0-pre", 1),
+        ("v2.0-pre", "v1.0-pre", 1),
+        ("v2.0", "v1.0-pre", 1),
+        ("blah", "v1.0-dev", 1),
+        ("alpha", "beta", -1),
+    ],
+)
+def test_compare_mike_version(
+    version1: str,
+    version2: str,
+    expected: int,
+) -> None:
+    """Test compare_mike_version()."""
+    assert compare_mike_version(version1, version2) == expected
+
+
+@dataclasses.dataclass(frozen=True, kw_only=True)
+class _SortVersionsTestCase:
+    title: str
+    versions: list[str]
+    reversed: bool = True
+    expected: list[str]
+
+
+_sort_versions_test_cases = [
+    _SortVersionsTestCase(
+        title="case1",
+        versions=["v1.0", "v1.0-dev", "v1.0-pre"],
+        expected=["v1.0-dev", "v1.0", "v1.0-pre"],
+    ),
+    _SortVersionsTestCase(
+        title="case2",
+        versions=["v1.0", "v2.0", "v3.0", "v3.1"],
+        expected=["v3.1", "v3.0", "v2.0", "v1.0"],
+    ),
+    _SortVersionsTestCase(
+        title="case3",
+        versions=["v1.0", "v1.0-dev", "v1.0-pre", "v1.1", "v1.1-dev"],
+        expected=["v1.1-dev", "v1.1", "v1.0-dev", "v1.0", "v1.0-pre"],
+    ),
+    _SortVersionsTestCase(
+        title="case4",
+        versions=["v1.0", "v1.0-dev", "v1.0-pre", "v1.1", "v1.1-dev", "v1.1-pre"],
+        expected=["v1.1-dev", "v1.1", "v1.1-pre", "v1.0-dev", "v1.0", "v1.0-pre"],
+    ),
+    _SortVersionsTestCase(
+        title="case5",
+        versions=[
+            "v1.0",
+            "v1.0-dev",
+            "v1.0-pre",
+            "v0.99-pre",
+            "v0.1",
+            "v0.99",
+            "v0.99-dev",
+            "v1.1",
+            "alpha",
+            "v1.1-dev",
+            "v1.1-pre",
+            "v2.0",
+            "blah",
+        ],
+        expected=[
+            "blah",
+            "alpha",
+            "v2.0",
+            "v1.1-dev",
+            "v1.1",
+            "v1.1-pre",
+            "v1.0-dev",
+            "v1.0",
+            "v1.0-pre",
+            "v0.99-dev",
+            "v0.99",
+            "v0.99-pre",
+            "v0.1",
+        ],
+    ),
+    _SortVersionsTestCase(
+        title="case5-not-reversed",
+        versions=[
+            "v1.0",
+            "v1.0-dev",
+            "v1.0-pre",
+            "v0.99-pre",
+            "v0.1",
+            "v0.99",
+            "v0.99-dev",
+            "v1.1",
+            "alpha",
+            "v1.1-dev",
+            "v1.1-pre",
+            "v2.0",
+            "blah",
+        ],
+        reversed=False,
+        expected=[
+            "v0.1",
+            "v0.99-pre",
+            "v0.99",
+            "v0.99-dev",
+            "v1.0-pre",
+            "v1.0",
+            "v1.0-dev",
+            "v1.1-pre",
+            "v1.1",
+            "v1.1-dev",
+            "v2.0",
+            "alpha",
+            "blah",
+        ],
+    ),
+]
+
+
+@pytest.mark.parametrize("case", _sort_versions_test_cases, ids=lambda c: c.title)
+def test_sort_mike_versions(
+    case: _SortVersionsTestCase,
+) -> None:
+    """Test sort_mike_versions()."""
+    assert sort_mike_versions(case.versions, reverse=case.reversed) == case.expected

@@ -147,8 +147,8 @@ def _to_fake_sortable_semver(version: str) -> str:
 
     The following transformations are applied:
 
+    - `vX.Y-pre` -> `X.Y.0-pre`
     - `vX.Y`     -> `X.Y.0`
-    - `vX.Y-pre` -> `X.Y.99999`
     - `vX.Y-dev` -> `X.Y.999999`
 
     The idea is to convert the version string to a semver string that can be sorted
@@ -161,7 +161,7 @@ def _to_fake_sortable_semver(version: str) -> str:
         The converted version string.
     """
     version = _stable_to_semver_re.sub(r"\1.\2.0", version)
-    version = _pre_to_semver_re.sub(r"\1.\2.99999", version)
+    version = _pre_to_semver_re.sub(r"\1.\2.0-pre", version)
     version = _dev_to_semver_re.sub(r"\1.\2.999999", version)
     if version.startswith("v"):
         version = version[1:]
@@ -175,8 +175,8 @@ def compare_mike_version(version1: str, version2: str) -> int:
 
     - Versions are first compared by major version (`X`).
     - If they have the same major, then they are compared by minor version (`Y`).
-    - If they have the same major and minor, then pre-releases (`vX.Y-pre`) are
-      considered bigger than stable versions (`vX.Y`) and development versions
+    - If they have the same major and minor, then stable versions (`vX.Y`) are
+      considered bigger than pre-releases (`vX.Y-pre`) and development versions
       (`vX.Y-dev`) are considered bigger than pre-releases.
     - Any other version not matching `vX.Y(-pre|-dev)?` is considered to be bigger than
       the matching versions.
@@ -184,8 +184,8 @@ def compare_mike_version(version1: str, version2: str) -> int:
 
     Example:
 
-        `v1.0` < `v1.0-pre` < `v1.0-dev` < `v1.1` < `v2.0` < `v2.0-pre` < `v2.0-dev`
-          < `whatever` < `x`.
+        `v1.0-pre` < `v1.0` < `v1.0-dev` < `v1.1` < `v2.0-pre` < `v2.0` < `v2.0-dev`
+        < `whatever` < `x`.
 
     Args:
         version1: The first version to compare.
@@ -210,9 +210,7 @@ def compare_mike_version(version1: str, version2: str) -> int:
     return -1 if version1 < version2 else 1
 
 
-def sort_mike_versions(
-    versions: list[MikeVersionInfo], *, reverse: bool = True
-) -> list[MikeVersionInfo]:
+def sort_mike_versions(versions: list[str], *, reverse: bool = True) -> list[str]:
     """Sort `mike`'s `version.json` file with a custom order.
 
     The `version` keys are expected as follows:
@@ -227,8 +225,8 @@ def sort_mike_versions(
     - Versions are first sorted by major version (`X`).
     - Inside a major version group, versions are sorted by minor version (`Y`).
     - For the same major and minor version, development versions (`-dev`) considered
-      the latest for that major version group, then pre-release versions (`-pre`), and
-      finally stable versions.
+      the latest for that major version group, then stable versions, and finally
+      pre-release versions (`-pre`).
     - Other versions appear first and are sorted alphabetically.
 
     The versions are sorted in-place using
@@ -236,7 +234,8 @@ def sort_mike_versions(
 
     Example:
 
-        `z`, `whatever`, `v2.1-dev`, `v2.1-pre`, `v2.0`, `v1.1-dev`, `v1.0-dev`, `v1.0`
+        `z`, `whatever`, `v2.1-dev`, `v2.1`, `v2.1-pre`, `v2.0`, `v1.1-dev`, `v1.0-dev`,
+        `v1.0`
 
     Args:
         versions: The list of versions to sort.
@@ -245,9 +244,5 @@ def sort_mike_versions(
     Returns:
         The sorted list of versions.
     """
-
-    def compare(ver1: MikeVersionInfo, ver2: MikeVersionInfo) -> int:
-        return compare_mike_version(ver1.version, ver2.version)
-
-    versions.sort(key=functools.cmp_to_key(compare), reverse=reverse)
+    versions.sort(key=functools.cmp_to_key(compare_mike_version), reverse=reverse)
     return versions
