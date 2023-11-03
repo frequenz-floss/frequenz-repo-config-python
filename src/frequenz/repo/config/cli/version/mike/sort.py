@@ -4,36 +4,35 @@
 """Sort `mike`'s `version.json` file with a custom order."""
 
 
-import dataclasses
 import json
 import sys
-from typing import TextIO
+from typing import Any, TextIO
 
 from .... import github
-from ....mkdocs.mike import MikeVersionInfo, sort_mike_versions
+from ....mkdocs.mike import sort_mike_versions
 
 
-def _load_and_sort_versions_from(stream: TextIO) -> list[MikeVersionInfo]:
-    """Load the versions from the given stream.
+def _load_and_sort_versions_from(stream: TextIO) -> dict[str, dict[str, Any]]:
+    """Load the versions from the given stream and sort them.
 
     Args:
         stream: The stream to read the versions from.
 
     Returns:
-        The loaded versions.
+        The sorted loaded versions.
     """
-    versions = [MikeVersionInfo(**v) for v in json.load(stream)]
-    return sort_mike_versions(versions)
+    versions = {v["version"]: v for v in json.load(stream)}
+    return {v: versions[v] for v in sort_mike_versions(list(versions.keys()))}
 
 
-def _dump_versions_to(versions: list[MikeVersionInfo], stream: TextIO) -> None:
+def _dump_versions_to(versions: dict[str, dict[str, Any]], stream: TextIO) -> None:
     """Dump the versions to the given stream.
 
     Args:
         versions: The versions to dump.
         stream: The stream to write the versions to.
     """
-    json.dump([dataclasses.asdict(v) for v in versions], stream, separators=(",", ":"))
+    json.dump(list(versions.values()), stream, separators=(",", ":"))
 
 
 def main() -> None:

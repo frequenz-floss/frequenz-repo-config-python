@@ -210,9 +210,7 @@ def compare_mike_version(version1: str, version2: str) -> int:
     return -1 if version1 < version2 else 1
 
 
-def sort_mike_versions(
-    versions: list[MikeVersionInfo], *, reverse: bool = True
-) -> list[MikeVersionInfo]:
+def sort_mike_versions(versions: list[str], *, reverse: bool = True) -> list[str]:
     """Sort `mike`'s `version.json` file with a custom order.
 
     The `version` keys are expected as follows:
@@ -246,9 +244,5 @@ def sort_mike_versions(
     Returns:
         The sorted list of versions.
     """
-
-    def compare(ver1: MikeVersionInfo, ver2: MikeVersionInfo) -> int:
-        return compare_mike_version(ver1.version, ver2.version)
-
-    versions.sort(key=functools.cmp_to_key(compare), reverse=reverse)
+    versions.sort(key=functools.cmp_to_key(compare_mike_version), reverse=reverse)
     return versions
