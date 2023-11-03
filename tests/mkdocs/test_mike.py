@@ -10,7 +10,12 @@ from unittest import mock
 import pytest
 import semver
 
-from frequenz.repo.config.mkdocs.mike import MikeVersionInfo, build_mike_version
+from frequenz.repo.config.mkdocs.mike import (
+    MikeVersionInfo,
+    build_mike_version,
+    compare_mike_version,
+    sort_mike_versions,
+)
 from frequenz.repo.config.version import BranchVersion, RepoVersionInfo
 
 
@@ -227,3 +232,154 @@ def test_build_mike_version(
             assert mike_version == expected_mike_version
         case _ as unhandled:
             assert_never(unhandled)
+
+
+@pytest.mark.parametrize(
+    "version1, version2, expected",
+    [
+        ("v1.0", "v1.0", 0),
+        ("v1.0-dev", "v1.0-dev", 0),
+        ("v1.0-pre", "v1.0-pre", 0),
+        ("v1.0", "v1.0-dev", -1),
+        ("v1.0", "v1.0-pre", 1),
+        ("v1.0-dev", "v1.0-pre", 1),
+        ("v1.0-dev", "v1.0", 1),
+        ("v1.0-pre", "v1.0", -1),
+        ("v1.0-pre", "v1.0-dev", -1),
+        ("v1.0", "v1.1", -1),
+        ("v1.0", "v1.1-dev", -1),
+        ("v1.0", "v1.1-pre", -1),
+        ("v1.0-dev", "v1.1", -1),
+        ("v1.0-dev", "v1.1-dev", -1),
+        ("v1.0-dev", "v1.1-pre", -1),
+        ("v1.0-pre", "v1.1", -1),
+        ("v1.0-pre", "v1.1-dev", -1),
+        ("v1.0-pre", "v1.1-pre", -1),
+        ("v1.1", "v1.0", 1),
+        ("v1.1", "v1.0-dev", 1),
+        ("v1.1", "v1.0-pre", 1),
+        ("v1.1-dev", "v1.0", 1),
+        ("v2.0-dev", "v1.0-dev", 1),
+        ("v2.0-pre", "v1.0-dev", 1),
+        ("v2.0", "v1.0-dev", 1),
+        ("v2.0-dev", "v1.0-pre", 1),
+        ("v2.0-pre", "v1.0-pre", 1),
+        ("v2.0", "v1.0-pre", 1),
+        ("blah", "v1.0-dev", 1),
+        ("alpha", "beta", -1),
+    ],
+)
+def test_compare_mike_version(
+    version1: str,
+    version2: str,
+    expected: int,
+) -> None:
+    """Test compare_mike_version()."""
+    assert compare_mike_version(version1, version2) == expected
+
+
+@dataclasses.dataclass(frozen=True, kw_only=True)
+class _SortVersionsTestCase:
+    title: str
+    versions: list[str]
+    reversed: bool = True
+    expected: list[str]
+
+
+_sort_versions_test_cases = [
+    _SortVersionsTestCase(
+        title="case1",
+        versions=["v1.0", "v1.0-dev", "v1.0-pre"],
+        expected=["v1.0-dev", "v1.0", "v1.0-pre"],
+    ),
+    _SortVersionsTestCase(
+        title="case2",
+        versions=["v1.0", "v2.0", "v3.0", "v3.1"],
+        expected=["v3.1", "v3.0", "v2.0", "v1.0"],
+    ),
+    _SortVersionsTestCase(
+        title="case3",
+        versions=["v1.0", "v1.0-dev", "v1.0-pre", "v1.1", "v1.1-dev"],
+        expected=["v1.1-dev", "v1.1", "v1.0-dev", "v1.0", "v1.0-pre"],
+    ),
+    _SortVersionsTestCase(
+        title="case4",
+        versions=["v1.0", "v1.0-dev", "v1.0-pre", "v1.1", "v1.1-dev", "v1.1-pre"],
+        expected=["v1.1-dev", "v1.1", "v1.1-pre", "v1.0-dev", "v1.0", "v1.0-pre"],
+    ),
+    _SortVersionsTestCase(
+        title="case5",
+        versions=[
+            "v1.0",
+            "v1.0-dev",
+            "v1.0-pre",
+            "v0.99-pre",
+            "v0.1",
+            "v0.99",
+            "v0.99-dev",
+            "v1.1",
+            "alpha",
+            "v1.1-dev",
+            "v1.1-pre",
+            "v2.0",
+            "blah",
+        ],
+        expected=[
+            "blah",
+            "alpha",
+            "v2.0",
+            "v1.1-dev",
+            "v1.1",
+            "v1.1-pre",
+            "v1.0-dev",
+            "v1.0",
+            "v1.0-pre",
+            "v0.99-dev",
+            "v0.99",
+            "v0.99-pre",
+            "v0.1",
+        ],
+    ),
+    _SortVersionsTestCase(
+        title="case5-not-reversed",
+        versions=[
+            "v1.0",
+            "v1.0-dev",
+            "v1.0-pre",
+            "v0.99-pre",
+            "v0.1",
+            "v0.99",
+            "v0.99-dev",
+            "v1.1",
+            "alpha",
+            "v1.1-dev",
+            "v1.1-pre",
+            "v2.0",
+            "blah",
+        ],
+        reversed=False,
+        expected=[
+            "v0.1",
+            "v0.99-pre",
+            "v0.99",
+            "v0.99-dev",
+            "v1.0-pre",
+            "v1.0",
+            "v1.0-dev",
+            "v1.1-pre",
+            "v1.1",
+            "v1.1-dev",
+            "v2.0",
+            "alpha",
+            "blah",
+        ],
+    ),
+]
+
+
+@pytest.mark.parametrize("case", _sort_versions_test_cases, ids=lambda c: c.title)
+def test_sort_mike_versions(
+    case: _SortVersionsTestCase,
+) -> None:
+    """Test sort_mike_versions()."""
+    assert sort_mike_versions(case.versions, reverse=case.reversed) == case.expected
