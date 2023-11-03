@@ -13,18 +13,6 @@ from .... import github
 from ....mkdocs.mike import MikeVersionInfo, sort_mike_versions
 
 
-def _sort(stream_in: TextIO, stream_out: TextIO) -> None:
-    """Sort the versions in the given in stream to the given out stream.
-
-    Args:
-        stream_in: The stream to read the versions from.
-        stream_out: The stream to write the sorted versions to.
-    """
-    versions = json.load(stream_in)
-    sorted_versions = sort_mike_versions([MikeVersionInfo(**v) for v in versions])
-    json.dump(sorted_versions, stream_out, separators=(",", ":"))
-
-
 def _load_and_sort_versions_from(stream: TextIO) -> list[MikeVersionInfo]:
     """Load the versions from the given stream.
 
