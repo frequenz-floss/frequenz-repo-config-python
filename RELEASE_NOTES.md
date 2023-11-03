@@ -2,28 +2,16 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release fixes a bug in `mike` version sorting.
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+- `frequenz.repo.config.mkdocs.mike.`: The `sort_versions()` function now takes plain `str`s as arguments instead of `MikeVersionInfo` objects.
 
 ### Cookiecutter template
 
-<!-- Here upgrade steps for cookiecutter specifically -->
-
-## New Features
-
-<!-- Here goes the main new features and examples or instructions on how to use them -->
-
-### Cookiecutter template
-
-<!-- Here new features for cookiecutter specifically -->
+There is no need to regenerate any templates with this release.
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
-### Cookiecutter template
-
-<!-- Here bug fixes for cookiecutter specifically -->
+- CI / `mkdocs`: `mike` version sorting now properly sort pre-releases as older than stable releases for the same major and minor version.
