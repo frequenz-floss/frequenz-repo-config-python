@@ -15,7 +15,7 @@ from frequenz.repo.config.version import BranchVersion, RepoVersionInfo
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class _TestCase:  # pylint: disable=too-many-instance-attributes
+class _BuildVersionTestCase:  # pylint: disable=too-many-instance-attributes
     title: str
     # Common
     ref_name: str
@@ -32,14 +32,14 @@ class _TestCase:  # pylint: disable=too-many-instance-attributes
     expected: MikeVersionInfo | Exception
 
 
-_test_cases = [
-    _TestCase(
+_build_version_test_cases = [
+    _BuildVersionTestCase(
         title="invalid-release",
         ref_name="vx.x.x",
         is_tag=True,
         expected=ValueError("The tag 'vx.x.x' is not a valid semver version"),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="pre-release-latest",
         ref_name="v1.2.3-rc.1",
         is_tag=True,
@@ -51,7 +51,7 @@ _test_cases = [
             aliases=["v1-pre", "latest-pre"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="pre-release-last-minor-for-major",
         ref_name="v1.2.3-rc.1",
         is_tag=True,
@@ -62,7 +62,7 @@ _test_cases = [
             aliases=["v1-pre"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="pre-release-old-minor",
         ref_name="v1.2.3-rc.1",
         is_tag=True,
@@ -72,7 +72,7 @@ _test_cases = [
             aliases=[],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="release-latest",
         ref_name="v1.2.3",
         is_tag=True,
@@ -84,7 +84,7 @@ _test_cases = [
             aliases=["v1", "latest"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="release-last-minor-for-major-branch",
         ref_name="v1.2.3",
         is_tag=True,
@@ -95,7 +95,7 @@ _test_cases = [
             aliases=["v1"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="release-old-minor",
         ref_name="v1.2.3",
         is_tag=True,
@@ -105,7 +105,7 @@ _test_cases = [
             aliases=[],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="released-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -116,7 +116,7 @@ _test_cases = [
             aliases=["v1-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="unreleased-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -127,7 +127,7 @@ _test_cases = [
             aliases=["v1-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="released-latest-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -139,7 +139,7 @@ _test_cases = [
             aliases=["v1-dev", "latest-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="unreleased-latest-major-branch",
         ref_name="v1.x.x",
         is_branch=True,
@@ -151,7 +151,7 @@ _test_cases = [
             aliases=["v1-dev", "latest-dev"],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="minor-branch",
         ref_name="v1.0.x",
         is_branch=True,
@@ -161,20 +161,20 @@ _test_cases = [
             aliases=[],
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="invalid-ref",  # Not a tag nor a branch
         ref_name="vx.x.x",
         expected=ValueError(
             "Don't know how to handle 'mock-ref' to make 'mike' version"
         ),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="invalid-tag",
         ref_name="vx1.0.x",
         is_tag=True,
         expected=ValueError("The tag 'vx1.0.x' is not a valid semver version"),
     ),
-    _TestCase(
+    _BuildVersionTestCase(
         title="invalid-branch",
         ref_name="feature-branch",
         is_branch=True,
@@ -183,9 +183,9 @@ _test_cases = [
 ]
 
 
-@pytest.mark.parametrize("case", _test_cases, ids=lambda c: c.title)
-def test_get_mike_version(
-    case: _TestCase,
+@pytest.mark.parametrize("case", _build_version_test_cases, ids=lambda c: c.title)
+def test_build_mike_version(
+    case: _BuildVersionTestCase,
 ) -> None:
     """Test build_mike_version()."""
     repo_info = mock.MagicMock(spec=RepoVersionInfo)
