@@ -49,7 +49,10 @@ def main() -> None:
     try:
         mike_version = mike.build_mike_version(github.get_repo_version_info())
     except ValueError as error:
-        github.abort(f"{error}.", title="Documentation was not published")
+        gha.warning(
+            f"{error}.", title="Could not determine the version information for `mike`"
+        )
+        return
 
     _output_gha_vars(mike_version)
 

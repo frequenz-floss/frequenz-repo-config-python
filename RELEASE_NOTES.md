@@ -48,3 +48,11 @@ index 9a1604b..b183524 100644
 ```
 
 If that's not the case, your `pyproject.toml` and/or `mkdocs.yml` files might have been diverged from the generated files and updated in a way that is not compatible with the upgrade. In that case you'll have to fix it manually or re-generate the templates.
+
+## Bug Fixes
+
+- `cli.version.mike.info`: Don't fail if the version can't be determined, just emit a warning and exit succesfully.
+
+### Cookiecutter template
+
+- CI: The documentation publishing job will not fail if the version for `mike` can't be determined, it will just emit a warning and skip the publishing of the documentation website.
