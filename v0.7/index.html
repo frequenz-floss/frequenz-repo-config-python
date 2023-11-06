@@ -1615,7 +1615,7 @@ always use <code>pip</code> and install it in a <code>venv</code>:</p>
 </span></code></pre></div>
 <p>Then simply run <a href="https://cookiecutter.readthedocs.io/en/stable">Cookiecutter</a> where you want to create the new project:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.7.4
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.7.5
 </span></code></pre></div>
 <p>This command will prompt you for the project type, name, and other
 configuration options, and it will generate the entire project for you in a new
@@ -1834,7 +1834,7 @@ on the current project metadata and then overwrite the existing files.</p>
 the files in your existing project by using <code>rsync</code> or similar tools:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.7.4
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span>--checkout<span class="w"> </span>v0.7.5
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>rsync<span class="w"> </span>-vr<span class="w"> </span>--exclude<span class="o">=</span>.git/<span class="w"> </span>new-project/<span class="w"> </span>/path/to/existing/project
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nb">cd</span><span class="w"> </span>/path/to/existing/project
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>git<span class="w"> </span>diff
@@ -1876,7 +1876,7 @@ without having to enter all the inputs again.</p>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>..
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.7.4<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.7.5<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>--overwrite-if-exists<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
