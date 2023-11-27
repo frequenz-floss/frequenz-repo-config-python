@@ -1,4 +1,4 @@
-# Contributing to Freqenz Test Library
+# Contributing to Frequenz Test Library
 
 ## Build
 

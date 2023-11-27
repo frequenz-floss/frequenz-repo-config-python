@@ -4,7 +4,7 @@
     "type": "lib",
     "name": "test",
     "description": "Test description",
-    "title": "Freqenz Test Library",
+    "title": "Frequenz Test Library",
     "keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
     "github_org": "frequenz-floss",
     "license": "MIT",
