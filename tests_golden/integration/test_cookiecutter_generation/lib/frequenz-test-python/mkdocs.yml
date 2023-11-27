@@ -2,7 +2,7 @@
 # For details see: https://www.mkdocs.org/user-guide/configuration/
 
 # Project information
-site_name: "Freqenz Test Library"
+site_name: "Frequenz Test Library"
 site_description: "Test description"
 site_author: "Frequenz Energy-as-a-Service GmbH"
 copyright: "Copyright © 2023 Frequenz Energy-as-a-Service GmbH"

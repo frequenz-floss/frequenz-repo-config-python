@@ -1,4 +1,4 @@
-# Freqenz Test Library
+# Frequenz Test Library
 
 [![Build Status](https://github.com/frequenz-floss/frequenz-test-python/actions/workflows/ci.yaml/badge.svg)](https://github.com/frequenz-floss/frequenz-test-python/actions/workflows/ci.yaml)
 [![PyPI Package](https://img.shields.io/pypi/v/frequenz-test)](https://pypi.org/project/frequenz-test/)

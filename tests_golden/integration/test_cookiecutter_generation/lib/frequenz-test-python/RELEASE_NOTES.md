@@ -1,4 +1,4 @@
-# Freqenz Test Library Release Notes
+# Frequenz Test Library Release Notes
 
 ## Summary
 

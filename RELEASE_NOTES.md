@@ -26,4 +26,4 @@
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+* Fix typo: `Freqenz` -> `Frequenz`

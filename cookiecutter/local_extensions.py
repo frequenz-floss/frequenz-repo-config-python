@@ -185,7 +185,7 @@ class RepoConfigExtension(_Extension):
             case "api":
                 return f"Frequenz {name} API"
             case "lib":
-                return f"Freqenz {name} Library"
+                return f"Frequenz {name} Library"
             case "app":
                 return f"Frequenz {name} Application"
             case "model":
