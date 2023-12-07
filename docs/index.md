@@ -42,7 +42,7 @@ This command will prompt you for the project type, name, and other
 configuration options, and it will generate the entire project for you in a new
 subdirectory.
 
-!!! warning
+!!! Warning
 
     This command needs to be typed literally!
 
@@ -100,7 +100,7 @@ This will only install your package in *editable* mode and the minimum
 dependencies required to run `nox`. It will then run all `nox` default
 sessions, which include running linters and tests.
 
-!!! note
+!!! Tip
 
     It's much faster to use `nox` with `--install-only` once (each time you
     change or update dependencies, you need to run it again) and then use `nox
@@ -109,49 +109,163 @@ sessions, which include running linters and tests.
     Otherwise, `nox` will create many virtual environments each time you run
     it, which is **very** slow.
 
-### Configure the release notes check GitHub workflow
+### Configure the GitHub repository
 
-By default a workflow to check if the release notes were updated is
-included. This workflow will check PRs to see if a change was done in the
-`src/` directory, and if so, it will fail if the `RELEASE_NOTES.md` wasn't also
-updated.
+The generated templates make some assumptions about how the GitHub repository
+is configured. Here is a summary of changes you should do to the repository
+to make sure everything works as expected.
 
-But this check will not be enforced unless some extra configuration is done. To
-enforce the check for PRs to be merged you need to go to the *GitHub repository
--> Settings -> Branches* and select the rule for the branch you want to protect.
+#### Issues
 
-Then in the rules search for the *Require status checks to pass before merging*
-checkbox and search for *"Check release notes are updated"* in the search box.
+##### Labels
 
-As sometimes it is OK for PRs not to have release notes, as maybe some changes
-don't impact the end user, this workflow can be overridden by assigning the
-label `cmd:skip-release-notes` to the PR. To be able to do this, you also need
-to add that label to the repository.
+Review the list of labels and add:
 
-You can do this from the GitHub web interface, or using one of the following
-commands:
+* `part:xxx` labels that make sense to the project
 
-```sh
-repo=...  # org/repo
-token=... # GitHub token with the correct permissions
-name="cmd:skip-release-notes"
-desc="It is not necessary to update release notes for this PR"
-color="930F79"
+* Add a `cmd:skip-release-notes` with the following description:
 
-# Using cURL
-curl -L \
-    -X POST \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer $token" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    -d '{"name":"'"$name"'","description":"'"$desc"'","color":"'"$color"'"}' \
-    "https://api.github.com/repos/$repo/labels"
+    > It is not necessary to update release notes for this PR
 
-# Using the gh tool (no need for a token if you already have it configured)
-gh api -X POST \
-    -f name="$name" -f description="$desc" -f color="$color" \
-    "repos/$repo/labels"
-```
+    And `930F79` as color.
+
+* All labels used by automation in the project, for example look for labels listed in:
+
+    * `.github/keylabeler.yml`
+    * `.github/labeler.yml`
+    * `.github/dependabot.yml`
+    * `.github/workflows/release-notes-check.yml`
+
+#### Discussions
+
+This depends on the repo, but in general we want this:
+
+* Remove the *Show and tell* and *Poll* categories
+
+* Rename the *Q&A* category to *Support* and change the emoji to :sos:
+
+  This one is important to match the link provided in `.github/ISSUE_TEMPLATE/config.yml`.
+
+#### Settings
+
+##### General
+
+###### Default branch
+
+* Rename to `v0.x.x` (this is required for the common CI to work properly when creating releases)
+
+###### Features
+
+- [ ] Wikis
+- [x] Issues
+- [ ] Sponsorships
+- [x] Projects
+- [x] Preserve this repository
+- [x] Discussions
+
+###### Pull Requests
+
+- [x] Allow merge commits: Default to pull request title and description
+- [ ] Allow squash merging
+- [ ] Allow rebase merging
+- [ ] Always suggest updating pull request branches
+- [x] Allow auto-merge
+- [x] Automatically delete head branches
+
+###### Archives
+
+- [ ] Include Git LFS objects in archives
+
+###### Pushes
+
+- [x] Limit how many branches and tags can be updated in a single push: 5
+
+##### Collaborators and teams
+
+* Give the team owning the repository *Role: Admin*
+* Give *everybody* team *Role: Triage*
+
+##### Branches
+
+After importing code to the repository, add the following *Branch protection
+rules* (as always this is a guideline, defaults that should be used unless
+there is a reason to diverge):
+
+###### Protect matching branches
+
+!!! Note inline end
+
+    This is only to enable the merge queue, all the real protection rules will
+    be added afterwards via [rulesets](#rulesets). This is why all other
+    protections are disabled here.
+
+Add a rule for the **main branch** (`v0.x.x`) without wildcards so merge queues
+can be enabled:
+
+- [ ] Require a pull request before merging
+    - [ ] Require approvals: 1
+    - [ ] Dismiss stale pull request approvals when new commits are pushed
+    - [ ] Require review from Code Owners
+    - [ ] Restrict who can dismiss pull request reviews
+    - [ ] Allow specified actors to bypass required pull requests
+    - [ ] Require approval of the most recent reviewable push
+- [ ] Require status checks to pass before merging
+    - [ ] Require branches to be up to date before merging
+    - **(add all the tests that should pass)**
+- [ ] Require conversation resolution before merging
+- [ ] Require signed commits
+- [ ] Require linear history
+- [x] Require merge queue:
+    * Maximum pull requests to build: **5**
+    * Minimum pull requests to merge: **2** (this should be the only change
+      to defaults) or after **5** minutes
+    * Maximum pull requests to merge: **5**
+    - [x] Only merge non-failing pull requests
+    * Consider check failed after **60**
+- [ ] Require deployments to succeed before merging
+- [ ] Lock branch
+- [ ] Do not allow bypassing the above settings
+- [ ] Restrict who can push to matching branches (this might be disabled
+  while pushing the initial changes)
+- Rules applied to everyone including administrators
+    - [ ] Allow force pushes
+    - [ ] Allow deletions
+
+##### Rules
+
+###### Rulesets
+
+![Importing rulesets](_img/import-rulesets.png)
+
+Import the following
+[rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets):
+
+!!! Note inline end
+
+    You might need to adapt the status checks in the *Protect version
+    branches* ruleset depending on your repository configuration.
+
+{% set ref_name = version.ref_name if version else default_branch %}
+
+* [Disable creation of non-release
+  tags]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/Disable.creation.of.non-release.tags.json)
+* [Disable creation of other
+  branches]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/Disable.creation.of.other.branches.json)
+* [Disallow removal and force-pushes of
+  gh-pages]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/Disallow.removal.and.force-pushes.of.gh-pages.json)
+* [Protect released
+  tags]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/Protect.released.tags.json)
+* [Protect version
+  branches]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/Protect.version.branches.json)
+
+##### Code security and analysis
+
+* Enable *Dependabot version updates* if relevant
+
+#### Code
+
+The basic code configuration should be generate using
+[repo-config](https://frequenz-floss.github.io/frequenz-repo-config-python/).
 
 ### Verify the generated documentation works
 
@@ -167,7 +281,7 @@ worked, now there is a local web server serving the documentation. You can
 point your browser to [http://127.0.0.1:8000](http://127.0.0.1:8000) to have
 a look.
 
-!!! info
+!!! Info
 
     For API projects, `docker` is needed to generate and serve documentation,
     as the easiest way to use the [tool to generate the documentation from
@@ -250,7 +364,7 @@ git diff
 git commit -a
 ```
 
-!!! warning
+!!! Warning
 
     The trailing slash in `new-project/` and the lack of it in
     `/path/to/existing/project` are meaningful to `rsync`.
@@ -258,7 +372,7 @@ git commit -a
     Also, make sure to **exclude** the `.git/` directory to avoid messing up
     with your local Git repository.
 
-!!! tip
+!!! Tip
 
     Please have a look at the follow-up steps listed in the [Start a new
     project](#create-the-local-development-environment) section to finish the
@@ -272,7 +386,7 @@ was saved during the project generation. The file is saved as
 `.cookiecutter-replay.json`. Using this file, you can re-run [Cookiecutter]
 without having to enter all the inputs again.
 
-!!! warning
+!!! Warning
 
     * Don't forget to commit all changes in your repository before doing this!
       Files will be overwritten!
@@ -301,19 +415,19 @@ updates, or create a new commit with the fixes. You can also use `git citool`
 or `git gui` to easily add, remove, or even discard (revert) changes in the
 templates update commit.
 
-!!! note
+!!! Note
 
     The `project-directory` is the directory of your previously generated
     project. If you renamed it, then the files will be generated in a new
     directory with the original name. You can update the target directory in
     the replay file.
 
-!!! note
+!!! Note
 
     Please remember to keep your replay file up to date if you change any
     metadata in the project.
 
-!!! tip
+!!! Tip
 
     Please have a look at the follow-up steps listed in the [Start a new
     project](#create-the-local-development-environment) section to finish the

@@ -1,0 +1,30 @@
+{
+  "name": "Protect released tags",
+  "target": "tag",
+  "source_type": "Repository",
+  "source": "frequenz-floss/frequenz-repo-config-python",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "refs/tags/v[0-9]*.[0-9]*.[0-9]**"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "update"
+    },
+    {
+      "type": "required_signatures"
+    }
+  ],
+  "bypass_actors": []
+}

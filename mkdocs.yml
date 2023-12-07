@@ -48,6 +48,7 @@ theme:
       name: Switch to light mode
 
 extra:
+  default_branch: "v0.x.x"
   social:
   - icon: fontawesome/brands/github
     link: https://github.com/frequenz-floss

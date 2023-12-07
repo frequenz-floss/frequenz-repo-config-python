@@ -1,0 +1,29 @@
+{
+  "name": "Disable creation of other branches",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "frequenz-floss/frequenz-repo-config-python",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [
+        "refs/heads/dependabot/**/*",
+        "refs/heads/v[0-9]*.[0-9x]*.x",
+        "refs/heads/gh-pages",
+        "refs/heads/gh-readonly-queue/**/*"
+      ],
+      "include": [
+        "~ALL"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "creation"
+    }
+  ],
+  "bypass_actors": []
+}
