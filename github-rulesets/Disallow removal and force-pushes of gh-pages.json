@@ -1,0 +1,24 @@
+{
+  "name": "Disallow removal and force-pushes of gh-pages",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "frequenz-floss/frequenz-repo-config-python",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "refs/heads/gh-pages"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    }
+  ],
+  "bypass_actors": []
+}

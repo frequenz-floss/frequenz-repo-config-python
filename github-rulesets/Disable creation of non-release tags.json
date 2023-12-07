@@ -1,0 +1,27 @@
+{
+  "name": "Disable creation of non-release tags",
+  "target": "tag",
+  "source_type": "Repository",
+  "source": "frequenz-floss/frequenz-repo-config-python",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [
+        "refs/tags/v[0-9]*.[0-9]*.[0-9]**"
+      ],
+      "include": []
+    }
+  },
+  "rules": [
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "creation"
+    },
+    {
+      "type": "update"
+    }
+  ],
+  "bypass_actors": []
+}
