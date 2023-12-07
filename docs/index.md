@@ -42,7 +42,7 @@ This command will prompt you for the project type, name, and other
 configuration options, and it will generate the entire project for you in a new
 subdirectory.
 
-!!! warning
+!!! Warning
 
     This command needs to be typed literally!
 
@@ -100,7 +100,7 @@ This will only install your package in *editable* mode and the minimum
 dependencies required to run `nox`. It will then run all `nox` default
 sessions, which include running linters and tests.
 
-!!! note
+!!! Tip
 
     It's much faster to use `nox` with `--install-only` once (each time you
     change or update dependencies, you need to run it again) and then use `nox
@@ -167,7 +167,7 @@ worked, now there is a local web server serving the documentation. You can
 point your browser to [http://127.0.0.1:8000](http://127.0.0.1:8000) to have
 a look.
 
-!!! info
+!!! Info
 
     For API projects, `docker` is needed to generate and serve documentation,
     as the easiest way to use the [tool to generate the documentation from
@@ -250,7 +250,7 @@ git diff
 git commit -a
 ```
 
-!!! warning
+!!! Warning
 
     The trailing slash in `new-project/` and the lack of it in
     `/path/to/existing/project` are meaningful to `rsync`.
@@ -258,7 +258,7 @@ git commit -a
     Also, make sure to **exclude** the `.git/` directory to avoid messing up
     with your local Git repository.
 
-!!! tip
+!!! Tip
 
     Please have a look at the follow-up steps listed in the [Start a new
     project](#create-the-local-development-environment) section to finish the
@@ -272,7 +272,7 @@ was saved during the project generation. The file is saved as
 `.cookiecutter-replay.json`. Using this file, you can re-run [Cookiecutter]
 without having to enter all the inputs again.
 
-!!! warning
+!!! Warning
 
     * Don't forget to commit all changes in your repository before doing this!
       Files will be overwritten!
@@ -301,19 +301,19 @@ updates, or create a new commit with the fixes. You can also use `git citool`
 or `git gui` to easily add, remove, or even discard (revert) changes in the
 templates update commit.
 
-!!! note
+!!! Note
 
     The `project-directory` is the directory of your previously generated
     project. If you renamed it, then the files will be generated in a new
     directory with the original name. You can update the target directory in
     the replay file.
 
-!!! note
+!!! Note
 
     Please remember to keep your replay file up to date if you change any
     metadata in the project.
 
-!!! tip
+!!! Tip
 
     Please have a look at the follow-up steps listed in the [Start a new
     project](#create-the-local-development-environment) section to finish the
