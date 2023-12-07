@@ -14,7 +14,7 @@
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+- New GitHub rulesets are provided with the recommended configuration to protect branches and tags.
 
 ### Cookiecutter template
 
