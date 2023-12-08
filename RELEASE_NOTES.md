@@ -15,7 +15,7 @@
 ## New Features
 
 - New GitHub rulesets are provided with the recommended configuration to protect branches and tags.
-- The documentation is restructure in a more organized, easier to navigate, user guide.
+- The documentation is restructured into a more organized, easier-to-navigate user guide.
 
 ### Cookiecutter template
 
