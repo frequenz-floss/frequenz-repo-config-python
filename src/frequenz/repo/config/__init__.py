@@ -334,7 +334,7 @@ to configure the options to use while generating the files for different purpose
 The configuration can be done in the `pyproject.toml` file as follows:
 
 ```toml
-[tool.frequenz_repo_config.protobuf]
+[tool.frequenz-repo-config.protobuf]
 # Location of the proto files relative to the root of the repository (default: "proto")
 proto_path = "proto_files"
 # Glob pattern to use to find the proto files in the proto_path (default: "*.proto")
