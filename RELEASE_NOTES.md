@@ -20,6 +20,7 @@
 ### Cookiecutter template
 
 - The `pylint` check `too-many-return-statements` is now disabled by default.
+- Generated protobuf files are now ignored by Git.
 
 ## Bug Fixes
 
