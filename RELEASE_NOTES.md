@@ -29,3 +29,4 @@
 
 * Fix typo: `Freqenz` -> `Frequenz`
 * Fix `mkdocs.yml` to avoid specifying `custom_templates` for `mkdocstrings` as it is unused and is checked for existence in newer versions.
+* Fix paths that are not translated properly from the python package name (#198)
