@@ -28,3 +28,4 @@
 ### Cookiecutter template
 
 * Fix typo: `Freqenz` -> `Frequenz`
+* Fix `mkdocs.yml` to avoid specifying `custom_templates` for `mkdocstrings` as it is unused and is checked for existence in newer versions.
