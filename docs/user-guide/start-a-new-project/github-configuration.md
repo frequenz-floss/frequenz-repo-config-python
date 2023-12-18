@@ -12,11 +12,10 @@ Review the list of labels and add:
 
 * `part:xxx` labels that make sense to the project
 
-* Add a `cmd:skip-release-notes` with the following description:
+* Make sure there is a `cmd:skip-release-notes` label, and if there isn't,
+  create one with `930F79` as color and the following description:
 
     > It is not necessary to update release notes for this PR
-
-    And `930F79` as color.
 
 * All labels used by automation in the project, for example look for labels listed in:
 
