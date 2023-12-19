@@ -19,7 +19,7 @@
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- The `pylint` check `too-many-return-statements` is now disabled by default.
 
 ## Bug Fixes
 
