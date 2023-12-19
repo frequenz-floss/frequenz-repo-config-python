@@ -1829,9 +1829,10 @@ as the easiest way to use the <a href="https://github.com/pseudomuto/protoc-gen-
 will be automatically updated for new pushes and releases. However, some
 initial setup is needed for it to work correctly:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev-mkdocs<span class="o">]</span><span class="w">  </span><span class="c1"># Not necessary if you already installed .[dev]</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>v0.1-dev<span class="w"> </span>latest-dev<span class="w"> </span>latest<span class="w"> </span><span class="c1"># Creates the branch gh-pages locally</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream to publish the website</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Creates the branch gh-pages locally</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mike<span class="w"> </span>deploy<span class="w"> </span>--update-aliases<span class="w"> </span>v0.1-dev<span class="w"> </span>v0-dev<span class="w"> </span>latest-dev<span class="w"> </span>latest
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>mike<span class="w"> </span>set-default<span class="w"> </span>latest<span class="w">  </span><span class="c1"># Makes the latest alias the default version</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> </span>gh-pages<span class="w">  </span><span class="c1"># Pushes the new branch upstream to publish the website</span>
 </span></code></pre></div>
 <p>This assumes your branch is called <code>v0.x.x</code> and your first release will be <code>v0.1.0</code>.</p>
 <p>Then make sure that GitHub Pages is enabled in
@@ -1842,10 +1843,11 @@ initial setup is needed for it to work correctly:</p>
 <p>The above commands create a new documentation version using
 <a href="https://pypi.org/project/mike/">Mike</a>, which is used to keep multiple versions
 of the website.</p>
-<p>The new documentation version is called <code>v0.1-dev</code>, which is used as the name for
-the currently in-development branch. The <code>v0.1-dev</code> branch has an alias called
-<code>latest-dev</code> that points to the latest in-development version, and <code>latest</code>
-alias, which is set as the <em>default</em>.</p>
+<p>The new documentation version is called <code>v0.1-dev</code>, which is used as the name
+for the currently in-development branch. The <code>v0.1-dev</code> branch has an alias
+called <code>v0-dev</code> that points to the latest v0.x branch development version, an
+alias <code>latest-dev</code> that points to the latest in-development version, and
+a <code>latest</code> alias, which is set as the <em>default</em>.</p>
 <p>If the website is visited without specifying an explicit version, the <code>latest</code>
 version will be displayed. It is recommended to point <code>latest</code> to the latest
 stable version instead of the currently in-devepoment version, so as soon as
