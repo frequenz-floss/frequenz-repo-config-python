@@ -115,6 +115,8 @@ def finish_setup() -> None:
 
     remove_unneeded_files()
 
+    adjust_src_root()
+
     match cookiecutter.type:
         case "actor":
             finish_actor_setup()
@@ -396,6 +398,27 @@ def remove_unneeded_files() -> None:
         _shutil.rmtree("proto")
 
 
+def adjust_src_root() -> None:
+    """Adjust the root of the source code.
+
+    Makes the root of the source code match the python package name.
+    """
+    name_as_path = cookiecutter.name.lower().replace("-", "_")
+    python_package_as_path = cookiecutter.python_package.replace(".", "/")
+    old_path = _pathlib.Path(f"src/frequenz/{cookiecutter.type}/{name_as_path}")
+    new_path = _pathlib.Path(f"src/{python_package_as_path}")
+
+    if new_path == old_path:
+        return
+
+    recursive_overwrite_move(old_path, new_path)
+
+    # Remove the original directories if they were empty
+    for path in (old_path.parent, old_path.parent.parent):
+        if not any(path.iterdir()):
+            path.rmdir()
+
+
 def is_file_empty(path: _pathlib.Path) -> bool:
     """Check if the file is empty.
 
@@ -501,20 +524,7 @@ def finish_lib_setup() -> None:
 
     This function is called after the project has been generated and can be used
     to perform any additional setup steps that are required for a library.
-
-    Operations performed by this function:
-
-    * Avoid having a subfolder for the type
-
-      - `lib`: `src/frequenz/{name}`
-      - `rest`: `src/frequenz/{type}/{name}`
     """
-    name = cookiecutter.name.lower().replace("-", "_")
-    recursive_overwrite_move(
-        _pathlib.Path(f"src/frequenz/{cookiecutter.type}/{name}"),
-        _pathlib.Path(f"src/frequenz/{name}"),
-    )
-    _pathlib.Path(f"src/frequenz/{cookiecutter.type}").rmdir()
 
 
 def finish_model_setup() -> None:
