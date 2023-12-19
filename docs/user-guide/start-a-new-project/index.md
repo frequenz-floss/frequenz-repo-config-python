@@ -128,7 +128,8 @@ initial setup is needed for it to work correctly:
 
 ```sh
 pip install -e .[dev-mkdocs]  # Not necessary if you already installed .[dev]
-mike deploy --update-aliases v0.1-dev latest-dev latest # Creates the branch gh-pages locally
+# Creates the branch gh-pages locally
+mike deploy --update-aliases v0.1-dev v0-dev latest-dev latest
 mike set-default latest  # Makes the latest alias the default version
 git push upstream gh-pages  # Pushes the new branch upstream to publish the website
 ```
@@ -147,10 +148,11 @@ The above commands create a new documentation version using
 [Mike](https://pypi.org/project/mike/), which is used to keep multiple versions
 of the website.
 
-The new documentation version is called `v0.1-dev`, which is used as the name for
-the currently in-development branch. The `v0.1-dev` branch has an alias called
-`latest-dev` that points to the latest in-development version, and `latest`
-alias, which is set as the *default*.
+The new documentation version is called `v0.1-dev`, which is used as the name
+for the currently in-development branch. The `v0.1-dev` branch has an alias
+called `v0-dev` that points to the latest v0.x branch development version, an
+alias `latest-dev` that points to the latest in-development version, and
+a `latest` alias, which is set as the *default*.
 
 If the website is visited without specifying an explicit version, the `latest`
 version will be displayed. It is recommended to point `latest` to the latest
