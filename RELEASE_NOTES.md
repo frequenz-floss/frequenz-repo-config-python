@@ -34,6 +34,7 @@ You can follow these steps to upgrade without regenerating the whole project, if
 
 - New GitHub rulesets are provided with the recommended configuration to protect branches and tags.
 - The documentation is restructured into a more organized, easier-to-navigate user guide.
+- Documentation on how to configure the GitHub project and PyPI package is now provided.
 
 ### Cookiecutter template
 
