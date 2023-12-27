@@ -1,4 +1,4 @@
-# Starting a new project
+# Start a new project
 
 ## Install Cookiecutter
 
