@@ -5,7 +5,7 @@
 // TODO(cookiecutter): Add a more descriptive package description.
 //
 // Copyright:
-// Copyright {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
+// Copyright {{copyright_year}} {{cookiecutter.author_name}}
 //
 // License:
 // {{cookiecutter.license}}

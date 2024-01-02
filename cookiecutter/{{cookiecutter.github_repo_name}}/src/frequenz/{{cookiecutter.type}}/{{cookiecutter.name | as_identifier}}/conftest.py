@@ -1,5 +1,5 @@
 # License: {{cookiecutter.license}}
-# Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
+# Copyright © {{copyright_year}} {{cookiecutter.author_name}}
 
 """Validate docstring code examples.
 
