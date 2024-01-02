@@ -18,6 +18,12 @@ To upgrade without regenerating the project, you can follow these steps:
     sed '/  # Checked by flake8/a\  "redefined-outer-name",\n  "unused-import",' pyproject.toml
     ```
 
+- It is recommended to update this rule in your repository to use the new bypass rule for the `Protect version branches` ruleset that allows maintainers to force-merge.
+
+    You can do this by re-importing the ruleset or manually:
+
+    Go to the repository settings -> **Rules** -> **Rulesets** -> **Protect version branches** -> **Bypass list** -> **Add bypass** -> Select **Maintain** role and change the dropdown bypass rule to use **Pull requests** instead of **Always**.
+
 ## New Features
 
 <!-- Here goes the main new features and examples or instructions on how to use them -->
@@ -25,6 +31,7 @@ To upgrade without regenerating the project, you can follow these steps:
 ### Cookiecutter template
 
 - Some checks that are already performed by `flake8` are now disabled in `pylint` to avoid double reporting.
+- The repository ruleset `Protect version branches` has been updated to allow repository maintainers to skip protection rules in PRs.
 
 ## Bug Fixes
 
