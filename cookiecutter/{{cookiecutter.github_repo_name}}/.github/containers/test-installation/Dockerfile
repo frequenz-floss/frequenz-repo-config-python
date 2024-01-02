@@ -1,5 +1,5 @@
 # License: {{cookiecutter.license}}
-# Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}
+# Copyright © {{copyright_year}} {{cookiecutter.author_name}}
 {% raw -%}
 
 # This Dockerfile is used to test the installation of the python package in

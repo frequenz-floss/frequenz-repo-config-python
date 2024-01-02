@@ -7,6 +7,7 @@ This module contains local cookiecutter extensions that are useful for generatin
 project structure.
 """
 
+import datetime as _datetime
 import json as _json
 import os as _os
 import pathlib as _pathlib
@@ -40,6 +41,7 @@ class RepoConfigExtension(_Extension):
         self.environment.globals.update(
             {
                 "random_weekday": self._get_random_weekday(),
+                "copyright_year": str(self._get_copyright_year()),
             }
         )
 
@@ -90,6 +92,14 @@ class RepoConfigExtension(_Extension):
         middle = f"{repo_type}{separator}" if repo_type != "lib" else ""
         return f"frequenz{separator}{middle}{name}"
 
+    def _is_golden_testing(self) -> bool:
+        """Return `True` if we are running as part of a golden testing.
+
+        Returns:
+            Whether we are running as part of a golden testing.
+        """
+        return _os.environ.get("GOLDEN_TEST", None) is not None
+
     def _get_from_json(self, key: str) -> str:
         """Get a string from the cookiecutter.json file.
 
@@ -109,7 +119,7 @@ class RepoConfigExtension(_Extension):
             A random weekday.
         """
         # Make sure tests are reproduceable
-        if _os.environ.get("PYTEST_CURRENT_TEST") is not None:
+        if self._is_golden_testing():
             return "monday"
         return _random.choice(
             [
@@ -122,6 +132,19 @@ class RepoConfigExtension(_Extension):
                 "sunday",
             ]
         )
+
+    def _get_copyright_year(self) -> int:
+        """Get the copyright year.
+
+        This will be faked when running the golden tests to make sure the tests are
+        reproduceable.
+
+        Returns:
+            The copyright year.
+        """
+        if self._is_golden_testing():
+            return 2023
+        return _datetime.datetime.now().year
 
     def _as_identifier_filter(self, name: str) -> str:
         """Convert a name to a valid identifier.

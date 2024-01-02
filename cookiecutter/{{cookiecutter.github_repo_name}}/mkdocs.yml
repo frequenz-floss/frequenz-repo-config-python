@@ -5,7 +5,7 @@
 site_name: "{{cookiecutter.title}}"
 site_description: "{{cookiecutter.description}}"
 site_author: "{{cookiecutter.author_name}}"
-copyright: "Copyright © {% now 'utc', '%Y' %} {{cookiecutter.author_name}}"
+copyright: "Copyright © {{copyright_year}} {{cookiecutter.author_name}}"
 repo_name: "{{cookiecutter.github_repo_name}}"
 repo_url: "https://github.com/{{cookiecutter.github_org}}/{{cookiecutter.github_repo_name}}"
 # TODO(cookiecutter): "main" is the GitHub repo default branch, you might want to update it
