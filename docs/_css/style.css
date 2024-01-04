@@ -68,3 +68,8 @@ a.external:hover::after, a.md-nav__link[href^="https:"]:hover::after {
 .md-typeset .md-annotation__index {
   width: 4ch;
 }
+
+/* Align vertically */
+.align-middle {
+  vertical-align: middle;
+}

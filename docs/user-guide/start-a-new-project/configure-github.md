@@ -2,7 +2,8 @@
 
 The generated templates make some assumptions about how the GitHub repository
 is configured. Here is a summary of changes you should do to the repository
-to make sure everything works as expected.
+![Settings](../../_img/settings.png){: .align-middle } to make sure everything
+works as expected.
 
 ## Issues
 
@@ -154,3 +155,9 @@ Import the following
 
 The basic code configuration should be generate using
 [repo-config](https://frequenz-floss.github.io/frequenz-repo-config-python/).
+
+## GitHub Pages
+
+No special configuration is needed for GitHub Pages, but you need to initialize
+the `gh-pages` branch. You can read how to do this in the [Initialize GitHub
+Pages](index.md#initialize-github-pages.md) section.
