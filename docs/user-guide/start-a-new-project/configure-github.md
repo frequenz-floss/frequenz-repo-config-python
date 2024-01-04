@@ -2,7 +2,8 @@
 
 The generated templates make some assumptions about how the GitHub repository
 is configured. Here is a summary of changes you should do to the repository
-to make sure everything works as expected.
+![Settings](../../_img/settings.png){: .align-middle } to make sure everything
+works as expected.
 
 ## Issues
 
