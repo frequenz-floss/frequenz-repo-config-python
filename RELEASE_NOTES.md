@@ -10,7 +10,13 @@
 
 ### Cookiecutter template
 
-<!-- Here upgrade steps for cookiecutter specifically -->
+To upgrade without regenerating the project, you can follow these steps:
+
+- Run the following command to add the new `pylint` ignore rules:
+
+    ```sh
+    sed '/  # Checked by flake8/a\  "redefined-outer-name",\n  "unused-import",' pyproject.toml
+    ```
 
 ## New Features
 
@@ -18,7 +24,7 @@
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Some checks that are already performed by `flake8` are now disabled in `pylint` to avoid double reporting.
 
 ## Bug Fixes
 
