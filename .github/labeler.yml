@@ -6,74 +6,100 @@
 # For more details on the configuration please see:
 # https://github.com/marketplace/actions/labeler
 
-"part:docs":
-  - any:
-      - "**/*.md"
-      - "docs/**"
-      - "examples/**"
-      - LICENSE
-    all:
-      - "!tests*/**"
+"part:doc":
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - "**/*.md"
+        - "docs/**"
+        - "examples/**"
+        - LICENSE
+      - all-globs-to-all-files:
+        - "!tests*/**"
+        - "!cookiecutter/{{cookiecutter.github_repo_name}}/**"
 
 "part:tests":
-  - "**/conftest.py"
-  - "tests*/**"
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - "**/conftest.py"
+        - "tests*/**"
+      - all-globs-to-all-files:
+        - "!.github/**"
+        - "!cookiecutter/{{cookiecutter.github_repo_name}}/**"
 
 "part:tooling":
-  - any:
-      - "**/*.ini"
-      - "**/*.toml"
-      - "**/*.yaml"
-      - "**/*.yml"
-      - "**/conftest.py"
-      - ".editorconfig"
-      - ".git*"
-      - ".git*/**"
-      - CODEOWNERS
-      - MANIFEST.in
-      - noxfile.py
-    all:
-      - "!tests*/**"
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - "**/*.ini"
+        - "**/*.toml"
+        - "**/*.yaml"
+        - "**/*.yml"
+        - "**/conftest.py"
+        - ".editorconfig"
+        - ".git*"
+        - ".git*/**"
+        - CODEOWNERS
+        - MANIFEST.in
+        - noxfile.py
+      - all-globs-to-all-files:
+        - "!.github/**"
+        - "!tests*/**"
+        - "!cookiecutter/{{cookiecutter.github_repo_name}}/**"
 
 "part:ci":
-  - any:
-      - "**/.github/*labeler.*"
-      - "**/.github/dependabot.*"
-      - "**/.github/workflows/*"
-    all:
-      - "!tests*/**"
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - ".github/**"
+      - all-globs-to-all-files:
+        - "!**/*.md"
 
 "part:cookiecutter":
-  - any:
-      - "cookiecutter/**"
-    all:
-      - "!tests/**"
-      - "!tests_golden/**"
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - "cookiecutter*"
+        - "cookiecutter*/**"
+      - all-globs-to-all-files:
+        - "!cookiecutter/{{cookiecutter.github_repo_name}}/**"
+
+"part:template":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "cookiecutter/{{cookiecutter.github_repo_name}}/**"
 
 "part:mkdocs":
-  - any:
-      - "**/docs/*.py"
-      - "**/mkdocs.*"
-      - "src/frequenz/repo/config/mkdocs*"
-    all:
-      - "!tests*/**"
+  - all:
+    - changed-files:
+      - any-glob-to-any-file:
+        - "**/mkdocs.*"
+        - "docs/**/*.py"
+        - "src/frequenz/repo/config/mkdocs*"
+        - "src/frequenz/repo/config/mkdocs*/**"
+      - all-globs-to-all-files:
+        - "!.github/**"
+        - "!tests*/**"
+        - "!cookiecutter/{{cookiecutter.github_repo_name}}/**"
 
 "part:nox":
-  - any:
-      - "**/noxfile.py"
+  - changed-files:
+    - any-glob-to-any-file:
+      - "noxfile.py"
+      - "src/frequenz/repo/config/nox*"
       - "src/frequenz/repo/config/nox/**"
-    all:
-      - "!tests*/**"
-
-"part:protobuf":
-  - any:
-      - "src/frequenz/repo/config/setuptools/grpc*"
-      - "src/frequenz/repo/config/protobuf*"
-    all:
-      - "!tests*/**"
 
 "part:pytest":
-  - any:
-      - "src/frequenz/repo/config/pytest"
-    all:
-      - "!tests*/**"
+  - changed-files:
+    - any-glob-to-any-file:
+        - "src/frequenz/repo/config/pytest*"
+        - "src/frequenz/repo/config/pytest*/**"
+
+"part:protobuf":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/frequenz/repo/config/setuptools/grpc*"
+      - "src/frequenz/repo/config/setuptools/grpc*/**"
+      - "src/frequenz/repo/config/protobuf*"
+      - "src/frequenz/repo/config/protobuf*/**"

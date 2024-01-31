@@ -10,46 +10,58 @@
 # For example:
 #
 # "part:module":
-#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name | as_identifier}}/module/**"
+#   - changed-files:
+#     - any-glob-to-any-file:
+#       - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name | as_identifier}}/module/**"
 #
 # "part:other":
-#   - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name | as_identifier}}/other/**"
+#   - changed-files:
+#     - any-glob-to-any-file:
+#       - "src/frequenz/{{cookiecutter.type}}/{{cookiecutter.name | as_identifier}}/other/**"
 #
 # # For excluding some files (in this example, label "part:complicated"
 # # everything inside src/ with a .py suffix, except for src/__init__.py)
 # "part:complicated":
-#   - any:
-#       - "src/**/*.py"
 #   - all:
-#       - "!src/__init__.py"
+#     - changed-files:
+#       - any-glob-to-any-file:
+#         - "src/**/*.py"
+#       - all-glob-to-all-file:
+#         - "!src/__init__.py"
 #
 # Please have in mind that that the part:xxx labels need to
 # be created in the GitHub repository.
 
 "part:docs":
-  - "**/*.md"
-  - "docs/**"
-  - "examples/**"
-  - LICENSE
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/*.md"
+      - "docs/**"
+      - "examples/**"
+      - LICENSE
 
 "part:tests":
-  - "**/conftest.py"
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/conftest.py"
 {%- if cookiecutter.type == "api" %}
-  - "pytests/**"
+      - "pytests/**"
 {%- else %}
-  - "tests/**"
+      - "tests/**"
 {%- endif %}
 
 "part:tooling":
-  - "**/*.ini"
-  - "**/*.toml"
-  - "**/*.yaml"
-  - "**/*.yml"
-  - "**/conftest.py"
-  - ".editorconfig"
-  - ".git*"
-  - ".git*/**"
-  - "docs/*.py"
-  - CODEOWNERS
-  - MANIFEST.in
-  - noxfile.py
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/*.ini"
+      - "**/*.toml"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "**/conftest.py"
+      - ".editorconfig"
+      - ".git*"
+      - ".git*/**"
+      - "docs/*.py"
+      - CODEOWNERS
+      - MANIFEST.in
+      - noxfile.py
