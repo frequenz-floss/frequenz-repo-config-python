@@ -98,7 +98,7 @@ dev-pylint = [
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 7.4.2",
+  "pytest == 8.0.0",
   "frequenz-repo-config[extra-lint-examples] == 0.8.0",
 {%- if cookiecutter.type != "api" %}
   "pytest-mock == 3.11.1",
