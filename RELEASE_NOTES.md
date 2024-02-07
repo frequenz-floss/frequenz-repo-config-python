@@ -58,6 +58,30 @@ To upgrade without regenerating the project, you can follow these steps:
 
     ```sh
     awk -i inplace '/^sed s..frequenz-api-common/ { print; print "sed '"'"'s|https://frequenz-floss.github.io/frequenz-api-common/v[0-9].[0-9]/objects.inv|https://frequenz-floss.github.io/frequenz-api-common/v'"'"'${ver_minor}'"'"'/objects.inv|'"'"' -i mkdocs.yml"; next }1' CONTRIBUTING.md
+
+- Run the following command to fix the `test-installation` CI job when using git URLs in `pyproject.toml`:
+
+    ```sh
+    patch -p1 <<'EOF'
+    diff --git a/.github/containers/test-installation/Dockerfile b/.github/containers/test-installation/Dockerfile
+    index 772b2ae..2494545 100644
+    --- a/.github/containers/test-installation/Dockerfile
+    +++ b/.github/containers/test-installation/Dockerfile
+    @@ -6,7 +6,12 @@
+
+     FROM --platform=${TARGETPLATFORM} python:3.11-slim
+
+    -RUN python -m pip install --upgrade --no-cache-dir pip
+    +RUN apt-get update -y && \
+    +    apt-get install --no-install-recommends -y \
+    +    git && \
+    +    apt-get clean && \
+    +    rm -rf /var/lib/apt/lists/* && \
+    +    python -m pip install --upgrade --no-cache-dir pip
+
+     COPY dist dist
+     RUN pip install dist/*.whl && \
+    EOF
     ```
 
 ## New Features
@@ -77,4 +101,4 @@ To upgrade without regenerating the project, you can follow these steps:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- Fix the `test-installation` CI job when dependencies in `pyproject.toml` contain git URLs.
