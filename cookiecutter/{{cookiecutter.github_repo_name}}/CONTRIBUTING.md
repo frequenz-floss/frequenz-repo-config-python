@@ -83,6 +83,7 @@ git checkout v${ver}
 cd -
 
 sed 's/frequenz-api-common == [0-9]\.[0-9]\.[0-9]/frequenz-api-common == '"${ver}/" -i pyproject.toml
+sed 's|https://frequenz-floss.github.io/frequenz-api-common/v[0-9]\.[0-9]/objects.inv|https://frequenz-floss.github.io/frequenz-api-common/v'${ver_minor}'/objects.inv|' -i mkdocs.yml
 ```
 {%- endif %}
 
