@@ -15,7 +15,7 @@ To upgrade without regenerating the project, you can follow these steps:
 - Run the following command to add the new `pylint` ignore rules:
 
     ```sh
-    sed '/  # Checked by flake8/a\  "redefined-outer-name",\n  "unused-import",' pyproject.toml
+    sed '/  # Checked by flake8/a\  "redefined-outer-name",\n  "unused-import",' -i pyproject.toml
     ```
 
 - It is recommended to update this rule in your repository to use the new bypass rule for the `Protect version branches` ruleset that allows maintainers to force-merge.
