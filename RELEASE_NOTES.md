@@ -15,7 +15,7 @@ To upgrade without regenerating the project, you can follow these steps:
 - Run the following command to add the new `pylint` ignore rules:
 
     ```sh
-    sed '/  # Checked by flake8/a\  "redefined-outer-name",\n  "unused-import",' pyproject.toml
+    sed '/  # Checked by flake8/a\  "redefined-outer-name",\n  "unused-import",' -i pyproject.toml
     ```
 
 - It is recommended to update this rule in your repository to use the new bypass rule for the `Protect version branches` ruleset that allows maintainers to force-merge.
@@ -54,6 +54,12 @@ To upgrade without regenerating the project, you can follow these steps:
 
     This will update the file in place, you can inspect the changes with `git diff`.
 
+- For API projects, you can manually add instructions to update the `mkdocs.yml` when the `frequenz-api-common` dependency is updated.
+
+    ```sh
+    awk -i inplace '/^sed s..frequenz-api-common/ { print; print "sed '"'"'s|https://frequenz-floss.github.io/frequenz-api-common/v[0-9].[0-9]/objects.inv|https://frequenz-floss.github.io/frequenz-api-common/v'"'"'${ver_minor}'"'"'/objects.inv|'"'"' -i mkdocs.yml"; next }1' CONTRIBUTING.md
+    ```
+
 ## New Features
 
 <!-- Here goes the main new features and examples or instructions on how to use them -->
@@ -63,6 +69,7 @@ To upgrade without regenerating the project, you can follow these steps:
 - Some checks that are already performed by `flake8` are now disabled in `pylint` to avoid double reporting.
 - The repository ruleset `Protect version branches` has been updated to allow repository maintainers to skip protection rules in PRs.
 - The `labeler` action was upgraded to 5.0.0, which allows for more complex matching rules.
+- Instruction were added to update the `mkdocs.yml` when the `frequenz-api-common` dependency is updated.
 
 ## Bug Fixes
 
