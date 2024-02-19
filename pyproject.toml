@@ -188,8 +188,6 @@ module = [
   "github_action_utils",
   "mkdocs_macros.*",
   "semver.version",
-  "sybil",
-  "sybil.*",
 ]
 ignore_missing_imports = true
 
