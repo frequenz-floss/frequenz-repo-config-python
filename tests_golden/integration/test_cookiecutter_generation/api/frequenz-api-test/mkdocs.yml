@@ -5,7 +5,7 @@
 site_name: "Frequenz Test API"
 site_description: "Test description"
 site_author: "Frequenz Energy-as-a-Service GmbH"
-copyright: "Copyright © 2023 Frequenz Energy-as-a-Service GmbH"
+copyright: "Copyright © 2024 Frequenz Energy-as-a-Service GmbH"
 repo_name: "frequenz-api-test"
 repo_url: "https://github.com/frequenz-floss/frequenz-api-test"
 # TODO(cookiecutter): "main" is the GitHub repo default branch, you might want to update it

@@ -1,5 +1,5 @@
 # License: MIT
-# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
+# Copyright © 2024 Frequenz Energy-as-a-Service GmbH
 # This Dockerfile is used to run the tests in arm64, which is not supported by
 # GitHub Actions at the moment.
 
