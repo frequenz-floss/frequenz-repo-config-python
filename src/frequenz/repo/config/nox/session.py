@@ -6,10 +6,60 @@
 This module defines the predefined nox sessions that are used by the default.
 """
 
+from typing import Any
+
 import nox
+from nox.virtualenv import CondaEnv, PassthroughEnv, VirtualEnv
 
 from . import config as _config
 from . import util as _util
+
+
+def uv_install(self: nox.Session, *args: str, **kwargs: Any) -> None:
+    """Install invokes `uv pip`_ to install packages inside of the session's
+    virtualenv.
+
+    Args:
+        self: the nox session.
+        args: the packages to install.
+        kwargs: additional keyword arguments to pass to the `run` function.
+
+    Raises:
+        ValueError: if the session does not have a virtual environment.
+    """
+    venv = self._runner.venv
+
+    if not isinstance(venv, (CondaEnv, VirtualEnv, PassthroughEnv)):  # pragma: no cover
+        raise ValueError("A session without a virtualenv can not install dependencies.")
+    if isinstance(venv, PassthroughEnv):
+        raise ValueError(
+            f"Session {self.name} does not have a virtual environment, so use of"
+            " session.install() is no longer allowed since it would modify the"
+            " global Python environment. If you're really sure that is what you"
+            ' want to do, use session.run("pip", "install", ...) instead.'
+        )
+    if not args:
+        raise ValueError("At least one argument required to install().")
+
+    if self._runner.global_config.no_install and venv._reused:
+        return None
+
+    if "silent" not in kwargs:
+        kwargs["silent"] = True
+
+    self._run(
+        "uv",
+        "pip",
+        "-v",
+        "install",
+        "--prerelease=allow",
+        *args,
+        external=True,
+        **kwargs,
+    )
+
+
+nox.Session.install = uv_install
 
 
 @nox.session
