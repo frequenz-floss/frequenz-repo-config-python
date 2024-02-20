@@ -6,7 +6,9 @@
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+- Once you upgraded, you'll be able to upgrade to `pytest` 8, and indirectly to `sybil` 6, which includes types hints. If you do so, you should remove the `mypy` exception for `sybil` in the `pyproject.toml` file.
+
+  Search for the `tool.mypy.overrides` section and remove the `"sybil", "sybil.*"` enties from the `module` list.
 
 ### Cookiecutter template
 
@@ -86,7 +88,7 @@ To upgrade without regenerating the project, you can follow these steps:
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+- Add support for `pytest` 8.
 
 ### Cookiecutter template
 

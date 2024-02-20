@@ -164,7 +164,7 @@ dev-pylint = [
   "my-package[dev-mkdocs,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 7.2.2",
+  "pytest == 8.0.0",
   "pytest-asyncio == 0.21.0",
   "pytest-mock == 3.10.0",
 ]

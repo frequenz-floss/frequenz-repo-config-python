@@ -25,12 +25,12 @@ pytest_collect_file = Sybil(**examples.get_sybil_arguments()).pytest()
 import ast
 import os
 import subprocess
+import textwrap
 from pathlib import Path
 from typing import Any
 
 from sybil import Example
 from sybil.evaluators.python import pad
-from sybil.parsers.abstract.lexers import textwrap
 from sybil.parsers.myst import CodeBlockParser
 
 _PYLINT_DISABLE_COMMENT = (
@@ -116,9 +116,7 @@ def _path_to_import_statement(path: Path) -> str:
     return import_statement
 
 
-# We need to add the type ignore comment here because the Sybil library does not
-# have type annotations.
-class _CustomPythonCodeBlockParser(CodeBlockParser):  # type: ignore[misc]
+class _CustomPythonCodeBlockParser(CodeBlockParser):
     """Code block parser that validates extracted code examples using pylint.
 
     This parser is a modified version of the default Python code block parser
