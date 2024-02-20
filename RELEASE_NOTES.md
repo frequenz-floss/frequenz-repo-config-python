@@ -84,6 +84,15 @@ To upgrade without regenerating the project, you can follow these steps:
      COPY dist dist
      RUN pip install dist/*.whl && \
     EOF
+
+- If your repository uses submodules and do cross-arch tests, you need to update the `nox-cross-arch` job in the `.github/workflows/ci.yaml` workflow and add the option `submodules: true` to the `checkout` action, for example:
+
+    ```yaml
+    steps:
+      - name: Fetch sources
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
     ```
 
 ## New Features
@@ -103,4 +112,8 @@ To upgrade without regenerating the project, you can follow these steps:
 
 ### Cookiecutter template
 
+<<<<<<< HEAD
 - Fix the `test-installation` CI job when dependencies in `pyproject.toml` contain git URLs.
+=======
+- Fix cross-arch testing for respositories with submodules.
+>>>>>>> ed6cc5f (Fetch submodules when doing cross-arch tests)
