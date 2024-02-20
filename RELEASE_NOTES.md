@@ -2,7 +2,7 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release brings support for `pytest` 8, a couple of bug fixes and many improvements to the cookiecutter template.
 
 ## Upgrading
 
