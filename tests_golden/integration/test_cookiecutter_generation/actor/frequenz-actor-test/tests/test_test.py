@@ -1,5 +1,5 @@
 # License: MIT
-# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
+# Copyright © 2024 Frequenz Energy-as-a-Service GmbH
 
 """Tests for the frequenz.actor.test package."""
 import pytest
