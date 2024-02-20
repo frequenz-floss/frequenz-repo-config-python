@@ -108,8 +108,6 @@ To upgrade without regenerating the project, you can follow these steps:
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
 ### Cookiecutter template
 
 - Fix the `test-installation` CI job when dependencies in `pyproject.toml` contain git URLs.
