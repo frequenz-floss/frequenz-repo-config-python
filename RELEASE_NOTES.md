@@ -2,7 +2,7 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release brings support for `pytest` 8, a couple of bug fixes and many improvements to the cookiecutter template.
 
 ## Upgrading
 
@@ -108,12 +108,7 @@ To upgrade without regenerating the project, you can follow these steps:
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
 ### Cookiecutter template
 
-<<<<<<< HEAD
 - Fix the `test-installation` CI job when dependencies in `pyproject.toml` contain git URLs.
-=======
 - Fix cross-arch testing for respositories with submodules.
->>>>>>> ed6cc5f (Fetch submodules when doing cross-arch tests)
