@@ -5,7 +5,7 @@
 requires = [
   "setuptools == 68.1.0",
   "setuptools_scm[toml] == 7.1.0",
-  "frequenz-repo-config[api] == 0.8.0",
+  "frequenz-repo-config[api] == 0.9.1",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -57,7 +57,7 @@ dev-mkdocs = [
   "mkdocs-macros-plugin == 1.0.4",
   "mkdocs-material == 9.3.1",
   "mkdocstrings[python] == 0.23.0",
-  "frequenz-repo-config[api] == 0.8.0",
+  "frequenz-repo-config[api] == 0.9.1",
 ]
 dev-mypy = [
   "mypy == 1.5.1",
@@ -68,7 +68,7 @@ dev-mypy = [
 ]
 dev-noxfile = [
   "nox == 2023.4.22",
-  "frequenz-repo-config[api] == 0.8.0",
+  "frequenz-repo-config[api] == 0.9.1",
 ]
 dev-pylint = [
   "pylint == 3.0.2",
@@ -77,7 +77,7 @@ dev-pylint = [
 ]
 dev-pytest = [
   "pytest == 8.0.0",
-  "frequenz-repo-config[extra-lint-examples] == 0.8.0",
+  "frequenz-repo-config[extra-lint-examples] == 0.9.1",
 ]
 dev = [
   "frequenz-api-test[dev-mkdocs,dev-flake8,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
