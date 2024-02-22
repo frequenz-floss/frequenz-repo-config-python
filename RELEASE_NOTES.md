@@ -22,7 +22,7 @@
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+- Fix that new repositories were initialized with the previous version 0.8.0.
 
 ### Cookiecutter template
 
