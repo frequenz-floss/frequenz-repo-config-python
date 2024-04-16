@@ -598,6 +598,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Update an existing project
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -607,6 +618,39 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#use-a-migration-script" class="md-nav__link">
+    Use a migration script
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#re-run-the-cookiecutter-command" class="md-nav__link">
+    Re-run the Cookiecutter command
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1602,6 +1646,28 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#use-a-migration-script" class="md-nav__link">
+    Use a migration script
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#re-run-the-cookiecutter-command" class="md-nav__link">
+    Re-run the Cookiecutter command
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1619,7 +1685,29 @@
 
 
 <h1 id="update-an-existing-project">Update an existing project<a class="headerlink" href="#update-an-existing-project" title="Permanent link">¤</a></h1>
-<p>To update an existing project, you can use the <a href="https://cookiecutter.readthedocs.io/en/stable/advanced/replay.html">Cookiecutter <em>replay
+<p>To upgrade an existing project, there are two main approaches: use a migration
+script or re-run the [Cookiecutter] command.</p>
+<h2 id="use-a-migration-script">Use a migration script<a class="headerlink" href="#use-a-migration-script" title="Permanent link">¤</a></h2>
+<p>This is the recommended approach, as it should be much less work. Only when
+extremely deep changes are made to the template, or when the project is very
+old, should you consider re-running the [Cookiecutter] command. Usually release
+notes will warn you about the former.</p>
+<p>The script can't always perform all the changes necessary to migrate to a new
+version. In this case, you will have to manually apply the changes. The script
+will guide you through the process, so please read the script output carefully.</p>
+<p>The script can also only migrate from one version to the next. If you are
+skipping versions, you will have to run the script multiple times.</p>
+<p>The easiest way to run the migration script is to fetch it from GitHub and run
+it directly.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-sSL<span class="w"> </span>https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/refs/heads/v0.x.x/cookiecutter/migrate.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>sh
+</span></code></pre></div>
+<p>Make sure that the version (<code>refs/heads/v0.x.x</code>) matches the
+target version you are migrating to.</p>
+<h2 id="re-run-the-cookiecutter-command">Re-run the Cookiecutter command<a class="headerlink" href="#re-run-the-cookiecutter-command" title="Permanent link">¤</a></h2>
+<p>If you are upgrading a very old project (jumping multiple versions at the time)
+it is probably easier to just regenerate the whole project.</p>
+<p>To do so, you can use the <a href="https://cookiecutter.readthedocs.io/en/stable/advanced/replay.html">Cookiecutter <em>replay
 file</em></a> that
 was saved during the project generation. The file is saved as
 <code>.cookiecutter-replay.json</code>. Using this file, you can re-run [Cookiecutter]
@@ -1636,14 +1724,14 @@ without having to enter all the inputs again.</p>
   running the <code>cookiecutter</code> command for the update.</li>
 </ul>
 </div>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w">  </span><span class="c1"># commit all changes</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>..
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.x.x<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span>--overwrite-if-exists<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>commit<span class="w"> </span>-a<span class="w">  </span><span class="c1"># commit all changes</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.x.x<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span>--overwrite-if-exists<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
 </span></code></pre></div>
 <p>This will create a new commit with all the changes to the overwritten files.
 Bear in mind that all the <code>TODO</code>s will come back, so there will be quite a bit
