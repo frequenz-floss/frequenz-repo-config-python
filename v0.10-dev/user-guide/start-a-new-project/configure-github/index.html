@@ -657,26 +657,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#branches" class="md-nav__link">
-    Branches
-  </a>
-  
-    <nav class="md-nav" aria-label="Branches">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#protect-matching-branches" class="md-nav__link">
-    Protect matching branches
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#rules" class="md-nav__link">
     Rules
   </a>
@@ -1885,26 +1865,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#branches" class="md-nav__link">
-    Branches
-  </a>
-  
-    <nav class="md-nav" aria-label="Branches">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#protect-matching-branches" class="md-nav__link">
-    Protect matching branches
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#rules" class="md-nav__link">
     Rules
   </a>
@@ -2045,57 +2005,6 @@ works as expected.</p>
 <li>Give the team owning the repository <em>Role: Admin</em></li>
 <li>Give <em>everybody</em> team <em>Role: Triage</em></li>
 </ul>
-<h3 id="branches">Branches<a class="headerlink" href="#branches" title="Permanent link">¤</a></h3>
-<p>After importing code to the repository, add the following <em>Branch protection
-rules</em> (as always this is a guideline, defaults that should be used unless
-there is a reason to diverge):</p>
-<h4 id="protect-matching-branches">Protect matching branches<a class="headerlink" href="#protect-matching-branches" title="Permanent link">¤</a></h4>
-<div class="admonition note inline end">
-<p class="admonition-title">Note</p>
-<p>This is only to enable the merge queue, all the real protection rules will
-be added afterwards via <a href="#rulesets">rulesets</a>. This is why all other
-protections are disabled here.</p>
-</div>
-<p>Add a rule for the <strong>main branch</strong> (<code>v0.x.x</code>) without wildcards so merge queues
-can be enabled:</p>
-<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require a pull request before merging<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require approvals: 1</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Dismiss stale pull request approvals when new commits are pushed</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require review from Code Owners</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Restrict who can dismiss pull request reviews</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Allow specified actors to bypass required pull requests</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require approval of the most recent reviewable push</li>
-</ul>
-</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require status checks to pass before merging<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require branches to be up to date before merging</li>
-<li><strong>(add all the tests that should pass)</strong></li>
-</ul>
-</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require conversation resolution before merging</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require signed commits</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require linear history</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Require merge queue:<ul class="task-list">
-<li>Maximum pull requests to build: <strong>5</strong></li>
-<li>Minimum pull requests to merge: <strong>2</strong> (this should be the only change
-  to defaults) or after <strong>5</strong> minutes</li>
-<li>Maximum pull requests to merge: <strong>5</strong></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Only merge non-failing pull requests</li>
-<li>Consider check failed after <strong>60</strong></li>
-</ul>
-</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Require deployments to succeed before merging</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Lock branch</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Do not allow bypassing the above settings</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Restrict who can push to matching branches (this might be disabled
-  while pushing the initial changes)</li>
-<li>Rules applied to everyone including administrators<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Allow force pushes</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Allow deletions</li>
-</ul>
-</li>
-</ul>
 <h3 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">¤</a></h3>
 <h4 id="rulesets">Rulesets<a class="headerlink" href="#rulesets" title="Permanent link">¤</a></h4>
 <p><img alt="Importing rulesets" src="../../../_img/import-rulesets.png" /></p>
@@ -2107,16 +2016,18 @@ can be enabled:</p>
 branches</em> ruleset depending on your repository configuration.</p>
 </div>
 <ul>
-<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Disable.creation.of.non-release.tags.json">Disable creation of non-release
+<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Disable creation of non-release tags.json">Disable creation of non-release
   tags</a></li>
-<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Disable.creation.of.other.branches.json">Disable creation of other
+<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Disable creation of other branches.json">Disable creation of other
   branches</a></li>
-<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Disallow.removal.and.force-pushes.of.gh-pages.json">Disallow removal and force-pushes of
+<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Disallow removal and force-pushes of gh-pages.json">Disallow removal and force-pushes of
   gh-pages</a></li>
-<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Protect.released.tags.json">Protect released
+<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Protect released tags.json">Protect released
   tags</a></li>
-<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Protect.version.branches.json">Protect version
+<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Protect version branches.json">Protect version
   branches</a></li>
+<li><a href="https://github.com/frequenz-floss/frequenz-repo-config-python/blob/v0.x.x/github-rulesets/Queue PRs for v0.x.x.json">Queue PRs for
+  v0.x.x</a></li>
 </ul>
 <h3 id="code-security-and-analysis">Code security and analysis<a class="headerlink" href="#code-security-and-analysis" title="Permanent link">¤</a></h3>
 <ul>
