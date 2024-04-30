@@ -27,6 +27,7 @@
 ## New Features
 
 - A new GitHub ruleset is provided to configure the merge queue, so branch protection rules are not needed anymore.
+- Nox will use the uv backend when available, which should make it a lot faster.
 
 ### Cookiecutter template
 

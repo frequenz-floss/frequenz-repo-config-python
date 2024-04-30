@@ -95,7 +95,7 @@ dev-mypy = [
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
-dev-noxfile = ["nox == 2024.4.15"]
+dev-noxfile = ["nox == 2024.4.15", "uv == 0.1.39"]
 dev-pylint = [
   # dev-pytest already defines a dependency to pylint because of the examples
   # For checking the noxfile, docs/ script, and tests
