@@ -12,7 +12,7 @@ from . import config as _config
 from . import util as _util
 
 
-@nox.session
+@nox.session(venv_backend="uv|venv")
 def ci_checks_max(session: nox.Session) -> None:
     """Run all checks with max dependencies in a single session.
 
@@ -32,7 +32,7 @@ def ci_checks_max(session: nox.Session) -> None:
     pytest_max(session, False)
 
 
-@nox.session
+@nox.session(venv_backend="uv|venv")
 def formatting(session: nox.Session, install_deps: bool = True) -> None:
     """Check code formatting with black and isort.
 
@@ -48,7 +48,7 @@ def formatting(session: nox.Session, install_deps: bool = True) -> None:
     session.run("isort", *conf.opts.isort, *conf.path_args(session))
 
 
-@nox.session
+@nox.session(venv_backend="uv|venv")
 def mypy(session: nox.Session, install_deps: bool = True) -> None:
     """Check type hints with mypy.
 
@@ -80,7 +80,7 @@ def mypy(session: nox.Session, install_deps: bool = True) -> None:
     )
 
 
-@nox.session
+@nox.session(venv_backend="uv|venv")
 def pylint(session: nox.Session, install_deps: bool = True) -> None:
     """Check for code smells with pylint.
 
@@ -97,7 +97,7 @@ def pylint(session: nox.Session, install_deps: bool = True) -> None:
     session.run("pylint", *conf.opts.pylint, *conf.path_args(session))
 
 
-@nox.session
+@nox.session(venv_backend="uv|venv")
 def flake8(session: nox.Session, install_deps: bool = True) -> None:
     """Check for common errors and in particular documentation format and style.
 
@@ -112,7 +112,7 @@ def flake8(session: nox.Session, install_deps: bool = True) -> None:
     session.run("flake8", *conf.opts.flake8, *conf.path_args(session))
 
 
-@nox.session
+@nox.session(venv_backend="uv|venv")
 def pytest_max(session: nox.Session, install_deps: bool = True) -> None:
     """Test the code against max dependency versions with pytest.
 
@@ -128,7 +128,7 @@ def pytest_max(session: nox.Session, install_deps: bool = True) -> None:
     _pytest_impl(session, "max")
 
 
-@nox.session
+@nox.session(venv_backend="uv|venv")
 def pytest_min(session: nox.Session, install_deps: bool = True) -> None:
     """Test the code against min dependency versions with pytest.
 
