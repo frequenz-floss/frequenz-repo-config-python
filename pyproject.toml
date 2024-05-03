@@ -100,7 +100,7 @@ dev-pylint = [
   # dev-pytest already defines a dependency to pylint because of the examples
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
-  "setuptools >= 67.6.0, < 70",  # Should match the build dependency
+  "setuptools >= 67.6.0, < 70",                              # Should match the build dependency
 ]
 dev-pytest = [
   "pytest == 8.2.0",
