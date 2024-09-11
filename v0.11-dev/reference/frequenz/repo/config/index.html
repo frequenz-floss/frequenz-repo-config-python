@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../../../_img/logo.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.30">
     
     
       
@@ -1967,7 +1967,7 @@
 
     <div class="doc doc-contents first">
 
-      <p>Frequenz project setup tools and common configuration.</p>
+        <p>Frequenz project setup tools and common configuration.</p>
 <p>The tools are provided to configure the main types of repositories most commonly used at
 Frequenz, defined in
 <a class="autorefs autorefs-internal" href="#frequenz.repo.config.RepositoryType"><code>frequenz.repo.config.RepositoryType</code></a>.</p>
@@ -2266,8 +2266,8 @@ to configure the options to use while generating the files for different purpose
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Glob pattern to use to find the proto files in the proto_path (default: &quot;*.proto&quot;)</span>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">proto_glob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;*.prt&quot;</span><span class="w">  </span><span class="c1"># Default: &quot;*.proto&quot;</span>
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># List of paths to pass to the protoc compiler as include paths (default:</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># [&quot;submodules/api-common-protos&quot;, &quot;submodules/frequenz-api-common/proto&quot;])</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">include_paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;submodules/api-common-protos&quot;</span><span class="p">]</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># [&quot;submodules/frequenz-api-common/proto&quot;])</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">include_paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;submodules/frequenz-api-common/proto&quot;</span><span class="p">]</span>
 </span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1"># Path where to generate the Python files (default: &quot;py&quot;)</span>
 </span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="n">py_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;generated&quot;</span>
 </span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="c1"># Path where to generate the documentation files (default: &quot;protobuf-reference&quot;)</span>
@@ -2293,21 +2293,16 @@ run (it uses the <code>pseudomuto/protoc-gen-doc</code> docker image.</p>
 section plus the following:</p>
 <ul>
 <li><code>pytests/</code>: Directory containing the tests for the Python code.</li>
-<li><code>submodules/api-common-protos</code>: Directory containing the Git submodule with the
-  <code>google/api-common-protos</code> repository.</li>
 <li><code>submodules/frequenz-api-common</code>: Directory containing the Git submodule with the
   <code>frequenz-floss/frequenz-api-common</code> repository.</li>
 </ul>
 <p>Normally Frequenz APIs use basic types from
-<a href="https://github.com/googleapis/api-common-protos"><code>google/api-common-protos</code></a> and
 <a href="https://github.com/frequenz-floss/frequenz-api-common"><code>frequenz-floss/frequenz-api-common</code></a>,
 so you need to make sure the proper submodules are added to your project:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>mkdir<span class="w"> </span>submodules
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/googleapis/api-common-protos.git<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">        </span>submodules/api-common-protos
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/frequenz-floss/frequenz-api-common.git<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">        </span>submodules/frequenz-api-common
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add api-common-protos and frequenz-api-common submodules&quot;</span><span class="w"> </span>submodules
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/frequenz-floss/frequenz-api-common.git<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">        </span>submodules/frequenz-api-common
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add frequenz-api-common submodule&quot;</span><span class="w"> </span>submodules
 </span></code></pre></div>
 <p>Then you need to add this package as a build dependency and a few extra
 dependencies to your project, for example:</p>
@@ -2341,12 +2336,10 @@ to make sure the generated files are included in the wheel:</p>
 </span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pytests&quot;</span><span class="p">]</span>
 </span></code></pre></div>
 <p>Finally you need to make sure to include the generated <code>*.pyi</code> files in the
-source distribution, as well as the Google api-common-protos files, as it
-is not handled automatically yet
+source distribution, as it is not handled automatically yet
 (<a href="https://github.com/frequenz-floss/frequenz-repo-config-python/issues/13">#13</a>).
 Make sure to include these lines in the <code>MANIFEST.in</code> file:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>recursive-include submodules/api-common-protos/google *.proto
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>recursive-include submodules/frequenz-api-common/proto *.proto
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>recursive-include submodules/frequenz-api-common/proto *.proto
 </span></code></pre></div>
 <p>Please adapt the instructions above to your project structure if you need to change the
 defaults.</p>
@@ -2378,7 +2371,7 @@ defaults.</p>
               Bases: <code><a class="autorefs autorefs-external" title="enum.Enum" href="https://docs.python.org/3/library/enum.html#enum.Enum">Enum</a></code></p>
 
 
-      <p>Supported types of repository.</p>
+        <p>Supported types of repository.</p>
 
               <details class="quote">
                 <summary>Source code in <code>frequenz/repo/config/_core.py</code></summary>
@@ -2447,7 +2440,7 @@ defaults.</p>
 
     <div class="doc doc-contents ">
 
-      <p>SDK actor repository.</p>
+        <p>SDK actor repository.</p>
     </div>
 
 </div>
@@ -2471,7 +2464,7 @@ defaults.</p>
 
     <div class="doc doc-contents ">
 
-      <p>gRPC API repository.</p>
+        <p>gRPC API repository.</p>
     </div>
 
 </div>
@@ -2495,7 +2488,7 @@ defaults.</p>
 
     <div class="doc doc-contents ">
 
-      <p>SDK application repository.</p>
+        <p>SDK application repository.</p>
     </div>
 
 </div>
@@ -2519,7 +2512,7 @@ defaults.</p>
 
     <div class="doc doc-contents ">
 
-      <p>General purpose library repository.</p>
+        <p>General purpose library repository.</p>
     </div>
 
 </div>
@@ -2543,7 +2536,7 @@ defaults.</p>
 
     <div class="doc doc-contents ">
 
-      <p>SDK machine learning model repository.</p>
+        <p>SDK machine learning model repository.</p>
     </div>
 
 </div>
