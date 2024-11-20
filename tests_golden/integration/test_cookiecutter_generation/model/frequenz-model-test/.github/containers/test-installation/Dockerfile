@@ -3,7 +3,7 @@
 # This Dockerfile is used to test the installation of the python package in
 # multiple platforms in the CI. It is not used to build the package itself.
 
-FROM --platform=${TARGETPLATFORM} python:3.11-slim
+FROM python:3.11-slim
 
 RUN apt-get update -y && \
     apt-get install --no-install-recommends -y \

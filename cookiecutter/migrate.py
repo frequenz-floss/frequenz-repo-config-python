@@ -166,6 +166,17 @@ def main() -> None:
 
     # Add new pylint checks
     add_pylint_checks()
+    print("=" * 72)
+
+    # Remove redundant --platform from the dockerfile
+    dockerfile = Path(".github/containers/test-installation/Dockerfile")
+    print(f"{dockerfile}: Removing redundant --platform.")
+    if dockerfile.is_file():
+        replace_file_contents_atomically(
+            dockerfile, "--platform=${TARGETPLATFORM} ", ""
+        )
+    else:
+        print(f"{dockerfile}: Not found.")
 
     # Add a separation line like this one after each migration step.
     print("=" * 72)
