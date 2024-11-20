@@ -177,6 +177,12 @@ def main() -> None:
         )
     else:
         print(f"{dockerfile}: Not found.")
+    print("=" * 72)
+
+    # Make sure `edit_uri` points to the default branch
+    manual_step(
+        "Make sure that the `edit_uri` in the `mkdocs.yml` file points to the default branch."
+    )
 
     # Add a separation line like this one after each migration step.
     print("=" * 72)
