@@ -2,16 +2,14 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This version accumulates a few improvements, and bumps the dependency of setuptools to use v75, which is compatible with PEP625, which is necessary to be able to keep uploading to PyPI, so you should upgrade to this version as soon as possible.
+
+The migration script was also rewritten in Python, so it should be more compatible with different OSes.
 
 ## Upgrading
 
 - The `frequenz.repo.config.github.abort()` function now takes most arguments as keyword-only arguments.
 - The *Queue PRs for v0.x.x* GitHub ruleset was renamed to *Queue PRs for the default branch* and now targets the default branch. It also only have the merge queue restriction, all other restrictions were removed as they are already present in the *Protect version branches* ruleset. You might want to re-import this ruleset to your repositories.
-
-### Cookiecutter template
-
-<!-- Here upgrade steps for cookiecutter specifically -->
 
 ## New Features
 
@@ -33,7 +31,3 @@
 ## Bug Fixes
 
 * Sybil now parses the `__init__.py` file as well. Previously it was disabled due to an upstream bug.
-
-### Cookiecutter template
-
-<!-- Here bug fixes for cookiecutter specifically -->

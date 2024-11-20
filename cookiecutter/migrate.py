@@ -128,6 +128,32 @@ checks that are disabled because `mypy` already checks them) if they are missing
     )
 
 
+def fix_default_fixture_scope() -> None:
+    """Fix the default scope of fixtures to 'function'."""
+    pyproject_toml = Path("pyproject.toml")
+    print(f"{pyproject_toml}: Fix the default scope of fixtures to 'function'.")
+    marker = 'asyncio_mode = "auto"\n'
+    pyproject_toml_content = pyproject_toml.read_text(encoding="utf-8")
+    if pyproject_toml_content.find(marker) == -1:
+        manual_step(
+            f"""\
+{pyproject_toml}: We couldn't find the marker {marker!r} in the file.
+Please add the following line to the file manually in the
+`[tool.pytest.ini_options]` section if it is missing:
+asyncio_default_fixture_loop_scope = "function"
+"""
+        )
+        return
+
+    replacement = 'asyncio_default_fixture_loop_scope = "function"\n'
+    if pyproject_toml_content.find(replacement) >= 0:
+        print(f"{pyproject_toml}: seems to be already up-to-date.")
+        return
+    replace_file_contents_atomically(
+        pyproject_toml, marker, marker + replacement, content=pyproject_toml_content
+    )
+
+
 def main() -> None:
     """Run the migration steps."""
     # Dependabot patch
@@ -177,6 +203,16 @@ def main() -> None:
         )
     else:
         print(f"{dockerfile}: Not found.")
+    print("=" * 72)
+
+    # Make sure `edit_uri` points to the default branch
+    manual_step(
+        "Make sure that the `edit_uri` in the `mkdocs.yml` file points to the default branch."
+    )
+    print("=" * 72)
+
+    # Fix the default scope of fixtures to 'function'
+    fix_default_fixture_scope()
 
     # Add a separation line like this one after each migration step.
     print("=" * 72)
