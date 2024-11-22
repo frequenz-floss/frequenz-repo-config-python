@@ -40,7 +40,10 @@ def add_default_pytest_options() -> None:
     pyproject_toml = Path("pyproject.toml")
     pyproject_toml_content = pyproject_toml.read_text(encoding="utf-8")
     marker = "[tool.pytest.ini_options]\n"
-    new_options = "-W=all -vv"
+    new_options = (
+        "-W=all Werror -Wdefault::DeprecationWarning "
+        "-Wdefault::PendingDeprecationWarning -vv"
+    )
 
     print(f"Adding default pytest options to {pyproject_toml}...")
     if pyproject_toml_content.find(marker) == -1:
