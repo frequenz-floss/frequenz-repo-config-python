@@ -6,11 +6,16 @@
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+- The `nox` default `pytest` session doesn't pass `-W=all -vv` to `pytest` anymore. You can use the `pyproject.toml` file to configure default options for `pytest`, for example:
+
+    ```toml
+    [tool.pytest.ini_options]
+    addopts = "-W=all -vv"
+    ```
 
 ### Cookiecutter template
 
-<!-- Here upgrade steps for cookiecutter specifically -->
+All upgrading should be done via the migration script or regenerating the templates.
 
 ## New Features
 
