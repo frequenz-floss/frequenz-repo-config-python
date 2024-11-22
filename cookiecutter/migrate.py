@@ -27,6 +27,12 @@ from pathlib import Path
 from typing import SupportsIndex
 
 
+def main() -> None:
+    """Run the migration steps."""
+    # Add a separation line like this one after each migration step.
+    print("=" * 72)
+
+
 def apply_patch(patch_content: str) -> None:
     """Apply a patch using the patch utility."""
     subprocess.run(["patch", "-p1"], input=patch_content.encode(), check=True)
@@ -90,132 +96,6 @@ def replace_file_contents_atomically(  # noqa; DOC501
         tmp.close()
         os.unlink(tmp.name)
         raise
-
-
-def add_pylint_checks() -> None:
-    """Add new pylint checks to the project."""
-    pyproject_toml = Path("pyproject.toml")
-    print(
-        f"{pyproject_toml}: Skip some flaky pylint checks that are checked better by mypy."
-    )
-    marker = '  "no-member",\n'
-    pyproject_toml_content = pyproject_toml.read_text(encoding="utf-8")
-    if pyproject_toml_content.find(marker) == -1:
-        manual_step(
-            f"""\
-{pyproject_toml}: We couldn't find the marker {marker!r} in the file.
-Please add the following lines to the file manually in the
-`[tool.pylint.messages_control]` section, under the `disable` key (ideally below other
-checks that are disabled because `mypy` already checks them) if they are missing:
-  "no-name-in-module",
-  "possibly-used-before-assignment",
-"""
-        )
-        return
-
-    replacement = ""
-    if pyproject_toml_content.find("possibly-used-before-assignment") == -1:
-        replacement += '  "possibly-used-before-assignment",\n'
-    if pyproject_toml_content.find("no-name-in-module") == -1:
-        replacement += '  "no-name-in-module",\n'
-
-    if not replacement:
-        print(f"{pyproject_toml}: seems to be already up-to-date.")
-        return
-
-    replace_file_contents_atomically(
-        pyproject_toml, marker, marker + replacement, content=pyproject_toml_content
-    )
-
-
-def fix_default_fixture_scope() -> None:
-    """Fix the default scope of fixtures to 'function'."""
-    pyproject_toml = Path("pyproject.toml")
-    print(f"{pyproject_toml}: Fix the default scope of fixtures to 'function'.")
-    marker = 'asyncio_mode = "auto"\n'
-    pyproject_toml_content = pyproject_toml.read_text(encoding="utf-8")
-    if pyproject_toml_content.find(marker) == -1:
-        manual_step(
-            f"""\
-{pyproject_toml}: We couldn't find the marker {marker!r} in the file.
-Please add the following line to the file manually in the
-`[tool.pytest.ini_options]` section if it is missing:
-asyncio_default_fixture_loop_scope = "function"
-"""
-        )
-        return
-
-    replacement = 'asyncio_default_fixture_loop_scope = "function"\n'
-    if pyproject_toml_content.find(replacement) >= 0:
-        print(f"{pyproject_toml}: seems to be already up-to-date.")
-        return
-    replace_file_contents_atomically(
-        pyproject_toml, marker, marker + replacement, content=pyproject_toml_content
-    )
-
-
-def main() -> None:
-    """Run the migration steps."""
-    # Dependabot patch
-    dependabot_yaml = Path(".github/dependabot.yml")
-    print(f"{dependabot_yaml}: Add new grouping for actions/*-artifact updates.")
-    if dependabot_yaml.read_text(encoding="utf-8").find("actions/*-artifact") == -1:
-        apply_patch(
-            """\
---- a/.github/dependabot.yml
-+++ b/.github/dependabot.yml
-@@ -39,3 +39,11 @@ updates:
-     labels:
-       - "part:tooling"
-       - "type:tech-debt"
-+    groups:
-+      compatible:
-+        update-types:
-+          - "minor"
-+          - "patch"
-+      artifacts:
-+        patterns:
-+          - "actions/*-artifact"
-"""
-        )
-    else:
-        print(f"{dependabot_yaml}: seems to be already up-to-date.")
-    print("=" * 72)
-
-    # Fix labeler configuration
-    labeler_yml = ".github/labeler.yml"
-    print(f"{labeler_yml}: Fix the labeler configuration example.")
-    replace_file_contents_atomically(
-        labeler_yml, "all-glob-to-all-file", "all-globs-to-all-files"
-    )
-    print("=" * 72)
-
-    # Add new pylint checks
-    add_pylint_checks()
-    print("=" * 72)
-
-    # Remove redundant --platform from the dockerfile
-    dockerfile = Path(".github/containers/test-installation/Dockerfile")
-    print(f"{dockerfile}: Removing redundant --platform.")
-    if dockerfile.is_file():
-        replace_file_contents_atomically(
-            dockerfile, "--platform=${TARGETPLATFORM} ", ""
-        )
-    else:
-        print(f"{dockerfile}: Not found.")
-    print("=" * 72)
-
-    # Make sure `edit_uri` points to the default branch
-    manual_step(
-        "Make sure that the `edit_uri` in the `mkdocs.yml` file points to the default branch."
-    )
-    print("=" * 72)
-
-    # Fix the default scope of fixtures to 'function'
-    fix_default_fixture_scope()
-
-    # Add a separation line like this one after each migration step.
-    print("=" * 72)
 
 
 def manual_step(message: str) -> None:
