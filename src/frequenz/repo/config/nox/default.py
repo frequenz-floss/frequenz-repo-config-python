@@ -36,10 +36,7 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
         "--check",
     ],
     mypy=[],
-    pytest=[
-        "-W=all",
-        "-vv",
-    ],
+    pytest=[],
 )
 """Default command-line options for all types of repositories."""
 

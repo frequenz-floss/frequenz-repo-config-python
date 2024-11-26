@@ -29,8 +29,39 @@ from typing import SupportsIndex
 
 def main() -> None:
     """Run the migration steps."""
+    add_default_pytest_options()
+
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+
+
+def add_default_pytest_options() -> None:
+    """Add default pytest options to pyproject.toml."""
+    pyproject_toml = Path("pyproject.toml")
+    pyproject_toml_content = pyproject_toml.read_text(encoding="utf-8")
+    marker = "[tool.pytest.ini_options]\n"
+    new_options = (
+        "-W=all Werror -Wdefault::DeprecationWarning "
+        "-Wdefault::PendingDeprecationWarning -vv"
+    )
+
+    print(f"Adding default pytest options to {pyproject_toml}...")
+    if pyproject_toml_content.find(marker) == -1:
+        print(
+            "Couldn't find the the {marker.strip()} marker in pyproject.toml, skipping update."
+        )
+        return
+
+    if pyproject_toml_content.find("\naddopts") >= 0:
+        print("It looks like some options are already configured, skipping update.")
+        manual_step(f"Please consider `{new_options}` if they are not there yet.")
+        return
+
+    replace_file_contents_atomically(
+        pyproject_toml,
+        marker,
+        marker + f'addopts = "{new_options}"\n',
+    )
 
 
 def apply_patch(patch_content: str) -> None:
