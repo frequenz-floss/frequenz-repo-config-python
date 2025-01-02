@@ -89,7 +89,7 @@ dev-mypy = [
   "mypy == 1.14.1",
   "types-setuptools >= 67.6.0, < 76",  # Should match the build dependency
   "types-Markdown == 3.7.0.20241204",
-  "types-PyYAML == 6.0.12.20240917",
+  "types-PyYAML == 6.0.12.20241230",
   "types-babel == 2.11.0.15",
   "types-colorama == 0.4.15.20240311",
   # For checking the noxfile, docs/ script, and tests
