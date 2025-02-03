@@ -1880,8 +1880,8 @@ which returns a dictionary that can be used to pass to the <a class="autorefs au
 constructor.</p>
 <p>You still need to create a <code>conftest.py</code> file in the root of your project's sources,
 typically <code>src/conftest.py</code>, with the following contents:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config.pytest</span> <span class="kn">import</span> <span class="n">examples</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">sybil</span> <span class="kn">import</span> <span class="n">Sybil</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config.pytest</span><span class="w"> </span><span class="kn">import</span> <span class="n">examples</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sybil</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sybil</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">pytest_collect_file</span> <span class="o">=</span> <span class="n">Sybil</span><span class="p">(</span><span class="o">**</span><span class="n">examples</span><span class="o">.</span><span class="n">get_sybil_arguments</span><span class="p">())</span><span class="o">.</span><span class="n">pytest</span><span class="p">()</span>
 </span></code></pre></div>
@@ -1932,7 +1932,7 @@ typically <code>src/conftest.py</code>, with the following contents:</p>
 <span class="normal"><a href="#__codelineno-0-216">216</a></span>
 <span class="normal"><a href="#__codelineno-0-217">217</a></span>
 <span class="normal"><a href="#__codelineno-0-218">218</a></span>
-<span class="normal"><a href="#__codelineno-0-219">219</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="k">class</span> <span class="nc">MyPythonCodeBlockParser</span><span class="p">(</span><span class="n">PythonCodeBlockParser</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-219">219</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyPythonCodeBlockParser</span><span class="p">(</span><span class="n">PythonCodeBlockParser</span><span class="p">):</span>
 </span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom Python code block parser that uses the custom code block parser.&quot;&quot;&quot;</span>
 </span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a>
 </span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217"></a>    <span class="n">codeblock_parser_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">_CustomPythonCodeBlockParser</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
@@ -2012,7 +2012,7 @@ typically <code>src/conftest.py</code>, with the following contents:</p>
 <span class="normal"><a href="#__codelineno-0-228">228</a></span>
 <span class="normal"><a href="#__codelineno-0-229">229</a></span>
 <span class="normal"><a href="#__codelineno-0-230">230</a></span>
-<span class="normal"><a href="#__codelineno-0-231">231</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222"></a><span class="k">def</span> <span class="nf">get_sybil_arguments</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="normal"><a href="#__codelineno-0-231">231</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_sybil_arguments</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 </span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the arguments to pass when instantiating the Sybil object to lint docs examples.</span>
 </span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224"></a>
 </span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225"></a><span class="sd">    Returns:</span>

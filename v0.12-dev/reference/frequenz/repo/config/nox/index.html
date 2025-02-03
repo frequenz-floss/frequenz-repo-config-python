@@ -1753,7 +1753,7 @@
 function, which will configure all nox sessions according to some configuration.</p>
 <p>To use the default options, you should call <code>configure()</code> using one of the <a class="autorefs autorefs-internal" href="../#frequenz.repo.config.RepositoryType">repository
 types</a>.  For example:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="n">nox</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="n">nox</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">RepositoryType</span><span class="o">.</span><span class="n">LIB</span><span class="p">)</span>
 </span></code></pre></div>
@@ -1764,8 +1764,8 @@ of your project (<code>actor_config</code>, <code>api_config</code>, <code>app_c
 the <a class="autorefs autorefs-internal" href="default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
 <a class="autorefs autorefs-internal" href="config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
 need to customize.  For example:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config</span> <span class="kn">import</span> <span class="n">nox</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">frequenz.repo.config.nox</span> <span class="kn">import</span> <span class="n">default</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">nox</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config.nox</span><span class="w"> </span><span class="kn">import</span> <span class="n">default</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">config</span> <span class="o">=</span> <span class="n">default</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">config</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">black</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--diff&quot;</span><span class="p">)</span>
@@ -1932,7 +1932,7 @@ sessions and use your own.</p>
 <span class="normal"><a href="#__codelineno-0-232">232</a></span>
 <span class="normal"><a href="#__codelineno-0-233">233</a></span>
 <span class="normal"><a href="#__codelineno-0-234">234</a></span>
-<span class="normal"><a href="#__codelineno-0-235">235</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="k">def</span> <span class="nf">configure</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-235">235</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span>
 </span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195"></a>    <span class="n">conf</span><span class="p">:</span> <span class="n">Config</span> <span class="o">|</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">import_default_sessions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 </span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure nox using the provided configuration or repository type.</span>
@@ -1950,14 +1950,14 @@ sessions and use your own.</p>
 </span><span id="__span-0-209"><a id="__codelineno-0-209" name="__codelineno-0-209"></a>    <span class="c1"># We need to make sure sessions are imported, otherwise they won&#39;t be visible to nox.</span>
 </span><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210"></a>    <span class="k">if</span> <span class="n">import_default_sessions</span><span class="p">:</span>
 </span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211"></a>        <span class="c1"># pylint: disable=import-outside-toplevel,cyclic-import</span>
-</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">_</span>  <span class="c1"># noqa: F401</span>
+</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">_</span>  <span class="c1"># noqa: F401</span>
 </span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213"></a>
 </span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a>    <span class="k">match</span> <span class="n">conf</span><span class="p">:</span>
 </span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a>        <span class="k">case</span> <span class="n">Config</span><span class="p">():</span>
 </span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a>            <span class="n">_config</span> <span class="o">=</span> <span class="n">conf</span>
 </span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217"></a>        <span class="k">case</span> <span class="n">RepositoryType</span><span class="p">()</span> <span class="k">as</span> <span class="n">repo_type</span><span class="p">:</span>
 </span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a>            <span class="c1"># pylint: disable=import-outside-toplevel,cyclic-import</span>
-</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219"></a>            <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">default</span>
+</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219"></a>            <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">default</span>
 </span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220"></a>
 </span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221"></a>            <span class="k">match</span> <span class="n">repo_type</span><span class="p">:</span>
 </span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222"></a>                <span class="k">case</span> <span class="n">RepositoryType</span><span class="o">.</span><span class="n">ACTOR</span><span class="p">:</span>
