@@ -13,6 +13,7 @@ protocol buffer files are compiled automatically before the project is built.
 import pathlib as _pathlib
 import subprocess as _subprocess
 import sys as _sys
+from typing import cast
 
 import setuptools as _setuptools
 import setuptools.command.build as _build_command
@@ -38,24 +39,31 @@ class CompileProto(_setuptools.Command):
     description: str = "compile protobuf files"
     """Description of the command."""
 
-    user_options: list[tuple[str, str | None, str]] = [
-        (
-            "proto-path=",
-            None,
-            "path of the root directory containing the protobuf files",
-        ),
-        ("proto-glob=", None, "glob pattern to use to find the protobuf files"),
-        (
-            "include-paths=",
-            None,
-            "comma-separated list of paths to include when compiling the protobuf files",
-        ),
-        (
-            "py-path=",
-            None,
-            "path of the root directory where the Python files will be generated",
-        ),
-    ]
+    # We need the cast here because Command.user_options has the type annoatation
+    # ClassVar[list[tuple[str, str, str]] | list[tuple[str, str | None, str]]] but the
+    # expression resolves to list[tuple[str, None, str]] and mypy is not smart enough to
+    # see that this is compatible with the list[tuple[str, str | None, str]] variant.
+    user_options = cast(
+        list[tuple[str, str, str]] | list[tuple[str, str | None, str]],
+        [
+            (
+                "proto-path=",
+                None,
+                "path of the root directory containing the protobuf files",
+            ),
+            ("proto-glob=", None, "glob pattern to use to find the protobuf files"),
+            (
+                "include-paths=",
+                None,
+                "comma-separated list of paths to include when compiling the protobuf files",
+            ),
+            (
+                "py-path=",
+                None,
+                "path of the root directory where the Python files will be generated",
+            ),
+        ],
+    )
     """Options of the command."""
 
     def initialize_options(self) -> None:
