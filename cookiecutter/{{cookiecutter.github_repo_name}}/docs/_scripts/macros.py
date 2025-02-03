@@ -47,8 +47,8 @@ def _hook_macros_plugin(env: macros.MacrosPlugin) -> None:
     update_env = python_handler.update_env
 
     # override the `update_env` method of the Python handler
-    def patched_update_env(markdown: md.Markdown, config: dict[str, Any]) -> None:
-        update_env(markdown, config)
+    def patched_update_env(md: md.Markdown, config: dict[str, Any]) -> None:
+        update_env(md=md, config=config)
 
         # get the `convert_markdown` filter of the env
         convert_markdown = python_handler.env.filters["convert_markdown"]
