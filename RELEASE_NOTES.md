@@ -33,4 +33,4 @@ All upgrading should be done via the migration script or regenerating the templa
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- Fixed a compatibility issue in the macros doc script with `mkdocsstrings` 0.28.
