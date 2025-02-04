@@ -37,6 +37,16 @@ hooking and provide some useful variables and filters:
 * [`code_annotation_marker`]: A variable to inject the appropriate HTML code for showing
     an example code annotation as a number (see
     [frequenz.repo.config.mkdocs.annotations][] for more information).
+* [`version`]: A varaible with the version information of the repository as exposed by
+    [`get_repo_version_info()`][frequenz.repo.config.github.get_repo_version_info],
+    which means some environment variables are required (this variable will be `None`
+    otherwise), please read the function documentation for more details.
+* [`version_requirement`]: A variable with the version requirement for the current
+    version of the repository. It is built using the information from `version`. Also
+    only available if the rigth environment variables are set, and if the resulting
+    version is a tag (will be empty for branches). If you want to get the version
+    requirement for a branch, you need to provide a repository URL, please read the
+    [Advanced usage] section for more details.
 
 If you are happy with the defaults, your `path/to/macros.py` can look as simple as:
 
@@ -57,6 +67,8 @@ from frequenz.repo.config.mkdocs.mkdocstrings_macros import hook_macros_plugin, 
 
 def define_env(env: macros.MacrosPlugin) -> None:
     env.variables.my_var = "Example"
+    add_version_variables(env, "git+https://your-repo-url")
+
     env.filter(slugify, "slugify")
 
     # This hook needs to be done at the end of the `define_env` function.
@@ -65,13 +77,17 @@ def define_env(env: macros.MacrosPlugin) -> None:
 """
 
 
+import logging
 from typing import Any
 
 import markdown as md
 from markdown.extensions import toc
 from mkdocs_macros import plugin as macros
 
+from ..github import get_repo_version_info
 from .annotations import CODE_ANNOTATION_MARKER
+
+_logger = logging.getLogger(__name__)
 
 
 def slugify(text: str) -> str:
@@ -91,6 +107,50 @@ def slugify(text: str) -> str:
         The slugified text.
     """
     return toc.slugify_unicode(text, "-")
+
+
+def add_version_variables(
+    env: macros.MacrosPlugin, *, repo_url: str | None = None
+) -> None:
+    """Add variables with git information to the environment.
+
+    This function will add 2 new macro variables to `env`:
+
+    * [`version`]: A varaible with the version information of the repository as exposed by
+        [`get_repo_version_info()`][frequenz.repo.config.github.get_repo_version_info],
+        which means some environment variables are required (this variable will be `None`
+        otherwise), please read the function documentation for more details.
+    * [`version_requirement`]: A variable with the version requirement for the current
+        version of the repository. It is built using the information from `version`. Also
+        only available if the rigth environment variables are set, and if the resulting
+        version is a tag (will be empty for branches). If you want to get the version
+        requirement for a branch, you need to provide a `repo_url`.
+
+    Args:
+        env: The environment to add the variables to.
+        repo_url: The URL of the repository to use in the `version_requirement`
+            variable. Only needed if you want to use the `version_requirement` variable
+            for branches.
+    """
+    env.variables["version"] = None
+    env.variables["version_requirement"] = ""
+    try:
+        version_info = get_repo_version_info()
+    except Exception as exc:  # pylint: disable=broad-except
+        _logger.warning("Failed to get version info: %s", exc)
+    else:
+        env.variables["version"] = version_info
+        if version_info.current_tag:
+            env.variables["version_requirement"] = f" == {version_info.current_tag}"
+        elif version_info.current_branch:
+            if repo_url is None:
+                _logger.warning(
+                    "No repo_url provided, can't build the 'version_requirement' variable"
+                )
+            else:
+                env.variables["version_requirement"] = (
+                    f" @ {repo_url}@{version_info.current_branch}"
+                )
 
 
 def hook_macros_plugin(env: macros.MacrosPlugin) -> None:
@@ -134,6 +194,8 @@ def define_env(env: macros.MacrosPlugin) -> None:
         env: The environment to define the macro functions in.
     """
     env.variables.code_annotation_marker = CODE_ANNOTATION_MARKER
+    add_version_variables(env)
+
     env.filter(slugify, "slugify")  # type: ignore[no-untyped-call]
 
     # This hook needs to be done at the end of the `define_env` function.
