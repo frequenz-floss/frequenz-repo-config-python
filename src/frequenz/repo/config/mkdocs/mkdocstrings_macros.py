@@ -183,10 +183,10 @@ def add_version_variables(
         env.variables["version"] = version_info
         if version_info.current_tag:
             env.variables["version_requirement"] = f" == {version_info.current_tag}"
-        elif version_info.current_branch:
+        elif version_info.current_branch or version_info.sha:
             if repo_url is not None:
                 env.variables["version_requirement"] = (
-                    f" @ git+{repo_url}@{version_info.current_branch}"
+                    f" @ git+{repo_url}@{version_info.current_branch or version_info.sha}"
                 )
 
 
