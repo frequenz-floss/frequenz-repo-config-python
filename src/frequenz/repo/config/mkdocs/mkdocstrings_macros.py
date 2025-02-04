@@ -5,11 +5,15 @@
 
 # Introduction
 
-To be able to use macros inside docstrings, we need to integrate the
-`mkdocs-macros` extension into `mkdocstrings`. This module provides the
-necessary functions to make this integration work.
+To be able to use macros inside docstrings, we need to integrate the `mkdocs-macros`
+extension into `mkdocstrings`. This module provides the necessary functions to make this
+integration work.
 
-To use this module, add the following configuration to your `mkdocs.yml`:
+
+# Basic usage
+
+If you don't want to define your own macros, variables or filters, you can use this
+module as a [pluglet](https://mkdocs-macros-plugin.readthedocs.io/en/latest/pluglets/):
 
 ```yaml title="mkdocs.yml"
 plugins:
@@ -18,19 +22,12 @@ plugins:
       default_handler: python
       # ...
   - macros:
-      module_name: path/to/macros
+      modules: ["frequenz.repo.config.mkdocs.mkdocstrings_macros"]
       on_undefined: strict
       on_error_fail: true
 ```
 
-Then you need to add the `path/to/macros.py` file. The contents will vary depending on
-if you want to use use the convenience default hooking or not.
-
-# Basic usage
-
-A convenience [`define_env()`] function is provided to provide a [macros
-extension](https://mkdocs-macros-plugin.readthedocs.io/en/latest/macros/) to do the
-hooking and provide some useful variables and filters:
+This will do the hooking and provide some useful variables and filters:
 
 * [`slugify`][frequenz.repo.config.mkdocs.mkdocstrings_macros.slugify]: A filter to
     slugify a text. Useful to generate anchors for headings.
@@ -48,22 +45,33 @@ hooking and provide some useful variables and filters:
     requirement for a branch, you need to provide a repository URL, please read the
     [Advanced usage] section for more details.
 
-If you are happy with the defaults, your `path/to/macros.py` can look as simple as:
-
-```py title="path/to/macros.py"
-from frequenz.repo.config.mkdocs.mkdocstrings_macros import define_env
-```
 
 # Customized usage
 
 If you want to define your own macros, variables or filters, but you also want to get
-the default behaviour described in [Basic usage], you can define your own
-`define_env()` function and call the [`hook_env_with_everything()`] function at the end.
+the default behaviour described in [Basic usage], you need to provide your own [macros
+module](https://mkdocs-macros-plugin.readthedocs.io/en/latest/macros/) with
+a `define_env()` function. You can specify it in the `mkdocs.yml` configuration file:
 
-This function will add all the default variables and filters and call do the hooking as
-described in [Basic usage]. You just need to be sure to call the function at the end.
-You can also pass a `repo_url` in this case so the `version_requirement` variable can
-work when the current version is a branch.
+```yaml title="mkdocs.yml"
+plugins:
+  # Order is important! mkdocstrings must come before macros!
+  - mkdocstrings:
+      default_handler: python
+      # ...
+  - macros:
+      module_name: "path/to/macros" # Note: no .py extension here!
+      on_undefined: strict
+      on_error_fail: true
+```
+
+Then you need to add the `define_env()` function to the `path/to/macros.py` file.
+A convenience [`hook_env_with_everything()`] is provided to pull all the same default
+variables and filters and call the hooking function at the end as with the *pluglet*.
+
+You also need to make sure to call the function at the end, after you define your own
+variables, filters and macros. You can optionally pass a `repo_url` in this case so the
+`version_requirement` variable can work when the current version is a branch.
 
 Here is an example of how to do it:
 
@@ -72,14 +80,18 @@ from frequenz.repo.config.mkdocs.mkdocstrings_macros import hook_env_with_everyt
 
 def define_env(env: macros.MacrosPlugin) -> None:
     env.variables.my_var = "Example"
+
+    # This hook needs to be done at the end of the `define_env` function.
     hook_env_with_everything(env, "git+https://your-repo-url")
 ```
 
 # Advanced usage
 
 If you don't want to pull in all the default variables and filters, you can still define
-your own `define_env()` function, and call the hook to integrate with `mkdocstrings` at
-the end.
+your own `define_env()` function and do the same configuration in the `mkdocs.yml` file
+as in the [Customized usage] section, but instead call the
+[`hook_macros_plugin()`][frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin]
+at the end.
 
 Here is an example of how to do it:
 
