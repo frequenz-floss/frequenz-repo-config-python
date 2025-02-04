@@ -54,22 +54,40 @@ If you are happy with the defaults, your `path/to/macros.py` can look as simple 
 from frequenz.repo.config.mkdocs.mkdocstrings_macros import define_env
 ```
 
-# Advanced usage
+# Customized usage
 
-If you want to define your own macros, variables or filters, you'll need to provide your
-own `define_env()` function, and call the hook to integrate with `mkdocstrings` at the
-end.
+If you want to define your own macros, variables or filters, but you also want to get
+the default behaviour described in [Basic usage], you can define your own
+`define_env()` function and call the [`hook_env_with_everything()`] function at the end.
+
+This function will add all the default variables and filters and call do the hooking as
+described in [Basic usage]. You just need to be sure to call the function at the end.
+You can also pass a `repo_url` in this case so the `version_requirement` variable can
+work when the current version is a branch.
 
 Here is an example of how to do it:
 
 ```py title="path/to/macros.py"
-from frequenz.repo.config.mkdocs.mkdocstrings_macros import hook_macros_plugin, slugify
+from frequenz.repo.config.mkdocs.mkdocstrings_macros import hook_env_with_everything
 
 def define_env(env: macros.MacrosPlugin) -> None:
     env.variables.my_var = "Example"
-    add_version_variables(env, "git+https://your-repo-url")
+    hook_env_with_everything(env, "git+https://your-repo-url")
+```
 
-    env.filter(slugify, "slugify")
+# Advanced usage
+
+If you don't want to pull in all the default variables and filters, you can still define
+your own `define_env()` function, and call the hook to integrate with `mkdocstrings` at
+the end.
+
+Here is an example of how to do it:
+
+```py title="path/to/macros.py"
+from frequenz.repo.config.mkdocs.mkdocstrings_macros import hook_macros_plugin
+
+def define_env(env: macros.MacrosPlugin) -> None:
+    env.variables.my_var = "Example"
 
     # This hook needs to be done at the end of the `define_env` function.
     hook_macros_plugin(env)
@@ -187,16 +205,35 @@ def hook_macros_plugin(env: macros.MacrosPlugin) -> None:
     python_handler.update_env = patched_update_env
 
 
+def hook_env_with_everything(
+    env: macros.MacrosPlugin, *, repo_url: str | None = None
+) -> None:
+    """Hooks the `env` with all the default variables and filters.
+
+    This function is a convenience function that adds all variables and filters and
+    macros provided by this module and calls
+    [`hook_macros_plugin()`][frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin]
+    at the end.
+
+    Args:
+        env: The environment to hook.
+        repo_url: The URL of the repository to use in the `version_requirement`
+            variable. Only needed if you want to use the `version_requirement` variable
+            for branches.
+    """
+    env.variables.code_annotation_marker = CODE_ANNOTATION_MARKER
+    add_version_variables(env, repo_url=repo_url)
+
+    env.filter(slugify, "slugify")  # type: ignore[no-untyped-call]
+
+    # This hook needs to be done at the end of the `define_env` function.
+    hook_macros_plugin(env)
+
+
 def define_env(env: macros.MacrosPlugin) -> None:
     """Define the hook to create macro functions for use in Markdown.
 
     Args:
         env: The environment to define the macro functions in.
     """
-    env.variables.code_annotation_marker = CODE_ANNOTATION_MARKER
-    add_version_variables(env)
-
-    env.filter(slugify, "slugify")  # type: ignore[no-untyped-call]
-
-    # This hook needs to be done at the end of the `define_env` function.
-    hook_macros_plugin(env)
+    hook_env_with_everything(env)
