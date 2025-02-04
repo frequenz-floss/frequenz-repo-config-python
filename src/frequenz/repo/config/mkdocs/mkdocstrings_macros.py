@@ -42,8 +42,9 @@ This will do the hooking and provide some useful variables and filters:
     version of the repository. It is built using the information from `version`. Also
     only available if the rigth environment variables are set, and if the resulting
     version is a tag (will be empty for branches). If you want to get the version
-    requirement for a branch, you need to provide a repository URL, please read the
-    [Advanced usage] section for more details.
+    requirement for a branch, you need to provide a `repo_url` variable in the
+    `mkdocs.yaml` file or do a custom setup. Please read the [Customized usage]
+    section for more details.
 
 
 # Customized usage
@@ -71,7 +72,8 @@ variables and filters and call the hooking function at the end as with the *plug
 
 You also need to make sure to call the function at the end, after you define your own
 variables, filters and macros. You can optionally pass a `repo_url` in this case so the
-`version_requirement` variable can work when the current version is a branch.
+`version_requirement` variable can work when the current version is a branch. If a
+`repo_url` variable is present in the `mkdocs.yml` file, it will be used as the default.
 
 Here is an example of how to do it:
 
@@ -82,7 +84,7 @@ def define_env(env: macros.MacrosPlugin) -> None:
     env.variables.my_var = "Example"
 
     # This hook needs to be done at the end of the `define_env` function.
-    hook_env_with_everything(env, "git+https://your-repo-url")
+    hook_env_with_everything(env, "https://your-repo-url")
 ```
 
 # Advanced usage
@@ -154,16 +156,25 @@ def add_version_variables(
         version of the repository. It is built using the information from `version`. Also
         only available if the rigth environment variables are set, and if the resulting
         version is a tag (will be empty for branches). If you want to get the version
-        requirement for a branch, you need to provide a `repo_url`.
+        requirement for a branch, you need to provide a `repo_url` or a `repo_url`
+        config in the `mkdocs.yml` file.
 
     Args:
         env: The environment to add the variables to.
         repo_url: The URL of the repository to use in the `version_requirement`
-            variable. Only needed if you want to use the `version_requirement` variable
-            for branches.
+            variable. If `None` the `config.repo_url` mkdocs variable will be used. Only
+            needed if you want to use the `version_requirement` variable for branches.
     """
     env.variables["version"] = None
     env.variables["version_requirement"] = ""
+
+    if repo_url is None:
+        repo_url = env.variables.get("config", {}).get("repo_url")
+        if repo_url is None:
+            _logger.warning(
+                "No repo_url provided, can't build the 'version_requirement' variable"
+            )
+
     try:
         version_info = get_repo_version_info()
     except Exception as exc:  # pylint: disable=broad-except
@@ -173,13 +184,9 @@ def add_version_variables(
         if version_info.current_tag:
             env.variables["version_requirement"] = f" == {version_info.current_tag}"
         elif version_info.current_branch:
-            if repo_url is None:
-                _logger.warning(
-                    "No repo_url provided, can't build the 'version_requirement' variable"
-                )
-            else:
+            if repo_url is not None:
                 env.variables["version_requirement"] = (
-                    f" @ {repo_url}@{version_info.current_branch}"
+                    f" @ git+{repo_url}@{version_info.current_branch}"
                 )
 
 
@@ -230,8 +237,8 @@ def hook_env_with_everything(
     Args:
         env: The environment to hook.
         repo_url: The URL of the repository to use in the `version_requirement`
-            variable. Only needed if you want to use the `version_requirement` variable
-            for branches.
+            variable. If `None` the `config.repo_url` mkdocs variable will be used. Only
+            needed if you want to use the `version_requirement` variable for branches.
     """
     env.variables.code_annotation_marker = CODE_ANNOTATION_MARKER
     add_version_variables(env, repo_url=repo_url)
