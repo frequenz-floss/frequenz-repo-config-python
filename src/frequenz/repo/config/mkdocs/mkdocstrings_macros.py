@@ -32,6 +32,8 @@ A convenience [`define_env()`] function is provided to provide a [macros
 extension](https://mkdocs-macros-plugin.readthedocs.io/en/latest/macros/) to do the
 hooking and provide some useful variables and filters:
 
+* [`slugify`][frequenz.repo.config.mkdocs.mkdocstrings_macros.slugify]: A filter to
+    slugify a text. Useful to generate anchors for headings.
 * [`code_annotation_marker`]: A variable to inject the appropriate HTML code for showing
     an example code annotation as a number (see
     [frequenz.repo.config.mkdocs.annotations][] for more information).
@@ -51,10 +53,11 @@ end.
 Here is an example of how to do it:
 
 ```py title="path/to/macros.py"
-from frequenz.repo.config.mkdocs.mkdocstrings_macros import hook_macros_plugin
+from frequenz.repo.config.mkdocs.mkdocstrings_macros import hook_macros_plugin, slugify
 
 def define_env(env: macros.MacrosPlugin) -> None:
     env.variables.my_var = "Example"
+    env.filter(slugify, "slugify")
 
     # This hook needs to be done at the end of the `define_env` function.
     hook_macros_plugin(env)
@@ -65,9 +68,29 @@ def define_env(env: macros.MacrosPlugin) -> None:
 from typing import Any
 
 import markdown as md
+from markdown.extensions import toc
 from mkdocs_macros import plugin as macros
 
 from .annotations import CODE_ANNOTATION_MARKER
+
+
+def slugify(text: str) -> str:
+    """Slugify a text.
+
+    Useful to generate anchors for headings.
+
+    Example:
+        ```markdown
+        Some URL: https://example.com/#{{ "My Heading" | slugify }}.
+        ```
+
+    Args:
+        text: The text to slugify.
+
+    Returns:
+        The slugified text.
+    """
+    return toc.slugify_unicode(text, "-")
 
 
 def hook_macros_plugin(env: macros.MacrosPlugin) -> None:
@@ -111,6 +134,7 @@ def define_env(env: macros.MacrosPlugin) -> None:
         env: The environment to define the macro functions in.
     """
     env.variables.code_annotation_marker = CODE_ANNOTATION_MARKER
+    env.filter(slugify, "slugify")  # type: ignore[no-untyped-call]
 
     # This hook needs to be done at the end of the `define_env` function.
     hook_macros_plugin(env)
