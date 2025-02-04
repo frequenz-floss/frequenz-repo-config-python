@@ -175,6 +175,7 @@ def add_version_variables(
                 "No repo_url provided, can't build the 'version_requirement' variable"
             )
 
+    version_info = None
     try:
         version_info = get_repo_version_info()
     except Exception as exc:  # pylint: disable=broad-except
@@ -183,11 +184,13 @@ def add_version_variables(
         env.variables["version"] = version_info
         if version_info.current_tag:
             env.variables["version_requirement"] = f" == {version_info.current_tag}"
-        elif version_info.current_branch or version_info.sha:
-            if repo_url is not None:
-                env.variables["version_requirement"] = (
-                    f" @ git+{repo_url}@{version_info.current_branch or version_info.sha}"
-                )
+
+    ref = None
+    if version_info is not None:
+        ref = version_info.current_branch or version_info.sha
+    ref = ref or env.variables.get("git", {}).get("commit")
+    if ref and repo_url is not None:
+        env.variables["version_requirement"] = f" @ git+{repo_url}@{ref}"
 
 
 def hook_macros_plugin(env: macros.MacrosPlugin) -> None:
