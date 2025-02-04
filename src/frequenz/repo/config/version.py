@@ -99,7 +99,7 @@ def _build_tags(tags: list[str]) -> dict[str, semver.Version]:
     """
 
     def tag_not_none(
-        tag: tuple[str, semver.Version | None]
+        tag: tuple[str, semver.Version | None],
     ) -> TypeGuard[tuple[str, semver.Version]]:
         return tag[1] is not None
 
@@ -126,7 +126,7 @@ def _build_branches(branches: list[str]) -> dict[str, BranchVersion]:
     """
 
     def branch_not_none(
-        branch: tuple[str, BranchVersion | None]
+        branch: tuple[str, BranchVersion | None],
     ) -> TypeGuard[tuple[str, BranchVersion]]:
         return branch[1] is not None
 
