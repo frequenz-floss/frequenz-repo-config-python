@@ -112,7 +112,6 @@ def define_env(env: macros.MacrosPlugin) -> None:
 import logging
 from typing import Any
 
-import markdown as md
 from markdown.extensions import toc
 from mkdocs_macros import plugin as macros
 
@@ -210,8 +209,8 @@ def hook_macros_plugin(env: macros.MacrosPlugin) -> None:
     update_env = python_handler.update_env
 
     # override the `update_env` method of the Python handler
-    def patched_update_env(md: md.Markdown, config: dict[str, Any]) -> None:
-        update_env(md, config)
+    def patched_update_env(config: dict[str, Any]) -> None:
+        update_env(config=config)
 
         # get the `convert_markdown` filter of the env
         convert_markdown = python_handler.env.filters["convert_markdown"]

@@ -1,37 +1,9 @@
 # Frequenz Repository Configuration Release Notes
 
-## Summary
-
-<!-- Here goes a general summary of what this release is about -->
-
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
-
-### Cookiecutter template
-
-All upgrading should be done via the migration script or regenerating the templates.
-
-```bash
-curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/v0.12/cookiecutter/migrate.py | python3
-```
-
-But you might still need to adapt your code:
-
-<!-- Here upgrade steps for cookiecutter specifically -->
-
-## New Features
-
-<!-- Here goes the main new features and examples or instructions on how to use them -->
-
-### Cookiecutter template
-
-<!-- Here new features for cookiecutter specifically -->
+Even if this is a patch release, it will require a dependency bump for `mkdocstrings-python` to v1.14.6 or newer, but since these are only dev dependencies and things will break if you update the dependencies anyway, it seems like a reasonable trade-off.
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
-### Cookiecutter template
-
-<!-- Here bug fixes for cookiecutter specifically -->
+- The new mkdocstrings-macros *pluglet* didn't work with the latest `mkdocstrings-python` version.
