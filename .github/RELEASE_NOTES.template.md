@@ -10,6 +10,14 @@
 
 ### Cookiecutter template
 
+All upgrading should be done via the migration script or regenerating the templates.
+
+```bash
+curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/v0.12/cookiecutter/migrate.py | python3
+```
+
+But you might still need to adapt your code:
+
 <!-- Here upgrade steps for cookiecutter specifically -->
 
 ## New Features
