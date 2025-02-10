@@ -516,3 +516,10 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
             )
             return False
         return branch == latest[0]
+
+    def __repr__(self) -> str:
+        """Return a string representation of the object."""
+        return (
+            f"{self.__class__.__name__}(sha={self._sha!r}, ref={self._ref!r}, "
+            f"tags={self._tags!r}, branches={self._branches!r})"
+        )
