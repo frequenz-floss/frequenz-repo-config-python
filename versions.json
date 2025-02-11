@@ -3,8 +3,8 @@
     "version": "v0.13-dev",
     "title": "v0.13-dev (0704c59)",
     "aliases": [
-      "latest-dev",
-      "v0-dev"
+      "v0-dev",
+      "latest-dev"
     ]
   },
   {
@@ -26,14 +26,6 @@
     "aliases": []
   },
   {
-    "version": "v0.11-pre",
-    "title": "v0.11.0-rc1",
-    "aliases": [
-      "latest-pre",
-      "v0-pre"
-    ]
-  },
-  {
     "version": "v0.10",
     "title": "v0.10.0",
     "aliases": []
@@ -51,11 +43,6 @@
   {
     "version": "v0.7",
     "title": "v0.7.5",
-    "aliases": []
-  },
-  {
-    "version": "v0.7-pre",
-    "title": "v0.7.0-rc.1",
     "aliases": []
   },
   {
