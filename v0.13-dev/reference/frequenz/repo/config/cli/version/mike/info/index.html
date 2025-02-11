@@ -1119,6 +1119,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#frequenz.repo.config.cli.version.mike.info._output_gha_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;_output_gha_vars
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#frequenz.repo.config.cli.version.mike.info.main" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;main
@@ -1855,6 +1864,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#frequenz.repo.config.cli.version.mike.info._output_gha_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;_output_gha_vars
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#frequenz.repo.config.cli.version.mike.info.main" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;main
@@ -1940,6 +1958,48 @@ variables should be set:</p>
 
 
 <h3 id="frequenz.repo.config.cli.version.mike.info-functions">Functions<a href="#frequenz.repo.config.cli.version.mike.info-functions" class="headerlink" title="Permanent link">¤</a></h3>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="frequenz.repo.config.cli.version.mike.info._output_gha_vars" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">frequenz.repo.config.cli.version.mike.info._output_gha_vars</span>
+
+
+<a href="#frequenz.repo.config.cli.version.mike.info._output_gha_vars" class="headerlink" title="Permanent link">¤</a></h4>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">_output_gha_vars</span><span class="p">(</span><span class="n">mike_version</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs.mike.MikeVersionInfo" href="../../../../mkdocs/mike/#frequenz.repo.config.mkdocs.mike.MikeVersionInfo">MikeVersionInfo</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Output mike version information as GitHub Action variables.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>frequenz/repo/config/cli/version/mike/info.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="k">def</span><span class="w"> </span><span class="nf">_output_gha_vars</span><span class="p">(</span><span class="n">mike_version</span><span class="p">:</span> <span class="n">mike</span><span class="o">.</span><span class="n">MikeVersionInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Output mike version information as GitHub Action variables.&quot;&quot;&quot;</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a>    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Outputting mike version information as GitHub Action variables:&quot;</span><span class="p">)</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a>    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;  title: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mike_version</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;  version: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mike_version</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;  aliases: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mike_version</span><span class="o">.</span><span class="n">aliases</span><span class="p">))</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="n">gha</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">mike_version</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="n">gha</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">mike_version</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="n">gha</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="s2">&quot;aliases&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mike_version</span><span class="o">.</span><span class="n">aliases</span><span class="p">))</span>
+</span></code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
