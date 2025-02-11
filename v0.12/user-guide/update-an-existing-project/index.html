@@ -1865,10 +1865,10 @@ will guide you through the process, so please read the script output carefully.<
 skipping versions, you will have to run the script multiple times.</p>
 <p>The easiest way to run the migration script is to fetch it from GitHub and run
 it directly.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-sSL<span class="w"> </span>https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/refs/tags/v0.12.1/cookiecutter/migrate.py<span class="w"> </span><span class="se">\</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-sSL<span class="w"> </span>https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/refs/tags/v0.12.2/cookiecutter/migrate.py<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>python3
 </span></code></pre></div>
-<p>Make sure that the version (<code>refs/tags/v0.12.1</code>) matches the
+<p>Make sure that the version (<code>refs/tags/v0.12.2</code>) matches the
 target version you are migrating to.</p>
 <h2 id="re-run-the-cookiecutter-command">Re-run the Cookiecutter command<a class="headerlink" href="#re-run-the-cookiecutter-command" title="Permanent link">¤</a></h2>
 <p>If you are upgrading a very old project (jumping multiple versions at the time)
@@ -1894,7 +1894,7 @@ without having to enter all the inputs again.</p>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>..
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>cookiecutter<span class="w"> </span>gh:frequenz-floss/frequenz-repo-config-python<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span>--directory<span class="o">=</span>cookiecutter<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.12.1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span>--checkout<span class="w"> </span>v0.12.2<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span>--overwrite-if-exists<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span>--replay<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span>--replay-file<span class="w"> </span>project-directory/.cookiecutter-replay.json
