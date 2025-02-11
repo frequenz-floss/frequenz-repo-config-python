@@ -29,6 +29,30 @@ curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-
 Make sure that the version (`{{ ref_name }}`) matches the
 target version you are migrating to.
 
+!!! Tip "Tip for MacOS users"
+
+    The migration script may not work out of the box on macOS. You need to
+    install `coreutils` to ensure compatibility:
+
+    ```sh
+    brew install coreutils gnu-sed
+    ```
+
+    After installation, update your `PATH` in your shell configuration
+    (e.g. ~/.zshrc) so that the system uses the GNU versions. Depending on
+    where the packages are installed this might look like this:
+
+    ```sh
+    export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+    export MANPATH="/opt/homebrew/opt/coreutils/libexec/gnuman:$MANPATH"
+    ```
+
+    Then, source your configuration file again to apply the changes:
+
+    ```sh
+    source ~/.zshrc  # or ~/.bashrc, depending on your shell
+    ```
+
 ## Re-run the Cookiecutter command
 
 If you are upgrading a very old project (jumping multiple versions at the time)
