@@ -197,7 +197,7 @@ jobs:
       # This ensures that the runner has access to the pip cache.
       - name: Reset pip cache ownership
         if: always()
-        run: sudo chown -R $USER:$USER /tmp/pip-cache
+        run: if [[ -e /tmp/pip-cache ]]; then sudo chown -R $USER:$USER /tmp/pip-cache; fi
 
   # This job runs if all the `nox-cross-arch` matrix jobs ran and succeeded.
   # As the `nox-all` job, its main purpose is to provide a single point of
