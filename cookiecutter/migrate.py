@@ -32,6 +32,8 @@ def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    print("Migration script finished. Remember to follow any manual instructions.")
+    print("=" * 72)
 
 
 def apply_patch(patch_content: str) -> None:
