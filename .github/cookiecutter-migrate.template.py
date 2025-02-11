@@ -20,6 +20,7 @@ for each version.
 And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
+import hashlib
 import os
 import subprocess
 import tempfile
@@ -96,6 +97,26 @@ def replace_file_contents_atomically(  # noqa; DOC501
         tmp.close()
         os.unlink(tmp.name)
         raise
+
+
+def calculate_file_sha256_skip_lines(filepath: Path, skip_lines: int) -> str | None:
+    """Calculate SHA256 of file contents excluding the first N lines.
+
+    Args:
+        filepath: Path to the file to hash
+        skip_lines: Number of lines to skip at the beginning
+
+    Returns:
+        The SHA256 hex digest, or None if the file doesn't exist
+    """
+    if not filepath.exists():
+        return None
+
+    # Read file and normalize line endings to LF
+    content = filepath.read_text(encoding="utf-8").replace("\r\n", "\n")
+    # Skip first N lines and ensure there's a trailing newline
+    remaining_content = "\n".join(content.splitlines()[skip_lines:]) + "\n"
+    return hashlib.sha256(remaining_content.encode()).hexdigest()
 
 
 def manual_step(message: str) -> None:
