@@ -29,7 +29,7 @@
 
 Here is a list of things that should be reviewed and FIXED:
 
-[36mMake sure to (create and) configure your GitHub repository too: https://github.com/frequenz-floss/frequenz-repo-config-python/wiki/Configuring-a-new-GitHub-repository[0m
+[36mMake sure to (create and) configure your GitHub repository too: https://frequenz-floss.github.io/frequenz-repo-config-python/latest/user-guide/start-a-new-project/configure-github/[0m
 
 After completing it you can amend the previous commit using `git commit --amend` or create a new commit for the changes using `git commit`.
 
