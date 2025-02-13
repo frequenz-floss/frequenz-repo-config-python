@@ -476,8 +476,8 @@ def print_todos() -> None:
     print()
     note(
         "Make sure to (create and) configure your GitHub repository too: "
-        "https://github.com/frequenz-floss/frequenz-repo-config-python/"
-        "wiki/Configuring-a-new-GitHub-repository"
+        "https://frequenz-floss.github.io/frequenz-repo-config-python/"
+        "latest/user-guide/start-a-new-project/configure-github/"
     )
 
 
