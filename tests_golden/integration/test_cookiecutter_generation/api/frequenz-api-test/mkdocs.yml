@@ -137,3 +137,4 @@ watch:
   - "py"
   - README.md
   - CONTRIBUTING.md
+  - DEVELOPMENT.md

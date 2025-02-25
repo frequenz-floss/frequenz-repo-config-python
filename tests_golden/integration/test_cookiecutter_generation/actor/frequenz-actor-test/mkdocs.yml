@@ -137,3 +137,4 @@ watch:
   - "src"
   - README.md
   - CONTRIBUTING.md
+  - DEVELOPMENT.md

@@ -142,3 +142,4 @@ watch:
   - "{{cookiecutter | src_path}}"
   - README.md
   - CONTRIBUTING.md
+  - DEVELOPMENT.md
