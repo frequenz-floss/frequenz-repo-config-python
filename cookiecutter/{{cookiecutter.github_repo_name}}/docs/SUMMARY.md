@@ -5,5 +5,4 @@
 {%- else %}
 * [API Reference](reference/)
 {%- endif %}
-* [Contributing](CONTRIBUTING.md)
 * [Community](community/)
