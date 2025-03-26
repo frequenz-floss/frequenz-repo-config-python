@@ -32,8 +32,105 @@ def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    regroup_dependabot()
+    print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
+
+
+def regroup_dependabot() -> None:
+    """Use new dependabot groups to separate dependencies that break often."""
+    print("Using new dependabot groups to separate dependencies that break often...")
+    # Dependabot configuration file
+    dependabot_file = Path(".github/dependabot.yml")
+
+    # Skip if the file doesn't exist
+    if not dependabot_file.exists():
+        manual_step(
+            "Dependabot configuration file not found, not excluding "
+            "frequenz-repo-config from group updates. Please consider adding a "
+            "dependabot configuration file."
+        )
+        return
+
+    dependabot_content = dependabot_file.read_text(encoding="utf-8")
+
+    new_groups = """\
+    # We group patch updates as they should always work.
+    # We also group minor updates, as it works too for most libraries,
+    # typically except libraries that don't have a stable release yet (v0.x.x
+    # branch), so we make some exceptions for them.
+    # Major updates and dependencies excluded by the above groups are still
+    # managed, but they'll create one PR per dependency, as breakage is
+    # expected, so it might need manual intervention.
+    # Finally, we group some dependencies that are related to each other, and
+    # usually need to be updated together.
+    groups:
+      patch:
+        update-types:
+          - "patch"
+        exclude-patterns:
+          # pydoclint has shipped breaking changes in patch updates often
+          - "pydoclint"
+      minor:
+        update-types:
+          - "minor"
+        exclude-patterns:
+          - "async-solipsism"
+          - "frequenz-repo-config*"
+          - "markdown-callouts"
+          - "mkdocs-gen-files"
+          - "mkdocs-literate-nav"
+          - "mkdocstrings*"
+          - "pydoclint"
+          - "pytest-asyncio"
+      # We group repo-config updates as it uses optional dependencies that are
+      # considered different dependencies otherwise, and will create one PR for
+      # each if we don't group them.
+      repo-config:
+        patterns:
+          - "frequenz-repo-config*"
+      mkdocstrings:
+        patterns:
+          - "mkdocstrings*"
+"""
+
+    marker = "    open-pull-requests-limit: 10"
+    if marker not in dependabot_content:
+        manual_step(
+            f"Could not file marker ({marker!r}) in {dependabot_file}, "
+            "can't update automatically. Please consider using these new groups "
+            "in the dependabot configuration file:"
+        )
+        return
+
+    text_to_replace = ""
+    found_marker = False
+    for line in dependabot_content.splitlines():
+        if line == marker:
+            found_marker = True
+            continue
+        if not found_marker:
+            continue
+        if line == "" and found_marker:
+            break
+        text_to_replace += line + "\n"
+
+    if not text_to_replace:
+        manual_step(
+            "Could not find the text to replace with the new depenndabot "
+            "groups. Please consider using these new groups in the dependabot "
+            "configuration file:"
+        )
+        return
+
+    replace_file_contents_atomically(
+        dependabot_file,
+        text_to_replace,
+        new_groups,
+        count=1,
+        content=dependabot_content,
+    )
 
 
 def apply_patch(patch_content: str) -> None:
