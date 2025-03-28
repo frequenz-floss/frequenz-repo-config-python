@@ -26,7 +26,12 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Dependabot config now uses a new grouping that should make upgrades more smooth.
+
+    * We group patch updates as they should always work.
+    * We also group minor updates, as it works too for most libraries, typically except libraries that don't have a stable release yet (v0.x.x branch), so we make some exceptions for them.
+    * Major updates and dependencies excluded by the above groups are still managed, but they'll create one PR per dependency, as breakage is expected, so it might need manual intervention.
+    * Finally, we group some dependencies that are related to each other, and usually needs to be updated together.
 
 ## Bug Fixes
 
