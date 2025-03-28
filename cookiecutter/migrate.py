@@ -139,6 +139,12 @@ def regroup_dependabot() -> None:
         content=dependabot_content,
     )
 
+    manual_step(
+        "Please review the changes to the dependabot config if you made any "
+        "customizations. Also please check your dependencies and if you have other "
+        "dependencies at v0.x.x or that break often, add them to the exclusion list."
+    )
+
 
 def use_new_workflows() -> None:
     """Use the new GitHub Actions workflows."""
