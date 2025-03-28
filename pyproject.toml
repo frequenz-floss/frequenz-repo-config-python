@@ -2,7 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 [build-system]
-requires = ["setuptools == 75.8.0", "setuptools_scm[toml] == 8.1.0"]
+requires = ["setuptools == 75.8.0", "setuptools_scm[toml] == 8.2.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -87,7 +87,7 @@ dev-mkdocs = [
   "mkdocstrings-python == 1.14.6",
 ]
 dev-mypy = [
-  "mypy == 1.14.1",
+  "mypy == 1.15.0",
   "types-setuptools >= 67.6.0, < 76", # Should match the build dependency
   "types-Markdown == 3.7.0.20241204",
   "types-PyYAML == 6.0.12.20241230",
