@@ -2,11 +2,9 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release improves dependabot groups, so it is less likely that breaking updates are grouped with non-breaking updates and upgrades the GitHub workflows to use more actions, run PR checks faster and use Ubuntu 24.04 instead of 20.04.
 
 ## Upgrading
-
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
@@ -24,10 +22,10 @@ curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-
 But you might still need to adapt your code:
 
 * The new workflows will test using Python 3.12 too, if your code is not compatible with it, you might need to fix it, or you can just remove the Python 3.12 from the test matrix if you need a quick fix. For example, the `typing-extension` library is compatible with Python 3.12 from version 4.6.0, so you might need to upgrade it if you are using it.
+* Check the new dependabot configuration file if you customized the dependabot configuration for the `pip` ecosystem.
+* Add exclusions for any other dependency you have at v0.x.x or that breaks frequently, so dependabot PRs are easy to merge.
 
 ## New Features
-
-<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ### Cookiecutter template
 
@@ -49,11 +47,3 @@ But you might still need to adapt your code:
 [ubuntu-20.04]: https://github.blog/changelog/2025-01-15-github-actions-ubuntu-20-runner-image-brownout-dates-and-other-breaking-changes/
 
 - The Python `Protect version branches` branch protection rule now request review to Copilot by default.
-
-## Bug Fixes
-
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
-### Cookiecutter template
-
-<!-- Here bug fixes for cookiecutter specifically -->
