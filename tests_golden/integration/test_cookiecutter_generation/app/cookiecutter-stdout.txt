@@ -2,8 +2,9 @@
 ./.github/ISSUE_TEMPLATE/config.yml:    # TODO(cookiecutter): Make sure the GitHub repository has a discussion category "Support"
 ./.github/keylabeler.yml:  # TODO(cookiecutter): Add other parts
 ./.github/labeler.yml:# TODO(cookiecutter): Add different parts of the source
-./.github/workflows/ci.yaml:        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-./.github/workflows/ci.yaml:        # TODO(cookiecutter): Uncomment this for projects with private dependencies
+./.github/workflows/ci-pr.yaml:          # TODO(cookiecutter): Uncomment this for projects with private dependencies
+./.github/workflows/ci-pr.yaml:        # TODO(cookiecutter): Uncomment this for projects with private dependencies
+./.github/workflows/ci.yaml:          # TODO(cookiecutter): Uncomment this for projects with private dependencies
 ./.github/workflows/ci.yaml:        # TODO(cookiecutter): Uncomment this for projects with private dependencies
 ./.github/workflows/ci.yaml:        # TODO(cookiecutter): Uncomment this for projects with private dependencies
 ./.github/workflows/ci.yaml:        # TODO(cookiecutter): Uncomment this for projects with private dependencies

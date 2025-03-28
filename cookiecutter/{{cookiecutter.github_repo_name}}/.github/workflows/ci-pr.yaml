@@ -1,0 +1,96 @@
+{% raw -%}
+name: Test PR
+
+on:
+  pull_request:
+
+env:
+  # Please make sure this version is included in the `matrix`, as the
+  # `matrix` section can't use `env`, so it must be entered manually
+  DEFAULT_PYTHON_VERSION: '3.11'
+  # It would be nice to be able to also define a DEFAULT_UBUNTU_VERSION
+  # but sadly `env` can't be used either in `runs-on`.
+
+jobs:
+  {% endraw %}{% if cookiecutter.type == "api" %}{% raw -%}
+  protolint:
+    name: Check proto files with protolint
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Setup Git
+        uses: frequenz-floss/gh-action-setup-git@v1.0.0
+        # TODO(cookiecutter): Uncomment this for projects with private dependencies
+        # with:
+        #   username: ${{ secrets.GIT_USER }}
+        #   password: ${{ secrets.GIT_PASS }}
+
+      - name: Fetch sources
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Run protolint
+        # Only use hashes here, as we are passing the github token, we want to
+        # make sure updates are done consciously to avoid security issues if the
+        # action repo gets hacked
+        uses: yoheimuta/action-protolint@e94cc01b1ad085ed9427098442f66f2519c723eb # v1.0.0
+        with:
+          fail_on_error: true
+          filter_mode: nofilter
+          github_token: ${{ secrets.github_token }}
+          protolint_flags: proto/
+          protolint_version: "0.53.0"
+          reporter: github-check
+
+  {% endraw %}{% endif %}{% raw -%}
+  nox:
+    name: Test with nox
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Run nox
+        uses: frequenz-floss/gh-action-nox@v1.0.0
+        with:
+          python-version: "3.11"
+          nox-session: ci_checks_max
+          # TODO(cookiecutter): Uncomment this for projects with private dependencies
+          # git-username: ${{ secrets.GIT_USER }}
+          # git-password: ${{ secrets.GIT_PASS }}
+
+  test-docs:
+    name: Test documentation website generation
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Setup Git
+        uses: frequenz-floss/gh-action-setup-git@v1.0.0
+        # TODO(cookiecutter): Uncomment this for projects with private dependencies
+        # with:
+        #   username: ${{ secrets.GIT_USER }}
+        #   password: ${{ secrets.GIT_PASS }}
+
+      - name: Fetch sources
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Python
+        uses: frequenz-floss/gh-action-setup-python-with-deps@v1.0.0
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
+          dependencies: .[dev-mkdocs]
+
+      - name: Generate the documentation
+        env:
+          MIKE_VERSION: gh-${{ github.job }}
+        run: |
+          mike deploy $MIKE_VERSION
+          mike set-default $MIKE_VERSION
+
+      - name: Upload site
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site
+          path: site/
+          if-no-files-found: error
+{%- endraw %}
