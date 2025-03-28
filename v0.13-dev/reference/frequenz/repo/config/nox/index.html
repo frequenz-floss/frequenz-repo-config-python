@@ -1831,9 +1831,9 @@
     <div class="doc doc-contents first">
 
         <p>Utilities to build noxfiles.</p>
-<p>The main entry point is the <a class="autorefs autorefs-internal" href="#frequenz.repo.config.nox.configure"><code>configure()</code></a>
+<p>The main entry point is the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.configure" href="#frequenz.repo.config.nox.configure"><code>configure()</code></a>
 function, which will configure all nox sessions according to some configuration.</p>
-<p>To use the default options, you should call <code>configure()</code> using one of the <a class="autorefs autorefs-internal" href="../#frequenz.repo.config.RepositoryType">repository
+<p>To use the default options, you should call <code>configure()</code> using one of the <a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="../#frequenz.repo.config.RepositoryType">repository
 types</a>.  For example:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="n">nox</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
@@ -1843,8 +1843,8 @@ types</a>.  For example:</p>
 of your project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>,
 <code>model_config</code>).</p>
 <p>If you need to use some custom configuration, you can start from the default settings in
-the <a class="autorefs autorefs-internal" href="default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
-<a class="autorefs autorefs-internal" href="config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
+the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default" href="default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
+<a class="autorefs autorefs-internal" title="copy" href="config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
 need to customize.  For example:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">nox</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config.nox</span><span class="w"> </span><span class="kn">import</span> <span class="n">default</span>
@@ -1857,19 +1857,20 @@ need to customize.  For example:</p>
 following modules:</p>
 <ul>
 <li>
-<p><a class="autorefs autorefs-internal" href="config/#frequenz.repo.config.nox.config"><code>frequenz.repo.config.nox.config</code></a>: Low-level utilities to configure nox sessions.
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config" href="config/#frequenz.repo.config.nox.config"><code>frequenz.repo.config.nox.config</code></a>: Low-level utilities to configure nox sessions.
   It defines the <code>Config</code> and CommandsOptions<code>classes and the actual implementation of
   the</code>configure()<code>function. It also defines the</code>get()` function, which can be used to
   get the currently used configuration object.</p>
 </li>
 <li>
-<p><a class="autorefs autorefs-internal" href="session/#frequenz.repo.config.nox.session"><code>frequenz.repo.config.nox.session</code></a>: Predefined nox sessions. These are the
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.session" href="session/#frequenz.repo.config.nox.session"><code>frequenz.repo.config.nox.session</code></a>: Predefined nox sessions. These are the
   sessions that are used by default.</p>
 </li>
 <li>
-<p><a class="autorefs autorefs-internal" href="util/#frequenz.repo.config.nox.util"><code>frequenz.repo.config.nox.util</code></a>: General purpose utility functions.</p>
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.util" href="util/#frequenz.repo.config.nox.util"><code>frequenz.repo.config.nox.util</code></a>: General purpose utility functions.</p>
 </li>
 </ul>
+
 
 
 
@@ -1898,17 +1899,27 @@ following modules:</p>
 <a href="#frequenz.repo.config.nox.configure" class="headerlink" title="Permanent link">¤</a></h4>
           <div class="doc-overloads">
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">configure</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">conf</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config.Config" href="config/#frequenz.repo.config.nox.config.Config">Config</a></span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">import_default_sessions</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">conf</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config.Config
+
+
+  
+      dataclass
+  " href="config/#frequenz.repo.config.nox.config.Config">Config</a></span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">import_default_sessions</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div><div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">configure</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">repo_type</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config._core.RepositoryType" href="../#frequenz.repo.config.RepositoryType">RepositoryType</a></span><span class="p">,</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">repo_type</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType (frequenz.repo.config._core.RepositoryType)" href="../#frequenz.repo.config.RepositoryType">RepositoryType</a></span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">/</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">import_default_sessions</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>          </div>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">configure</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">conf</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config.Config" href="config/#frequenz.repo.config.nox.config.Config">Config</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config._core.RepositoryType" href="../#frequenz.repo.config.RepositoryType">RepositoryType</a></span><span class="p">,</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">conf</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config.Config
+
+
+  
+      dataclass
+  " href="config/#frequenz.repo.config.nox.config.Config">Config</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType (frequenz.repo.config._core.RepositoryType)" href="../#frequenz.repo.config.RepositoryType">RepositoryType</a></span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">/</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">import_default_sessions</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1936,12 +1947,17 @@ following modules:</p>
               <div class="doc-md-description">
                 <p>The configuration to use to configure nox, or the repository type to use
 to configure nox.  The later will use the default configuration in
-<a class="autorefs autorefs-internal" href="default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> for that type of repository.</p>
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default" href="default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> for that type of repository.</p>
               </div>
               <p>
                   <span class="doc-param-annotation">
                     <b>TYPE:</b>
-                      <code><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config.Config" href="config/#frequenz.repo.config.nox.config.Config">Config</a> | <a class="autorefs autorefs-internal" title="frequenz.repo.config._core.RepositoryType" href="../#frequenz.repo.config.RepositoryType">RepositoryType</a></code>
+                      <code><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config.Config
+
+
+  
+      dataclass
+  " href="config/#frequenz.repo.config.nox.config.Config">Config</a> | <a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType (frequenz.repo.config._core.RepositoryType)" href="../#frequenz.repo.config.RepositoryType">RepositoryType</a></code>
                   </span>
               </p>
             </td>
@@ -1970,6 +1986,7 @@ sessions and use your own.</p>
           </tr>
       </tbody>
     </table>
+
 
             <details class="quote">
               <summary>Source code in <code>frequenz/repo/config/nox/config.py</code></summary>

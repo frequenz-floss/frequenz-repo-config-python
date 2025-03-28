@@ -2088,13 +2088,13 @@ module as a <a href="https://mkdocs-macros-plugin.readthedocs.io/en/latest/plugl
 </span></code></pre></div>
 <p>This will do the hooking and provide some useful variables and filters:</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="#frequenz.repo.config.mkdocs.mkdocstrings_macros.slugify"><code>slugify</code></a>: A filter to
+<li><a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs.mkdocstrings_macros.slugify" href="#frequenz.repo.config.mkdocs.mkdocstrings_macros.slugify"><code>slugify</code></a>: A filter to
     slugify a text. Useful to generate anchors for headings.</li>
 <li>[<code>code_annotation_marker</code>]: A variable to inject the appropriate HTML code for showing
     an example code annotation as a number (see
-    <a class="autorefs autorefs-internal" href="../annotations/#frequenz.repo.config.mkdocs.annotations">frequenz.repo.config.mkdocs.annotations</a> for more information).</li>
+    <a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs.annotations" href="../annotations/#frequenz.repo.config.mkdocs.annotations">frequenz.repo.config.mkdocs.annotations</a> for more information).</li>
 <li>[<code>version</code>]: A varaible with the version information of the repository as exposed by
-    <a class="autorefs autorefs-internal" href="../../github/#frequenz.repo.config.github.get_repo_version_info"><code>get_repo_version_info()</code></a>,
+    <a class="autorefs autorefs-internal" title="frequenz.repo.config.github.get_repo_version_info" href="../../github/#frequenz.repo.config.github.get_repo_version_info"><code>get_repo_version_info()</code></a>,
     which means some environment variables are required (this variable will be <code>None</code>
     otherwise), please read the function documentation for more details.</li>
 <li>[<code>version_requirement</code>]: A variable with the version requirement for the current
@@ -2140,7 +2140,7 @@ variables, filters and macros. You can optionally pass a <code>repo_url</code> i
 <p>If you don't want to pull in all the default variables and filters, you can still define
 your own <code>define_env()</code> function and do the same configuration in the <code>mkdocs.yml</code> file
 as in the [Customized usage] section, but instead call the
-<a class="autorefs autorefs-internal" href="#frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin"><code>hook_macros_plugin()</code></a>
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin" href="#frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin"><code>hook_macros_plugin()</code></a>
 at the end.</p>
 <p>Here is an example of how to do it:</p>
 <div class="language-py highlight"><span class="filename">path/to/macros.py</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config.mkdocs.mkdocstrings_macros</span><span class="w"> </span><span class="kn">import</span> <span class="n">hook_macros_plugin</span>
@@ -2151,6 +2151,7 @@ at the end.</p>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="c1"># This hook needs to be done at the end of the `define_env` function.</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">hook_macros_plugin</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 </span></code></pre></div>
+
 
 
 
@@ -2188,7 +2189,7 @@ at the end.</p>
 <p>This function will add 2 new macro variables to <code>env</code>:</p>
 <ul>
 <li>[<code>version</code>]: A varaible with the version information of the repository as exposed by
-    <a class="autorefs autorefs-internal" href="../../github/#frequenz.repo.config.github.get_repo_version_info"><code>get_repo_version_info()</code></a>,
+    <a class="autorefs autorefs-internal" title="frequenz.repo.config.github.get_repo_version_info" href="../../github/#frequenz.repo.config.github.get_repo_version_info"><code>get_repo_version_info()</code></a>,
     which means some environment variables are required (this variable will be <code>None</code>
     otherwise), please read the function documentation for more details.</li>
 <li>[<code>version_requirement</code>]: A variable with the version requirement for the current
@@ -2248,6 +2249,7 @@ needed if you want to use the <code>version_requirement</code> variable for bran
           </tr>
       </tbody>
     </table>
+
 
             <details class="quote">
               <summary>Source code in <code>frequenz/repo/config/mkdocs/mkdocstrings_macros.py</code></summary>
@@ -2399,6 +2401,7 @@ needed if you want to use the <code>version_requirement</code> variable for bran
       </tbody>
     </table>
 
+
             <details class="quote">
               <summary>Source code in <code>frequenz/repo/config/mkdocs/mkdocstrings_macros.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-254">254</a></span>
@@ -2438,7 +2441,7 @@ needed if you want to use the <code>version_requirement</code> variable for bran
         <p>Hooks the <code>env</code> with all the default variables and filters.</p>
 <p>This function is a convenience function that adds all variables and filters and
 macros provided by this module and calls
-<a class="autorefs autorefs-internal" href="#frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin"><code>hook_macros_plugin()</code></a>
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin" href="#frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin"><code>hook_macros_plugin()</code></a>
 at the end.</p>
 
 
@@ -2490,6 +2493,7 @@ needed if you want to use the <code>version_requirement</code> variable for bran
           </tr>
       </tbody>
     </table>
+
 
             <details class="quote">
               <summary>Source code in <code>frequenz/repo/config/mkdocs/mkdocstrings_macros.py</code></summary>
@@ -2589,6 +2593,7 @@ https://github.com/mkdocstrings/mkdocstrings/issues/615 for details.</p>
           </tr>
       </tbody>
     </table>
+
 
             <details class="quote">
               <summary>Source code in <code>frequenz/repo/config/mkdocs/mkdocstrings_macros.py</code></summary>
@@ -2734,6 +2739,7 @@ https://github.com/mkdocstrings/mkdocstrings/issues/615 for details.</p>
           </tr>
       </tbody>
     </table>
+
 
             <details class="quote">
               <summary>Source code in <code>frequenz/repo/config/mkdocs/mkdocstrings_macros.py</code></summary>

@@ -2052,7 +2052,7 @@
         <p>Frequenz project setup tools and common configuration.</p>
 <p>The tools are provided to configure the main types of repositories most commonly used at
 Frequenz, defined in
-<a class="autorefs autorefs-internal" href="#frequenz.repo.config.RepositoryType"><code>frequenz.repo.config.RepositoryType</code></a>.</p>
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="#frequenz.repo.config.RepositoryType"><code>frequenz.repo.config.RepositoryType</code></a>.</p>
 <ul>
 <li>actor: SDK actors</li>
 <li>api: gRPC APIs</li>
@@ -2064,11 +2064,11 @@ Frequenz, defined in
 <h4 id="frequenz.repo.config--nox-running-tests-and-linters"><code>nox</code> (running tests and linters)<a class="headerlink" href="#frequenz.repo.config--nox-running-tests-and-linters" title="Permanent link">¤</a></h4>
 <h5 id="frequenz.repo.config--writing-the-noxfilepy">Writing the <code>noxfile.py</code><a class="headerlink" href="#frequenz.repo.config--writing-the-noxfilepy" title="Permanent link">¤</a></h5>
 <p>Projects wanting to use <code>nox</code> to run lint checkers and other utilities can use
-the <a class="autorefs autorefs-internal" href="nox/#frequenz.repo.config.nox"><code>frequenz.repo.config.nox</code></a> package.</p>
+the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox" href="nox/#frequenz.repo.config.nox"><code>frequenz.repo.config.nox</code></a> package.</p>
 <p>When writing the <code>noxfile.py</code> you should import the <code>nox</code> module from this
-package and use the <a class="autorefs autorefs-internal" href="nox/#frequenz.repo.config.nox.configure"><code>frequenz.repo.config.nox.configure</code></a> function,
+package and use the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.configure" href="nox/#frequenz.repo.config.nox.configure"><code>frequenz.repo.config.nox.configure</code></a> function,
 which will configure all nox sessions.</p>
-<p>To use the default options, you should call <code>configure()</code> using one of the <a class="autorefs autorefs-internal" href="#frequenz.repo.config.RepositoryType">repository
+<p>To use the default options, you should call <code>configure()</code> using one of the <a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="#frequenz.repo.config.RepositoryType">repository
 types</a>.  For example:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RepositoryType</span><span class="p">,</span> <span class="n">nox</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
@@ -2077,8 +2077,8 @@ types</a>.  For example:</p>
 <p>Again, make sure to pick the correct project typedefault configuration based on the type of your
 project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>, <code>model_config</code>).</p>
 <p>If you need to use some custom configuration, you can start from the default settings in
-the <a class="autorefs autorefs-internal" href="nox/default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
-<a class="autorefs autorefs-internal" href="nox/config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
+the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default" href="nox/default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
+<a class="autorefs autorefs-internal" title="copy" href="nox/config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
 need to customize.  For example:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">nox</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config.nox</span><span class="w"> </span><span class="kn">import</span> <span class="n">default</span>
@@ -2097,17 +2097,17 @@ outside of <code>nox</code>.</p>
 following modules:</p>
 <ul>
 <li>
-<p><a class="autorefs autorefs-internal" href="nox/config/#frequenz.repo.config.nox.config"><code>frequenz.repo.config.nox.config</code></a>: Low-level utilities to configure nox
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config" href="nox/config/#frequenz.repo.config.nox.config"><code>frequenz.repo.config.nox.config</code></a>: Low-level utilities to configure nox
   sessions. It defines the <code>Config</code> and CommandsOptions<code>classes and the actual
   implementation of the</code>configure()<code>function. It also defines the</code>get()`
   function, which can be used to get the currently used configuration object.</p>
 </li>
 <li>
-<p><a class="autorefs autorefs-internal" href="nox/session/#frequenz.repo.config.nox.session"><code>frequenz.repo.config.nox.session</code></a>: Predefined nox sessions. These are
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.session" href="nox/session/#frequenz.repo.config.nox.session"><code>frequenz.repo.config.nox.session</code></a>: Predefined nox sessions. These are
   the sessions that are used by default.</p>
 </li>
 <li>
-<p><a class="autorefs autorefs-internal" href="nox/util/#frequenz.repo.config.nox.util"><code>frequenz.repo.config.nox.util</code></a>: General purpose utility functions.</p>
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.util" href="nox/util/#frequenz.repo.config.nox.util"><code>frequenz.repo.config.nox.util</code></a>: General purpose utility functions.</p>
 </li>
 </ul>
 <h5 id="frequenz.repo.config--pyprojecttoml-configuration"><code>pyproject.toml</code> configuration<a class="headerlink" href="#frequenz.repo.config--pyprojecttoml-configuration" title="Permanent link">¤</a></h5>
@@ -2242,7 +2242,7 @@ answer no and copy the list of missing stubs to the <code>pyproject.toml</code> 
 <h4 id="frequenz.repo.config--mkdocs-generating-documentation"><code>mkdocs</code> (generating documentation)<a class="headerlink" href="#frequenz.repo.config--mkdocs-generating-documentation" title="Permanent link">¤</a></h4>
 <h5 id="frequenz.repo.config--api-reference-generation">API reference generation<a class="headerlink" href="#frequenz.repo.config--api-reference-generation" title="Permanent link">¤</a></h5>
 <p>The API documnentation can be automatically generated from the source files using the
-<a class="autorefs autorefs-internal" href="mkdocs/#frequenz.repo.config.mkdocs"><code>frequenz.repo.config.mkdocs</code></a> package as when run as a
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs" href="mkdocs/#frequenz.repo.config.mkdocs"><code>frequenz.repo.config.mkdocs</code></a> package as when run as a
 <a href="https://oprypin.github.io/mkdocs-gen-files/"><code>mkdocs-gen-files</code></a> plugin script.</p>
 <p>To enable it you just need to make sure the <code>mkdocs-gen-files</code>, <code>mkdocs-literate-nav</code>
 and <code>mkdocstrings[python]</code> packages are installed (look at the <code>pyproject.toml</code>
@@ -2290,7 +2290,7 @@ them using <a href="https://pypi.org/project/pylint/"><code>pylint</code></a>.</
 <p>Unfortunately, because of how Sybil works, the <a class="autorefs autorefs-external" href="https://sybil.readthedocs.io/en/stable/api.html#sybil.Sybil"><code>Sybil</code></a> class needs to
 be instantiated in the <code>conftest.py</code> file. To easily do this, the convenience
 function
-<a class="autorefs autorefs-internal" href="pytest/examples/#frequenz.repo.config.pytest.examples.get_sybil_arguments"><code>get_sybil_arguments()</code></a>
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.pytest.examples.get_sybil_arguments" href="pytest/examples/#frequenz.repo.config.pytest.examples.get_sybil_arguments"><code>get_sybil_arguments()</code></a>
 is provided to get the arguments to pass to the <code>Sybil()</code> constructor to be able to
 collect and lint the examples.</p>
 </li>
@@ -2433,6 +2433,7 @@ defaults.</p>
 
 
 
+
   <div class="doc doc-children">
 
 
@@ -2459,6 +2460,7 @@ defaults.</p>
 
 
         <p>Supported types of repository.</p>
+
 
 
 
@@ -2533,6 +2535,7 @@ defaults.</p>
     <div class="doc doc-contents ">
 
         <p>SDK actor repository.</p>
+
     </div>
 
 </div>
@@ -2557,6 +2560,7 @@ defaults.</p>
     <div class="doc doc-contents ">
 
         <p>gRPC API repository.</p>
+
     </div>
 
 </div>
@@ -2581,6 +2585,7 @@ defaults.</p>
     <div class="doc doc-contents ">
 
         <p>SDK application repository.</p>
+
     </div>
 
 </div>
@@ -2605,6 +2610,7 @@ defaults.</p>
     <div class="doc doc-contents ">
 
         <p>General purpose library repository.</p>
+
     </div>
 
 </div>
@@ -2629,6 +2635,7 @@ defaults.</p>
     <div class="doc doc-contents ">
 
         <p>SDK machine learning model repository.</p>
+
     </div>
 
 </div>
