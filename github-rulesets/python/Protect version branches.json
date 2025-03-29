@@ -27,12 +27,19 @@
         "require_last_push_approval": true,
         "dismiss_stale_reviews_on_push": true,
         "required_approving_review_count": 1,
-        "required_review_thread_resolution": false
+        "required_review_thread_resolution": false,
+        "automatic_copilot_code_review_enabled": true,
+        "allowed_merge_methods": [
+          "merge",
+          "squash",
+          "rebase"
+        ]
       }
     },
     {
       "type": "required_status_checks",
       "parameters": {
+        "do_not_enforce_on_create": false,
         "required_status_checks": [
           {
             "context": "Test with nox",
@@ -42,19 +49,7 @@
             "context": "DCO"
           },
           {
-            "context": "Build distribution packages",
-            "integration_id": 15368
-          },
-          {
             "context": "Test documentation website generation",
-            "integration_id": 15368
-          },
-          {
-            "context": "Test package installation in different architectures",
-            "integration_id": 15368
-          },
-          {
-            "context": "Cross-arch tests with nox",
             "integration_id": 15368
           },
           {
