@@ -39,6 +39,7 @@
     {
       "type": "required_status_checks",
       "parameters": {
+        "do_not_enforce_on_create": false,
         "required_status_checks": [
           {
             "context": "Test with nox",
