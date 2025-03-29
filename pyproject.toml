@@ -89,7 +89,7 @@ dev-mkdocs = [
 dev-mypy = [
   "mypy == 1.14.1",
   "types-setuptools >= 67.6.0, < 78", # Should match the build dependency
-  "types-Markdown == 3.7.0.20241204",
+  "types-Markdown == 3.7.0.20250322",
   "types-PyYAML == 6.0.12.20250326",
   "types-babel == 2.11.0.15",
   "types-colorama == 0.4.15.20240311",
