@@ -49,19 +49,7 @@
             "context": "DCO"
           },
           {
-            "context": "Build distribution packages",
-            "integration_id": 15368
-          },
-          {
             "context": "Test documentation website generation",
-            "integration_id": 15368
-          },
-          {
-            "context": "Test package installation in different architectures",
-            "integration_id": 15368
-          },
-          {
-            "context": "Cross-arch tests with nox",
             "integration_id": 15368
           },
           {
