@@ -57,7 +57,7 @@ actor = []
 api = [
   "grpcio-tools >= 1.47.0, < 2",
   "mypy-protobuf >= 3.0.0, < 4",
-  "setuptools >= 67.6.0, < 80",
+  "setuptools >= 67.6.0, < 81",
 ]
 app = []
 lib = []
@@ -88,7 +88,7 @@ dev-mkdocs = [
 ]
 dev-mypy = [
   "mypy == 1.15.0",
-  "types-setuptools >= 67.6.0, < 80", # Should match the api dependency
+  "types-setuptools >= 67.6.0, < 81", # Should match the api dependency
   "types-Markdown == 3.7.0.20250322",
   "types-PyYAML == 6.0.12.20250326",
   "types-babel == 2.11.0.15",
@@ -101,7 +101,7 @@ dev-pylint = [
   # dev-pytest already defines a dependency to pylint because of the examples
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
-  "setuptools >= 67.6.0, < 80", # Should match the api dependency
+  "setuptools >= 67.6.0, < 81", # Should match the api dependency
 ]
 dev-pytest = [
   "pytest == 8.3.5",
