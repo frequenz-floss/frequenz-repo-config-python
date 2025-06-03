@@ -35,4 +35,4 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- mkdocstrings: Move `paths` key to the right section in `mkdocs.yml`.

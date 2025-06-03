@@ -42,6 +42,9 @@ def main() -> None:
         "mkdocs.yml", "          import:", "          inventories:"
     )
     print("=" * 72)
+    print("Fixing wrongly located `paths` keys in mkdocs.yml...")
+    migrate_mkdocs_yaml(Path("mkdocs.yml"))
+    print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
 
@@ -157,6 +160,65 @@ def migrate_filterwarnings(path: Path) -> None:
         f"No changes done to {path}. "
         "Please double check no manual steps are required."
     )
+
+
+def migrate_mkdocs_yaml(file_path: Path) -> None:
+    """Migrate the mkdocs.yml file to fix the `paths` key location."""
+    if not file_path.is_file():
+        manual_step(f"File {file_path} does not exist, skipping automatic migration.")
+        return
+
+    python_section = "        python:"
+    options_section = "          options:"
+    bad_paths_config = "            paths:"
+
+    lines = file_path.read_text(encoding="utf-8").splitlines(keepends=True)
+    needs_migration = False
+    paths = ""
+    in_python = False
+    in_options = False
+
+    # 1) Detect whether there's a python_section followed by options_section
+    #    and then bad_paths_config in that block.
+    for line in lines:
+        if line.startswith(python_section):
+            in_python = True
+            in_options = False
+            continue
+        if in_python and line.startswith(options_section):
+            in_options = True
+            continue
+        if in_options and line.startswith(bad_paths_config):
+            needs_migration = True
+            paths = line[len(bad_paths_config) :].strip()
+            break
+        # If indentation drops back below python-level, stop looking in this block
+        if in_python and not line.startswith("        ") and not line.isspace():
+            in_python = False
+            in_options = False
+
+    if not needs_migration:
+        return
+
+    # 2) Perform the line-based rewrite:
+    new_lines: list[str] = []
+    inserted_paths = False
+
+    for line in lines:
+        # When we hit the python_section line, insert new paths config directly under it
+        if line.startswith(python_section) and not inserted_paths:
+            new_lines.append(line)
+            new_lines.append(f"          paths: {paths}\n")
+            inserted_paths = True
+            continue
+
+        # After inserting, drop the old "            paths:" line
+        if inserted_paths and line.startswith(bad_paths_config):
+            continue
+
+        new_lines.append(line)
+
+    file_path.write_text("".join(new_lines), encoding="utf-8")
 
 
 def apply_patch(patch_content: str) -> None:

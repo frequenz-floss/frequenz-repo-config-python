@@ -103,8 +103,8 @@ plugins:
       default_handler: python
       handlers:
         python:
+          paths: ["{{cookiecutter | src_path}}"]
           options:
-            paths: ["{{cookiecutter | src_path}}"]
             docstring_section_style: spacy
             inherited_members: true
             merge_init_into_class: false
