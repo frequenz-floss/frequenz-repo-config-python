@@ -34,6 +34,13 @@ def main() -> None:
     # Add a separation line like this one after each migration step.
     print("=" * 72)
     migrate_filterwarnings(Path("pyproject.toml"))
+    print(
+        "Renaming the deprecated mkdocstrings `import` to `inventories` in `mkdocs.yml`..."
+    )
+    print("=" * 72)
+    replace_file_contents_atomically(
+        "mkdocs.yml", "          import:", "          inventories:"
+    )
     print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
