@@ -45,6 +45,11 @@ def main() -> None:
     print("Fixing wrongly located `paths` keys in mkdocs.yml...")
     migrate_mkdocs_yaml(Path("mkdocs.yml"))
     print("=" * 72)
+    print("Migrating GitHub workflows to use the new arm64 runner...")
+    workflow_dir = Path(".github/workflows")
+    for workflow_file in [workflow_dir / "release.yaml", workflow_dir / "ci.yaml"]:
+        migrate_arm64_ci_yaml(workflow_file)
+    print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
 
@@ -216,6 +221,40 @@ def migrate_mkdocs_yaml(file_path: Path) -> None:
         if inserted_paths and line.startswith(bad_paths_config):
             continue
 
+        new_lines.append(line)
+
+    file_path.write_text("".join(new_lines), encoding="utf-8")
+
+
+def migrate_arm64_ci_yaml(file_path: Path) -> None:
+    """Migrate the CI YAML file to use arm64 architecture."""
+    print(f"  - {file_path}")
+    if not file_path.is_file():
+        manual_step(f"File {file_path} does not exist, skipping automatic migration.")
+        return
+
+    lines = file_path.read_text(encoding="utf-8").splitlines(keepends=True)
+    new_lines: list[str] = []
+
+    for line in lines:
+        # 1) Replace "- arm" with "- arm64" (preserve indentation)
+        if match := re.match(r"^(\s*)-\s*arm(64)?\s*$", line):
+            indent = match.group(1)
+            new_lines.append(f"{indent}- arm64\n")
+            continue
+
+        # 2) Update the runs-on line
+        if match := re.match(r"^(\s*)runs-on:\s*\$\{\{.*matrix\.arch.*\}\}\s*$", line):
+            indent = match.group(1)
+            new_line = (
+                f"{indent}runs-on: ${{{{ matrix.os }}}}"
+                f"${{{{ matrix.arch == 'arm64' && "
+                f"(github.repository_visibility == 'private' && '-arm64' || '-arm') || '' }}}}\n"
+            )
+            new_lines.append(new_line)
+            continue
+
+        # Otherwise, keep the line as-is
         new_lines.append(line)
 
     file_path.write_text("".join(new_lines), encoding="utf-8")

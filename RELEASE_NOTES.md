@@ -36,3 +36,4 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - mkdocstrings: Move `paths` key to the right section in `mkdocs.yml`.
+- The CI workflow now uses the new private ARM runner for private repositories (and the public ARM runners for public repositories).

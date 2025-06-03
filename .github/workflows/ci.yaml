@@ -30,7 +30,7 @@ jobs:
       matrix:
         arch:
           - amd64
-          - arm
+          - arm64
         os:
           - ubuntu-24.04
         python:
@@ -41,7 +41,7 @@ jobs:
           # that uses the same venv to run multiple linting sessions
           - "ci_checks_max"
           - "pytest_min"
-    runs-on: ${{ matrix.os }}${{ matrix.arch != 'amd64' && format('-{0}', matrix.arch) || '' }}
+    runs-on: ${{ matrix.os }}${{ matrix.arch == 'arm64' && (github.repository_visibility == 'private' && '-arm64' || '-arm') || '' }}
 
     steps:
       - name: Run nox
@@ -107,13 +107,13 @@ jobs:
       matrix:
         arch:
           - amd64
-          - arm
+          - arm64
         os:
           - ubuntu-24.04
         python:
           - "3.11"
           - "3.12"
-    runs-on: ${{ matrix.os }}${{ matrix.arch != 'amd64' && format('-{0}', matrix.arch) || '' }}
+    runs-on: ${{ matrix.os }}${{ matrix.arch == 'arm64' && (github.repository_visibility == 'private' && '-arm64' || '-arm') || '' }}
 
     steps:
       - name: Setup Git
