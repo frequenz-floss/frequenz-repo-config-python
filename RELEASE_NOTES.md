@@ -26,7 +26,7 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- New warning ignores for protobuf gencode versions in pytest.
 
 ## Bug Fixes
 

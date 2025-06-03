@@ -22,18 +22,134 @@ And remember to follow any manual instructions for each run.
 
 import hashlib
 import os
+import re
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import SupportsIndex
+from typing import Final, SupportsIndex
 
 
 def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    migrate_filterwarnings(Path("pyproject.toml"))
+    print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
+
+
+# pylint: disable-next=too-many-locals,too-many-statements,too-many-branches
+def migrate_filterwarnings(path: Path) -> None:
+    """Migrate the filterwarnings configuration in pyproject.toml files."""
+    print(f"Migrating from pytest addopts to filterwarnings in {path}...")
+    # Patterns to identify and clean existing addopts flags
+    addopts_re: Final = re.compile(r'^(\s*)addopts\s*=\s*"(.*)"')
+    filterwarnings_re: Final = re.compile(r"^(\s*)filterwarnings\s*=\s*(.*)")
+    w_flag_re: Final = re.compile(r"^-W=?(.*)$")
+    unwanted_flags: Final = {
+        "-W=all",
+        "-Werror",
+        "-Wdefault::DeprecationWarning",
+        "-Wdefault::PendingDeprecationWarning",
+    }
+
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines(keepends=True)
+    new_lines: list[str] = []
+    modified = False
+    addopts_found = False
+    has_filterwarnings = False
+    has_w_flags = False
+    w_flags: list[str] = []
+
+    for line in lines:
+        filterwarnings_match = filterwarnings_re.match(line)
+        if filterwarnings_match:
+            has_filterwarnings = True
+        addopts_match = addopts_re.match(line)
+        if addopts_match and not modified:
+            addopts_found = True
+            indent, inner = addopts_match.group(1), addopts_match.group(2)
+            tokens = inner.split()
+            remaining_tokens: list[str] = []
+            extra_specs: list[str] = []
+
+            for tok in tokens:
+                if tok in unwanted_flags:
+                    # Discard it; it will be replaced by base_specs
+                    continue
+
+                w_match = w_flag_re.match(tok)
+                if w_match:
+                    w_flags.append(tok)
+                    has_w_flags = True
+                    spec = w_match.group(1)
+                    if spec:
+                        # Convert this -W... into a filterwarnings spec
+                        extra_specs.append(spec)
+                else:
+                    # Keep any non -W token
+                    remaining_tokens.append(tok)
+
+            # Base filterwarnings specs to replace unwanted flags
+            base_specs = map(
+                str.strip,
+                r"""
+                "error",
+                "once::DeprecationWarning",
+                "once::PendingDeprecationWarning",
+                # We ignore warnings about protobuf gencode version being one version older
+                # than the current version, as this is supported by protobuf, and we expect to
+                # have such cases. If we go too far, we will get a proper error anyways.
+                # We use a raw string (single quotes) to avoid the need to escape special
+                # characters as this is a regex.
+                'ignore:Protobuf gencode version .*exactly one major version older.*:UserWarning',
+                """.strip().splitlines(),
+            )
+
+            # Rebuild addopts line without unwanted flags
+            new_addopts_value = " ".join(remaining_tokens)
+            new_lines.append(f'{indent}addopts = "{new_addopts_value}"\n')
+
+            # Build the filterwarnings block
+            new_lines.append(f"{indent}filterwarnings = [\n")
+            # This is fine, indent is defined only once, so even if it is a closure
+            # bound late, the value will always be the same.
+            # pylint: disable-next=cell-var-from-loop
+            new_lines.extend(map(lambda s: f"{indent}  {s}\n", base_specs))
+            for spec in extra_specs:
+                new_lines.append(f'{indent}  "{spec}",\n')
+            new_lines.append(f"{indent}]\n")
+
+            modified = True
+        else:
+            new_lines.append(line)
+
+    if modified and not has_filterwarnings:
+        print(f"Updated {path} to use filterwarnings.")
+        path.write_text("".join(new_lines), encoding="utf-8")
+        return
+
+    if has_filterwarnings and not has_w_flags:
+        print(
+            f"The file {path} already has a `filterwarnings` section and has no "
+            "-W flags in `addopts`, it is probably already migrated."
+        )
+    elif has_filterwarnings and has_w_flags:
+        print(
+            f"The file {path} already has a `filterwarnings` section, but also "
+            f"has -W flags in `addopts` ({' '.join(w_flags)!r}), it looks like "
+            "it is half-migrated, you should probably migrate it manually. Avoid using -W "
+            "flags in `addopts` if there is a `filterwarnings` section."
+        )
+    if not addopts_found:
+        print(f"No 'addopts' found in {path}.")
+
+    manual_step(
+        f"No changes done to {path}. "
+        "Please double check no manual steps are required."
+    )
 
 
 def apply_patch(patch_content: str) -> None:
