@@ -15,7 +15,7 @@ from frequenz.repo.config import RepositoryType, nox
 nox.configure(RepositoryType.LIB)
 ```
 
-Again, make sure to pick the correct project typedefault configuration based on the type
+Again, make sure to pick the correct project default configuration based on the type
 of your project (`actor_config`, `api_config`, `app_config`, `lib_config`,
 `model_config`).
 

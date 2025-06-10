@@ -30,7 +30,7 @@ But you might still need to adapt your code:
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+- Fixed some typos in the docs.
 
 ### Cookiecutter template
 
