@@ -207,6 +207,9 @@ def compare_mike_version(version1: str, version2: str) -> int:
     if is_version_v2:  # version1 is not a version
         return 1
 
+    if version1 == version2:
+        return 0
+
     return -1 if version1 < version2 else 1
 
 

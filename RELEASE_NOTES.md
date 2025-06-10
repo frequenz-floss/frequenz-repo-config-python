@@ -31,6 +31,7 @@ But you might still need to adapt your code:
 ## Bug Fixes
 
 - Fixed some typos in the docs.
+- Fixed wrong comparison for `mike` versions when versions were equal.
 - `setuptools.grpc_tools`: Fix wrong passing of include paths when passed via:
 
     * Command-line: Now extra white-spaces and empty strings are removed, before they were passed to `protoc -I`.
