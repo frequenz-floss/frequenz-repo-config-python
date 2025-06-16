@@ -267,6 +267,7 @@ def test_build_mike_version(
         ("v2.0", "v1.0-pre", 1),
         ("blah", "v1.0-dev", 1),
         ("blah", "blah", 0),
+        ("v1x0-dev", "v1.0-dev", 1),
         ("alpha", "beta", -1),
     ],
 )

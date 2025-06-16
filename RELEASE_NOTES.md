@@ -32,6 +32,7 @@ But you might still need to adapt your code:
 
 - Fixed some typos in the docs.
 - Fixed wrong comparison for `mike` versions when versions were equal.
+- Fixed version regex escaping of `.`. This means that a version like v0x1e1 were accepted as valid semver versions. Now this version is not considered a semver version anymore.
 - `setuptools.grpc_tools`: Fix wrong passing of include paths when passed via:
 
     * Command-line: Now extra white-spaces and empty strings are removed, before they were passed to `protoc -I`.
