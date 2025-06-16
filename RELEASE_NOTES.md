@@ -31,6 +31,10 @@ But you might still need to adapt your code:
 ## Bug Fixes
 
 - Fixed some typos in the docs.
+- `setuptools.grpc_tools`: Fix wrong passing of include paths when passed via:
+
+    * Command-line: Now extra white-spaces and empty strings are removed, before they were passed to `protoc -I`.
+    * `pyproject.toml`: Now an empty array/list can be passed to override the default paths, before this resulted in an empty string being passed to `protoc -I`.
 
 ### Cookiecutter template
 
