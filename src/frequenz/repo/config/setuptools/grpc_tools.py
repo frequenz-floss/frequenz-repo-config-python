@@ -84,7 +84,9 @@ class CompileProto(_setuptools.Command):
         include_paths: Iterable[str]
         match self.include_paths:
             case str() as str_paths:
-                include_paths = str_paths.split(",")
+                # If it comes as a comma-separated string, split it into a list,
+                # stripping whitespace and ignoring empty strings.
+                include_paths = filter(len, map(str.strip, str_paths.split(",")))
             case Iterable() as paths_it:
                 include_paths = paths_it
             case unexpected:
