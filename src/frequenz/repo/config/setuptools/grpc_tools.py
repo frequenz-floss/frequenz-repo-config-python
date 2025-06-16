@@ -13,7 +13,8 @@ protocol buffer files are compiled automatically before the project is built.
 import pathlib as _pathlib
 import subprocess as _subprocess
 import sys as _sys
-from typing import cast
+from collections.abc import Iterable
+from typing import assert_never, cast
 
 import setuptools as _setuptools
 import setuptools.command.build as _build_command
@@ -30,8 +31,8 @@ class CompileProto(_setuptools.Command):
     proto_glob: str
     """The glob pattern to use to find the protobuf files."""
 
-    include_paths: str
-    """Comma-separated list of paths to include when compiling the protobuf files."""
+    include_paths: str | Iterable[str]
+    """Iterable or comma-separated list of paths to include when compiling the protobuf files."""
 
     py_path: str
     """The path of the root directory where the Python files will be generated."""
@@ -72,7 +73,7 @@ class CompileProto(_setuptools.Command):
 
         self.proto_path = config.proto_path
         self.proto_glob = config.proto_glob
-        self.include_paths = ",".join(config.include_paths)
+        self.include_paths = config.include_paths
         self.py_path = config.py_path
 
     def finalize_options(self) -> None:
@@ -80,7 +81,15 @@ class CompileProto(_setuptools.Command):
 
     def run(self) -> None:
         """Compile the Python protobuf files."""
-        include_paths = self.include_paths.split(",")
+        include_paths: Iterable[str]
+        match self.include_paths:
+            case str() as str_paths:
+                include_paths = str_paths.split(",")
+            case Iterable() as paths_it:
+                include_paths = paths_it
+            case unexpected:
+                assert_never(unexpected)
+
         proto_files = [
             str(p) for p in _pathlib.Path(self.proto_path).rglob(self.proto_glob)
         ]
