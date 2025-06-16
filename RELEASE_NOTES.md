@@ -27,6 +27,7 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - New warning ignores for protobuf gencode versions in pytest.
+- mkdocstrings: Updated the deprecated `import` config key to `inventories` in `mkdocs.yml`.
 
 ## Bug Fixes
 
@@ -34,4 +35,4 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- mkdocstrings: Move `paths` key to the right section in `mkdocs.yml`.
