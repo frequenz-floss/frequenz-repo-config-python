@@ -136,10 +136,10 @@ def build_mike_version(repo_info: RepoVersionInfo) -> MikeVersionInfo:
     )
 
 
-_is_version_re = re.compile(r"^v(\d+).(\d+)(-dev|-pre)?$")
-_stable_to_semver_re = re.compile(r"^v(\d+).(\d+)$")
-_pre_to_semver_re = re.compile(r"^v(\d+).(\d+)-pre$")
-_dev_to_semver_re = re.compile(r"^v(\d+).(\d+)-dev$")
+_is_version_re = re.compile(r"^v(\d+)\.(\d+)(?:-dev|-pre)?$")
+_stable_to_semver_re = re.compile(r"^v(\d+)\.(\d+)$")
+_pre_to_semver_re = re.compile(r"^v(\d+)\.(\d+)-pre$")
+_dev_to_semver_re = re.compile(r"^v(\d+)\.(\d+)-dev$")
 
 
 def _to_fake_sortable_semver(version: str) -> str:
@@ -206,6 +206,9 @@ def compare_mike_version(version1: str, version2: str) -> int:
         return -1
     if is_version_v2:  # version1 is not a version
         return 1
+
+    if version1 == version2:
+        return 0
 
     return -1 if version1 < version2 else 1
 

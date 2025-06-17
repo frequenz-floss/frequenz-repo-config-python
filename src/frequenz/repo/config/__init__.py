@@ -35,8 +35,8 @@ from frequenz.repo.config import RepositoryType, nox
 nox.configure(RepositoryType.LIB)
 ```
 
-Again, make sure to pick the correct project typedefault configuration based on the type of your
-project (`actor_config`, `api_config`, `app_config`, `lib_config`, `model_config`).
+Again, make sure to pick the correct project default configuration based on the type of
+your project (`actor_config`, `api_config`, `app_config`, `lib_config`, `model_config`).
 
 If you need to use some custom configuration, you can start from the default settings in
 the [`frequenz.repo.config.nox.default`][] module,
@@ -312,7 +312,7 @@ To do so there is some setup that's needed:
    typed.
 
 3. Exclude the `src/conftest.py` file from the distribution package, as it shouldn't be
-   shipped with the code, it is only for delelopment purposes. To do so, add the
+   shipped with the code, it is only for development purposes. To do so, add the
    following line to the `MANIFEST.in` file:
 
     ```
