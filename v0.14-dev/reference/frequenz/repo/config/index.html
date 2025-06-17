@@ -2126,8 +2126,8 @@ types</a>.  For example:</p>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">nox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">RepositoryType</span><span class="o">.</span><span class="n">LIB</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Again, make sure to pick the correct project typedefault configuration based on the type of your
-project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>, <code>model_config</code>).</p>
+<p>Again, make sure to pick the correct project default configuration based on the type of
+your project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>, <code>model_config</code>).</p>
 <p>If you need to use some custom configuration, you can start from the default settings in
 the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default" href="nox/default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
 <a class="autorefs autorefs-internal" title="copy" href="nox/config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
@@ -2379,7 +2379,7 @@ collect and lint the examples.</p>
 <ol>
 <li>
 <p>Exclude the <code>src/conftest.py</code> file from the distribution package, as it shouldn't be
-   shipped with the code, it is only for delelopment purposes. To do so, add the
+   shipped with the code, it is only for development purposes. To do so, add the
    following line to the <code>MANIFEST.in</code> file:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a># ...
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>exclude src/conftest.py
