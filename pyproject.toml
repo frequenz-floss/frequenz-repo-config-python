@@ -68,7 +68,7 @@ extra-lint-examples = [
   "sybil >= 6.1.1, < 10",
 ]
 dev-flake8 = [
-  "flake8 == 7.2.0",
+  "flake8 == 7.3.0",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.3", # For reading the flake8 config from pyproject.toml
   "pydoclint == 0.6.6",
@@ -104,7 +104,7 @@ dev-pylint = [
   "setuptools >= 67.6.0, < 81", # Should match the api dependency
 ]
 dev-pytest = [
-  "pytest == 8.3.5",
+  "pytest == 8.4.1",
   "pylint == 3.3.7", # We need this to check for the examples
   "cookiecutter == 2.6.0", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
