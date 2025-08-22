@@ -89,7 +89,7 @@ dev-mkdocs = [
 dev-mypy = [
   "mypy == 1.16.1",
   "types-setuptools >= 67.6.0, < 81", # Should match the api dependency
-  "types-Markdown == 3.8.0.20250415",
+  "types-Markdown == 3.8.0.20250809",
   "types-PyYAML == 6.0.12.20250516",
   "types-babel == 2.11.0.15",
   "types-colorama == 0.4.15.20240311",
