@@ -28,6 +28,7 @@ But you might still need to adapt your code:
 
 - New warning ignores for protobuf gencode versions in pytest.
 - mkdocstrings: Updated the deprecated `import` config key to `inventories` in `mkdocs.yml`.
+- Dependencies have been updated.
 
 ## Bug Fixes
 
