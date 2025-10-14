@@ -63,7 +63,7 @@ app = []
 lib = []
 model = []
 extra-lint-examples = [
-  "pylint >= 2.17.3, < 4",
+  "pylint >= 2.17.3, < 5",
   "pytest >= 7.3.0, < 9",
   "sybil >= 6.1.1, < 10",
 ]
@@ -105,7 +105,7 @@ dev-pylint = [
 ]
 dev-pytest = [
   "pytest == 8.3.5",
-  "pylint == 3.3.7", # We need this to check for the examples
+  "pylint == 4.0.0", # We need this to check for the examples
   "cookiecutter == 2.6.0", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
   "sybil >= 6.1.1, < 10", # Should be consistent with the extra-lint-examples dependency
