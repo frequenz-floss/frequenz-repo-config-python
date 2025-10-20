@@ -27,11 +27,11 @@ classifiers = [
 requires-python = ">= 3.11, < 4"
 # TODO(cookiecutter): Remove and add more dependencies if appropriate
 dependencies = [
-  "typing-extensions == 4.12.2",
+  "typing-extensions == 4.14.1",
   # Make sure to update the version for cross-referencing also in the
   # mkdocs.yml file when changing the version here (look for the config key
   # plugins.mkdocstrings.handlers.python.import)
-  "frequenz-sdk == 1.0.0rc1500",
+  "frequenz-sdk == 1.0.0rc2100",
 ]
 dynamic = ["version"]
 
@@ -42,33 +42,33 @@ email = "floss@frequenz.com"
 # TODO(cookiecutter): Remove and add more optional dependencies if appropriate
 [project.optional-dependencies]
 dev-flake8 = [
-  "flake8 == 7.1.1",
+  "flake8 == 7.3.0",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
-  "pydoclint == 0.6.0",
+  "pydoclint == 0.6.10",
   "pydocstyle == 6.3.0",
 ]
 dev-formatting = ["black == 25.1.0", "isort == 6.0.0"]
 dev-mkdocs = [
-  "Markdown == 3.7",
+  "Markdown == 3.8.2",
   "black == 25.1.0",
   "mike == 2.1.3",
   "mkdocs-gen-files == 0.5.0",
-  "mkdocs-literate-nav == 0.6.1",
-  "mkdocs-macros-plugin == 1.3.7",
-  "mkdocs-material == 9.6.2",
-  "mkdocstrings[python] == 0.28.0",
-  "mkdocstrings-python == 1.14.6",
+  "mkdocs-literate-nav == 0.6.2",
+  "mkdocs-macros-plugin == 1.3.9",
+  "mkdocs-material == 9.6.18",
+  "mkdocstrings[python] == 0.30.0",
+  "mkdocstrings-python == 1.17.0",
   "frequenz-repo-config[app] == 0.13.1",
 ]
 dev-mypy = [
   "mypy == 1.9.0",
-  "types-Markdown == 3.7.0.20241204",
+  "types-Markdown == 3.8.0.20250809",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-app-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-noxfile = [
-  "nox == 2024.10.9",
+  "nox == 2025.5.1",
   "frequenz-repo-config[app] == 0.13.1",
 ]
 dev-pylint = [
@@ -77,12 +77,12 @@ dev-pylint = [
   "frequenz-app-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 8.3.4",
-  "pylint == 3.3.4",       # We need this to check for the examples
+  "pytest == 8.4.1",
+  "pylint == 3.3.8",       # We need this to check for the examples
   "frequenz-repo-config[extra-lint-examples] == 0.13.1",
   "pytest-mock == 3.14.0",
-  "pytest-asyncio == 0.25.3",
-  "async-solipsism == 0.7",
+  "pytest-asyncio == 1.1.0",
+  "async-solipsism == 0.8",
 ]
 dev = [
   "frequenz-app-test[dev-mkdocs,dev-flake8,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",

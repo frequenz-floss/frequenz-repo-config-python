@@ -22,11 +22,11 @@ But you might still need to adapt your code:
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+* Pylint4 is now supported.
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Dependencies have been updated.
 
 ## Bug Fixes
 
