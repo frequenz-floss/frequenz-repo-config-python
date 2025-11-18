@@ -29,6 +29,8 @@ But you might still need to adapt your code:
 - New warning ignores for protobuf gencode versions in pytest.
 - mkdocstrings: Updated the deprecated `import` config key to `inventories` in `mkdocs.yml`.
 - Dependencies have been updated.
+- Added Dependabot auto-merge workflow using `frequenz-floss/dependabot-auto-approve` action.
+- Migration script now creates auto-merge workflow and disables CODEOWNERS review requirement via GitHub API.
 
 ## Bug Fixes
 
