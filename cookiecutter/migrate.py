@@ -21,204 +21,229 @@ And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
 import hashlib
+import json
 import os
-import re
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Final, SupportsIndex
+from typing import Any, SupportsIndex
 
 
 def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
-    migrate_filterwarnings(Path("pyproject.toml"))
-    print(
-        "Renaming the deprecated mkdocstrings `import` to `inventories` in `mkdocs.yml`..."
-    )
+    print("Creating Dependabot auto-merge workflow...")
+    create_dependabot_auto_merge_workflow()
     print("=" * 72)
-    replace_file_contents_atomically(
-        "mkdocs.yml", "          import:", "          inventories:"
-    )
-    print("=" * 72)
-    print("Fixing wrongly located `paths` keys in mkdocs.yml...")
-    migrate_mkdocs_yaml(Path("mkdocs.yml"))
+    print("Disabling CODEOWNERS review requirement in GitHub ruleset...")
+    disable_codeowners_review_requirement()
     print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
 
 
-# pylint: disable-next=too-many-locals,too-many-statements,too-many-branches
-def migrate_filterwarnings(path: Path) -> None:
-    """Migrate the filterwarnings configuration in pyproject.toml files."""
-    print(f"Migrating from pytest addopts to filterwarnings in {path}...")
-    # Patterns to identify and clean existing addopts flags
-    addopts_re: Final = re.compile(r'^(\s*)addopts\s*=\s*"(.*)"')
-    filterwarnings_re: Final = re.compile(r"^(\s*)filterwarnings\s*=\s*(.*)")
-    w_flag_re: Final = re.compile(r"^-W=?(.*)$")
-    unwanted_flags: Final = {
-        "-W=all",
-        "-Werror",
-        "-Wdefault::DeprecationWarning",
-        "-Wdefault::PendingDeprecationWarning",
+def create_dependabot_auto_merge_workflow() -> None:
+    """Create the Dependabot auto-merge workflow file."""
+    workflow_dir = Path(".github") / "workflows"
+    workflow_dir.mkdir(parents=True, exist_ok=True)
+
+    workflow_content = """name: Auto-merge Dependabot PR
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-merge Dependabot PR
+        uses: >-
+          frequenz-floss/dependabot-auto-approve@3cad5f42e79296505473325ac6636be897c8b8a1
+
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dependency-type: 'all'
+          auto-merge: 'true'
+          merge-method: 'merge'
+          add-label: 'tool:auto-merged'
+"""
+
+    workflow_file = workflow_dir / "auto-dependabot.yaml"
+    workflow_file.write_text(workflow_content, encoding="utf-8")
+    print(f"Created/Updated Dependabot auto-merge workflow at {workflow_file}")
+
+
+def get_default_branch() -> str | None:
+    """Get the default branch name from GitHub.
+
+    Returns:
+        The default branch name, or None if it cannot be determined.
+    """
+    try:
+        result = subprocess.run(
+            ["gh", "api", "repos/:owner/:repo", "--jq", ".default_branch"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        default_branch = result.stdout.strip()
+        print(f"Default branch: {default_branch}")
+        return default_branch
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to get default branch: {e}")
+        return None
+
+
+def find_version_branch_ruleset() -> dict[str, Any] | None:
+    """Find the 'Protect version branches' ruleset.
+
+    Returns:
+        The ruleset configuration, or None if not found.
+    """
+    try:
+        result = subprocess.run(
+            ["gh", "api", "repos/:owner/:repo/rulesets"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        rulesets = json.loads(result.stdout)
+
+        for ruleset in rulesets:
+            if ruleset.get("name") == "Protect version branches":
+                return ruleset  # type: ignore[no-any-return]
+        return None
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to fetch rulesets: {e}")
+        return None
+
+
+def update_ruleset(ruleset_id: int, ruleset_config: dict[str, Any]) -> bool:
+    """Update a GitHub ruleset configuration.
+
+    Args:
+        ruleset_id: The ID of the ruleset to update.
+        ruleset_config: The updated ruleset configuration.
+
+    Returns:
+        True if the update was successful, False otherwise.
+    """
+    update_payload = {
+        "name": ruleset_config["name"],
+        "target": ruleset_config["target"],
+        "enforcement": ruleset_config["enforcement"],
+        "conditions": ruleset_config["conditions"],
+        "rules": ruleset_config["rules"],
     }
 
-    text = path.read_text(encoding="utf-8")
-    lines = text.splitlines(keepends=True)
-    new_lines: list[str] = []
-    modified = False
-    addopts_found = False
-    has_filterwarnings = False
-    has_w_flags = False
-    w_flags: list[str] = []
+    if "bypass_actors" in ruleset_config:
+        update_payload["bypass_actors"] = ruleset_config["bypass_actors"]
 
-    for line in lines:
-        filterwarnings_match = filterwarnings_re.match(line)
-        if filterwarnings_match:
-            has_filterwarnings = True
-        addopts_match = addopts_re.match(line)
-        if addopts_match and not modified:
-            addopts_found = True
-            indent, inner = addopts_match.group(1), addopts_match.group(2)
-            tokens = inner.split()
-            remaining_tokens: list[str] = []
-            extra_specs: list[str] = []
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(update_payload, f, indent=2)
+        temp_file = f.name
 
-            for tok in tokens:
-                if tok in unwanted_flags:
-                    # Discard it; it will be replaced by base_specs
-                    continue
-
-                w_match = w_flag_re.match(tok)
-                if w_match:
-                    w_flags.append(tok)
-                    has_w_flags = True
-                    spec = w_match.group(1)
-                    if spec:
-                        # Convert this -W... into a filterwarnings spec
-                        extra_specs.append(spec)
-                else:
-                    # Keep any non -W token
-                    remaining_tokens.append(tok)
-
-            # Base filterwarnings specs to replace unwanted flags
-            base_specs = map(
-                str.strip,
-                r"""
-                "error",
-                "once::DeprecationWarning",
-                "once::PendingDeprecationWarning",
-                # We ignore warnings about protobuf gencode version being one version older
-                # than the current version, as this is supported by protobuf, and we expect to
-                # have such cases. If we go too far, we will get a proper error anyways.
-                # We use a raw string (single quotes) to avoid the need to escape special
-                # characters as this is a regex.
-                'ignore:Protobuf gencode version .*exactly one major version older.*:UserWarning',
-                """.strip().splitlines(),
-            )
-
-            # Rebuild addopts line without unwanted flags
-            new_addopts_value = " ".join(remaining_tokens)
-            new_lines.append(f'{indent}addopts = "{new_addopts_value}"\n')
-
-            # Build the filterwarnings block
-            new_lines.append(f"{indent}filterwarnings = [\n")
-            # This is fine, indent is defined only once, so even if it is a closure
-            # bound late, the value will always be the same.
-            # pylint: disable-next=cell-var-from-loop
-            new_lines.extend(map(lambda s: f"{indent}  {s}\n", base_specs))
-            for spec in extra_specs:
-                new_lines.append(f'{indent}  "{spec}",\n')
-            new_lines.append(f"{indent}]\n")
-
-            modified = True
-        else:
-            new_lines.append(line)
-
-    if modified and not has_filterwarnings:
-        print(f"Updated {path} to use filterwarnings.")
-        path.write_text("".join(new_lines), encoding="utf-8")
-        return
-
-    if has_filterwarnings and not has_w_flags:
-        print(
-            f"The file {path} already has a `filterwarnings` section and has no "
-            "-W flags in `addopts`, it is probably already migrated."
+    try:
+        subprocess.run(
+            [
+                "gh",
+                "api",
+                "-X",
+                "PUT",
+                f"repos/:owner/:repo/rulesets/{ruleset_id}",
+                "--input",
+                temp_file,
+            ],
+            capture_output=True,
+            check=True,
         )
-    elif has_filterwarnings and has_w_flags:
-        print(
-            f"The file {path} already has a `filterwarnings` section, but also "
-            f"has -W flags in `addopts` ({' '.join(w_flags)!r}), it looks like "
-            "it is half-migrated, you should probably migrate it manually. Avoid using -W "
-            "flags in `addopts` if there is a `filterwarnings` section."
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Error updating ruleset: {e}")
+        return False
+    finally:
+        os.unlink(temp_file)
+
+
+def disable_codeowners_review_requirement() -> None:
+    """Disable CODEOWNERS review requirement in GitHub repository ruleset."""
+    # Get repository info
+    try:
+        result = subprocess.run(
+            ["gh", "repo", "view", "--json", "owner,name"],
+            capture_output=True,
+            text=True,
+            check=True,
         )
-    if not addopts_found:
-        print(f"No 'addopts' found in {path}.")
+        repo_info = json.loads(result.stdout)
+        org = repo_info["owner"]["login"]
+        repo = repo_info["name"]
+        ruleset_url = f"https://github.com/{org}/{repo}/settings/rules"
+    except subprocess.CalledProcessError:
+        ruleset_url = "GitHub repository settings > Rules"
 
-    manual_step(
-        f"No changes done to {path}. "
-        "Please double check no manual steps are required."
-    )
-
-
-def migrate_mkdocs_yaml(file_path: Path) -> None:
-    """Migrate the mkdocs.yml file to fix the `paths` key location."""
-    if not file_path.is_file():
-        manual_step(f"File {file_path} does not exist, skipping automatic migration.")
+    if get_default_branch() is None:
+        manual_step(
+            "Failed to get default branch. "
+            "Please manually disable the CODEOWNERS review requirement in the "
+            f"'Protect version branches' ruleset at: {ruleset_url}"
+        )
         return
 
-    python_section = "        python:"
-    options_section = "          options:"
-    bad_paths_config = "            paths:"
-
-    lines = file_path.read_text(encoding="utf-8").splitlines(keepends=True)
-    needs_migration = False
-    paths = ""
-    in_python = False
-    in_options = False
-
-    # 1) Detect whether there's a python_section followed by options_section
-    #    and then bad_paths_config in that block.
-    for line in lines:
-        if line.startswith(python_section):
-            in_python = True
-            in_options = False
-            continue
-        if in_python and line.startswith(options_section):
-            in_options = True
-            continue
-        if in_options and line.startswith(bad_paths_config):
-            needs_migration = True
-            paths = line[len(bad_paths_config) :].strip()
-            break
-        # If indentation drops back below python-level, stop looking in this block
-        if in_python and not line.startswith("        ") and not line.isspace():
-            in_python = False
-            in_options = False
-
-    if not needs_migration:
+    version_branch_ruleset = find_version_branch_ruleset()
+    if not version_branch_ruleset:
+        manual_step(
+            "'Protect version branches' ruleset not found. "
+            "Please manually disable the CODEOWNERS review requirement at: "
+            f"{ruleset_url}"
+        )
         return
 
-    # 2) Perform the line-based rewrite:
-    new_lines: list[str] = []
-    inserted_paths = False
+    ruleset_id = version_branch_ruleset["id"]
+    print(f"Found ruleset ID: {ruleset_id}")
 
-    for line in lines:
-        # When we hit the python_section line, insert new paths config directly under it
-        if line.startswith(python_section) and not inserted_paths:
-            new_lines.append(line)
-            new_lines.append(f"          paths: {paths}\n")
-            inserted_paths = True
-            continue
+    try:
+        result = subprocess.run(
+            ["gh", "api", f"repos/:owner/:repo/rulesets/{ruleset_id}"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        ruleset_config = json.loads(result.stdout)
+    except subprocess.CalledProcessError as e:
+        manual_step(
+            f"Failed to fetch ruleset configuration: {e}. "
+            "This action requires admin permissions. "
+            f"Please manually disable the CODEOWNERS review requirement at: {ruleset_url}"
+        )
+        return
 
-        # After inserting, drop the old "            paths:" line
-        if inserted_paths and line.startswith(bad_paths_config):
-            continue
+    updated = False
+    for rule in ruleset_config.get("rules", []):
+        if rule.get("type") == "pull_request":
+            if rule.get("parameters", {}).get("require_code_owner_review"):
+                rule["parameters"]["require_code_owner_review"] = False
+                updated = True
+                break
 
-        new_lines.append(line)
+    if not updated:
+        print("CODEOWNERS review requirement already disabled.")
+        return
 
-    file_path.write_text("".join(new_lines), encoding="utf-8")
+    if update_ruleset(ruleset_id, ruleset_config):
+        print("Successfully disabled CODEOWNERS review requirement in GitHub ruleset.")
+    else:
+        manual_step(
+            "Failed to update GitHub ruleset. This action requires admin permissions. "
+            "Please manually disable the CODEOWNERS review requirement in the "
+            f"'Protect version branches' ruleset at: {ruleset_url}"
+        )
 
 
 def apply_patch(patch_content: str) -> None:
