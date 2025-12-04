@@ -22,7 +22,7 @@ But you might still need to adapt your code:
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+* `mkdocsstrings-python` v2 is now supported.
 
 ### Cookiecutter template
 
@@ -31,6 +31,8 @@ But you might still need to adapt your code:
 - Dependencies have been updated.
 - Added Dependabot auto-merge workflow using `frequenz-floss/dependabot-auto-approve` action.
 - Migration script now creates auto-merge workflow and disables CODEOWNERS review requirement via GitHub API.
+- The `import` key in `mkdocs.yml` under `mkdocstrings` has to be renamed to `inventories`.
+- The `paths` key in `mkdocs.yml` under `mkdocstrings` has to be moved from the `options` key to the `python` key.
 
 ## Bug Fixes
 
