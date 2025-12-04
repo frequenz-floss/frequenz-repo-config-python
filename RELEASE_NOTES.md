@@ -39,3 +39,4 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - mkdocstrings: Move `paths` key to the right section in `mkdocs.yml`.
+- Migration script: Fix invalid YAML syntax in Dependabot workflow template.

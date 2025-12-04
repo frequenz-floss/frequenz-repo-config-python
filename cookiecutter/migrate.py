@@ -48,7 +48,8 @@ def create_dependabot_auto_merge_workflow() -> None:
     workflow_dir = Path(".github") / "workflows"
     workflow_dir.mkdir(parents=True, exist_ok=True)
 
-    workflow_content = """name: Auto-merge Dependabot PR
+    workflow_content = """\
+name: Auto-merge Dependabot PR
 
 on:
   pull_request:
@@ -63,16 +64,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto-merge Dependabot PR
-        uses: >-
-          frequenz-floss/dependabot-auto-approve@3cad5f42e79296505473325ac6636be897c8b8a1
-
+        uses: frequenz-floss/dependabot-auto-approve@3cad5f42e79296505473325ac6636be897c8b8a1  # v1.3.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dependency-type: 'all'
           auto-merge: 'true'
           merge-method: 'merge'
           add-label: 'tool:auto-merged'
-"""
+"""  # noqa: E501
 
     workflow_file = workflow_dir / "auto-dependabot.yaml"
     workflow_file.write_text(workflow_content, encoding="utf-8")
