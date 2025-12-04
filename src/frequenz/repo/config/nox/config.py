@@ -147,7 +147,7 @@ class Config:
         return list(str(p) for p in _util.existing_paths(paths))
 
 
-_config: Config | None = None
+_CONFIG: Config | None = None
 """The global configuration object."""
 
 
@@ -159,8 +159,8 @@ def get() -> Config:
     Returns:
         The global configuration object.
     """
-    assert _config is not None, "You must call configure() before using this function"
-    return _config
+    assert _CONFIG is not None, "You must call configure() before using this function"
+    return _CONFIG
 
 
 @overload
@@ -204,7 +204,7 @@ def configure(
             This is only necessary if you want to avoid using the default provided
             sessions and use your own.
     """
-    global _config  # pylint: disable=global-statement
+    global _CONFIG  # pylint: disable=global-statement
 
     # We need to make sure sessions are imported, otherwise they won't be visible to nox.
     if import_default_sessions:
@@ -213,23 +213,23 @@ def configure(
 
     match conf:
         case Config():
-            _config = conf
+            _CONFIG = conf
         case RepositoryType() as repo_type:
             # pylint: disable=import-outside-toplevel,cyclic-import
             from . import default
 
             match repo_type:
                 case RepositoryType.ACTOR:
-                    _config = default.actor_config
+                    _CONFIG = default.actor_config
                 case RepositoryType.API:
-                    _config = default.api_config
+                    _CONFIG = default.api_config
                 case RepositoryType.APP:
-                    _config = default.app_config
+                    _CONFIG = default.app_config
                 case RepositoryType.LIB:
-                    _config = default.lib_config
+                    _CONFIG = default.lib_config
                 case RepositoryType.MODEL:
-                    _config = default.model_config
+                    _CONFIG = default.model_config
                 case _ as unhandled:
                     assert_never(unhandled)
 
-    _nox.options.sessions = _config.sessions
+    _nox.options.sessions = _CONFIG.sessions
