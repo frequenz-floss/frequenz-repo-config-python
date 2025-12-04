@@ -2,4 +2,4 @@
 
 ## New Features
 
-* Pytest v9.x is now supported.
+* `mkdocs-gen-files` v0.6 is now supported.
