@@ -102,8 +102,8 @@ plugins:
   - mkdocstrings:
       default_handler: python
       handlers:
+        paths: ["py"]
         python:
-          paths: ["py"]
           options:
             docstring_section_style: spacy
             inherited_members: true

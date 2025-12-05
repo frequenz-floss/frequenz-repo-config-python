@@ -102,8 +102,8 @@ plugins:
   - mkdocstrings:
       default_handler: python
       handlers:
+        paths: ["{{cookiecutter | src_path}}"]
         python:
-          paths: ["{{cookiecutter | src_path}}"]
           options:
             docstring_section_style: spacy
             inherited_members: true

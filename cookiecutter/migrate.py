@@ -39,8 +39,29 @@ def main() -> None:
     print("Disabling CODEOWNERS review requirement in GitHub ruleset...")
     disable_codeowners_review_requirement()
     print("=" * 72)
+    print("Updating the mkdocs.yml for mkdocstrings-python v2 compatibility...")
+    update_mkdocs_yml_mkdocstrings_python_v2()
+    print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
+
+
+def update_mkdocs_yml_mkdocstrings_python_v2() -> None:
+    """Rename 'inventories' imports to 'inventory'."""
+    replace_file_contents_atomically(
+        filepath=Path("mkdocs.yml"),
+        old="          import:",
+        new="          inventories:",
+    )
+    replace_file_contents_atomically(
+        filepath=Path("mkdocs.yml"),
+        old="""\
+          options:
+            paths: ["src"]""",
+        new="""\
+          paths: ["src"]
+          options:""",
+    )
 
 
 def create_dependabot_auto_merge_workflow() -> None:
