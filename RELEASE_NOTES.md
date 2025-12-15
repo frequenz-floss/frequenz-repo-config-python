@@ -23,6 +23,7 @@ But you might still need to adapt your code:
 ## New Features
 
 * `mkdocsstrings-python` v2 is now supported.
+* Add `grpc_stubs` config option to control which gRPC stubs are generated (`sync_and_async`, `sync_only`, or `async_only`).
 
 ### Cookiecutter template
 

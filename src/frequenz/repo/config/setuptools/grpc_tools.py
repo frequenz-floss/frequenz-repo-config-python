@@ -37,6 +37,9 @@ class CompileProto(_setuptools.Command):
     py_path: str
     """The path of the root directory where the Python files will be generated."""
 
+    grpc_stubs: str
+    """The type of gRPC stubs to generate (sync_and_async, sync_only, async_only)."""
+
     description: str = "compile protobuf files"
     """Description of the command."""
 
@@ -63,6 +66,11 @@ class CompileProto(_setuptools.Command):
                 None,
                 "path of the root directory where the Python files will be generated",
             ),
+            (
+                "grpc-stubs=",
+                None,
+                "type of gRPC stubs to generate (sync_and_async, sync_only, async_only)",
+            ),
         ],
     )
     """Options of the command."""
@@ -75,6 +83,7 @@ class CompileProto(_setuptools.Command):
         self.proto_glob = config.proto_glob
         self.include_paths = config.include_paths
         self.py_path = config.py_path
+        self.grpc_stubs = config.grpc_stubs
 
     def finalize_options(self) -> None:
         """Finalize options."""
@@ -103,12 +112,29 @@ class CompileProto(_setuptools.Command):
             )
             return
 
+        # Build the mypy_grpc_out option based on grpc_stubs setting
+        mypy_grpc_out_opt = f"--mypy_grpc_out={self.py_path}"
+        match self.grpc_stubs:
+            case "sync_only":
+                mypy_grpc_out_opt = f"--mypy_grpc_out=only_sync:{self.py_path}"
+            case "async_only":
+                mypy_grpc_out_opt = f"--mypy_grpc_out=only_async:{self.py_path}"
+            case "sync_and_async":
+                pass  # Default, no extra options needed
+            case _:
+                print(
+                    f"WARNING: Unknown grpc_stubs value '{self.grpc_stubs}', "
+                    "using default 'sync_and_async'"
+                )
+
         protoc_cmd = (
             [_sys.executable, "-m", "grpc_tools.protoc"]
             + [f"-I{p}" for p in [*include_paths, self.proto_path]]
             + [
-                f"--{opt}={self.py_path}"
-                for opt in "python_out grpc_python_out mypy_out mypy_grpc_out".split()
+                f"--python_out={self.py_path}",
+                f"--grpc_python_out={self.py_path}",
+                f"--mypy_out={self.py_path}",
+                mypy_grpc_out_opt,
             ]
             + proto_files
         )

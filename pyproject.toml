@@ -56,7 +56,9 @@ compile_proto = "frequenz.repo.config.setuptools.grpc_tools:CompileProto"
 actor = []
 api = [
   "grpcio-tools >= 1.47.0, < 2",
-  "mypy-protobuf >= 3.0.0, < 4",
+  # Requires mypy-protobuf >= 3.8.0 for only_async/only_sync support
+  # See: https://github.com/nipunn1313/mypy-protobuf/pull/694
+  "mypy-protobuf >= 3.8.0, < 4",
   "setuptools >= 67.6.0, < 81",
 ]
 app = []

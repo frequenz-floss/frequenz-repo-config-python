@@ -36,6 +36,15 @@ class ProtobufConfig:
     docs_path: str = "protobuf-reference"
     """The path of the root directory where the documentation files will be generated."""
 
+    grpc_stubs: str = "sync_and_async"
+    """The type of gRPC stubs to generate.
+
+    Possible values:
+    - "sync_and_async": Generate both sync and async stubs (default).
+    - "sync_only": Generate only synchronous stubs.
+    - "async_only": Generate only asynchronous stubs.
+    """
+
     @classmethod
     def from_pyproject_toml(
         cls, path: str = "pyproject.toml", /, **defaults: Any
