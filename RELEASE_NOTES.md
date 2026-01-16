@@ -2,33 +2,36 @@
 
 ## Summary
 
-This release adds a new workflow for Dependabot auto-merge and updates mkdocstrings to v2.
+<!-- Here goes a general summary of what this release is about -->
 
 ## Upgrading
+
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
 All upgrading should be done via the migration script or regenerating the templates.
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/v0.14/cookiecutter/migrate.py | python3
+curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/v0.12/cookiecutter/migrate.py | python3
 ```
 
-But you might still need to adapt your code, just have a look at the script output for further instructions.
+But you might still need to adapt your code:
+
+<!-- Here upgrade steps for cookiecutter specifically -->
 
 ## New Features
 
-* `mkdocsstrings-python` v2 is now supported.
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ### Cookiecutter template
 
-- Dependencies have been updated.
-- New warning ignores for protobuf gencode versions in pytest.
-- Added Dependabot auto-merge workflow using `frequenz-floss/dependabot-auto-approve` action.
+<!-- Here new features for cookiecutter specifically -->
 
 ## Bug Fixes
 
+<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+
 ### Cookiecutter template
 
-- mkdocstrings: Move `paths` key to the right section in `mkdocs.yml`.
-- Fix invalid YAML syntax in Dependabot workflow template.
+<!-- Here bug fixes for cookiecutter specifically -->
