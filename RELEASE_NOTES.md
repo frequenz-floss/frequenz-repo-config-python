@@ -2,7 +2,7 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release migrates lightweight GitHub Actions workflow jobs to use the new cost-effective `ubuntu-slim` runner.
 
 ## Upgrading
 
@@ -26,7 +26,14 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Migrated lightweight workflow jobs to use the new `ubuntu-slim` runner for cost savings.
+  The following jobs now use `ubuntu-slim`:
+  - `ci.yaml`: `protolint`, `nox-all`, `test-installation-all`, `create-github-release`, `publish-to-pypi`
+  - `ci-pr.yaml`: `protolint`
+  - `auto-dependabot.yaml`: `auto-merge`
+  - `release-notes-check.yml`: `check-release-notes`
+  - `dco-merge-queue.yml`: `DCO`
+  - `labeler.yml`: `Label`
 
 ## Bug Fixes
 

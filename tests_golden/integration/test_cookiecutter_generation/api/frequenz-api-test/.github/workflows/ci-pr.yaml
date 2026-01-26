@@ -13,7 +13,7 @@ env:
 jobs:
   protolint:
     name: Check proto files with protolint
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
 
     steps:
       - name: Setup Git
