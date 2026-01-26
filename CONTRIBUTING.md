@@ -53,7 +53,7 @@ Or you can use `nox`:
 nox -R -s pytest -- test/test_*.py
 ```
 
-The same appliest to `pylint` or `mypy` for example:
+The same applies to `pylint` or `mypy` for example:
 
 ```sh
 nox -R -s pylint -- test/test_*.py
@@ -78,26 +78,93 @@ Failures in the golden tests could indicate two things:
 2. The generated files don't match the golden files because an intended change
    was introduced. In this case, the golden files need to be updated.
 
-In the latter case, manually updating files is complicated and error-prone, so
-a simpler (though hacky) way is provided.
+In the latter case, manually updating files is complicated and error-prone,
+please consult [Update the golden test
+fixtures](#2-update-the-golden-test-fixtures) below for the recommended way to
+update the golden files.
 
-To update the golden files, simply run `pytest` for the tests using golden
-files setting the environment variable `UPDATE_GOLDEN` to `1`:
+### Modifying Cookiecutter Templates
+
+When you need to make changes to the cookiecutter templates (located in
+`cookiecutter/{{cookiecutter.github_repo_name}}/`), there's a specific workflow
+to follow. The templates support different project types (actor, api, app, lib,
+model) using Jinja2 conditional sections.
+
+#### 1. Make your template changes
+
+Edit the files in the `cookiecutter/` directory. Keep in mind that some files
+have conditional sections for different project types.
+
+#### 2. Update the golden test fixtures
+
+After modifying templates, you need to regenerate the golden files so the tests
+pass:
 
 ```sh
 UPDATE_GOLDEN=1 pytest tests/integration/test_cookiecutter_generation.py::test_golden
 ```
 
-This will replace the existing golden files (stored in `tests_golden/`) with
-the newly generated files.
+If you renamed or removed files, it's safest to wipe the golden directory first:
 
-Note that if you rename, or remove golden files, you should also manually
-remove the files that were affected. An easy way to make sure there are no old
-unused golden files left is to just wipe the whole `tests_golden/` directory
-before running `pytest` to generate the new ones.
+```sh
+rm -rf tests_golden/
+UPDATE_GOLDEN=1 pytest tests/integration/test_cookiecutter_generation.py::test_golden
+```
 
 **Please ensure that all introduced changes are intended before updating the
 golden files.**
+
+#### 3. Write a migration script
+
+Existing projects using these templates need a way to migrate to the new
+version. Update `cookiecutter/migrate.py` to handle this migration. The script
+is reset to a blank template (from `.github/cookiecutter-migrate.template.py`)
+after each release.
+
+A few guidelines for migration scripts:
+
+- Make them idempotent (safe to run multiple times)
+- Print clear messages about what's being done
+- Use the helper functions: `replace_file_contents_atomically()` for simple
+  replacements, `apply_patch()` for more complex changes
+
+For changes that can't be automated (like GitHub repository settings that
+require admin permissions, or changes that would make the script overly
+complex), use the `manual_step()` function to clearly communicate to users
+what they need to do manually:
+
+```python
+manual_step(
+    "Update branch protection rules in GitHub settings:\n"
+    "    Settings > Branches > Enable 'Require status checks'"
+)
+```
+
+#### 4. Validate with this repository
+
+Run the migration script on this repository itself to make sure it works:
+
+```sh
+python3 cookiecutter/migrate.py
+git diff .github/workflows/  # Check the changes look correct
+```
+
+Note that some changes (e.g., API-specific features like protolint) won't be
+testable on this repository since it's a `lib` type project.
+
+#### 5. Update the release notes
+
+Add an entry to `RELEASE_NOTES.md` describing what changed in the templates.
+
+#### 6. Commit separately
+
+Create two separate commits to keep the history clean:
+
+1. First commit: the template changes, migration script, golden tests, and
+   release notes
+2. Second commit: the changes to this repository from running the migration
+
+This separation makes it easier to review and understand what changed.
 
 ### Building the documentation
 
