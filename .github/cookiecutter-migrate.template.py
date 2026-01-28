@@ -21,6 +21,7 @@ And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
 import hashlib
+import json
 import os
 import subprocess
 import tempfile
@@ -34,6 +35,28 @@ def main() -> None:
     print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
+
+
+def read_project_type() -> str | None:
+    """Read the cookiecutter project type from the replay file."""
+    replay_path = Path(".cookiecutter-replay.json")
+    if not replay_path.exists():
+        return None
+
+    try:
+        data = json.loads(replay_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+
+    cookiecutter_data = data.get("cookiecutter")
+    if not isinstance(cookiecutter_data, dict):
+        return None
+
+    project_type = cookiecutter_data.get("type")
+    if not isinstance(project_type, str):
+        return None
+
+    return project_type
 
 
 def apply_patch(patch_content: str) -> None:
