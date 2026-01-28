@@ -60,7 +60,7 @@ jobs:
     needs: ["nox"]
     # We skip this job only if nox was also skipped
     if: always() && needs.nox.result != 'skipped'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     env:
       DEPS_RESULT: ${{ needs.nox.result }}
     steps:
@@ -161,7 +161,7 @@ jobs:
     needs: ["test-installation"]
     # We skip this job only if test-installation was also skipped
     if: always() && needs.test-installation.result != 'skipped'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     env:
       DEPS_RESULT: ${{ needs.test-installation.result }}
     steps:
@@ -276,7 +276,7 @@ jobs:
       # discussions to create the release announcement in the discussion forums
       contents: write
       discussions: write
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
       - name: Download distribution files
         uses: actions/download-artifact@v6
@@ -318,7 +318,7 @@ jobs:
   publish-to-pypi:
     name: Publish packages to PyPI
     needs: ["create-github-release"]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     permissions:
       # For trusted publishing. See:
       # https://blog.pypi.org/posts/2023-04-20-introducing-trusted-publishers/

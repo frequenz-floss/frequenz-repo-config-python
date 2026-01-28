@@ -21,6 +21,7 @@ And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
 import hashlib
+import json
 import os
 import subprocess
 import tempfile
@@ -32,8 +33,191 @@ def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    print("Migrating workflows to use ubuntu-slim runner for lightweight jobs...")
+    migrate_to_ubuntu_slim()
+    print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
+
+
+def migrate_to_ubuntu_slim() -> None:
+    """Migrate workflow files to use ubuntu-slim runner for lightweight jobs.
+
+    This updates several workflow files to use the new cost-effective ubuntu-slim
+    runner for jobs that are lightweight (e.g., labeling, release notes checks,
+    simple API calls).
+    """
+    workflows_dir = Path(".github") / "workflows"
+    project_type = read_project_type()
+    include_protolint = project_type == "api"
+    if project_type is None:
+        include_protolint = True
+        manual_step(
+            "Unable to detect the cookiecutter project type from "
+            ".cookiecutter-replay.json; protolint migrations will run anyway. "
+            "Please verify any protolint jobs and keep them only if this is an api "
+            "project."
+        )
+
+    migrations = {
+        "ci.yaml": [
+            {
+                "job": "nox-all",
+                "old": (
+                    "    if: always() && needs.nox.result != 'skipped'\n"
+                    "    runs-on: ubuntu-24.04"
+                ),
+                "new": (
+                    "    if: always() && needs.nox.result != 'skipped'\n"
+                    "    runs-on: ubuntu-slim"
+                ),
+            },
+            {
+                "job": "test-installation-all",
+                "old": (
+                    "    if: always() && needs.test-installation.result != 'skipped'\n"
+                    "    runs-on: ubuntu-24.04"
+                ),
+                "new": (
+                    "    if: always() && needs.test-installation.result != 'skipped'\n"
+                    "    runs-on: ubuntu-slim"
+                ),
+            },
+            {
+                "job": "create-github-release",
+                "old": "      discussions: write\n    runs-on: ubuntu-24.04",
+                "new": "      discussions: write\n    runs-on: ubuntu-slim",
+            },
+            {
+                "job": "publish-to-pypi",
+                "old": '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04',
+                "new": '    needs: ["create-github-release"]\n    runs-on: ubuntu-slim',
+            },
+        ],
+        "auto-dependabot.yaml": [
+            {
+                "job": "auto-merge",
+                "old": (
+                    "  auto-merge:\n"
+                    "    if: github.actor == 'dependabot[bot]'\n"
+                    "    runs-on: ubuntu-latest"
+                ),
+                "new": (
+                    "  auto-merge:\n"
+                    "    if: github.actor == 'dependabot[bot]'\n"
+                    "    runs-on: ubuntu-slim"
+                ),
+            }
+        ],
+        "release-notes-check.yml": [
+            {
+                "job": "check-release-notes",
+                "old": (
+                    "  check-release-notes:\n"
+                    "    name: Check release notes are updated\n"
+                    "    runs-on: ubuntu-latest"
+                ),
+                "new": (
+                    "  check-release-notes:\n"
+                    "    name: Check release notes are updated\n"
+                    "    runs-on: ubuntu-slim"
+                ),
+            }
+        ],
+        "dco-merge-queue.yml": [
+            {
+                "job": "DCO",
+                "old": "jobs:\n  DCO:\n    runs-on: ubuntu-latest",
+                "new": "jobs:\n  DCO:\n    runs-on: ubuntu-slim",
+            }
+        ],
+        "labeler.yml": [
+            {
+                "job": "Label",
+                "old": (
+                    "  Label:\n"
+                    "    permissions:\n"
+                    "      contents: read\n"
+                    "      pull-requests: write\n"
+                    "    runs-on: ubuntu-latest"
+                ),
+                "new": (
+                    "  Label:\n"
+                    "    permissions:\n"
+                    "      contents: read\n"
+                    "      pull-requests: write\n"
+                    "    runs-on: ubuntu-slim"
+                ),
+            }
+        ],
+    }
+    if include_protolint:
+        protolint_rule = {
+            "job": "protolint",
+            "old": (
+                "  protolint:\n"
+                "    name: Check proto files with protolint\n"
+                "    runs-on: ubuntu-24.04"
+            ),
+            "new": (
+                "  protolint:\n"
+                "    name: Check proto files with protolint\n"
+                "    runs-on: ubuntu-slim"
+            ),
+        }
+        migrations.setdefault("ci-pr.yaml", []).append(protolint_rule)
+        migrations.setdefault("ci.yaml", []).append(protolint_rule)
+
+    for filename, rules in migrations.items():
+        filepath = workflows_dir / filename
+        if not filepath.exists():
+            print(f"  Skipping {filepath} (file not found)")
+            continue
+
+        for rule in rules:
+            job = rule["job"]
+            old = rule["old"]
+            new = rule["new"]
+            try:
+                content = filepath.read_text(encoding="utf-8")
+            except FileNotFoundError:
+                continue
+
+            if old in content:
+                replace_file_contents_atomically(filepath, old, new)
+                print(f"  Updated {filepath}: migrated job {job} to ubuntu-slim")
+                continue
+
+            if new in content:
+                print(f"  Skipped {filepath}: already uses ubuntu-slim for job {job}")
+                continue
+
+            manual_step(
+                f"  Pattern not found in {filepath}: please switch job {job} to use "
+                "`runs-on: ubuntu-slim` where appropriate."
+            )
+
+
+def read_project_type() -> str | None:
+    """Read the cookiecutter project type from the replay file."""
+    replay_path = Path(".cookiecutter-replay.json")
+    if not replay_path.exists():
+        return None
+
+    try:
+        data = json.loads(replay_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+
+    cookiecutter_data = data.get("cookiecutter")
+    if not isinstance(cookiecutter_data, dict):
+        return None
+
+    project_type = cookiecutter_data.get("type")
+    if not isinstance(project_type, str):
+        return None
+
+    return project_type
 
 
 def apply_patch(patch_content: str) -> None:
