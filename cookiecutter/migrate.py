@@ -23,6 +23,7 @@ And remember to follow any manual instructions for each run.
 import hashlib
 import json
 import os
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -35,6 +36,9 @@ def main() -> None:
     print("=" * 72)
     print("Migrating workflows to use ubuntu-slim runner for lightweight jobs...")
     migrate_to_ubuntu_slim()
+    print("=" * 72)
+    print("Migrating pyproject license metadata to SPDX format...")
+    migrate_pyproject_license()
     print("=" * 72)
     print("Migration script finished. Remember to follow any manual instructions.")
     print("=" * 72)
@@ -198,6 +202,81 @@ def migrate_to_ubuntu_slim() -> None:
             )
 
 
+def migrate_pyproject_license() -> None:  # pylint: disable=too-many-branches
+    """Migrate pyproject license metadata to SPDX expressions."""
+    pyproject_path = Path("pyproject.toml")
+    if not pyproject_path.exists():
+        print("  Skipping pyproject.toml (file not found)")
+        return
+
+    content = pyproject_path.read_text(encoding="utf-8")
+    new_content = content
+    updated = False
+
+    license_expression = None
+    for old_license, new_license in (
+        ("MIT", "MIT"),
+        ("Proprietary", "LicenseRef-Proprietary"),
+        ("Propietary", "LicenseRef-Proprietary"),
+    ):
+        old_line = f'license = {{ text = "{old_license}" }}'
+        if old_line in new_content:
+            new_content = new_content.replace(old_line, f'license = "{new_license}"', 1)
+            license_expression = new_license
+            updated = True
+            break
+
+    if license_expression is None:
+        for existing_license in ("MIT", "LicenseRef-Proprietary"):
+            if f'license = "{existing_license}"' in new_content:
+                license_expression = existing_license
+                break
+
+    if license_expression is None:
+        cookiecutter_license = read_cookiecutter_license()
+        if cookiecutter_license == "MIT":
+            license_expression = "MIT"
+        elif cookiecutter_license == "Proprietary":
+            license_expression = "LicenseRef-Proprietary"
+
+    if license_expression is None:
+        manual_step(
+            "Unable to detect project license in pyproject.toml. Please set "
+            "`project.license` to a SPDX expression and add "
+            '`project.license-files = ["LICENSE"]`.'
+        )
+        return
+
+    license_line = f'license = "{license_expression}"'
+    if "license-files" not in new_content and license_line in new_content:
+        new_content = new_content.replace(
+            license_line, f'{license_line}\nlicense-files = ["LICENSE"]', 1
+        )
+        updated = True
+
+    for classifier in (
+        "License :: OSI Approved :: MIT License",
+        "License :: Other/Proprietary License",
+    ):
+        classifier_line = f'  "{classifier}",\n'
+        if classifier_line in new_content:
+            new_content = new_content.replace(classifier_line, "", 1)
+            updated = True
+
+    setuptools_version = parse_setuptools_version(new_content)
+    if setuptools_version is not None and setuptools_version < 77:
+        new_content, replaced = replace_setuptools_pin(new_content, "80.9.0")
+        if replaced:
+            updated = True
+
+    if not updated or new_content == content:
+        print("  Skipped pyproject.toml (already up to date)")
+        return
+
+    replace_file_contents_atomically(pyproject_path, content, new_content, count=1)
+    print("  Updated pyproject.toml: migrated license metadata")
+
+
 def read_project_type() -> str | None:
     """Read the cookiecutter project type from the replay file."""
     replay_path = Path(".cookiecutter-replay.json")
@@ -218,6 +297,47 @@ def read_project_type() -> str | None:
         return None
 
     return project_type
+
+
+def read_cookiecutter_license() -> str | None:
+    """Read the cookiecutter license from the replay file."""
+    replay_path = Path(".cookiecutter-replay.json")
+    if not replay_path.exists():
+        return None
+
+    try:
+        data = json.loads(replay_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+
+    cookiecutter_data = data.get("cookiecutter")
+    if not isinstance(cookiecutter_data, dict):
+        return None
+
+    license_value = cookiecutter_data.get("license")
+    if not isinstance(license_value, str):
+        return None
+
+    return license_value
+
+
+def parse_setuptools_version(content: str) -> int | None:
+    """Parse the setuptools major version from pyproject content."""
+    match = re.search(r'"setuptools\s*==\s*([0-9]+)(?:\.[0-9]+)*"', content)
+    if not match:
+        return None
+    return int(match.group(1))
+
+
+def replace_setuptools_pin(content: str, new_version: str) -> tuple[str, bool]:
+    """Replace the setuptools pin with a new version."""
+    new_content, count = re.subn(
+        r'("setuptools\s*==\s*)[0-9]+(?:\.[0-9]+)*("\s*,?)',
+        rf"\1{new_version}\2",
+        content,
+        count=1,
+    )
+    return new_content, count > 0
 
 
 def apply_patch(patch_content: str) -> None:
