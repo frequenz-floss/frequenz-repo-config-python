@@ -3,7 +3,7 @@
 
 [build-system]
 requires = [
-  "setuptools == 75.8.0",
+  "setuptools == 80.9.0",
   "setuptools_scm[toml] == 8.1.0",
   "frequenz-repo-config[{{cookiecutter.type}}] == 0.14.0",
 {%- if cookiecutter.type == "api" %}
@@ -22,17 +22,19 @@ build-backend = "setuptools.build_meta"
 name = "{{cookiecutter.pypi_package_name}}"
 description = "{{cookiecutter.description}}"
 readme = "README.md"
-license = { text = "{{cookiecutter.license}}" }
+{%- if cookiecutter.license == "MIT" %}
+license = "MIT"
+{%- elif cookiecutter.license == "Proprietary" %}
+license = "LicenseRef-Proprietary"
+{%- else %}
+license = "{{cookiecutter.license}}"
+{%- endif %}
+license-files = ["LICENSE"]
 keywords = {{cookiecutter | keywords}}
 # TODO(cookiecutter): Remove and add more classifiers if appropriate
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
-  {%- if cookiecutter.license == "MIT" %}
-  "License :: OSI Approved :: MIT License",
-  {%- elif cookiecutter.license == "Propietary" %}
-  "License :: Other/Proprietary License",
-  {%- endif %}
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   {%- if cookiecutter.type != "app" %}

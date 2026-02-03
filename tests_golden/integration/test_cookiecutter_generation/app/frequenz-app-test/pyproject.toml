@@ -3,7 +3,7 @@
 
 [build-system]
 requires = [
-  "setuptools == 75.8.0",
+  "setuptools == 80.9.0",
   "setuptools_scm[toml] == 8.1.0",
   "frequenz-repo-config[app] == 0.14.0",
 ]
@@ -13,13 +13,13 @@ build-backend = "setuptools.build_meta"
 name = "frequenz-app-test"
 description = "Test description"
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["frequenz", "python", "app", "application", "test"]
 # TODO(cookiecutter): Remove and add more classifiers if appropriate
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Typing :: Typed",

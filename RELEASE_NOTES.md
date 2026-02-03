@@ -3,6 +3,7 @@
 ## Summary
 
 This release migrates lightweight GitHub Actions workflow jobs to use the new cost-effective `ubuntu-slim` runner.
+It also updates cookiecutter pyproject license metadata to SPDX expressions to avoid setuptools deprecation warnings.
 
 ## Upgrading
 
@@ -41,4 +42,5 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- Switched `project.license` to SPDX expressions and added `project.license-files`.
+  This removes deprecated setuptools license metadata and avoids build warnings.
