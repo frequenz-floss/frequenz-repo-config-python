@@ -25,9 +25,12 @@ import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import SupportsIndex
+
+_manual_steps: list[str] = []  # pylint: disable=invalid-name
 
 
 def main() -> None:
@@ -40,8 +43,26 @@ def main() -> None:
     print("Migrating pyproject license metadata to SPDX format...")
     migrate_pyproject_license()
     print("=" * 72)
-    print("Migration script finished. Remember to follow any manual instructions.")
-    print("=" * 72)
+    print()
+
+    if _manual_steps:
+        print(
+            "\033[5;33m⚠️⚠️⚠️\033[0;33m Remember to check the manual steps: \033[5;33m⚠️⚠️⚠️\033[0m"
+        )
+        for n, step in enumerate(_manual_steps, start=1):
+            print(f"\033[5;33m⚠️⚠️⚠️   \033[0;33m{n}. {step}\033[0m")
+        print()
+
+        print(
+            "\033[5;31m❌\033[0;31m Migration script finished but requires manual "
+            "intervention \033[5;31m❌\033[0m"
+        )
+        print()
+
+        sys.exit(len(_manual_steps))
+
+    print("\033[0;32m       ✅ Migration script finished successfully ✅\033[0m")
+    print()
 
 
 def migrate_to_ubuntu_slim() -> None:
@@ -427,6 +448,7 @@ def calculate_file_sha256_skip_lines(filepath: Path, skip_lines: int) -> str | N
 
 def manual_step(message: str) -> None:
     """Print a manual step message in yellow."""
+    _manual_steps.append(message)
     print(f"\033[0;33m>>> {message}\033[0m")
 
 
