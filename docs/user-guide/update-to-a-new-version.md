@@ -1,5 +1,5 @@
 {% set ref_name = version.ref if version else 'HEAD' %}
-# Update an existing project
+# Update to a new version
 
 To upgrade an existing project, there are two main approaches: use a migration
 script or re-run the [Cookiecutter] command.
@@ -108,5 +108,5 @@ templates update commit.
 !!! Tip
 
     Please have a look at the follow-up steps listed in the [Start a new
-    project](#create-the-local-development-environment) section to finish the
-    setup.
+    project](start-a-new-project/#create-the-local-environment) section to
+    finish the setup.

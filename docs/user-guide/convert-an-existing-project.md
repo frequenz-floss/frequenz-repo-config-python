@@ -1,6 +1,6 @@
-# Migrate an existing project
+# Convert an existing project
 
-The easiest way to migrate an existing project is to generate a new one based
+The easiest way to convert an existing project is to generate a new one based
 on the current project metadata and then overwrite the existing files.
 
 It is recommended to commit all changes before doing this, so you can then use
@@ -31,5 +31,5 @@ git commit -a
 !!! Tip
 
     Please have a look at the follow-up steps listed in the [Start a new
-    project](#create-the-local-development-environment) section to finish the
-    setup.
+    project](start-a-new-project/#create-the-local-environment) section to
+    finish the setup.
