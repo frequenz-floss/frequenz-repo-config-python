@@ -32,4 +32,6 @@ git commit -a
 
     Please have a look at the follow-up steps listed in the [Start a new
     project](start-a-new-project/#create-the-local-environment) section to
-    finish the setup.
+    finish the setup, including the [GitHub App
+    configuration](start-a-new-project/configure-github.md#github-app-for-dependabot-workflows)
+    required for the automated migration and auto-merge workflows.

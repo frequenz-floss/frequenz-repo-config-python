@@ -115,25 +115,6 @@ Import the following
 
 * Enable *Dependabot version updates* if relevant
 
-#### Auto-merge Dependabot PRs (GitHub App)
-
-The templates include an `.github/workflows/auto-dependabot.yaml` workflow that
-auto-approves and enables auto-merge for Dependabot PRs.
-
-This workflow uses a GitHub App installation token (not `GITHUB_TOKEN`). This is
-intentional: actions performed with `GITHUB_TOKEN` do not trigger certain
-follow-up workflow runs, which can prevent merge queue CI (`merge_group`) from
-starting.
-
-To make it work, ensure:
-
-* The GitHub App is installed on the repository.
-* The following secrets are available to the workflow (typically as org secrets):
-  `FREQUENZ_AUTO_DEPENDABOT_APP_ID` and `FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY`.
-* The app installation has sufficient repository permissions to approve/label
-  and enable auto-merge. In practice, this means at least `Pull requests: write`
-  and `Contents: write`.
-
 ## Code
 
 The basic code configuration should be generate using
@@ -144,3 +125,41 @@ The basic code configuration should be generate using
 No special configuration is needed for GitHub Pages, but you need to initialize
 the `gh-pages` branch. You can read how to do this in the [Initialize GitHub
 Pages](index.md#initialize-github-pages.md) section.
+
+## GitHub Actions
+
+### GitHub App for Dependabot workflows
+
+The templates include two workflows that act on [Dependabot] PRs:
+
+* **`auto-dependabot.yaml`** — auto-approves and enables auto-merge for
+  routine dependency updates.
+* **`repo-config-migration.yaml`** — runs the repo-config migration script
+  and auto-merges only when the migration does not create commits; otherwise
+  it requires manual approval and merge (see
+  [Automated migration workflow](../update-to-a-new-version.md#automated-migration-workflow)
+  for details).
+
+Both workflows use a [GitHub App][GitHub App] installation token instead of
+`GITHUB_TOKEN`. This is intentional: actions performed with `GITHUB_TOKEN` do
+not trigger certain follow-up workflow runs, which can prevent merge queue CI
+(`merge_group`) from starting.
+
+To make them work, ensure a [GitHub App][GitHub App] is installed on the
+repository with at least `Pull requests: write` and `Contents: write`
+permissions (add `Workflows: write` if migrations can touch
+`.github/workflows/*` files).
+
+If the migration script needs to make authenticated API calls (e.g. updating
+repository settings or branch rulesets), you should also provide the
+`REPO_CONFIG_MIGRATION_TOKEN` secret with a dedicated, least-privilege token
+scoped to exactly what the script needs. The `REPO_CONFIG_MIGRATION_TOKEN` is
+exposed to the migration script as `GH_TOKEN` / `GITHUB_TOKEN`
+
+> [!TIP]
+> It is recommended to have this secret set only when needed, and remove it
+> again as soon as the migration is done. This minimizes the risk of abuse in
+> case of a security issue in the migration script.
+
+[Dependabot]: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+[GitHub App]: https://docs.github.com/en/apps/creating-github-apps
