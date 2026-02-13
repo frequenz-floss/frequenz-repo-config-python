@@ -457,6 +457,9 @@ def replace_file_contents_atomically(  # noqa; DOC501
 ) -> None:
     """Replace a file atomically with new content.
 
+    The replacement is done atomically by writing to a temporary file and
+    then moving it to the target location.
+
     Args:
         filepath: The path to the file to replace.
         old: The string to replace.
@@ -464,9 +467,6 @@ def replace_file_contents_atomically(  # noqa; DOC501
         count: The maximum number of occurrences to replace. If negative, all occurrences are
             replaced.
         content: The content to replace. If not provided, the file is read from disk.
-
-    The replacement is done atomically by writing to a temporary file and
-    then moving it to the target location.
     """
     if isinstance(filepath, str):
         filepath = Path(filepath)
