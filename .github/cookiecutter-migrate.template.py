@@ -85,6 +85,50 @@ def apply_patch(patch_content: str) -> None:
     subprocess.run(["patch", "-p1"], input=patch_content.encode(), check=True)
 
 
+def replace_file_atomically(  # noqa; DOC501, DOC503
+    filepath: str | Path, new_content: str
+) -> None:
+    """Replace a file atomically with the given content.
+
+    The replacement is done atomically by writing to a temporary file in the
+    same directory and then moving it to the target location.
+
+    Args:
+        filepath: The path to the file to replace.
+        new_content: The content to write to the file.
+    """
+    if isinstance(filepath, str):
+        filepath = Path(filepath)
+
+    tmp_dir = filepath.parent
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+
+    # pylint: disable-next=consider-using-with
+    tmp = tempfile.NamedTemporaryFile(mode="w", dir=tmp_dir, delete=False)
+
+    try:
+        st = None
+        try:
+            st = os.stat(filepath)
+        except FileNotFoundError:
+            st = None
+
+        tmp.write(new_content)
+        tmp.flush()
+        os.fsync(tmp.fileno())
+        tmp.close()
+
+        if st is not None:
+            os.chmod(tmp.name, st.st_mode)
+
+        os.replace(tmp.name, filepath)
+
+    except BaseException:
+        tmp.close()
+        os.unlink(tmp.name)
+        raise
+
+
 def replace_file_contents_atomically(  # noqa; DOC501
     filepath: str | Path,
     old: str,
@@ -112,37 +156,7 @@ def replace_file_contents_atomically(  # noqa; DOC501
     if content is None:
         content = filepath.read_text(encoding="utf-8")
 
-    content = content.replace(old, new, count)
-
-    # Create temporary file in the same directory to ensure atomic move
-    tmp_dir = filepath.parent
-
-    # pylint: disable-next=consider-using-with
-    tmp = tempfile.NamedTemporaryFile(mode="w", dir=tmp_dir, delete=False)
-
-    try:
-        # Copy original file permissions
-        st = os.stat(filepath)
-
-        # Write the new content
-        tmp.write(content)
-
-        # Ensure all data is written to disk
-        tmp.flush()
-        os.fsync(tmp.fileno())
-        tmp.close()
-
-        # Copy original file permissions to the new file
-        os.chmod(tmp.name, st.st_mode)
-
-        # Perform atomic replace
-        os.rename(tmp.name, filepath)
-
-    except BaseException:
-        # Clean up the temporary file in case of errors
-        tmp.close()
-        os.unlink(tmp.name)
-        raise
+    replace_file_atomically(filepath, content.replace(old, new, count))
 
 
 def calculate_file_sha256_skip_lines(filepath: Path, skip_lines: int) -> str | None:
