@@ -115,6 +115,25 @@ Import the following
 
 * Enable *Dependabot version updates* if relevant
 
+#### Auto-merge Dependabot PRs (GitHub App)
+
+The templates include an `.github/workflows/auto-dependabot.yaml` workflow that
+auto-approves and enables auto-merge for Dependabot PRs.
+
+This workflow uses a GitHub App installation token (not `GITHUB_TOKEN`). This is
+intentional: actions performed with `GITHUB_TOKEN` do not trigger certain
+follow-up workflow runs, which can prevent merge queue CI (`merge_group`) from
+starting.
+
+To make it work, ensure:
+
+* The GitHub App is installed on the repository.
+* The following secrets are available to the workflow (typically as org secrets):
+  `FREQUENZ_AUTO_DEPENDABOT_APP_ID` and `FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY`.
+* The app installation has sufficient repository permissions to approve/label
+  and enable auto-merge. In practice, this means at least `Pull requests: write`
+  and `Contents: write`.
+
 ## Code
 
 The basic code configuration should be generate using
