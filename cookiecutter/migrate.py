@@ -46,6 +46,9 @@ def main() -> None:
     print("Adding flake8-datetimez plugin to dev-flake8 dependencies...")
     migrate_add_flake8_datetimez()
     print("=" * 72)
+    print("Migrating auto-dependabot workflow to use GitHub App token...")
+    migrate_auto_dependabot_token()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -121,21 +124,6 @@ def migrate_to_ubuntu_slim() -> None:
                 "old": '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04',
                 "new": '    needs: ["create-github-release"]\n    runs-on: ubuntu-slim',
             },
-        ],
-        "auto-dependabot.yaml": [
-            {
-                "job": "auto-merge",
-                "old": (
-                    "  auto-merge:\n"
-                    "    if: github.actor == 'dependabot[bot]'\n"
-                    "    runs-on: ubuntu-latest"
-                ),
-                "new": (
-                    "  auto-merge:\n"
-                    "    if: github.actor == 'dependabot[bot]'\n"
-                    "    runs-on: ubuntu-slim"
-                ),
-            }
         ],
         "release-notes-check.yml": [
             {
@@ -333,6 +321,85 @@ def migrate_add_flake8_datetimez() -> None:
     )
     replace_file_contents_atomically(pyproject_path, content, new_content, count=1)
     print("  Updated pyproject.toml: added flake8-datetimez plugin")
+
+
+def migrate_auto_dependabot_token() -> None:
+    """Migrate auto-dependabot workflow to use a GitHub App installation token.
+
+    This replaces the GITHUB_TOKEN with a GitHub App installation token to
+    ensure that auto-merge and merge queue events are properly triggered.
+    Using GITHUB_TOKEN suppresses subsequent workflow runs (by design), which
+    prevents merge queue CI from running and can cause auto-merge to silently
+    fail.
+
+    This migration intentionally overwrites `.github/workflows/auto-dependabot.yaml`
+    with the template version, as the workflow is small and user customizations
+    are not supported.
+    """
+    filepath = Path(".github") / "workflows" / "auto-dependabot.yaml"
+    # This is separated only to avoid flake8 errors about line length
+    dependabot_auto_approve_version = (
+        "3cad5f42e79296505473325ac6636be897c8b8a1 # v1.3.2"
+    )
+    desired_content = (
+        r"""name: Auto-merge Dependabot PR
+
+on:
+  # XXX: !!! SECURITY WARNING !!!
+  # pull_request_target has write access to the repo, and can read secrets. We
+  # need to audit any external actions executed in this workflow and make sure no
+  # checked out code is run (not even installing dependencies, as installing
+  # dependencies usually can execute pre/post-install scripts). We should also
+  # only use hashes to pick the action to execute (instead of tags or branches).
+  # For more details read:
+  # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+  pull_request_target:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Auto-merge Dependabot PR
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-slim
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
+          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+
+      - name: Auto-merge Dependabot PR
+        uses: frequenz-floss/dependabot-auto-approve@"""
+        + dependabot_auto_approve_version
+        + r"""
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          dependency-type: 'all'
+          auto-merge: 'true'
+          merge-method: 'merge'
+          add-label: 'tool:auto-merged'
+"""
+    )
+
+    if filepath.exists():
+        content = filepath.read_text(encoding="utf-8").replace("\r\n", "\n")
+        if content == desired_content:
+            print(f"  Skipped {filepath}: already up to date")
+            return
+
+        print(
+            f"  Replacing {filepath} with updated workflow (overwriting any local changes)"
+        )
+        replace_file_atomically(filepath, desired_content)
+        return
+
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+    replace_file_atomically(filepath, desired_content)
+    print(f"  Added {filepath}: installed updated workflow")
 
 
 def read_project_type() -> str | None:
