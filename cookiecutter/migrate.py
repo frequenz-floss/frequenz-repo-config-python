@@ -43,6 +43,9 @@ def main() -> None:
     print("Migrating pyproject license metadata to SPDX format...")
     migrate_pyproject_license()
     print("=" * 72)
+    print("Adding flake8-datetimez plugin to dev-flake8 dependencies...")
+    migrate_add_flake8_datetimez()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -296,6 +299,40 @@ def migrate_pyproject_license() -> None:  # pylint: disable=too-many-branches
 
     replace_file_contents_atomically(pyproject_path, content, new_content, count=1)
     print("  Updated pyproject.toml: migrated license metadata")
+
+
+def migrate_add_flake8_datetimez() -> None:
+    """Add the flake8-datetimez plugin to dev-flake8 dependencies."""
+    pyproject_path = Path("pyproject.toml")
+    if not pyproject_path.exists():
+        print("  Skipping pyproject.toml (file not found)")
+        return
+
+    content = pyproject_path.read_text(encoding="utf-8")
+
+    if "flake8-datetimez" in content:
+        print("  Skipped pyproject.toml (flake8-datetimez already present)")
+        return
+
+    # Look for a pinned flake8 dependency line (e.g. "flake8 == 7.3.0") and
+    # insert flake8-datetimez right after it.
+    match = re.search(r'(  "flake8\s*==.*",?\n)', content)
+    if not match:
+        manual_step(
+            "Could not find a flake8 pin in pyproject.toml. "
+            'Please add `"flake8-datetimez == 20.10.0"` to the '
+            "`dev-flake8` optional dependencies."
+        )
+        return
+
+    flake8_line = match.group(1)
+    new_content = content.replace(
+        flake8_line,
+        flake8_line + '  "flake8-datetimez == 20.10.0",\n',
+        1,
+    )
+    replace_file_contents_atomically(pyproject_path, content, new_content, count=1)
+    print("  Updated pyproject.toml: added flake8-datetimez plugin")
 
 
 def read_project_type() -> str | None:
