@@ -52,6 +52,9 @@ def main() -> None:
     print("Migrating auto-dependabot workflow to use GitHub App token...")
     migrate_auto_dependabot_token()
     print("=" * 72)
+    print("Migrating the CI workflows to use a platform matrix...")
+    migrate_platform_matrix()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -553,6 +556,55 @@ def replace_setuptools_pin(content: str, new_version: str) -> tuple[str, bool]:
         count=1,
     )
     return new_content, count > 0
+
+
+def migrate_platform_matrix() -> None:
+    """Migrate CI matrix from arch+os to a single platform entry.
+
+    This replaces the old matrix definition that used separate `arch` and `os`
+    entries with a single `platform` entry using GitHub's native arm64 runners
+    that are now available to both public and private repositories.
+    """
+    workflow_file = Path(".github/workflows/ci.yaml")
+    print(f"  - {workflow_file}")
+    if not workflow_file.is_file():
+        manual_step(
+            f"Could not find {workflow_file}; please manually migrate to use a"
+            "please manually migrate to use a `platform` matrix entry."
+        )
+        return
+
+    content = workflow_file.read_text(encoding="utf-8")
+    new_content = content
+
+    # Replace the arch+os matrix block with platform.
+    # Handle both "arm" (old) and "arm64" (intermediate) variants.
+    new_content = re.sub(
+        r"( +)arch:\n\1  - amd64\n\1  - arm(?:64)?\n\1os:\n\1  - ubuntu-24\.04\n",
+        r"\g<1>platform:\n\g<1>  - ubuntu-24.04\n\g<1>  - ubuntu-24.04-arm\n",
+        new_content,
+    )
+
+    # Replace any runs-on expression referencing matrix.arch with the simpler
+    # matrix.platform reference.
+    new_content = re.sub(
+        r"runs-on: \$\{\{.*matrix\.arch.*\}\}",
+        "runs-on: ${{ matrix.platform }}",
+        new_content,
+    )
+
+    if new_content == content:
+        if "matrix.platform" in content:
+            print("    Already uses platform matrix")
+        else:
+            manual_step(
+                f"Could not find arch+os matrix pattern in {workflow_file}; "
+                "please manually migrate to use a `platform` matrix entry."
+            )
+        return
+
+    replace_file_contents_atomically(workflow_file, content, new_content, count=1)
+    print("    Migrated arch+os matrix to platform")
 
 
 def apply_patch(patch_content: str) -> None:
