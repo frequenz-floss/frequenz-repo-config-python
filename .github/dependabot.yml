@@ -38,11 +38,13 @@ updates:
           - "mkdocs-gen-files"
           - "mkdocs-literate-nav"
           - "mkdocstrings*"
+          - "mkdocstrings[python]"
           - "pydoclint"
           - "pytest-asyncio"
       mkdocstrings:
         patterns:
           - "mkdocstrings*"
+          - "mkdocstrings[python]"
 
   - package-ecosystem: "github-actions"
     directory: "/"
