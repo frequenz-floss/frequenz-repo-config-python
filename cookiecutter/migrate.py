@@ -46,6 +46,9 @@ def main() -> None:
     print("Adding flake8-datetimez plugin to dev-flake8 dependencies...")
     migrate_add_flake8_datetimez()
     print("=" * 72)
+    print("Fixing dependabot repo-config and mkdocstrings patterns...")
+    migrate_dependabot_patterns()
+    print("=" * 72)
     print("Migrating auto-dependabot workflow to use GitHub App token...")
     migrate_auto_dependabot_token()
     print("=" * 72)
@@ -321,6 +324,93 @@ def migrate_add_flake8_datetimez() -> None:
     )
     replace_file_contents_atomically(pyproject_path, content, new_content, count=1)
     print("  Updated pyproject.toml: added flake8-datetimez plugin")
+
+
+def migrate_dependabot_patterns() -> None:
+    """Fix dependabot repo-config and mkdocstrings dependency patterns.
+
+    Dependabot wildcards don't work when ``[]`` is involved in optional
+    dependency specifiers, so we need to list them explicitly in the
+    include/exclude patterns.
+
+    This replaces ``frequenz-repo-config*`` with explicit entries for the
+    base package, the project-type extra, and the ``extra-lint-examples``
+    extra, and adds ``mkdocstrings[python]`` alongside ``mkdocstrings*``.
+    """
+    filepath = Path(".github") / "dependabot.yml"
+    if not filepath.exists():
+        manual_step(
+            f"Unable to find {filepath}. Please update your dependabot config "
+            "manually by replacing any `frequenz-repo-config*` patterns with explicit "
+            "entries for `frequenz-repo-config`, `frequenz-repo-config[<your-type>]`, and "
+            "`frequenz-repo-config[extra-lint-examples]`, and add `mkdocstrings[python]` "
+            "to the patterns for the `mkdocstrings` group if it is missing."
+        )
+        return
+
+    content = filepath.read_text(encoding="utf-8")
+    new_content = content
+    updated = False
+
+    project_type = read_project_type()
+    if project_type is None:
+        manual_step(
+            "Unable to detect the cookiecutter project type from "
+            ".cookiecutter-replay.json; cannot determine the correct "
+            "frequenz-repo-config optional dependency for dependabot.yml. "
+            "Please replace any `frequenz-repo-config*` patterns with explicit "
+            "entries for `frequenz-repo-config`, "
+            "`frequenz-repo-config[<your-type>]`, and "
+            "`frequenz-repo-config[extra-lint-examples]`."
+        )
+        return
+
+    # Replace frequenz-repo-config* with explicit entries (appears in both
+    # exclude-patterns and repo-config group patterns).
+    old_repo_config = '          - "frequenz-repo-config*"\n'
+    new_repo_config = (
+        '          - "frequenz-repo-config"\n'
+        f'          - "frequenz-repo-config[{project_type}]"\n'
+        '          - "frequenz-repo-config[extra-lint-examples]"\n'
+    )
+    if old_repo_config in new_content:
+        new_content = new_content.replace(old_repo_config, new_repo_config)
+        updated = True
+    elif f'"frequenz-repo-config[{project_type}]"' in new_content:
+        print(f"  Skipped {filepath}: repo-config patterns already updated")
+    else:
+        manual_step(
+            f"Could not find `frequenz-repo-config*` pattern in {filepath}. "
+            "Please replace it with explicit entries for "
+            "`frequenz-repo-config`, "
+            f"`frequenz-repo-config[{project_type}]`, and "
+            "`frequenz-repo-config[extra-lint-examples]`."
+        )
+
+    # Add mkdocstrings[python] after mkdocstrings* (appears in both
+    # exclude-patterns and mkdocstrings group patterns).
+    old_mkdocstrings = '          - "mkdocstrings*"\n'
+    new_mkdocstrings = (
+        '          - "mkdocstrings*"\n          - "mkdocstrings[python]"\n'
+    )
+    if old_mkdocstrings in new_content and '"mkdocstrings[python]"' not in new_content:
+        new_content = new_content.replace(old_mkdocstrings, new_mkdocstrings)
+        updated = True
+    elif '"mkdocstrings[python]"' in new_content:
+        print(f"  Skipped {filepath}: mkdocstrings patterns already updated")
+    else:
+        manual_step(
+            f"Could not find `mkdocstrings*` pattern in {filepath}. "
+            'Please add `"mkdocstrings[python]"` alongside `"mkdocstrings*"` '
+            "in both the exclude-patterns and the mkdocstrings group."
+        )
+
+    if not updated or new_content == content:
+        print(f"  Skipped {filepath} (already up to date)")
+        return
+
+    replace_file_contents_atomically(filepath, content, new_content, count=1)
+    print(f"  Updated {filepath}: fixed repo-config and mkdocstrings patterns")
 
 
 def migrate_auto_dependabot_token() -> None:
