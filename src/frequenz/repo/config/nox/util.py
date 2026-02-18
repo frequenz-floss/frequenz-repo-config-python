@@ -7,7 +7,6 @@ This module contains general purpose utilities that are used by the other
 modules in this package.
 """
 
-
 import pathlib as _pathlib
 import tomllib as _tomllib
 from collections.abc import Iterable, Mapping

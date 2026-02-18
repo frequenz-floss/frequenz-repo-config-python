@@ -14,7 +14,6 @@
     logging for GitHub Actions.
 """
 
-
 import logging
 import os
 import subprocess

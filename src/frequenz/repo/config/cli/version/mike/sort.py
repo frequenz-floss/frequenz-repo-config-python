@@ -3,7 +3,6 @@
 
 """Sort `mike`'s `version.json` file with a custom order."""
 
-
 import json
 import sys
 from typing import Any, TextIO
