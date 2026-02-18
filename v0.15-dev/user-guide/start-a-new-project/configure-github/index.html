@@ -837,6 +837,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Code security and analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auto-merge-dependabot-prs-github-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-merge Dependabot PRs (GitHub App)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -2509,6 +2526,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Code security and analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auto-merge-dependabot-prs-github-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-merge Dependabot PRs (GitHub App)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -2670,6 +2704,22 @@ branches</em> ruleset depending on your repository configuration.</p>
 <h3 id="code-security-and-analysis">Code security and analysis<a class="headerlink" href="#code-security-and-analysis" title="Permanent link">¤</a></h3>
 <ul>
 <li>Enable <em>Dependabot version updates</em> if relevant</li>
+</ul>
+<h4 id="auto-merge-dependabot-prs-github-app">Auto-merge Dependabot PRs (GitHub App)<a class="headerlink" href="#auto-merge-dependabot-prs-github-app" title="Permanent link">¤</a></h4>
+<p>The templates include an <code>.github/workflows/auto-dependabot.yaml</code> workflow that
+auto-approves and enables auto-merge for Dependabot PRs.</p>
+<p>This workflow uses a GitHub App installation token (not <code>GITHUB_TOKEN</code>). This is
+intentional: actions performed with <code>GITHUB_TOKEN</code> do not trigger certain
+follow-up workflow runs, which can prevent merge queue CI (<code>merge_group</code>) from
+starting.</p>
+<p>To make it work, ensure:</p>
+<ul>
+<li>The GitHub App is installed on the repository.</li>
+<li>The following secrets are available to the workflow (typically as org secrets):
+  <code>FREQUENZ_AUTO_DEPENDABOT_APP_ID</code> and <code>FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY</code>.</li>
+<li>The app installation has sufficient repository permissions to approve/label
+  and enable auto-merge. In practice, this means at least <code>Pull requests: write</code>
+  and <code>Contents: write</code>.</li>
 </ul>
 <h2 id="code">Code<a class="headerlink" href="#code" title="Permanent link">¤</a></h2>
 <p>The basic code configuration should be generate using
