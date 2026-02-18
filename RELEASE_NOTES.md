@@ -39,6 +39,8 @@ But you might still need to adapt your code:
 
 - Added the [`flake8-datetimez`](https://github.com/pjknkda/flake8-datetimez) plugin to the `flake8` session. This plugin prevents accidental use of naive `datetime` objects by flagging calls that create or return datetimes without timezone information.
 
+- The CI workflow now uses a simpler matrix.
+
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->
