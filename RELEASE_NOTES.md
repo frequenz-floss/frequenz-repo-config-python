@@ -48,3 +48,5 @@ But you might still need to adapt your code:
 - Switched `project.license` to SPDX expressions and added `project.license-files`. This removes deprecated setuptools license metadata and avoids build warnings.
 
 - Fixed auto-dependabot workflow failing to trigger merge queue CI or complete auto-merge. The workflow now uses a GitHub App installation token (via `actions/create-github-app-token`) instead of `GITHUB_TOKEN`, which was suppressing subsequent workflow runs by design. Workflow permissions have been reduced to the minimum needed for the workflow (`contents: read` and `pull-requests: write`).
+
+- Fix dependabot group patterns for repo-config and mkdocstrings.
