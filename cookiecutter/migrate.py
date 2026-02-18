@@ -46,6 +46,9 @@ def main() -> None:
     print("Adding flake8-datetimez plugin to dev-flake8 dependencies...")
     migrate_add_flake8_datetimez()
     print("=" * 72)
+    print("Migrating auto-dependabot workflow to use GitHub App token...")
+    migrate_auto_dependabot_token()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -121,21 +124,6 @@ def migrate_to_ubuntu_slim() -> None:
                 "old": '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04',
                 "new": '    needs: ["create-github-release"]\n    runs-on: ubuntu-slim',
             },
-        ],
-        "auto-dependabot.yaml": [
-            {
-                "job": "auto-merge",
-                "old": (
-                    "  auto-merge:\n"
-                    "    if: github.actor == 'dependabot[bot]'\n"
-                    "    runs-on: ubuntu-latest"
-                ),
-                "new": (
-                    "  auto-merge:\n"
-                    "    if: github.actor == 'dependabot[bot]'\n"
-                    "    runs-on: ubuntu-slim"
-                ),
-            }
         ],
         "release-notes-check.yml": [
             {
@@ -335,6 +323,85 @@ def migrate_add_flake8_datetimez() -> None:
     print("  Updated pyproject.toml: added flake8-datetimez plugin")
 
 
+def migrate_auto_dependabot_token() -> None:
+    """Migrate auto-dependabot workflow to use a GitHub App installation token.
+
+    This replaces the GITHUB_TOKEN with a GitHub App installation token to
+    ensure that auto-merge and merge queue events are properly triggered.
+    Using GITHUB_TOKEN suppresses subsequent workflow runs (by design), which
+    prevents merge queue CI from running and can cause auto-merge to silently
+    fail.
+
+    This migration intentionally overwrites `.github/workflows/auto-dependabot.yaml`
+    with the template version, as the workflow is small and user customizations
+    are not supported.
+    """
+    filepath = Path(".github") / "workflows" / "auto-dependabot.yaml"
+    # This is separated only to avoid flake8 errors about line length
+    dependabot_auto_approve_version = (
+        "3cad5f42e79296505473325ac6636be897c8b8a1 # v1.3.2"
+    )
+    desired_content = (
+        r"""name: Auto-merge Dependabot PR
+
+on:
+  # XXX: !!! SECURITY WARNING !!!
+  # pull_request_target has write access to the repo, and can read secrets. We
+  # need to audit any external actions executed in this workflow and make sure no
+  # checked out code is run (not even installing dependencies, as installing
+  # dependencies usually can execute pre/post-install scripts). We should also
+  # only use hashes to pick the action to execute (instead of tags or branches).
+  # For more details read:
+  # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+  pull_request_target:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Auto-merge Dependabot PR
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-slim
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
+          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+
+      - name: Auto-merge Dependabot PR
+        uses: frequenz-floss/dependabot-auto-approve@"""
+        + dependabot_auto_approve_version
+        + r"""
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          dependency-type: 'all'
+          auto-merge: 'true'
+          merge-method: 'merge'
+          add-label: 'tool:auto-merged'
+"""
+    )
+
+    if filepath.exists():
+        content = filepath.read_text(encoding="utf-8").replace("\r\n", "\n")
+        if content == desired_content:
+            print(f"  Skipped {filepath}: already up to date")
+            return
+
+        print(
+            f"  Replacing {filepath} with updated workflow (overwriting any local changes)"
+        )
+        replace_file_atomically(filepath, desired_content)
+        return
+
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+    replace_file_atomically(filepath, desired_content)
+    print(f"  Added {filepath}: installed updated workflow")
+
+
 def read_project_type() -> str | None:
     """Read the cookiecutter project type from the replay file."""
     replay_path = Path(".cookiecutter-replay.json")
@@ -403,6 +470,50 @@ def apply_patch(patch_content: str) -> None:
     subprocess.run(["patch", "-p1"], input=patch_content.encode(), check=True)
 
 
+def replace_file_atomically(  # noqa; DOC501, DOC503
+    filepath: str | Path, new_content: str
+) -> None:
+    """Replace a file atomically with the given content.
+
+    The replacement is done atomically by writing to a temporary file in the
+    same directory and then moving it to the target location.
+
+    Args:
+        filepath: The path to the file to replace.
+        new_content: The content to write to the file.
+    """
+    if isinstance(filepath, str):
+        filepath = Path(filepath)
+
+    tmp_dir = filepath.parent
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+
+    # pylint: disable-next=consider-using-with
+    tmp = tempfile.NamedTemporaryFile(mode="w", dir=tmp_dir, delete=False)
+
+    try:
+        st = None
+        try:
+            st = os.stat(filepath)
+        except FileNotFoundError:
+            st = None
+
+        tmp.write(new_content)
+        tmp.flush()
+        os.fsync(tmp.fileno())
+        tmp.close()
+
+        if st is not None:
+            os.chmod(tmp.name, st.st_mode)
+
+        os.replace(tmp.name, filepath)
+
+    except BaseException:
+        tmp.close()
+        os.unlink(tmp.name)
+        raise
+
+
 def replace_file_contents_atomically(  # noqa; DOC501
     filepath: str | Path,
     old: str,
@@ -413,6 +524,9 @@ def replace_file_contents_atomically(  # noqa; DOC501
 ) -> None:
     """Replace a file atomically with new content.
 
+    The replacement is done atomically by writing to a temporary file and
+    then moving it to the target location.
+
     Args:
         filepath: The path to the file to replace.
         old: The string to replace.
@@ -420,9 +534,6 @@ def replace_file_contents_atomically(  # noqa; DOC501
         count: The maximum number of occurrences to replace. If negative, all occurrences are
             replaced.
         content: The content to replace. If not provided, the file is read from disk.
-
-    The replacement is done atomically by writing to a temporary file and
-    then moving it to the target location.
     """
     if isinstance(filepath, str):
         filepath = Path(filepath)
@@ -430,37 +541,7 @@ def replace_file_contents_atomically(  # noqa; DOC501
     if content is None:
         content = filepath.read_text(encoding="utf-8")
 
-    content = content.replace(old, new, count)
-
-    # Create temporary file in the same directory to ensure atomic move
-    tmp_dir = filepath.parent
-
-    # pylint: disable-next=consider-using-with
-    tmp = tempfile.NamedTemporaryFile(mode="w", dir=tmp_dir, delete=False)
-
-    try:
-        # Copy original file permissions
-        st = os.stat(filepath)
-
-        # Write the new content
-        tmp.write(content)
-
-        # Ensure all data is written to disk
-        tmp.flush()
-        os.fsync(tmp.fileno())
-        tmp.close()
-
-        # Copy original file permissions to the new file
-        os.chmod(tmp.name, st.st_mode)
-
-        # Perform atomic replace
-        os.rename(tmp.name, filepath)
-
-    except BaseException:
-        # Clean up the temporary file in case of errors
-        tmp.close()
-        os.unlink(tmp.name)
-        raise
+    replace_file_atomically(filepath, content.replace(old, new, count))
 
 
 def calculate_file_sha256_skip_lines(filepath: Path, skip_lines: int) -> str | None:
