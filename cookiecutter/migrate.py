@@ -339,7 +339,7 @@ def migrate_auto_dependabot_token() -> None:
     filepath = Path(".github") / "workflows" / "auto-dependabot.yaml"
     # This is separated only to avoid flake8 errors about line length
     dependabot_auto_approve_version = (
-        "3cad5f42e79296505473325ac6636be897c8b8a1 # v1.3.2"
+        "a115bc7e0194c08f876493f311ec6f4de53f984e # v1.4.0"
     )
     desired_content = (
         r"""name: Auto-merge Dependabot PR
