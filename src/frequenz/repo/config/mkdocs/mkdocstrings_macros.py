@@ -108,7 +108,6 @@ def define_env(env: macros.MacrosPlugin) -> None:
 ```
 """
 
-
 import logging
 from typing import Any
 
