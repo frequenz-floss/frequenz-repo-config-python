@@ -25,8 +25,11 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
 permissions:
+  # Commit migration changes back to the PR branch.
   contents: write
+  # Create and normalize migration state labels.
   issues: write
+  # Read/update pull request metadata and comments.
   pull-requests: write
 
 jobs:

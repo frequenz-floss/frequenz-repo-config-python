@@ -12,7 +12,9 @@ on:
   pull_request_target:
 
 permissions:
+  # Read repository contents and Dependabot metadata used by the nested action.
   contents: read
+  # The nested action also uses `github.token` internally for PR operations.
   pull-requests: write
 
 jobs:
