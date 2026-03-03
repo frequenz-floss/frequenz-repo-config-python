@@ -55,6 +55,9 @@ def main() -> None:
     print("Migrating the CI workflows to use a platform matrix...")
     migrate_platform_matrix()
     print("=" * 72)
+    print("Installing repo-config migration workflow...")
+    migrate_repo_config_workflow()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -442,7 +445,7 @@ def migrate_auto_dependabot_token() -> None:
     filepath = Path(".github") / "workflows" / "auto-dependabot.yaml"
     # This is separated only to avoid flake8 errors about line length
     dependabot_auto_approve_version = (
-        "a115bc7e0194c08f876493f311ec6f4de53f984e # v1.4.0"
+        "e943399cc9d76fbb6d7faae446cd57301d110165 # v1.5.0"
     )
     desired_content = (
         r"""name: Auto-merge Dependabot PR
@@ -503,6 +506,145 @@ jobs:
     filepath.parent.mkdir(parents=True, exist_ok=True)
     replace_file_atomically(filepath, desired_content)
     print(f"  Added {filepath}: installed updated workflow")
+
+
+def migrate_repo_config_workflow() -> None:
+    """Install the repo-config migration workflow and update auto-dependabot.
+
+    This installs the ``repo-config-migration.yaml`` workflow that uses the
+    ``frequenz-floss/gh-action-dependabot-migrate`` action.  It also
+    updates ``auto-dependabot.yaml`` to skip repo-config group PRs (which
+    are handled by the migration workflow instead).
+
+    The workflow file is created from scratch (overwriting any previous
+    version) to ensure it stays in sync with the latest template.
+    """
+    workflows_dir = Path(".github") / "workflows"
+    if not workflows_dir.is_dir():
+        print("  Skipping (no .github/workflows directory found)")
+        return
+
+    # ── Install repo-config-migration.yaml ────────────────────────────
+    migration_wf = workflows_dir / "repo-config-migration.yaml"
+    desired_content = (
+        r"""# Automatic repo-config migrations for Dependabot PRs
+#
+# The companion auto-dependabot workflow skips repo-config group PRs so
+# they're handled exclusively by the migration workflow.
+#
+# XXX: !!! SECURITY WARNING !!!
+# pull_request_target has write access to the repo, and can read secrets.
+# This is required because Dependabot PRs are treated as fork PRs: the
+# GITHUB_TOKEN is read-only and secrets are unavailable with a plain
+# pull_request trigger.  The action mitigates the risk by:
+#   - Never executing code from the PR (migrate.py is fetched from an
+#     upstream tag, not from the checked-out branch).
+#   - Gating migration steps on github.actor == 'dependabot[bot]'.
+#   - Running checkout with persist-credentials: false and isolating
+#     push credentials from the migration script environment.
+# For more details read:
+# https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+
+name: Repo Config Migration
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  repo-config-migration:
+    name: Migrate Repo Config
+    if: contains(github.event.pull_request.title, 'the repo-config group')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate token
+        id: create-app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
+          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+      - name: Migrate
+        uses: frequenz-floss/gh-action-dependabot-migrate@07dc7e74726498c50726a80cc2167a04d896508f # v1.0.0
+        with:
+          script-url-template: >-
+            https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/{version}/cookiecutter/migrate.py"""  # noqa: E501
+        r"""
+          token: ${{ steps.create-app-token.outputs.token }}
+          migration-token: ${{ secrets.REPO_CONFIG_MIGRATION_TOKEN }}
+          sign-commits: "true"
+          auto-merged-label: "tool:auto-merged"
+          migrated-label: "tool:repo-config:migration:executed"
+          intervention-pending-label: "tool:repo-config:migration:intervention-pending"
+          intervention-done-label: "tool:repo-config:migration:intervention-done"
+"""
+    )
+
+    if migration_wf.exists():
+        content = migration_wf.read_text(encoding="utf-8").replace("\r\n", "\n")
+        if content == desired_content:
+            print(f"  Skipped {migration_wf}: already up to date")
+        else:
+            print(
+                f"  Replacing {migration_wf} with updated workflow"
+                " (overwriting any local changes)"
+            )
+            replace_file_atomically(migration_wf, desired_content)
+    else:
+        workflows_dir.mkdir(parents=True, exist_ok=True)
+        replace_file_atomically(migration_wf, desired_content)
+        print(f"  Installed {migration_wf}")
+
+    # ── Update auto-dependabot.yaml ───────────────────────────────────
+    #
+    # Add a condition to skip repo-config group PRs, which are now
+    # handled by the migration workflow instead.
+    auto_dep = workflows_dir / "auto-dependabot.yaml"
+    if not auto_dep.exists():
+        print(f"  Skipping {auto_dep} (file not found)")
+        return
+
+    dep_content = auto_dep.read_text(encoding="utf-8")
+
+    # Already has the exclusion condition.
+    if "the repo-config group" in dep_content:
+        print(f"  Skipped {auto_dep} (already excludes repo-config group)")
+        return
+
+    # Match both multi-line and single-line `if` formats, with any runner.
+    old_patterns = [
+        # Multi-line if (e.g. from a previous migration that used ubuntu-slim)
+        ("    if: github.actor == 'dependabot[bot]'\n    runs-on: ubuntu-slim"),
+        ("    if: github.actor == 'dependabot[bot]'\n    runs-on: ubuntu-latest"),
+        ("    if: github.actor == 'dependabot[bot]'\n    runs-on: ubuntu-24.04"),
+    ]
+
+    new_template = (
+        "    if: >\n"
+        "      github.actor == 'dependabot[bot]' &&\n"
+        "      !contains(github.event.pull_request.title, 'the repo-config group')\n"
+        "    runs-on: {runner}"
+    )
+
+    for old_pattern in old_patterns:
+        if old_pattern in dep_content:
+            # Extract the runner from the old pattern.
+            runner = old_pattern.rsplit("runs-on: ", 1)[1]
+            new_block = new_template.format(runner=runner)
+            replace_file_contents_atomically(auto_dep, old_pattern, new_block)
+            print(f"  Updated {auto_dep}: added repo-config group exclusion")
+            return
+
+    # If we didn't match any known pattern, flag a manual step.
+    manual_step(
+        f"Could not update {auto_dep} automatically. Please add a condition "
+        "to skip repo-config group PRs: "
+        "`!contains(github.event.pull_request.title, 'the repo-config group')`"
+    )
 
 
 def read_project_type() -> str | None:

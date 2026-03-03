@@ -5,6 +5,7 @@
 This release migrates lightweight GitHub Actions workflow jobs to use the new cost-effective `ubuntu-slim` runner.
 It also updates cookiecutter pyproject license metadata to SPDX expressions to avoid setuptools deprecation warnings.
 The auto-dependabot workflow now uses a GitHub App installation token instead of `GITHUB_TOKEN` to fix merge queue and auto-merge failures.
+Finally, it adds an automated repo-config migration workflow that runs migration scripts on Dependabot PRs.
 
 ## Upgrading
 
@@ -40,6 +41,12 @@ But you might still need to adapt your code:
 - Added the [`flake8-datetimez`](https://github.com/pjknkda/flake8-datetimez) plugin to the `flake8` session. This plugin prevents accidental use of naive `datetime` objects by flagging calls that create or return datetimes without timezone information.
 
 - The CI workflow now uses a simpler matrix.
+
+- Added `repo-config-migration.yaml` workflow that automatically runs the migration script, commits changes, posts results, and auto-approves/merges only when no migration commit is created.
+
+  The workflow handles multi-version jumps by running each intermediate migration in sequence. The migration script output is posted as a PR comment and in the job summary. PRs with migration commits stay open for manual approval and merge. PRs that need manual intervention fail the job until a human completes the steps and signals resolution by removing the `tool:repo-config:migration:intervention-pending` label or adding the `tool:repo-config:migration:intervention-done` label.
+
+- The `auto-dependabot.yaml` workflow now skips repo-config group PRs, which are handled by the new migration workflow instead.
 
 ## Bug Fixes
 

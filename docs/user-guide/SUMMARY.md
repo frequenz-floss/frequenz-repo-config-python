@@ -1,5 +1,5 @@
 * [Introduction](index.md)
 * [Start a new project](start-a-new-project/)
-* [Migrate an existing project](migrate-an-existing-project.md)
-* [Update an existing project](update-an-existing-project.md)
+* [Update to a new version](update-to-a-new-version.md)
+* [Convert an existing project](convert-an-existing-project.md)
 * [Advanced usage](advanced-usage.md)

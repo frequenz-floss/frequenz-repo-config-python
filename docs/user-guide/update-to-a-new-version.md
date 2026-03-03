@@ -1,15 +1,111 @@
 {% set ref_name = version.ref if version else 'HEAD' %}
-# Update an existing project
+# Update to a new version
 
-To upgrade an existing project, there are two main approaches: use a migration
-script or re-run the [Cookiecutter] command.
+To upgrade an existing project to a new repo-config version, there are three
+approaches: let the automated migration workflow handle it (default and
+recommended), run the migration script manually, or re-run the [Cookiecutter]
+command.
 
-## Use a migration script
+## Automated migration workflow
 
-This is the recommended approach, as it should be much less work. Only when
-extremely deep changes are made to the template, or when the project is very
-old, should you consider re-running the [Cookiecutter] command. Usually release
-notes will warn you about the former.
+Projects generated from the template include a GitHub Actions workflow
+(`repo-config-migration.yaml`) that runs the migration script automatically
+when [Dependabot] opens a pull request for the `repo-config` dependency group.
+
+For updates where the migration script does not create additional commits and
+does not report manual steps, the workflow auto-approves and enables
+auto-merge. If the migration creates commits or reports manual steps, the PR
+always requires manual review, approval, and merge.
+
+```mermaid
+flowchart TD
+  A((Start)) --> B{Migration}
+
+  %% transitions out of Migration
+  B -->|succeeded without changes| C["Approved + auto-merge enabled"]
+  B -->|intervention needed| D["Pending intervention (merges blocked)"]
+  B -->|succeeded with changes| F["Awaiting review"]
+
+  %% normal flow
+  C -->|checks pass| E((("Merged")))
+
+  %% intervention loop
+  D -->|intervention done| F
+  F -->|intervention undone| D
+
+  %% review/merge
+  F -->|checks pass + approval/merge| E
+
+  %% layout: enforce the desired rows
+  subgraph r1[ ]
+    direction LR
+    A
+  end
+
+  subgraph r2[ ]
+    direction LR
+    B
+  end
+
+  subgraph r3[ ]
+    direction LR
+    C --- D
+  end
+
+  subgraph r4[ ]
+    direction LR
+    F
+  end
+
+  subgraph r5[ ]
+    direction LR
+    E
+  end
+
+  %% keep row boxes invisible
+  style r1 fill:transparent,stroke:transparent
+  style r2 fill:transparent,stroke:transparent
+  style r3 fill:transparent,stroke:transparent
+  style r4 fill:transparent,stroke:transparent
+  style r5 fill:transparent,stroke:transparent
+```
+
+If the migration script exits with a non-zero status, the workflow:
+
+* Posts a PR comment with the full migration output.
+* Adds the `tool:repo-config:migration:intervention-pending` label.
+* Fails the job, which blocks merging.
+
+After you complete the required manual steps, push your changes to the PR
+branch and signal resolution in **either** of these two ways:
+
+* **Remove** the `tool:repo-config:migration:intervention-pending` label from
+  the PR.
+* **Add** the `tool:repo-config:migration:intervention-done` label to the PR.
+
+Either action triggers the workflow again, which normalises the labels.
+Whenever a migration produces commits or requires manual steps, you should
+review, approve, and merge the PR yourself.
+
+If intervention is marked as done and you later need more manual work, either
+removing `tool:repo-config:migration:intervention-done` or adding
+`tool:repo-config:migration:intervention-pending` marks intervention as
+pending again.
+
+!!! Note
+
+    If you need to set up this workflow in a project that wasn't generated
+    from the template, see the
+    [migration workflow setup](advanced-usage.md#migration-workflow)
+    section in the advanced usage page.  You will also need to configure the
+    [GitHub App for Dependabot
+    workflows](start-a-new-project/configure-github.md#github-app-for-dependabot-workflows).
+
+## Use a migration script manually
+
+If you prefer to run the migration yourself (or if your project doesn't use
+the automated workflow), you can fetch the migration script from GitHub and
+run it directly.
 
 The script can't always perform all the changes necessary to migrate to a new
 version. In this case, you will have to manually apply the changes. The script
@@ -17,9 +113,6 @@ will guide you through the process, so please read the script output carefully.
 
 The script can also only migrate from one version to the next. If you are
 skipping versions, you will have to run the script multiple times.
-
-The easiest way to run the migration script is to fetch it from GitHub and run
-it directly.
 
 ```sh
 curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/{{ ref_name }}/cookiecutter/migrate.py \
@@ -108,5 +201,8 @@ templates update commit.
 !!! Tip
 
     Please have a look at the follow-up steps listed in the [Start a new
-    project](#create-the-local-development-environment) section to finish the
-    setup.
+    project](start-a-new-project/#create-the-local-environment) section to
+    finish the setup.
+
+[Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable
+[Dependabot]: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
