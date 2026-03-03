@@ -86,7 +86,9 @@ def migrate_to_ubuntu_slim() -> None:
     """
     workflows_dir = Path(".github") / "workflows"
     project_type = read_project_type()
+    github_org = read_cookiecutter_github_org()
     include_protolint = project_type == "api"
+    include_publish_to_pypi = github_org == "frequenz-floss"
     if project_type is None:
         include_protolint = True
         manual_step(
@@ -124,11 +126,6 @@ def migrate_to_ubuntu_slim() -> None:
                 "job": "create-github-release",
                 "old": "      discussions: write\n    runs-on: ubuntu-24.04",
                 "new": "      discussions: write\n    runs-on: ubuntu-slim",
-            },
-            {
-                "job": "publish-to-pypi",
-                "old": '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04',
-                "new": '    needs: ["create-github-release"]\n    runs-on: ubuntu-slim',
             },
         ],
         "release-notes-check.yml": [
@@ -173,6 +170,19 @@ def migrate_to_ubuntu_slim() -> None:
             }
         ],
     }
+    if include_publish_to_pypi:
+        migrations["ci.yaml"].append(
+            {
+                "job": "publish-to-pypi",
+                "old": (
+                    '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04'
+                ),
+                "new": (
+                    '    needs: ["create-github-release"]\n    runs-on: ubuntu-slim'
+                ),
+            }
+        )
+
     if include_protolint:
         protolint_rule = {
             "job": "protolint",
@@ -515,6 +525,28 @@ def read_project_type() -> str | None:
         return None
 
     return project_type
+
+
+def read_cookiecutter_github_org() -> str | None:
+    """Read the cookiecutter GitHub organization from the replay file."""
+    replay_path = Path(".cookiecutter-replay.json")
+    if not replay_path.exists():
+        return None
+
+    try:
+        data = json.loads(replay_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+
+    cookiecutter_data = data.get("cookiecutter")
+    if not isinstance(cookiecutter_data, dict):
+        return None
+
+    github_org = cookiecutter_data.get("github_org")
+    if not isinstance(github_org, str):
+        return None
+
+    return github_org
 
 
 def read_cookiecutter_license() -> str | None:
