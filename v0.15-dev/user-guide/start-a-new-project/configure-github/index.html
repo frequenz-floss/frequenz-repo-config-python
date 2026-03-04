@@ -837,23 +837,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Code security and analysis">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#auto-merge-dependabot-prs-github-app" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Auto-merge Dependabot PRs (GitHub App)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -880,6 +863,34 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Actions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GitHub Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-app-for-dependabot-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub App for Dependabot workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -935,14 +946,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrate-an-existing-project/" class="md-nav__link">
+      <a href="../../update-to-a-new-version/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Migrate an existing project
+    Update to a new version
   
 
     
@@ -963,14 +974,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../update-an-existing-project/" class="md-nav__link">
+      <a href="../../convert-an-existing-project/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Update an existing project
+    Convert an existing project
   
 
     
@@ -2526,23 +2537,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Code security and analysis">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#auto-merge-dependabot-prs-github-app" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Auto-merge Dependabot PRs (GitHub App)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -2569,6 +2563,34 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Actions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GitHub Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-app-for-dependabot-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub App for Dependabot workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2705,22 +2727,6 @@ branches</em> ruleset depending on your repository configuration.</p>
 <ul>
 <li>Enable <em>Dependabot version updates</em> if relevant</li>
 </ul>
-<h4 id="auto-merge-dependabot-prs-github-app">Auto-merge Dependabot PRs (GitHub App)<a class="headerlink" href="#auto-merge-dependabot-prs-github-app" title="Permanent link">¤</a></h4>
-<p>The templates include an <code>.github/workflows/auto-dependabot.yaml</code> workflow that
-auto-approves and enables auto-merge for Dependabot PRs.</p>
-<p>This workflow uses a GitHub App installation token (not <code>GITHUB_TOKEN</code>). This is
-intentional: actions performed with <code>GITHUB_TOKEN</code> do not trigger certain
-follow-up workflow runs, which can prevent merge queue CI (<code>merge_group</code>) from
-starting.</p>
-<p>To make it work, ensure:</p>
-<ul>
-<li>The GitHub App is installed on the repository.</li>
-<li>The following secrets are available to the workflow (typically as org secrets):
-  <code>FREQUENZ_AUTO_DEPENDABOT_APP_ID</code> and <code>FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY</code>.</li>
-<li>The app installation has sufficient repository permissions to approve/label
-  and enable auto-merge. In practice, this means at least <code>Pull requests: write</code>
-  and <code>Contents: write</code>.</li>
-</ul>
 <h2 id="code">Code<a class="headerlink" href="#code" title="Permanent link">¤</a></h2>
 <p>The basic code configuration should be generate using
 <a href="https://frequenz-floss.github.io/frequenz-repo-config-python/">repo-config</a>.</p>
@@ -2728,6 +2734,37 @@ starting.</p>
 <p>No special configuration is needed for GitHub Pages, but you need to initialize
 the <code>gh-pages</code> branch. You can read how to do this in the <a href="../#initialize-github-pages.md">Initialize GitHub
 Pages</a> section.</p>
+<h2 id="github-actions">GitHub Actions<a class="headerlink" href="#github-actions" title="Permanent link">¤</a></h2>
+<h3 id="github-app-for-dependabot-workflows">GitHub App for Dependabot workflows<a class="headerlink" href="#github-app-for-dependabot-workflows" title="Permanent link">¤</a></h3>
+<p>The templates include two workflows that act on <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> PRs:</p>
+<ul>
+<li><strong><code>auto-dependabot.yaml</code></strong> — auto-approves and enables auto-merge for
+  routine dependency updates.</li>
+<li><strong><code>repo-config-migration.yaml</code></strong> — runs the repo-config migration script
+  and auto-merges only when the migration does not create commits; otherwise
+  it requires manual approval and merge (see
+  <a href="../../update-to-a-new-version/#automated-migration-workflow">Automated migration workflow</a>
+  for details).</li>
+</ul>
+<p>Both workflows use a <a href="https://docs.github.com/en/apps/creating-github-apps">GitHub App</a> installation token instead of
+<code>GITHUB_TOKEN</code>. This is intentional: actions performed with <code>GITHUB_TOKEN</code> do
+not trigger certain follow-up workflow runs, which can prevent merge queue CI
+(<code>merge_group</code>) from starting.</p>
+<p>To make them work, ensure a <a href="https://docs.github.com/en/apps/creating-github-apps">GitHub App</a> is installed on the
+repository with at least <code>Pull requests: write</code> and <code>Contents: write</code>
+permissions (add <code>Workflows: write</code> if migrations can touch
+<code>.github/workflows/*</code> files).</p>
+<p>If the migration script needs to make authenticated API calls (e.g. updating
+repository settings or branch rulesets), you should also provide the
+<code>REPO_CONFIG_MIGRATION_TOKEN</code> secret with a dedicated, least-privilege token
+scoped to exactly what the script needs. The <code>REPO_CONFIG_MIGRATION_TOKEN</code> is
+exposed to the migration script as <code>GH_TOKEN</code> / <code>GITHUB_TOKEN</code></p>
+<blockquote>
+<p>[!TIP]
+It is recommended to have this secret set only when needed, and remove it
+again as soon as the migration is done. This minimizes the risk of abuse in
+case of a security issue in the migration script.</p>
+</blockquote>
 
 
 
