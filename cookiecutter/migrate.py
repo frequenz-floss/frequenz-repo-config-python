@@ -20,6 +20,8 @@ for each version.
 And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
+# pylint: disable=too-many-lines
+
 import hashlib
 import json
 import os
@@ -28,7 +30,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import SupportsIndex
+from typing import Any, SupportsIndex
 
 _manual_steps: list[str] = []  # pylint: disable=invalid-name
 
@@ -57,6 +59,9 @@ def main() -> None:
     print("=" * 72)
     print("Installing repo-config migration workflow...")
     migrate_repo_config_workflow()
+    print("=" * 72)
+    print("Updating 'Protect version branches' GitHub ruleset...")
+    migrate_protect_version_branches_ruleset()
     print("=" * 72)
     print()
 
@@ -645,6 +650,217 @@ jobs:
         "to skip repo-config group PRs: "
         "`!contains(github.event.pull_request.title, 'the repo-config group')`"
     )
+
+
+def migrate_protect_version_branches_ruleset() -> None:
+    """Update the 'Protect version branches' GitHub ruleset.
+
+    Uses the GitHub API (via ``gh`` CLI) to check whether the
+    'Protect version branches' ruleset on the current repository is aligned
+    with the current template.  Recent template changes include:
+
+    * Setting ``require_code_owner_review`` to ``false``.
+    * Adding an (empty) ``required_reviewers`` list.
+    * Removing the ``automatic_copilot_code_review_enabled`` setting.
+    * Adding ``Migrate Repo Config`` to the required status checks.
+    * Setting the ``OrganizationAdmin`` bypass-actor ``actor_id`` to
+      ``null``.
+
+    If the ruleset is already aligned, prints an informational message.
+    If it needs updating, applies the changes via the API without removing
+    any existing required status checks.
+    If the ruleset is not found at all, issues a manual-step message that
+    points the user to the docs.
+    """
+    rule_name = "Protect version branches"
+    docs_url = (
+        "https://frequenz-floss.github.io/frequenz-repo-config-python/"
+        "user-guide/start-a-new-project/configure-github/#rulesets"
+    )
+
+    # Build a link to the repo's ruleset settings for manual-step messages.
+    ruleset_url = get_ruleset_settings_url() or docs_url
+
+    # ── Fetch ruleset details ────────────────────────────────────────
+    ruleset = get_ruleset(rule_name)
+    if ruleset is None:
+        manual_step(
+            f"The '{rule_name}' GitHub ruleset was not found (or the gh CLI "
+            "is not available / the API call failed). "
+            "Please check whether it should exist for this repository. "
+            f"If it should, import it following the instructions at: {docs_url}"
+        )
+        return
+
+    ruleset_id = ruleset.get("id")
+    if not isinstance(ruleset_id, int):
+        manual_step(
+            f"Failed to determine the '{rule_name}' ruleset ID from the "
+            f"GitHub API response. Please update it manually at: {ruleset_url}"
+        )
+        return
+
+    # ── Detect and apply changes in-memory ───────────────────────────────
+    changes: list[str] = []
+
+    for rule in ruleset.get("rules", []):
+        if rule.get("type") == "pull_request":
+            params = rule.setdefault("parameters", {})
+            if params.get("require_code_owner_review") is True:
+                params["require_code_owner_review"] = False
+                changes.append("set require_code_owner_review=false")
+            if params.pop("automatic_copilot_code_review_enabled", None) is not None:
+                changes.append("remove automatic_copilot_code_review_enabled")
+
+        elif rule.get("type") == "required_status_checks":
+            params = rule.setdefault("parameters", {})
+            checks = params.setdefault("required_status_checks", [])
+            if not any(c.get("context") == "Migrate Repo Config" for c in checks):
+                checks.append(
+                    {"context": "Migrate Repo Config", "integration_id": 15368}
+                )
+                changes.append("add 'Migrate Repo Config' status check")
+
+    if not changes:
+        print(f"  Ruleset '{rule_name}' is already up to date")
+        return
+
+    # ── Push the update ───────────────────────────────────────────────────
+    if not update_ruleset(ruleset_id, ruleset):
+        manual_step(
+            f"Failed to update the '{rule_name}' ruleset via the GitHub API. "
+            f"Please apply the following changes manually at {ruleset_url}: "
+            + "; ".join(changes)
+        )
+        return
+
+    print(f"  Updated ruleset '{rule_name}': " + ", ".join(changes))
+
+
+def find_ruleset(name: str) -> dict[str, Any] | None:
+    """Find a repository ruleset by name using the GitHub API.
+
+    Args:
+        name: The name of the ruleset to search for.
+
+    Returns:
+        The ruleset summary dict (id, name, …) if found, or ``None`` if not
+        found or if the API call failed (a diagnostic is printed in the latter
+        case).
+    """
+    try:
+        stdout = subprocess.check_output(
+            ["gh", "api", "repos/:owner/:repo/rulesets"],
+            text=True,
+            stderr=subprocess.PIPE,
+        )
+    except FileNotFoundError:
+        print("  gh CLI not found; cannot query rulesets via the GitHub API.")
+        return None
+    except subprocess.CalledProcessError as exc:
+        print(f"  Failed to list rulesets: {exc.stderr.strip()}")
+        return None
+
+    rulesets: list[dict[str, Any]] = json.loads(stdout)
+    return next((r for r in rulesets if r.get("name") == name), None)
+
+
+def get_ruleset(ruleset: str | int) -> dict[str, Any] | None:
+    """Fetch the full details of a repository ruleset by name or ID.
+
+    Args:
+        ruleset: The ruleset name (``str``) or numeric ruleset ID (``int``).
+
+    Returns:
+        The full ruleset dict, or ``None`` if the ruleset could not be found
+        or the API call failed (a diagnostic is printed).
+    """
+    ruleset_id = ruleset
+    if isinstance(ruleset, str):
+        entry = find_ruleset(ruleset)
+        if entry is None:
+            return None
+        ruleset_id = entry["id"]
+
+    try:
+        stdout = subprocess.check_output(
+            ["gh", "api", f"repos/:owner/:repo/rulesets/{ruleset_id}"],
+            text=True,
+            stderr=subprocess.PIPE,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(f"  Failed to fetch ruleset {ruleset_id}: {exc.stderr.strip()}")
+        return None
+
+    return json.loads(stdout)  # type: ignore[no-any-return]
+
+
+def update_ruleset(ruleset_id: int, config: dict[str, Any]) -> bool:
+    """Update a repository ruleset via the GitHub API.
+
+    Only ``name``, ``target``, ``enforcement``, ``conditions``, ``rules``,
+    and ``bypass_actors`` are sent (explicit allowlist to avoid sending
+    read-only fields back to the API).
+
+    Args:
+        ruleset_id: The numeric ruleset ID to update.
+        config: The full ruleset dict (as returned by :func:`get_ruleset`)
+            with the desired changes already applied in-memory.
+
+    Returns:
+        ``True`` on success, ``False`` if the API call failed (a diagnostic
+        is printed).
+    """
+    payload: dict[str, Any] = {
+        "name": config["name"],
+        "target": config["target"],
+        "enforcement": config["enforcement"],
+        "conditions": config["conditions"],
+        "rules": config["rules"],
+    }
+    if "bypass_actors" in config:
+        payload["bypass_actors"] = config["bypass_actors"]
+
+    try:
+        subprocess.check_output(
+            [
+                "gh",
+                "api",
+                "-X",
+                "PUT",
+                f"repos/:owner/:repo/rulesets/{ruleset_id}",
+                "--input",
+                "-",
+            ],
+            input=json.dumps(payload),
+            text=True,
+            stderr=subprocess.PIPE,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(f"  Failed to update ruleset {ruleset_id}: {exc.stderr.strip()}")
+        return False
+
+    return True
+
+
+def get_ruleset_settings_url() -> str | None:
+    """Return the URL to the repository's ruleset settings page.
+
+    Returns:
+        The URL as a string, or ``None`` if it could not be determined.
+    """
+    try:
+        stdout = subprocess.check_output(
+            ["gh", "repo", "view", "--json", "owner,name"],
+            text=True,
+            stderr=subprocess.PIPE,
+        )
+        info: dict[str, Any] = json.loads(stdout)
+        org = info["owner"]["login"]
+        repo = info["name"]
+        return f"https://github.com/{org}/{repo}/settings/rules"
+    except (subprocess.CalledProcessError, KeyError, json.JSONDecodeError):
+        return None
 
 
 def read_project_type() -> str | None:

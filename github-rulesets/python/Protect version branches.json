@@ -23,12 +23,12 @@
     {
       "type": "pull_request",
       "parameters": {
-        "require_code_owner_review": true,
+        "require_code_owner_review": false,
         "require_last_push_approval": true,
         "dismiss_stale_reviews_on_push": true,
         "required_approving_review_count": 1,
+        "required_reviewers": [],
         "required_review_thread_resolution": false,
-        "automatic_copilot_code_review_enabled": true,
         "allowed_merge_methods": [
           "merge",
           "squash",
@@ -55,6 +55,10 @@
           {
             "context": "Check release notes are updated",
             "integration_id": 15368
+          },
+          {
+            "context": "Migrate Repo Config",
+            "integration_id": 15368
           }
         ],
         "strict_required_status_checks_policy": false
@@ -76,7 +80,7 @@
       "bypass_mode": "always"
     },
     {
-      "actor_id": 1,
+      "actor_id": null,
       "actor_type": "OrganizationAdmin",
       "bypass_mode": "always"
     }
