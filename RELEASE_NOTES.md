@@ -13,7 +13,7 @@ This release reduces CI cost by moving lightweight GitHub Actions jobs to the ne
 All upgrading should be done via the migration script or regenerating the templates.
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/v0.14.0/cookiecutter/migrate.py | python3
+curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/v0.15.0/cookiecutter/migrate.py | python3
 ```
 
 But you might still need to adapt your code:
