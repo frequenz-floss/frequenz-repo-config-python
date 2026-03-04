@@ -48,6 +48,8 @@ But you might still need to adapt your code:
 
 - The `auto-dependabot.yaml` workflow now skips repo-config group PRs, which are handled by the new migration workflow instead.
 
+- Updated the default "Protect version branches" ruleset to require the new `Migrate Repo Config` status check, which is added by the migration workflow to PRs that need manual intervention. This prevents merging PRs that require manual migration steps until those steps are completed and the check passes. Also removed the required code-owner approval and automatic Copilot review request.
+
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->
