@@ -2,10 +2,7 @@
 
 ## Summary
 
-This release migrates lightweight GitHub Actions workflow jobs to use the new cost-effective `ubuntu-slim` runner.
-It also updates cookiecutter pyproject license metadata to SPDX expressions to avoid setuptools deprecation warnings.
-The auto-dependabot workflow now uses a GitHub App installation token instead of `GITHUB_TOKEN` to fix merge queue and auto-merge failures.
-Finally, it adds an automated repo-config migration workflow that runs migration scripts on Dependabot PRs.
+This release reduces CI cost by moving lightweight GitHub Actions jobs to the new `ubuntu-slim` runner, fixes Dependabot auto-merge/merge-queue issues by switching to a GitHub App installation token, and introduces an automated repo-config migration workflow (including updating existing repos' version-branch protection defaults).
 
 ## Upgrading
 
