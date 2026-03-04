@@ -20,6 +20,8 @@ for each version.
 And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
+# pylint: disable=too-many-lines
+
 import hashlib
 import json
 import os
