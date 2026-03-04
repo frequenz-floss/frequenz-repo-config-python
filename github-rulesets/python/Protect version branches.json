@@ -55,6 +55,10 @@
           {
             "context": "Check release notes are updated",
             "integration_id": 15368
+          },
+          {
+            "context": "Migrate Repo Config",
+            "integration_id": 15368
           }
         ],
         "strict_required_status_checks_policy": false
