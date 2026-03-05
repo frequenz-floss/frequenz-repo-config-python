@@ -42,6 +42,9 @@ def main() -> None:
     print("Migrating workflows to use ubuntu-slim runner for lightweight jobs...")
     migrate_to_ubuntu_slim()
     print("=" * 72)
+    print("Migrating publish-to-pypi workflow runner to ubuntu-24.04...")
+    migrate_publish_to_pypi_runner()
+    print("=" * 72)
     print("Migrating pyproject license metadata to SPDX format...")
     migrate_pyproject_license()
     print("=" * 72)
@@ -94,9 +97,7 @@ def migrate_to_ubuntu_slim() -> None:
     """
     workflows_dir = Path(".github") / "workflows"
     project_type = read_project_type()
-    github_org = read_cookiecutter_github_org()
     include_protolint = project_type == "api"
-    include_publish_to_pypi = github_org == "frequenz-floss"
     if project_type is None:
         include_protolint = True
         manual_step(
@@ -178,19 +179,6 @@ def migrate_to_ubuntu_slim() -> None:
             }
         ],
     }
-    if include_publish_to_pypi:
-        migrations["ci.yaml"].append(
-            {
-                "job": "publish-to-pypi",
-                "old": (
-                    '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04'
-                ),
-                "new": (
-                    '    needs: ["create-github-release"]\n    runs-on: ubuntu-slim'
-                ),
-            }
-        )
-
     if include_protolint:
         protolint_rule = {
             "job": "protolint",
@@ -236,6 +224,39 @@ def migrate_to_ubuntu_slim() -> None:
                 f"  Pattern not found in {filepath}: please switch job {job} to use "
                 "`runs-on: ubuntu-slim` where appropriate."
             )
+
+
+def migrate_publish_to_pypi_runner() -> None:
+    """Migrate the publish-to-pypi CI job runner to ubuntu-24.04."""
+    github_org = read_cookiecutter_github_org()
+    if github_org != "frequenz-floss":
+        print("  Skipping .github/workflows/ci.yaml (publish-to-pypi not expected)")
+        return
+
+    filepath = Path(".github") / "workflows" / "ci.yaml"
+    if not filepath.exists():
+        print(f"  Skipping {filepath} (file not found)")
+        return
+
+    old = '    needs: ["create-github-release"]\n    runs-on: ubuntu-latest'
+    new = '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04'
+    content = filepath.read_text(encoding="utf-8")
+
+    if old in content:
+        replace_file_contents_atomically(filepath, old, new)
+        print(f"  Updated {filepath}: migrated runner for job publish-to-pypi")
+        return
+
+    if new in content:
+        print(
+            f"  Skipped {filepath}: runner already up to date for job publish-to-pypi"
+        )
+        return
+
+    manual_step(
+        f"  Pattern not found in {filepath}: please switch the runner for job "
+        "publish-to-pypi according to the latest template."
+    )
 
 
 def migrate_pyproject_license() -> None:  # pylint: disable=too-many-branches
