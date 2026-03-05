@@ -1,5 +1,10 @@
 # Frequenz Repository Configuration Release Notes
 
+> [!NOTE]
+> This is a bugfix release for v0.15.0. This release was never published to PyPI, so we keep the entire release notes for v0.15.0 here (updated to the new changes) to make it easier for users to upgrade from v0.14.0 to v0.15.x.
+>
+> The only change with respect to v0.15.0 is using the appropriate job runner for the `publish-to-pypi` job in `ci.yaml`. v0.15.0 updated it to `ubuntu-slim` but that didn't work because it requires Docker, and it is not installed on the `ubuntu-slim` runner.
+
 ## Summary
 
 This release reduces CI cost by moving lightweight GitHub Actions jobs to the new `ubuntu-slim` runner, fixes Dependabot auto-merge/merge-queue issues by switching to a GitHub App installation token, and introduces an automated repo-config migration workflow (including updating existing repos' version-branch protection defaults).
@@ -28,12 +33,14 @@ But you might still need to adapt your code:
 
 - Migrated lightweight workflow jobs to use the new `ubuntu-slim` runner for cost savings.
   The following jobs now use `ubuntu-slim`:
-  - `ci.yaml`: `protolint`, `nox-all`, `test-installation-all`, `create-github-release`, `publish-to-pypi`
+  - `ci.yaml`: `protolint`, `nox-all`, `test-installation-all`, `create-github-release`
   - `ci-pr.yaml`: `protolint`
   - `auto-dependabot.yaml`: `auto-merge`
   - `release-notes-check.yml`: `check-release-notes`
   - `dco-merge-queue.yml`: `DCO`
   - `labeler.yml`: `Label`
+
+- Migrated the `publish-to-pypi` job in `ci.yaml` from `ubuntu-latest` to `ubuntu-24.04` to get reproducible builds.
 
 - Added the [`flake8-datetimez`](https://github.com/pjknkda/flake8-datetimez) plugin to the `flake8` session. This plugin prevents accidental use of naive `datetime` objects by flagging calls that create or return datetimes without timezone information.
 
