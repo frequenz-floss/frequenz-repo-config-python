@@ -47,6 +47,9 @@ def main() -> None:
     print("Migrating protolint and publish-to-pypi runners to ubuntu-24.04...")
     migrate_docker_based_runners()
     print("=" * 72)
+    print("Updating 'Protect version branches' GitHub ruleset...")
+    migrate_protect_version_branches_ruleset()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -301,6 +304,68 @@ def migrate_repo_config_migration_merge_group_trigger() -> None:
         "that workflow, add the `merge_group` trigger and make the job run only "
         "for `pull_request_target` events according to the latest template."
     )
+
+
+def migrate_protect_version_branches_ruleset() -> None:
+    """Update the 'Protect version branches' GitHub ruleset.
+
+    Uses the GitHub API (via ``gh`` CLI) to check whether the
+    'Protect version branches' ruleset on the current repository is aligned
+    with the current template.  Recent template changes include:
+
+    * Removing the ``copilot_code_review`` rule.
+
+    If the ruleset is already aligned, prints an informational message.
+    If it needs updating, applies the changes via the API without removing
+    any existing required status checks.
+    If the ruleset is not found at all, issues a manual-step message that
+    points the user to the docs.
+    """
+    rule_name = "Protect version branches"
+    docs_url = (
+        "https://frequenz-floss.github.io/frequenz-repo-config-python/"
+        "user-guide/start-a-new-project/configure-github/#rulesets"
+    )
+
+    # Build a link to the repo's ruleset settings for manual-step messages.
+    ruleset_url = get_ruleset_settings_url() or docs_url
+
+    # ── Fetch ruleset details ────────────────────────────────────────
+    ruleset = get_ruleset(rule_name)
+    if ruleset is None:
+        manual_step(
+            f"The '{rule_name}' GitHub ruleset was not found (or the gh CLI "
+            "is not available / the API call failed). "
+            "Please check whether it should exist for this repository. "
+            f"If it should, import it following the instructions at: {docs_url}"
+        )
+        return
+
+    # ── Detect and apply changes in-memory ───────────────────────────────
+    changes: list[str] = []
+    updated_rules = []
+
+    for rule in ruleset.get("rules", []):
+        if rule.get("type") == "copilot_code_review":
+            changes.append("remove copilot_code_review")
+            continue
+        updated_rules.append(rule)
+
+    if not changes:
+        print(f"  Ruleset '{rule_name}' is already up to date")
+        return
+
+    # ── Push the update ───────────────────────────────────────────────────
+    ruleset["rules"] = updated_rules
+    if not update_ruleset(ruleset["id"], ruleset):
+        manual_step(
+            f"Failed to update the '{rule_name}' ruleset via the GitHub API. "
+            f"Please apply the following changes manually at {ruleset_url}: "
+            + "; ".join(changes)
+        )
+        return
+
+    print(f"  Updated ruleset '{rule_name}': " + ", ".join(changes))
 
 
 def apply_patch(patch_content: str) -> None:
