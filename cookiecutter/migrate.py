@@ -20,7 +20,7 @@ for each version.
 And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines, too-many-locals, too-many-branches
 
 import hashlib
 import json
