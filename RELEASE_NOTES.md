@@ -34,4 +34,4 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- Added a migration step for api repositories to fix `mkdocs.yml` when the previous `mkdocstrings-python` v2 migration moved only `paths: ["src"]` under `handlers.python.options` but not `paths: ["py"]`.

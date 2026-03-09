@@ -38,6 +38,9 @@ def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    print("Fixing mkdocstrings-python v2 paths for api repos...")
+    migrate_api_mkdocs_mkdocstrings_paths()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -58,6 +61,54 @@ def main() -> None:
 
     print("\033[0;32m       ✅ Migration script finished successfully ✅\033[0m")
     print()
+
+
+def migrate_api_mkdocs_mkdocstrings_paths() -> None:
+    """Fix the mkdocstrings paths migration for api repositories."""
+    project_type = read_cookiecutter_str_var("type")
+    if project_type is None:
+        manual_step(
+            "Unable to detect the cookiecutter project type from "
+            ".cookiecutter-replay.json; if this is an api project and "
+            '`mkdocs.yml` still has `paths: ["py"]` nested under '
+            "`handlers.python.options`, move it out of `options`."
+        )
+        return
+
+    if project_type != "api":
+        print("  Skipping mkdocs.yml (not an api project)")
+        return
+
+    filepath = Path("mkdocs.yml")
+    if not filepath.exists():
+        manual_step(
+            "Unable to find mkdocs.yml; if this project uses mkdocs, "
+            'make sure the `paths: ["py"]` config is under '
+            "`handlers.python`, not `handlers.python.options`."
+        )
+        return
+
+    old = '          options:\n            paths: ["py"]'
+    new = '          paths: ["py"]\n          options:'
+    current_template = (
+        '      handlers:\n        paths: ["py"]\n        python:\n          options:'
+    )
+    content = filepath.read_text(encoding="utf-8")
+
+    if old in content:
+        replace_file_contents_atomically(filepath, old, new, count=1)
+        print(f"  Updated {filepath}: moved mkdocstrings api paths out of options")
+        return
+
+    if new in content or current_template in content:
+        print(f"  Skipped {filepath}: mkdocstrings api paths already updated")
+        return
+
+    manual_step(
+        f"Could not find the api mkdocstrings path pattern in {filepath}. "
+        'If `paths: ["py"]` is still nested under `handlers.python.options`, '
+        "move it out of `options` according to the latest template."
+    )
 
 
 def apply_patch(patch_content: str) -> None:
