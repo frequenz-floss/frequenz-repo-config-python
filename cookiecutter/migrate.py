@@ -38,6 +38,9 @@ def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    print("Fixing repo-config migration merge queue trigger...")
+    migrate_repo_config_migration_merge_group_trigger()
+    print("=" * 72)
     print("Fixing mkdocstrings-python v2 paths for api repos...")
     migrate_api_mkdocs_mkdocstrings_paths()
     print("=" * 72)
@@ -231,6 +234,73 @@ def migrate_docker_based_runners() -> None:
                     f"  Pattern not found in {filepath}: please switch the runner "
                     f"for job {job} to `runs-on: ubuntu-24.04`."
                 )
+
+
+def migrate_repo_config_migration_merge_group_trigger() -> None:
+    """Trigger repo-config migration in the merge queue."""
+    filepath = Path(".github/workflows/repo-config-migration.yaml")
+    if not filepath.exists():
+        manual_step(
+            "Unable to find .github/workflows/repo-config-migration.yaml; if this "
+            "project uses the repo-config migration workflow, update it to trigger "
+            "on `merge_group` and skip the job unless the event is "
+            "`pull_request_target`."
+        )
+        return
+
+    content = filepath.read_text(encoding="utf-8")
+    old_on = (
+        "on:\n"
+        "  pull_request_target:\n"
+        "    types: [opened, synchronize, reopened, labeled, unlabeled]\n"
+    )
+    new_on = (
+        "on:\n"
+        "  merge_group:  # To allow using this as a required check for merging\n"
+        "  pull_request_target:\n"
+        "    types: [opened, synchronize, reopened, labeled, unlabeled]\n"
+    )
+    old_if = (
+        "    if: contains(github.event.pull_request.title, 'the repo-config group')"
+    )
+    new_if = (
+        "    # Skip if it was triggered by the merge queue. We only need the workflow to\n"
+        '    # be executed to meet the "Required check" condition for merging, but we\n'
+        "    # don't need to actually run the job, having the job present as Skipped is\n"
+        "    # enough.\n"
+        "    if: |\n"
+        "      github.event_name == 'pull_request_target' &&\n"
+        "      contains(github.event.pull_request.title, 'the repo-config group')"
+    )
+
+    updated = content
+    if old_on in updated:
+        updated = updated.replace(old_on, new_on, 1)
+
+    if old_if in updated:
+        updated = updated.replace(old_if, new_if, 1)
+
+    if updated != content:
+        replace_file_atomically(filepath, updated)
+        print(
+            "  Updated .github/workflows/repo-config-migration.yaml: added "
+            "merge_group trigger"
+        )
+        return
+
+    if new_on in content and new_if in content:
+        print(
+            "  Skipped .github/workflows/repo-config-migration.yaml: merge queue "
+            "trigger already configured"
+        )
+        return
+
+    manual_step(
+        "Could not find the expected repo-config migration workflow pattern in "
+        ".github/workflows/repo-config-migration.yaml. If this repository uses "
+        "that workflow, add the `merge_group` trigger and make the job run only "
+        "for `pull_request_target` events according to the latest template."
+    )
 
 
 def apply_patch(patch_content: str) -> None:
