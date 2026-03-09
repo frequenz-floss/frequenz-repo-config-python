@@ -35,3 +35,4 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - Added a migration step for api repositories to fix `mkdocs.yml` when the previous `mkdocstrings-python` v2 migration moved only `paths: ["src"]` under `handlers.python.options` but not `paths: ["py"]`.
+- Fixed runners for jobs that require Docker and where wrongly converted to `ubuntu-slim` in v0.15.0, changing them back to `ubuntu-24.04` to avoid Docker-related failures. The template and the migration script were both updated to reflect this change.

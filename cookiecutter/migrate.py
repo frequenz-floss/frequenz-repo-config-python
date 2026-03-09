@@ -41,6 +41,9 @@ def main() -> None:
     print("Fixing mkdocstrings-python v2 paths for api repos...")
     migrate_api_mkdocs_mkdocstrings_paths()
     print("=" * 72)
+    print("Migrating protolint and publish-to-pypi runners to ubuntu-24.04...")
+    migrate_docker_based_runners()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -109,6 +112,125 @@ def migrate_api_mkdocs_mkdocstrings_paths() -> None:
         'If `paths: ["py"]` is still nested under `handlers.python.options`, '
         "move it out of `options` according to the latest template."
     )
+
+
+def migrate_docker_based_runners() -> None:
+    """Migrate Docker-based jobs to use ubuntu-24.04 runners.
+
+    The ``protolint`` and ``publish-to-pypi`` jobs need Docker, which is not
+    available on ``ubuntu-slim``.  They should therefore run on
+    ``ubuntu-24.04`` instead.
+    """
+    workflows_dir = Path(".github") / "workflows"
+    protolint_new = (
+        "  protolint:\n"
+        "    name: Check proto files with protolint\n"
+        "    runs-on: ubuntu-24.04"
+    )
+    publish_to_pypi_new = (
+        '    needs: ["create-github-release"]\n    runs-on: ubuntu-24.04'
+    )
+    migrations: dict[str, list[dict[str, Any]]] = {}
+
+    protolint_rule = {
+        "job": "protolint",
+        "required_for": "api repos",
+        "job_marker": "  protolint:\n",
+        "old": [
+            (
+                "  protolint:\n"
+                "    name: Check proto files with protolint\n"
+                "    runs-on: ubuntu-slim"
+            ),
+            (
+                "  protolint:\n"
+                "    name: Check proto files with protolint\n"
+                "    runs-on: ubuntu-latest"
+            ),
+        ],
+        "new": protolint_new,
+    }
+    project_type = read_cookiecutter_str_var("type")
+    if project_type is None:
+        manual_step(
+            "Unable to detect the cookiecutter project type from "
+            ".cookiecutter-replay.json; cannot determine whether the protolint "
+            "runner migration applies."
+        )
+    elif project_type == "api":
+        migrations.setdefault("ci-pr.yaml", []).append(protolint_rule)
+        migrations.setdefault("ci.yaml", []).append(protolint_rule)
+    else:
+        print("  Skipping protolint runner migration (not an api project)")
+
+    github_org = read_cookiecutter_str_var("github_org")
+    if github_org is None:
+        manual_step(
+            "Unable to detect the cookiecutter GitHub organization from "
+            ".cookiecutter-replay.json; cannot determine whether the "
+            "publish-to-pypi runner migration applies."
+        )
+    elif github_org == "frequenz-floss":
+        migrations.setdefault("ci.yaml", []).append(
+            {
+                "job": "publish-to-pypi",
+                "required_for": "frequenz-floss repos",
+                "job_marker": "  publish-to-pypi:\n",
+                "old": [
+                    ('    needs: ["create-github-release"]\n    runs-on: ubuntu-slim'),
+                    (
+                        '    needs: ["create-github-release"]\n'
+                        "    runs-on: ubuntu-latest"
+                    ),
+                ],
+                "new": publish_to_pypi_new,
+            }
+        )
+    else:
+        print("  Skipping publish-to-pypi runner migration (not a frequenz-floss repo)")
+
+    for filename, rules in migrations.items():
+        filepath = workflows_dir / filename
+        if not filepath.exists():
+            for rule in rules:
+                manual_step(
+                    f"  Expected to find {filepath} for job {rule['job']} in "
+                    f"{rule['required_for']}. Please add or update that job to use "
+                    "`runs-on: ubuntu-24.04`."
+                )
+            continue
+
+        for rule in rules:
+            job = rule["job"]
+            required_for = rule["required_for"]
+            job_marker = rule["job_marker"]
+            new = rule["new"]
+            content = filepath.read_text(encoding="utf-8")
+
+            if job_marker not in content:
+                manual_step(
+                    f"  Expected to find job {job} in {filepath} for "
+                    f"{required_for}. Please update it to use "
+                    "`runs-on: ubuntu-24.04`."
+                )
+                continue
+
+            if new in content:
+                print(f"  Skipped {filepath}: runner already up to date for job {job}")
+                continue
+
+            for old in rule["old"]:
+                if old in content:
+                    replace_file_contents_atomically(
+                        filepath, old, new, content=content
+                    )
+                    print(f"  Updated {filepath}: migrated runner for job {job}")
+                    break
+            else:
+                manual_step(
+                    f"  Pattern not found in {filepath}: please switch the runner "
+                    f"for job {job} to `runs-on: ubuntu-24.04`."
+                )
 
 
 def apply_patch(patch_content: str) -> None:
