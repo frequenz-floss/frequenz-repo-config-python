@@ -27,7 +27,7 @@ jobs:
   {% endraw %}{% if cookiecutter.type == "api" %}{% raw -%}
   protolint:
     name: Check proto files with protolint
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Setup Git
