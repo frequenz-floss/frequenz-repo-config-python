@@ -19,6 +19,7 @@
 name: Repo Config Migration
 
 on:
+  merge_group:  # To allow using this as a required check for merging
   pull_request_target:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
@@ -30,7 +31,13 @@ permissions:
 jobs:
   repo-config-migration:
     name: Migrate Repo Config
-    if: contains(github.event.pull_request.title, 'the repo-config group')
+    # Skip if it was triggered by the merge queue. We only need the workflow to
+    # be executed to meet the "Required check" condition for merging, but we
+    # don't need to actually run the job, having the job present as Skipped is
+    # enough.
+    if: |
+      github.event_name == 'pull_request_target' &&
+      contains(github.event.pull_request.title, 'the repo-config group')
     runs-on: ubuntu-24.04
     steps:
       - name: Generate token
