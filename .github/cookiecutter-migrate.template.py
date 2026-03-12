@@ -58,7 +58,6 @@ def main() -> None:
 
     print("\033[0;32m       ✅ Migration script finished successfully ✅\033[0m")
     print()
-    return project_type
 
 
 def apply_patch(patch_content: str) -> None:
