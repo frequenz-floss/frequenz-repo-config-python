@@ -9,6 +9,7 @@ from frequenz.repo.config.nox import default
 config = default.lib_config.copy()
 config.extra_paths.extend(
     [
+        ".github/cookiecutter-migrate.template.py",
         "cookiecutter/hooks",
         "cookiecutter/local_extensions.py",
         "cookiecutter/migrate.py",
