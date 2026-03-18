@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Run nox
-        uses: frequenz-floss/gh-action-nox@v1.0.0
+        uses: frequenz-floss/gh-action-nox@e1351cf45e05e85afc1c79ab883e06322892d34c # v1.1.0
         with:
           python-version: "3.11"
           nox-session: ci_checks_max
@@ -30,19 +30,19 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Setup Git
-        uses: frequenz-floss/gh-action-setup-git@v1.0.0
+        uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
         # TODO(cookiecutter): Uncomment this for projects with private dependencies
         # with:
         #   username: ${{ secrets.GIT_USER }}
         #   password: ${{ secrets.GIT_PASS }}
 
       - name: Fetch sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: true
 
       - name: Setup Python
-        uses: frequenz-floss/gh-action-setup-python-with-deps@v1.0.0
+        uses: frequenz-floss/gh-action-setup-python-with-deps@0d0d77eac3b54799f31f25a1060ef2c6ebdf9299 # v1.0.2
         with:
           python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
           dependencies: .[dev-mkdocs]
@@ -55,7 +55,7 @@ jobs:
           mike set-default $MIKE_VERSION
 
       - name: Upload site
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: docs-site
           path: site/
