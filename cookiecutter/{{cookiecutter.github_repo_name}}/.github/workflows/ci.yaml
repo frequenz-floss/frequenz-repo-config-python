@@ -334,10 +334,8 @@ jobs:
     # Create a release only on tags creation
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     permissions:
-      # We need write permissions on contents to create GitHub releases and on
-      # discussions to create the release announcement in the discussion forums
+      # Create GitHub releases and upload distribution artifacts.
       contents: write
-      discussions: write
     runs-on: ubuntu-slim
     steps:
       - name: Download distribution files
