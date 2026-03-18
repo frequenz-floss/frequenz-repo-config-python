@@ -42,12 +42,16 @@ Create `.github/workflows/repo-config-migration.yaml` in your repository:
 name: Repo Config Migration
 
 on:
+  merge_group:  # To allow using this as a required check for merging
   pull_request_target:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
 permissions:
+  # Commit migration changes back to the PR branch.
   contents: write
+  # Create and normalize migration state labels.
   issues: write
+  # Read/update pull request metadata and comments.
   pull-requests: write
 
 jobs:
@@ -62,6 +66,14 @@ jobs:
         with:
           app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
           private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+          # Push migration commits to the PR branch.
+          permission-contents: write
+          # Manage labels when auto-merging patch-only updates.
+          permission-issues: write
+          # Approve pull requests and enable auto-merge.
+          permission-pull-requests: write
+          # Allow pushes when migration changes workflow files.
+          permission-workflows: write
       - name: Migrate
         uses: frequenz-floss/gh-action-dependabot-migrate@07dc7e74726498c50726a80cc2167a04d896508f # v1.0.0
         with:
@@ -93,6 +105,8 @@ The key repo-config-specific settings are:
   when applicable).
   Because it is not `GITHUB_TOKEN`, API calls made with this token trigger
   follow-up workflows (merge queue CI, status checks, etc.).
+  Scope this token explicitly with `permission-*` inputs when creating it
+  (`contents`, `issues`, `pull-requests`, and `workflows` write).
 * **`migration-token`** — a token exposed to the migration script as
   `GH_TOKEN` / `GITHUB_TOKEN` for authenticated GitHub API calls (e.g.
   updating repository settings or branch rulesets).
@@ -108,6 +122,8 @@ The key repo-config-specific settings are:
 * **`if` condition** — matches PRs with `the repo-config group` in the
   title, which is how [Dependabot] names PRs for the `repo-config`
   dependency group.
+* **`merge_group` trigger** — lets you use the workflow as a required check in
+  repositories that gate merges through the merge queue.
 
 !!! Warning "Security"
 
