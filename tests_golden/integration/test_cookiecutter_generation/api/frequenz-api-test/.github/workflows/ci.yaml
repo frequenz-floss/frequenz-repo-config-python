@@ -125,7 +125,7 @@ jobs:
           dependencies: build
 
       - name: Build the source and binary distribution
-        run: python -m build
+        run: python -Im build
 
       - name: Upload distribution files
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
@@ -186,7 +186,7 @@ jobs:
           dependencies: dist/*.whl
 
       - name: Print installed packages (debug)
-        run: python -m pip freeze
+        run: python -Im pip freeze
 
   # This job runs if all the `test-installation` matrix jobs ran and succeeded.
   # It is only used to have a single job that we can require in branch
@@ -232,8 +232,11 @@ jobs:
         env:
           MIKE_VERSION: gh-${{ github.job }}
         run: |
-          mike deploy $MIKE_VERSION
-          mike set-default $MIKE_VERSION
+          # mike is installed as a console script, not a runnable module.
+          # Run the installed script under isolated mode to avoid importing from
+          # the workspace when building docs from checked-out code.
+          python -I "$(command -v mike)" deploy "$MIKE_VERSION"
+          python -I "$(command -v mike)" set-default "$MIKE_VERSION"
 
       - name: Upload site
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
@@ -277,7 +280,7 @@ jobs:
           GIT_REF: ${{ github.ref }}
           GIT_SHA: ${{ github.sha }}
         run: |
-          python -m frequenz.repo.config.cli.version.mike.info
+          python -Im frequenz.repo.config.cli.version.mike.info
 
       - name: Fetch the gh-pages branch
         if: steps.mike-version.outputs.version
@@ -298,13 +301,17 @@ jobs:
           GIT_REF: ${{ github.ref }}
           GIT_SHA: ${{ github.sha }}
         run: |
-          mike deploy --update-aliases --title "$TITLE" "$VERSION" $ALIASES
+          # mike is installed as a console script, not a runnable module.
+          # Run the installed script under isolated mode to avoid importing from
+          # the workspace when building docs from checked-out code.
+          python -I "$(command -v mike)" \
+            deploy --update-aliases --title "$TITLE" "$VERSION" $ALIASES
 
       - name: Sort site versions
         if: steps.mike-version.outputs.version
         run: |
           git checkout gh-pages
-          python -m frequenz.repo.config.cli.version.mike.sort versions.json
+          python -Im frequenz.repo.config.cli.version.mike.sort versions.json
           git commit -a -m "Sort versions.json"
 
       - name: Publish site

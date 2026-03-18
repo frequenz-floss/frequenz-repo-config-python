@@ -81,8 +81,11 @@ jobs:
         env:
           MIKE_VERSION: gh-${{ github.job }}
         run: |
-          mike deploy $MIKE_VERSION
-          mike set-default $MIKE_VERSION
+          # mike is installed as a console script, not a runnable module.
+          # Run the installed script under isolated mode to avoid importing from
+          # the workspace when building docs from checked-out code.
+          python -I "$(command -v mike)" deploy "$MIKE_VERSION"
+          python -I "$(command -v mike)" set-default "$MIKE_VERSION"
 
       - name: Upload site
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
