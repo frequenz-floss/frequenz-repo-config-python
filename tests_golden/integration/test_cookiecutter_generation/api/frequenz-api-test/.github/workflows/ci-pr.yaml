@@ -3,6 +3,10 @@ name: Test PR
 on:
   pull_request:
 
+permissions:
+  # Read repository contents for checkout and dependency resolution only.
+  contents: read
+
 env:
   # Please make sure this version is included in the `matrix`, as the
   # `matrix` section can't use `env`, so it must be entered manually

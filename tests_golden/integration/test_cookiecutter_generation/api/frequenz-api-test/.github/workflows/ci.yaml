@@ -15,6 +15,10 @@ on:
       - 'dependabot/**'
   workflow_dispatch:
 
+permissions:
+  # Read repository contents for checkout and dependency resolution only.
+  contents: read
+
 env:
   # Please make sure this version is included in the `matrix`, as the
   # `matrix` section can't use `env`, so it must be entered manually
@@ -92,6 +96,8 @@ jobs:
     # We skip this job only if nox was also skipped
     if: always() && needs.nox.result != 'skipped'
     runs-on: ubuntu-slim
+    # Drop token permissions: this job only checks matrix status from `needs`.
+    permissions: {}
     env:
       DEPS_RESULT: ${{ needs.nox.result }}
     steps:
@@ -199,6 +205,8 @@ jobs:
     # We skip this job only if test-installation was also skipped
     if: always() && needs.test-installation.result != 'skipped'
     runs-on: ubuntu-slim
+    # Drop token permissions: this job only checks matrix status from `needs`.
+    permissions: {}
     env:
       DEPS_RESULT: ${{ needs.test-installation.result }}
     steps:

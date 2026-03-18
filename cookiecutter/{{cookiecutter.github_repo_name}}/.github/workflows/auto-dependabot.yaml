@@ -32,6 +32,12 @@ jobs:
         with:
           app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
           private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+          # Merge Dependabot PRs.
+          permission-contents: write
+          # Create the auto-merged label if it does not exist.
+          permission-issues: write
+          # Approve PRs, add labels, and enable auto-merge.
+          permission-pull-requests: write
 
       - name: Auto-merge Dependabot PR
         uses: frequenz-floss/dependabot-auto-approve@e943399cc9d76fbb6d7faae446cd57301d110165 # v1.5.0
