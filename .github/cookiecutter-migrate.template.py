@@ -20,7 +20,8 @@ for each version.
 And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
-# pylint: disable=too-many-lines, too-many-locals, too-many-branches
+# R0801 is similarity detection, as the template is always similar to the current script
+# pylint: disable=too-many-lines, too-many-locals, too-many-branches, R0801
 
 import hashlib
 import json
@@ -58,7 +59,6 @@ def main() -> None:
 
     print("\033[0;32m       ✅ Migration script finished successfully ✅\033[0m")
     print()
-    return project_type
 
 
 def apply_patch(patch_content: str) -> None:
