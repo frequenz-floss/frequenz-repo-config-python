@@ -26,18 +26,47 @@ And remember to follow any manual instructions for each run.
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
+import textwrap
 from pathlib import Path
 from typing import Any, SupportsIndex
 
 _manual_steps: list[str] = []  # pylint: disable=invalid-name
 
 
+_RELEASE_NOTES_CHECK_REPLACEMENTS = [
+    (
+        "    permissions:\n      pull-requests: read\n",
+        "    permissions:\n"
+        "      # Read pull request metadata to evaluate labels and changed files.\n"
+        "      pull-requests: read\n",
+    ),
+    (
+        "    runs-on: ubuntu-slim\n    steps:\n",
+        "    runs-on: ubuntu-slim\n"
+        "    permissions:\n"
+        "      # Read pull request metadata to evaluate labels and changed files.\n"
+        "      pull-requests: read\n"
+        "    steps:\n",
+    ),
+]
+
+
 def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
+    print("=" * 72)
+    print("Updating generated CI workflows...")
+    migrate_ci_workflows()
+    print("=" * 72)
+    print("Updating generated Dependabot workflows...")
+    migrate_dependabot_workflows()
+    print("=" * 72)
+    print("Updating auxiliary GitHub workflows...")
+    migrate_auxiliary_workflows()
     print("=" * 72)
     print()
 
@@ -59,6 +88,403 @@ def main() -> None:
 
     print("\033[0;32m       ✅ Migration script finished successfully ✅\033[0m")
     print()
+
+
+def migrate_ci_workflows() -> None:
+    """Update the generated CI workflows to the latest template."""
+    _migrate_workflow_file(
+        Path(".github/workflows/ci-pr.yaml"),
+        [
+            (
+                "on:\n  pull_request:\n\nenv:\n",
+                "on:\n  pull_request:\n\npermissions:\n"
+                "  # Read repository contents for checkout and dependency "
+                "resolution only.\n"
+                "  contents: read\n\nenv:\n",
+            ),
+            (
+                "        run: |\n"
+                "          mike deploy $MIKE_VERSION\n"
+                "          mike set-default $MIKE_VERSION\n",
+                "        run: |\n"
+                "          # mike is installed as a console script, not a "
+                "runnable module.\n"
+                "          # Run the installed script under isolated mode to "
+                "avoid importing from\n"
+                "          # the workspace when building docs from checked-out "
+                "code.\n"
+                '          python -I "$(command -v mike)" deploy "$MIKE_VERSION"\n'
+                '          python -I "$(command -v mike)" set-default "$MIKE_VERSION"\n',
+            ),
+        ],
+        description="updated CI pull-request workflow",
+    )
+
+    _migrate_workflow_file(
+        Path(".github/workflows/ci.yaml"),
+        [
+            (
+                "  workflow_dispatch:\n\nenv:\n",
+                "  workflow_dispatch:\n\npermissions:\n"
+                "  # Read repository contents for checkout and dependency "
+                "resolution only.\n"
+                "  contents: read\n\nenv:\n",
+            ),
+            (
+                "    if: always() && needs.nox.result != 'skipped'\n"
+                "    runs-on: ubuntu-slim\n"
+                "    env:\n",
+                "    if: always() && needs.nox.result != 'skipped'\n"
+                "    runs-on: ubuntu-slim\n"
+                "    # Drop token permissions: this job only checks matrix "
+                "status from `needs`.\n"
+                "    permissions: {}\n"
+                "    env:\n",
+            ),
+            ("        run: python -m build\n", "        run: python -Im build\n"),
+            (
+                "        run: python -m pip freeze\n",
+                "        run: python -Im pip freeze\n",
+            ),
+            (
+                "    if: always() && needs.test-installation.result != 'skipped'\n"
+                "    runs-on: ubuntu-slim\n"
+                "    env:\n",
+                "    if: always() && needs.test-installation.result != 'skipped'\n"
+                "    runs-on: ubuntu-slim\n"
+                "    # Drop token permissions: this job only checks matrix "
+                "status from `needs`.\n"
+                "    permissions: {}\n"
+                "    env:\n",
+            ),
+            (
+                "        run: |\n"
+                "          mike deploy $MIKE_VERSION\n"
+                "          mike set-default $MIKE_VERSION\n",
+                "        run: |\n"
+                "          # mike is installed as a console script, not a "
+                "runnable module.\n"
+                "          # Run the installed script under isolated mode to "
+                "avoid importing from\n"
+                "          # the workspace when building docs from checked-out "
+                "code.\n"
+                '          python -I "$(command -v mike)" deploy "$MIKE_VERSION"\n'
+                '          python -I "$(command -v mike)" set-default "$MIKE_VERSION"\n',
+            ),
+            (
+                "    permissions:\n      contents: write\n",
+                "    permissions:\n"
+                "      # Push generated documentation updates to the `gh-pages` "
+                "branch.\n"
+                "      contents: write\n",
+            ),
+            (
+                "          python -m frequenz.repo.config.cli.version.mike.info\n",
+                "          python -Im frequenz.repo.config.cli.version.mike.info\n",
+            ),
+            (
+                "        run: |\n"
+                '          mike deploy --update-aliases --title "$TITLE" '
+                '"$VERSION" $ALIASES\n',
+                "        run: |\n"
+                "          # Collect aliases into an array to avoid accidental "
+                "(or malicious)\n"
+                "          # shell injection when passing them to mike.\n"
+                "          aliases=()\n"
+                '          if test -n "$ALIASES"; then\n'
+                '            read -r -a aliases <<<"$ALIASES"\n'
+                "          fi\n"
+                "          # mike is installed as a console script, not a "
+                "runnable module.\n"
+                "          # Run the installed script under isolated mode to "
+                "avoid importing from\n"
+                "          # the workspace when building docs from checked-out "
+                "code.\n"
+                '          python -I "$(command -v mike)" \\\n'
+                '            deploy --update-aliases --title "$TITLE" '
+                '"$VERSION" "${aliases[@]}"\n',
+            ),
+            (
+                "          python -m frequenz.repo.config.cli.version.mike.sort "
+                "versions.json\n",
+                "          python -Im frequenz.repo.config.cli.version.mike.sort "
+                "versions.json\n",
+            ),
+            (
+                "    permissions:\n"
+                "      # We need write permissions on contents to create GitHub "
+                "releases and on\n"
+                "      # discussions to create the release announcement in the "
+                "discussion forums\n"
+                "      contents: write\n"
+                "      discussions: write\n",
+                "    permissions:\n"
+                "      # Create GitHub releases and upload distribution "
+                "artifacts.\n"
+                "      contents: write\n",
+            ),
+            (
+                "          extra_opts=\n"
+                '          if echo "$REF_NAME" | grep -- -; then '
+                'extra_opts=" --prerelease"; fi\n'
+                "          gh release create \\\n"
+                '            -R "$REPOSITORY" \\\n'
+                "            --notes-file RELEASE_NOTES.md \\\n"
+                "            --generate-notes \\\n"
+                "            $extra_opts \\\n"
+                "            $REF_NAME \\\n"
+                "            dist/*\n",
+                "          extra_opts=()\n"
+                '          if echo "$REF_NAME" | grep -- -; then '
+                "extra_opts+=(--prerelease); fi\n"
+                "          gh release create \\\n"
+                '            -R "$REPOSITORY" \\\n'
+                "            --notes-file RELEASE_NOTES.md \\\n"
+                "            --generate-notes \\\n"
+                '            "${extra_opts[@]}" \\\n'
+                '            "$REF_NAME" \\\n'
+                "            dist/*\n",
+            ),
+        ],
+        description="updated main CI workflow",
+    )
+
+
+def migrate_dependabot_workflows() -> None:
+    """Update the generated Dependabot automation workflows."""
+    _migrate_workflow_file(
+        Path(".github/workflows/auto-dependabot.yaml"),
+        [
+            (
+                "permissions:\n  contents: read\n  pull-requests: write\n",
+                "permissions:\n"
+                "  # Read repository contents and Dependabot metadata used by "
+                "the nested action.\n"
+                "  contents: read\n"
+                "  # The nested action also uses `github.token` internally for "
+                "PR operations.\n"
+                "  pull-requests: write\n",
+            ),
+            (
+                "        with:\n"
+                "          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}\n"
+                "          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}\n",
+                "        with:\n"
+                "          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}\n"
+                "          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}\n"
+                "          # Merge Dependabot PRs.\n"
+                "          permission-contents: write\n"
+                "          # Create the auto-merged label if it does not exist.\n"
+                "          permission-issues: write\n"
+                "          # Approve PRs, add labels, and enable auto-merge.\n"
+                "          permission-pull-requests: write\n",
+            ),
+        ],
+        description="updated Dependabot auto-merge workflow",
+    )
+
+    _migrate_workflow_file(
+        Path(".github/workflows/repo-config-migration.yaml"),
+        [
+            (
+                "permissions:\n"
+                "  contents: write\n"
+                "  issues: write\n"
+                "  pull-requests: write\n",
+                "permissions:\n"
+                "  # Commit migration changes back to the PR branch.\n"
+                "  contents: write\n"
+                "  # Create and normalize migration state labels.\n"
+                "  issues: write\n"
+                "  # Read/update pull request metadata and comments.\n"
+                "  pull-requests: write\n",
+            ),
+            (
+                "        with:\n"
+                "          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}\n"
+                "          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}\n",
+                "        with:\n"
+                "          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}\n"
+                "          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}\n"
+                "          # Push migration commits to the PR branch.\n"
+                "          permission-contents: write\n"
+                "          # Manage labels when auto-merging patch-only updates.\n"
+                "          permission-issues: write\n"
+                "          # Approve pull requests and enable auto-merge.\n"
+                "          permission-pull-requests: write\n"
+                "          # Allow pushes when migration changes workflow files.\n"
+                "          permission-workflows: write\n",
+            ),
+        ],
+        description="updated repo-config migration workflow",
+    )
+
+
+def migrate_auxiliary_workflows() -> None:
+    """Update the remaining generated GitHub workflows."""
+    _migrate_workflow_file(
+        Path(".github/workflows/dco-merge-queue.yml"),
+        [
+            (
+                "on:\n  merge_group:\n\njobs:\n",
+                "on:\n  merge_group:\n\n"
+                "# Drop all token permissions: this workflow only runs a local "
+                "echo command.\n"
+                "permissions: {}\n\njobs:\n",
+            ),
+        ],
+        description="updated DCO merge queue workflow",
+    )
+
+    _migrate_workflow_file(
+        Path(".github/workflows/labeler.yml"),
+        [
+            (
+                "    permissions:\n      contents: read\n      pull-requests: write\n",
+                "    permissions:\n"
+                "      # Read the labeler configuration from the repository.\n"
+                "      contents: read\n"
+                "      # Add labels to pull requests.\n"
+                "      pull-requests: write\n",
+            ),
+        ],
+        description="updated labeler workflow",
+    )
+
+    _migrate_workflow_file(
+        Path(".github/workflows/release-notes-check.yml"),
+        _RELEASE_NOTES_CHECK_REPLACEMENTS,
+        description="updated release notes check workflow",
+    )
+
+
+_WORKFLOW_ACTION_PINS: dict[str, str] = {
+    "frequenz-floss/gh-action-setup-git": (
+        "16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0"
+    ),
+    "actions/checkout": "de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2",
+    "yoheimuta/action-protolint": ("e62319541dc5107df5e3a5010acb8987004d3d25 # v1.3.0"),
+    "frequenz-floss/gh-action-nox": (
+        "e1351cf45e05e85afc1c79ab883e06322892d34c # v1.1.0"
+    ),
+    "frequenz-floss/gh-action-setup-python-with-deps": (
+        "0d0d77eac3b54799f31f25a1060ef2c6ebdf9299 # v1.0.2"
+    ),
+    "actions/upload-artifact": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0",
+    "actions/download-artifact": ("3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1"),
+    "pypa/gh-action-pypi-publish": (
+        "ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0"
+    ),
+}
+
+
+def _normalize_content(content: str) -> str:
+    """Normalize content for stable hashing and comparisons."""
+    content = content.replace("\r\n", "\n")
+    if not content.endswith("\n"):
+        content += "\n"
+    return content
+
+
+def _pin_workflow_action_references(content: str) -> str:
+    """Pin known action references, but only when they don't use a hash yet."""
+    hash_pattern = re.compile(r"[0-9a-f]{40}")
+
+    for action, pin in _WORKFLOW_ACTION_PINS.items():
+        pattern = re.compile(
+            rf"(^[ \t]*uses:[ \t]+){re.escape(action)}@(?P<ref>[^ \t#\n]+)"
+            rf"(?:[ \t]+#.*)?$",
+            re.MULTILINE,
+        )
+
+        def replace(
+            match: re.Match[str], *, action: str = action, pin: str = pin
+        ) -> str:
+            ref = match.group("ref")
+            if hash_pattern.fullmatch(ref):
+                return match.group(0)
+            return f"{match.group(1)}{action}@{pin}"
+
+        content = pattern.sub(replace, content)
+
+    return content
+
+
+def _format_missing_patterns(patterns: list[str]) -> str:
+    """Format missing replacement patterns for readable error messages."""
+    return "\n".join(
+        f"Pattern {index}:\n{textwrap.indent(pattern.rstrip(), '    ')}"
+        for index, pattern in enumerate(patterns, start=1)
+    )
+
+
+def _apply_idempotent_replacements(
+    content: str, replacements: list[tuple[str, str]]
+) -> tuple[str, list[str]]:
+    """Apply plain-text replacements without duplicating prior migrations."""
+    pending_missing_patterns: list[tuple[str, str]] = []
+
+    for old, new in replacements:
+        if new in content:
+            continue
+        if old not in content:
+            pending_missing_patterns.append((old, new))
+            continue
+        content = content.replace(old, new)
+
+    missing_patterns = [
+        old for old, new in pending_missing_patterns if new not in content
+    ]
+
+    return content, missing_patterns
+
+
+def _migrate_workflow_file(
+    filepath: Path,
+    replacements: list[tuple[str, str]],
+    *,
+    description: str,
+) -> None:
+    """Apply text replacements to a generated workflow file.
+
+    The migration is optimized for repositories that still use the generated
+    workflow unchanged.  It pins known action references only when they still
+    use tags, leaving already hashed references alone so Dependabot can update
+    them later.
+    """
+    if not filepath.exists():
+        manual_step(
+            f"{filepath} needs updating, but it was not found. Check if the "
+            "file was renamed or is missing and update it manually."
+        )
+        return
+
+    content = _normalize_content(filepath.read_text(encoding="utf-8"))
+
+    updated = _pin_workflow_action_references(content)
+    updated, missing_patterns = _apply_idempotent_replacements(updated, replacements)
+
+    if updated == content:
+        if not missing_patterns:
+            print(f"  Skipped {filepath}: already has the expected updates")
+            return
+
+        manual_step(
+            f"Could not find the expected pattern(s) in {filepath}. "
+            "Please compare it with the latest template and update it manually.\n"
+            f"{_format_missing_patterns(missing_patterns)}"
+        )
+        return
+
+    replace_file_atomically(filepath, updated)
+    print(f"  Updated {filepath}: {description}")
+
+    if missing_patterns:
+        manual_step(
+            f"Updated {filepath}, but could not find the expected pattern(s). "
+            "Please compare it with the latest template and complete the "
+            f"remaining changes manually.\n{_format_missing_patterns(missing_patterns)}"
+        )
 
 
 def apply_patch(patch_content: str) -> None:
