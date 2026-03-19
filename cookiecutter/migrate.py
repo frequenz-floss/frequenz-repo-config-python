@@ -10,7 +10,7 @@ scratch.
 
 To run it, the simplest way is to fetch it from GitHub and run it directly:
 
-    curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/<tag>/cookiecutter/migrate.py | python3
+    curl -sSLf https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/<tag>/cookiecutter/migrate.py | python3 -I
 
 Make sure to replace the `<tag>` to the version you want to migrate to in the URL.
 

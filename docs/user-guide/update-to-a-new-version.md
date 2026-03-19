@@ -115,8 +115,8 @@ The script can also only migrate from one version to the next. If you are
 skipping versions, you will have to run the script multiple times.
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/{{ ref_name }}/cookiecutter/migrate.py \
-	| python3
+curl -sSLf https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/{{ ref_name }}/cookiecutter/migrate.py \
+	| python3 -I
 ```
 
 Make sure that the version (`{{ ref_name }}`) matches the
