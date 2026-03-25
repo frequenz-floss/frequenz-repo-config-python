@@ -5,7 +5,9 @@ on: [pull_request_target]
 jobs:
   Label:
     permissions:
+      # Read the labeler configuration from the repository.
       contents: read
+      # Add labels to pull requests.
       pull-requests: write
     runs-on: ubuntu-slim
     steps:
@@ -18,7 +20,7 @@ jobs:
         # only use hashes to pick the action to execute (instead of tags or branches).
         # For more details read:
         # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
-        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9  # 5.0.0
+        uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b  # v6.0.1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           dot: true

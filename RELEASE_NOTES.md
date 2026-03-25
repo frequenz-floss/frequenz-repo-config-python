@@ -13,7 +13,7 @@
 All upgrading should be done via the migration script or regenerating the templates.
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/<tag>/cookiecutter/migrate.py | python3
+curl -sSLf https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/<tag>/cookiecutter/migrate.py | python3 -I
 ```
 
 But you might still need to adapt your code:
