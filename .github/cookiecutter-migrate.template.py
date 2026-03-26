@@ -21,7 +21,7 @@ And remember to follow any manual instructions for each run.
 """  # noqa: E501
 
 # R0801 is similarity detection, as the template is always similar to the current script
-# pylint: disable=too-many-lines, too-many-locals, too-many-branches, R0801
+# pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, R0801
 
 import hashlib
 import json
