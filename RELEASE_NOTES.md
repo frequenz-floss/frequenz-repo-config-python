@@ -34,4 +34,4 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- Fix migration of CI workflow matrices that used `arch`/`os` dimensions with values different from the default template. The v0.16.0 migration relied on exact string matching, so projects with customized matrix items (for example `arch: [amd64]`, `os: [ubuntu-24.04]`) could be left only partially migrated. The new migration step rebuilds the `platform` entries from the existing `arch`/`os` values and only rewrites `runs-on` when it still points to the old matrix keys.

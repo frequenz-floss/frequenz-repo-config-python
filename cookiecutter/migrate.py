@@ -62,6 +62,9 @@ def main() -> None:
     print("Updating generated CI workflows...")
     migrate_ci_workflows()
     print("=" * 72)
+    print("Fixing missed CI platform matrix migrations...")
+    migrate_missed_platform_matrix()
+    print("=" * 72)
     print("Updating generated Dependabot workflows...")
     migrate_dependabot_workflows()
     print("=" * 72)
@@ -248,6 +251,121 @@ def migrate_ci_workflows() -> None:
         ],
         description="updated main CI workflow",
     )
+
+
+def migrate_missed_platform_matrix() -> None:
+    """Fix platform-matrix migrations missed by the v0.16.0 script.
+
+    The original platform-matrix migration expected literal ``arch`` and ``os``
+    entries from the template. Repositories that customized those values could
+    be left with the old matrix block, sometimes with ``runs-on`` already
+    migrated to ``matrix.platform``. This step rebuilds the ``platform`` list
+    from the existing ``arch`` and ``os`` entries and only updates ``runs-on``
+    when it still references the old matrix keys.
+    """
+    filepath = Path(".github/workflows/ci.yaml")
+    if not filepath.exists():
+        manual_step(
+            f"{filepath} needs updating, but it was not found. Check if the "
+            "file was renamed or is missing and update it manually."
+        )
+        return
+
+    content = _normalize_content(filepath.read_text(encoding="utf-8"))
+    try:
+        updated = _migrate_missed_platform_matrix_content(content)
+    except ValueError as exc:
+        manual_step(
+            f"Could not migrate the old arch/os matrix in {filepath}: {exc}. "
+            "Please compare it with the latest template and update it manually."
+        )
+        return
+
+    if updated == content:
+        print(f"  Skipped {filepath}: platform matrix migration already fixed")
+        return
+
+    replace_file_atomically(filepath, updated)
+    print(f"  Updated {filepath}: fixed missed platform matrix migration")
+
+
+def _migrate_missed_platform_matrix_content(content: str) -> str:
+    """Fix old ``arch``/``os`` matrices left behind by the v0.16.0 migration."""
+    pattern = re.compile(
+        r"^(?P<indent>[ \t]+)arch:\s*\n"
+        r"(?P<arch_items>(?:^(?P=indent)  -[^\n]*\n)+)"
+        r"(?P=indent)os:\s*\n"
+        r"(?P<os_items>(?:^(?P=indent)  -[^\n]*\n)+)",
+        re.MULTILINE,
+    )
+
+    matches = 0
+
+    def replace(match: re.Match[str]) -> str:
+        nonlocal matches
+        matches += 1
+        indent = match.group("indent")
+        arches = _parse_matrix_items(match.group("arch_items"), indent)
+        operating_systems = _parse_matrix_items(match.group("os_items"), indent)
+        platforms = _platforms_from_arch_os(arches, operating_systems)
+        platform_lines = "".join(f"{indent}  - {platform}\n" for platform in platforms)
+        return f"{indent}platform:\n{platform_lines}"
+
+    updated = pattern.sub(replace, content)
+
+    if matches == 0:
+        if "arch:" in content and "os:" in content and "platform:" not in content:
+            raise ValueError("could not match the old arch/os matrix layout")
+        return content
+
+    return re.sub(
+        r"(^[ \t]*runs-on:[ \t]+)(?!\$\{\{\s*matrix\.platform\s*\}\}).*matrix\.(?:os|arch).*$",
+        r"\1${{ matrix.platform }}",
+        updated,
+        flags=re.MULTILINE,
+    )
+
+
+def _parse_matrix_items(items_block: str, indent: str) -> list[str]:
+    """Parse YAML list items from a matrix entry block."""
+    prefix = f"{indent}  - "
+    items: list[str] = []
+
+    for line in items_block.splitlines():
+        if not line.startswith(prefix):
+            continue
+        item = line[len(prefix) :].rstrip()
+        item = item.split(" #", 1)[0].strip()
+        if len(item) >= 2 and item[0] == item[-1] and item[0] in {'"', "'"}:
+            item = item[1:-1]
+        items.append(item)
+
+    return items
+
+
+def _platforms_from_arch_os(
+    arches: list[str], operating_systems: list[str]
+) -> list[str]:
+    """Build platform matrix entries from old arch/os matrix values."""
+    platforms: list[str] = []
+    unsupported_arches = sorted(
+        {arch for arch in arches if arch not in {"amd64", "arm", "arm64"}}
+    )
+    if unsupported_arches:
+        raise ValueError(
+            "unsupported arch values "
+            + ", ".join(f"`{arch}`" for arch in unsupported_arches)
+        )
+
+    for operating_system in operating_systems:
+        for arch in arches:
+            platform = operating_system
+            if arch in {"arm", "arm64"}:
+                platform = f"{operating_system}-arm"
+            if platform not in platforms:
+                platforms.append(platform)
+
+    return platforms
 
 
 def migrate_dependabot_workflows() -> None:
