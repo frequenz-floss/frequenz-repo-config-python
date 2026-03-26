@@ -26,6 +26,12 @@
   closed-source projects. This will be added to file headers and used as the
   license in `pyproject.toml`.
 
+* `private_repo`: Whether the GitHub repository is private. This is used to
+  configure private-repository-specific workflow behavior, such as the release
+  notes check token and whether public publishing jobs are included in
+  `.github/workflows/ci.yaml`. Its default follows the selected license:
+  `MIT` defaults to `no`, `Proprietary` defaults to `yes`.
+
 * `author_name`, `author_email`: The name and email address of the author of
   the project. They will be used in the copyright notice in file headers and
   as the author in `pyproject.toml`.
