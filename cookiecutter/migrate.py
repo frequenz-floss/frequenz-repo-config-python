@@ -26,6 +26,7 @@ And remember to follow any manual instructions for each run.
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -38,6 +39,9 @@ _manual_steps: list[str] = []  # pylint: disable=invalid-name
 def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
+    print("=" * 72)
+    print("Removing unused cross-arch testing files...")
+    remove_cross_arch_files()
     print("=" * 72)
     print()
 
@@ -59,6 +63,126 @@ def main() -> None:
 
     print("\033[0;32m       ✅ Migration script finished successfully ✅\033[0m")
     print()
+
+
+def remove_cross_arch_files() -> None:
+    """Remove unused cross-arch testing containers and documentation.
+
+    The cross-arch QEMU-based testing infrastructure has been removed from
+    the template.  The corresponding GitHub Actions have been archived:
+
+    - frequenz-floss/gh-action-nox-cross-arch
+    - frequenz-floss/gh-action-test-pip-install-cross-arch
+    - frequenz-floss/gh-action-run-python-in-qemu
+
+    This step removes the leftover container files and the "Cross-Arch
+    Testing" section from CONTRIBUTING.md.  Before removing anything it
+    checks that no workflow still references the files or actions.
+    """
+    # Heuristic: if any workflow still references cross-arch containers or
+    # the archived actions, bail out and ask for manual intervention.
+    cross_arch_patterns = [
+        "nox-cross-arch",
+        "test-pip-install-cross-arch",
+        "run-python-in-qemu",
+    ]
+    workflows_dir = Path(".github/workflows")
+    if workflows_dir.is_dir():
+        for wf in sorted(workflows_dir.iterdir()):
+            if wf.suffix not in (".yml", ".yaml"):
+                continue
+            try:
+                content = wf.read_text(encoding="utf-8")
+            except OSError:
+                continue
+            for pattern in cross_arch_patterns:
+                if pattern in content:
+                    manual_step(
+                        f"{wf} still references '{pattern}'. "
+                        "Please remove those references before deleting the "
+                        "cross-arch container files."
+                    )
+                    return
+
+    # Files and directories to remove.
+    paths_to_remove = [
+        Path(".github/containers/nox-cross-arch"),
+        Path(".github/containers/test-installation"),
+    ]
+
+    for path in paths_to_remove:
+        if not path.exists():
+            print(f"  Skipped {path}: does not exist")
+            continue
+        try:
+            if path.is_dir():
+                shutil.rmtree(path)
+            else:
+                path.unlink()
+            print(f"  Removed {path}")
+        except OSError as exc:
+            manual_step(f"Failed to remove {path}: {exc}")
+
+    # Clean up the now-empty .github/containers directory if present.
+    containers_dir = Path(".github/containers")
+    if containers_dir.is_dir():
+        try:
+            remaining: list[Path | None] = list(containers_dir.iterdir())
+        except OSError:
+            remaining = [None]  # non-empty sentinel
+        if not remaining:
+            try:
+                containers_dir.rmdir()
+                print(f"  Removed empty {containers_dir}")
+            except OSError as exc:
+                manual_step(f"Failed to remove empty {containers_dir}: {exc}")
+
+    # Remove the "Cross-Arch Testing" section from CONTRIBUTING.md.
+    contributing = Path("CONTRIBUTING.md")
+    if not contributing.exists():
+        print(f"  Skipped {contributing}: does not exist")
+        return
+
+    try:
+        text = contributing.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(f"Failed to read {contributing}: {exc}")
+        return
+
+    section_header = "##  Cross-Arch Testing"
+    if section_header not in text:
+        print(f"  Skipped {contributing}: 'Cross-Arch Testing' section not found")
+        return
+
+    # Drop everything from the section header to the end of the file (the
+    # section was always the last one) or up to the next same-level heading.
+    lines = text.split("\n")
+    new_lines: list[str] = []
+    in_section = False
+    for line in lines:
+        if line.startswith(section_header):
+            in_section = True
+            # Remove the blank line just before the heading if present.
+            while new_lines and new_lines[-1].strip() == "":
+                new_lines.pop()
+            continue
+        if in_section and line.startswith("## "):
+            in_section = False
+        if not in_section:
+            new_lines.append(line)
+
+    new_text = "\n".join(new_lines)
+    if not new_text.endswith("\n"):
+        new_text += "\n"
+
+    try:
+        replace_file_atomically(contributing, new_text)
+        print(f"  Updated {contributing}: removed 'Cross-Arch Testing' section")
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {contributing}: {exc}. "
+            "Please remove the 'Cross-Arch Testing' section manually."
+        )
 
 
 def apply_patch(patch_content: str) -> None:
