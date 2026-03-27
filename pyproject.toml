@@ -65,7 +65,7 @@ model = []
 extra-lint-examples = [
   "pylint >= 2.17.3, < 5",
   "pytest >= 7.3.0, < 10",
-  "sybil >= 6.1.1, < 10",
+  "sybil >= 6.1.1, < 11",
 ]
 dev-flake8 = [
   "flake8 == 7.3.0",
@@ -109,7 +109,7 @@ dev-pytest = [
   "pylint == 4.0.5", # We need this to check for the examples
   "cookiecutter == 2.7.1", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
-  "sybil >= 6.1.1, < 10", # Should be consistent with the extra-lint-examples dependency
+  "sybil >= 6.1.1, < 11", # Should be consistent with the extra-lint-examples dependency
   # This is a hack to overcome an outdated version check in requests, see
   # https://github.com/frequenz-floss/frequenz-repo-config-python/issues/527
   "chardet < 6",
