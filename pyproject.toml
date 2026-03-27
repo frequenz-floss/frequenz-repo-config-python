@@ -2,7 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 [build-system]
-requires = ["setuptools == 82.0.1", "setuptools_scm[toml] == 9.2.2"]
+requires = ["setuptools == 82.0.1", "setuptools_scm[toml] == 10.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
