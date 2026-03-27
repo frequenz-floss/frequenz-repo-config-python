@@ -1,0 +1,187 @@
+# License: Proprietary
+# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
+
+[build-system]
+requires = [
+  "setuptools == 80.9.0",
+  "setuptools_scm[toml] == 8.1.0",
+  "frequenz-repo-config[lib] == 0.17.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "frequenz-test"
+description = "Test description"
+readme = "README.md"
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
+keywords = ["frequenz", "python", "lib", "library", "test"]
+# TODO(cookiecutter): Remove and add more classifiers if appropriate
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+requires-python = ">= 3.11, < 4"
+# TODO(cookiecutter): Remove and add more dependencies if appropriate
+dependencies = [
+  "typing-extensions >= 4.14.1, < 5",
+]
+dynamic = ["version"]
+
+[[project.authors]]
+name = "Frequenz Energy-as-a-Service GmbH"
+email = "floss@frequenz.com"
+
+# TODO(cookiecutter): Remove and add more optional dependencies if appropriate
+[project.optional-dependencies]
+dev-flake8 = [
+  "flake8 == 7.3.0",
+  "flake8-datetimez == 20.10.0",
+  "flake8-docstrings == 1.7.0",
+  "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
+  "pydoclint == 0.6.10",
+  "pydocstyle == 6.3.0",
+]
+dev-formatting = ["black == 25.1.0", "isort == 6.0.0"]
+dev-mkdocs = [
+  "Markdown == 3.8.2",
+  "black == 25.1.0",
+  "mike == 2.1.3",
+  "mkdocs-gen-files == 0.5.0",
+  "mkdocs-literate-nav == 0.6.2",
+  "mkdocs-macros-plugin == 1.3.9",
+  "mkdocs-material == 9.6.18",
+  "mkdocstrings[python] == 1.0.0",
+  "mkdocstrings-python == 2.0.1",
+  "frequenz-repo-config[lib] == 0.17.0",
+]
+dev-mypy = [
+  "mypy == 1.9.0",
+  "types-Markdown == 3.8.0.20250809",
+  # For checking the noxfile, docs/ script, and tests
+  "frequenz-test[dev-mkdocs,dev-noxfile,dev-pytest]",
+]
+dev-noxfile = [
+  "nox == 2025.5.1",
+  "frequenz-repo-config[lib] == 0.17.0",
+]
+dev-pylint = [
+  # dev-pytest already defines a dependency to pylint because of the examples
+  # For checking the noxfile, docs/ script, and tests
+  "frequenz-test[dev-mkdocs,dev-noxfile,dev-pytest]",
+]
+dev-pytest = [
+  "pytest == 8.4.1",
+  "pylint == 3.3.8",       # We need this to check for the examples
+  "frequenz-repo-config[extra-lint-examples] == 0.17.0",
+  "pytest-mock == 3.14.0",
+  "pytest-asyncio == 1.1.0",
+  "async-solipsism == 0.8",
+]
+dev = [
+  "frequenz-test[dev-mkdocs,dev-flake8,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
+]
+
+[project.urls]
+Documentation = "https://frequenz-floss.github.io/frequenz-test-python/"
+Changelog = "https://github.com/frequenz-floss/frequenz-test-python/releases"
+Issues = "https://github.com/frequenz-floss/frequenz-test-python/issues"
+Repository = "https://github.com/frequenz-floss/frequenz-test-python"
+Support = "https://github.com/frequenz-floss/frequenz-test-python/discussions/categories/support"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+src_paths = ["benchmarks", "examples", "src", "tests"]
+
+[tool.flake8]
+# We give some flexibility to go over 88, there are cases like long URLs or
+# code in documenation that have extra indentation. Black will still take care
+# of making everything that can be 88 wide, 88 wide.
+max-line-length = 100
+extend-ignore = [
+  "E203", # Whitespace before ':' (conflicts with black)
+  "W503", # Line break before binary operator (conflicts with black)
+]
+# pydoclint options
+style = "google"
+check-return-types = false
+check-yield-types = false
+arg-type-hints-in-docstring = false
+arg-type-hints-in-signature = true
+allow-init-docstring = true
+check-class-attributes = false
+
+[tool.pylint.similarities]
+ignore-comments = ['yes']
+ignore-docstrings = ['yes']
+ignore-imports = ['no']
+min-similarity-lines = 40
+
+[tool.pylint.messages_control]
+disable = [
+  "too-few-public-methods",
+  "too-many-return-statements",
+  # disabled because it conflicts with isort
+  "wrong-import-order",
+  "ungrouped-imports",
+  # Checked by mypy (and pylint is very flaky checking these)
+  "unsubscriptable-object",
+  "no-member",
+  "no-name-in-module",
+  "possibly-used-before-assignment",
+  # Checked by flake8
+  "f-string-without-interpolation",
+  "line-too-long",
+  "missing-function-docstring",
+  "redefined-outer-name",
+  "unnecessary-lambda-assignment",
+  "unused-import",
+  "unused-variable",
+]
+
+[tool.pytest.ini_options]
+addopts = "-vv"
+filterwarnings = [
+  "error",
+  "once::DeprecationWarning",
+  "once::PendingDeprecationWarning",
+  # We ignore warnings about protobuf gencode version being one version older
+  # than the current version, as this is supported by protobuf, and we expect to
+  # have such cases. If we go too far, we will get a proper error anyways.
+  # We use a raw string (single quotes) to avoid the need to escape special
+  # characters as this is a regex.
+  'ignore:Protobuf gencode version .*exactly one major version older.*:UserWarning',
+]
+testpaths = ["tests", "src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+required_plugins = ["pytest-asyncio", "pytest-mock"]
+
+[tool.mypy]
+explicit_package_bases = true
+namespace_packages = true
+# This option disables mypy cache, and it is sometimes useful to enable it if
+# you are getting weird intermittent error, or error in the CI but not locally
+# (or vice versa). In particular errors saying that type: ignore is not
+# used but getting the original ignored error when removing the type: ignore.
+# See for example: https://github.com/python/mypy/issues/2960
+#no_incremental = true
+packages = ["frequenz.test"]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["mkdocs_macros.*", "sybil", "sybil.*"]
+ignore_missing_imports = true
+
+[tool.setuptools_scm]
+version_scheme = "post-release"

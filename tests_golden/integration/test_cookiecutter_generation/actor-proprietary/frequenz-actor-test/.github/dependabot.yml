@@ -1,0 +1,75 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+    labels:
+      - "part:tooling"
+      - "type:tech-debt"
+    # Default versioning-strategy. For other versioning-strategy see:
+    # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#versioning-strategy
+    versioning-strategy: auto
+    # Allow up to 10 open pull requests for updates to dependency versions
+    open-pull-requests-limit: 10
+    # We group patch updates as they should always work.
+    # We also group minor updates, as it works too for most libraries,
+    # typically except libraries that don't have a stable release yet (v0.x.x
+    # branch), so we make some exceptions for them.
+    # Major updates and dependencies excluded by the above groups are still
+    # managed, but they'll create one PR per dependency, as breakage is
+    # expected, so it might need manual intervention.
+    # Finally, we group some dependencies that are related to each other, and
+    # usually need to be updated together.
+    groups:
+      patch:
+        update-types:
+          - "patch"
+        exclude-patterns:
+          # pydoclint has shipped breaking changes in patch updates often
+          - "pydoclint"
+      minor:
+        update-types:
+          - "minor"
+        exclude-patterns:
+          - "async-solipsism"
+          - "frequenz-repo-config"
+          - "frequenz-repo-config[actor]"
+          - "frequenz-repo-config[extra-lint-examples]"
+          - "markdown-callouts"
+          - "mkdocs-gen-files"
+          - "mkdocs-literate-nav"
+          - "mkdocstrings*"
+          - "mkdocstrings[python]"
+          - "pydoclint"
+          - "pytest-asyncio"
+      # We group repo-config updates as it uses optional dependencies that are
+      # considered different dependencies otherwise, and will create one PR for
+      # each if we don't group them.
+      repo-config:
+        patterns:
+          - "frequenz-repo-config"
+          - "frequenz-repo-config[actor]"
+          - "frequenz-repo-config[extra-lint-examples]"
+      mkdocstrings:
+        patterns:
+          - "mkdocstrings*"
+          - "mkdocstrings[python]"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+    labels:
+      - "part:tooling"
+      - "type:tech-debt"
+    groups:
+      compatible:
+        update-types:
+          - "minor"
+          - "patch"
+      artifacts:
+        patterns:
+          - "actions/*-artifact"

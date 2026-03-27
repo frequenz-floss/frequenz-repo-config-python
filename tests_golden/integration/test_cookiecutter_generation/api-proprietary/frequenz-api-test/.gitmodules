@@ -1,0 +1,3 @@
+[submodule "submodules/frequenz-api-common"]
+	path = submodules/frequenz-api-common
+	url = https://github.com/frequenz-floss/frequenz-api-common.git

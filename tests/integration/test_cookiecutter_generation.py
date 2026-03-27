@@ -26,15 +26,25 @@ Make sure to review the changes before committing them and setting this back to 
 """
 
 
-@pytest.mark.integration
-@pytest.mark.cookiecutter
-@pytest.mark.parametrize("repo_type", [*config.RepositoryType])
-def test_golden(
-    tmp_path: pathlib.Path,
-    repo_type: config.RepositoryType,
-    request: pytest.FixtureRequest,
-) -> None:
-    """Test generation of a new repo comparing it to a golden tree."""
+PROPRIETARY_TEST_REPO_TYPE = config.RepositoryType.API
+
+
+def _license_context(license_name: str) -> dict[str, str] | None:
+    """Get extra cookiecutter context for a license override."""
+    if license_name == "MIT":
+        return None
+    return {"license": license_name}
+
+
+def _golden_case_name(repo_type: config.RepositoryType, *, license_name: str) -> str:
+    """Get the golden test case name for a repository type and license."""
+    if license_name == "MIT":
+        return repo_type.value
+    return f"{repo_type.value}-{license_name.lower()}"
+
+
+def _golden_test_env() -> dict[str, str]:
+    """Get a deterministic environment for golden cookiecutter tests."""
     env = os.environ.copy()
     env.update(
         # Make sure file sorting, dates, etc. are deterministic.
@@ -45,17 +55,31 @@ def test_golden(
         # some flaky outputs can be disabled.
         GOLDEN_TEST="1",
     )
+    return env
 
+
+def _assert_golden_generation(
+    tmp_path: pathlib.Path,
+    repo_type: config.RepositoryType,
+    request: pytest.FixtureRequest,
+    *,
+    license_name: str = "MIT",
+) -> None:
+    """Assert a generated repository matches its golden files."""
     cwd = pathlib.Path().cwd()
     golden_path = (
         cwd
         / "tests_golden"
         / request.path.relative_to(cwd / "tests").with_suffix("")
-        / repo_type.value
+        / _golden_case_name(repo_type, license_name=license_name)
     )
 
     generated_repo_path, run_result = _generate_repo(
-        repo_type, tmp_path, capture_output=True, env=env
+        repo_type,
+        tmp_path,
+        capture_output=True,
+        extra_context=_license_context(license_name),
+        env=_golden_test_env(),
     )
     stdout, stderr = _filter_generation_output(run_result)
     _assert_golden_file(golden_path, "cookiecutter-stdout", stdout)
@@ -66,23 +90,88 @@ def test_golden(
     )
 
 
-@pytest.mark.integration
-@pytest.mark.cookiecutter
-@pytest.mark.parametrize("repo_type", [*config.RepositoryType])
-def test_generation(tmp_path: pathlib.Path, repo_type: config.RepositoryType) -> None:
-    """Test generation of a new repo."""
+def _assert_generated_repo_checks(
+    tmp_path: pathlib.Path,
+    repo_type: config.RepositoryType,
+    *,
+    license_name: str = "MIT",
+) -> None:
+    """Assert a generated repository passes the basic nox checks."""
     cwd = pathlib.Path().cwd()
-    repo_path, _ = _generate_repo(repo_type, tmp_path)
+    repo_path, _ = _generate_repo(
+        repo_type, tmp_path, extra_context=_license_context(license_name)
+    )
     _run(repo_path, "python3", "-m", "venv", ".venv")
 
     _update_pyproject_repo_config_dep(
         repo_config_path=cwd, repo_type=repo_type, repo_path=repo_path
     )
 
+    env = os.environ.copy()
+    env["SETUPTOOLS_SCM_PRETEND_VERSION_FOR_FREQUENZ_REPO_CONFIG"] = "0.0.0"
     cmd = ". .venv/bin/activate; pip install .[dev-noxfile]; nox -e ci_checks_max pytest_min"
     print()
     print(f"Running in shell [{repo_path}]: {cmd}")
-    subprocess.run(cmd, shell=True, cwd=repo_path, check=True)
+    subprocess.run(cmd, shell=True, cwd=repo_path, check=True, env=env)
+
+
+@pytest.mark.integration
+@pytest.mark.cookiecutter
+@pytest.mark.parametrize(
+    ("repo_type", "license_name"),
+    [
+        *(
+            pytest.param(repo_type, "MIT", id=repo_type.value)
+            for repo_type in config.RepositoryType
+        ),
+        *(
+            pytest.param(
+                repo_type,
+                "Proprietary",
+                id=f"{repo_type.value}-proprietary",
+            )
+            for repo_type in config.RepositoryType
+        ),
+    ],
+)
+def test_golden(
+    tmp_path: pathlib.Path,
+    repo_type: config.RepositoryType,
+    license_name: str,
+    request: pytest.FixtureRequest,
+) -> None:
+    """Test generation of a new repo comparing it to a golden tree."""
+    _assert_golden_generation(
+        tmp_path,
+        repo_type,
+        request,
+        license_name=license_name,
+    )
+
+
+@pytest.mark.integration
+@pytest.mark.cookiecutter
+@pytest.mark.parametrize(
+    ("repo_type", "license_name"),
+    [
+        *(
+            pytest.param(repo_type, "MIT", id=repo_type.value)
+            for repo_type in config.RepositoryType
+        ),
+        pytest.param(
+            PROPRIETARY_TEST_REPO_TYPE,
+            "Proprietary",
+            id=f"{PROPRIETARY_TEST_REPO_TYPE.value}-proprietary",
+        ),
+    ],
+)
+def test_generation(
+    tmp_path: pathlib.Path,
+    repo_type: config.RepositoryType,
+    license_name: str,
+) -> None:
+    """Test generation of a new repo."""
+    _assert_generated_repo_checks(tmp_path, repo_type, license_name=license_name)
 
 
 def _generate_repo(
@@ -91,9 +180,14 @@ def _generate_repo(
     /,
     *,
     capture_output: bool = False,
+    extra_context: dict[str, str] | None = None,
     env: dict[str, str] | None = None,
 ) -> tuple[pathlib.Path, subprocess.CompletedProcess[bytes]]:
     cwd = pathlib.Path().cwd()
+    extra_args: list[str] = []
+    if extra_context:
+        extra_args.extend(f"{key}={value}" for key, value in extra_context.items())
+
     run_result = _run(
         tmp_path,
         "cookiecutter",
@@ -102,6 +196,7 @@ def _generate_repo(
         f"type={repo_type.value}",
         "name=test",
         "description=Test description",
+        *extra_args,
         capture_output=capture_output,
         env=env,
     )
