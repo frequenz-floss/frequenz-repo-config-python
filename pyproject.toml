@@ -112,7 +112,7 @@ dev-pytest = [
   "sybil >= 6.1.1, < 10", # Should be consistent with the extra-lint-examples dependency
   # This is a hack to overcome an outdated version check in requests, see
   # https://github.com/frequenz-floss/frequenz-repo-config-python/issues/527
-  "chardet < 6",
+  "chardet < 7",
 ]
 dev = [
   "frequenz-repo-config[dev-mkdocs,dev-flake8,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
