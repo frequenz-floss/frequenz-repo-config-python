@@ -26,7 +26,7 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Add a `black-migration.yaml` workflow that automatically reformats code when Dependabot upgrades `black`.
 
 ## Bug Fixes
 
