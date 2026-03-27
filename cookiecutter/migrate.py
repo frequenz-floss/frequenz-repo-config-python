@@ -37,6 +37,102 @@ from typing import Any, SupportsIndex
 _manual_steps: list[str] = []  # pylint: disable=invalid-name
 
 
+_BLACK_MIGRATION_WORKFLOW = (
+    """\
+# Automatic black formatting migration for Dependabot PRs
+#
+# When Dependabot upgrades black, this workflow installs the new version
+# and runs `black .` so the PR already contains any formatting changes
+# introduced by the upgrade, while leaving the PR open for review.
+#
+# Black uses calendar versioning.  Only the first release of a new calendar
+# year may introduce formatting changes (major bump in Dependabot's terms).
+# Minor and patch updates within a year keep formatting stable, so they stay
+# in the regular Dependabot groups and are auto-merged normally.
+#
+# The companion auto-dependabot workflow skips major black PRs so they're
+# handled exclusively by this migration workflow.
+#
+# XXX: !!! SECURITY WARNING !!!
+# pull_request_target has write access to the repo, and can read secrets.
+# This is required because Dependabot PRs are treated as fork PRs: the
+# GITHUB_TOKEN is read-only and secrets are unavailable with a plain
+# pull_request trigger.  The action mitigates the risk by:
+#   - Never executing code from the PR (the migration script is embedded
+#     in this workflow file on the base branch, not taken from the PR).
+#   - Gating migration steps on github.actor == 'dependabot[bot]'.
+#   - Running checkout with persist-credentials: false and isolating
+#     push credentials from the migration script environment.
+# For more details read:
+# https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+
+name: Black Migration
+
+on:
+  merge_group:  # To allow using this as a required check for merging
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  # Commit reformatted files back to the PR branch.
+  contents: write
+  # Create and normalize migration state labels.
+  issues: write
+  # Read/update pull request metadata and comments.
+  pull-requests: write
+
+jobs:
+  black-migration:
+    name: Migrate Black
+    # Skip if it was triggered by the merge queue. We only need the workflow to
+    # be executed to meet the "Required check" condition for merging, but we
+    # don't need to actually run the job, having the job present as Skipped is
+    # enough.
+    if: |
+      github.event_name == 'pull_request_target' &&
+      github.actor == 'dependabot[bot]' &&
+      contains(github.event.pull_request.title, 'Bump black from ')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate token
+        id: create-app-token
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        with:
+          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
+          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+          # Push reformatted files to the PR branch.
+          permission-contents: write
+          # Create and normalize migration state labels.
+          permission-issues: write
+          # Read/update pull request metadata and labels.
+          permission-pull-requests: write
+      - name: Migrate
+        uses: frequenz-floss/gh-action-dependabot-migrate@"""
+    # Broken just to avoid flake8 maximum line length check
+    """b389f72f9282346920150a67495efbae450ac07b  # v1.1.0"
+        with:
+          migration-script: |
+            import os
+            import subprocess
+            import sys
+
+            version = os.environ["MIGRATION_VERSION"].lstrip("v")
+            subprocess.run(
+                [sys.executable, "-Im", "pip", "install", f"black=={version}"],
+                check=True,
+            )
+            subprocess.run([sys.executable, "-Im", "black", "."], check=True)
+          token: ${{ steps.create-app-token.outputs.token }}
+          auto-merge-on-changes: "false"
+          sign-commits: "true"
+          auto-merged-label: "tool:auto-merged"
+          migrated-label: "tool:black:migration:executed"
+          intervention-pending-label: "tool:black:migration:intervention-pending"
+          intervention-done-label: "tool:black:migration:intervention-done"
+"""
+)
+
+
 _RELEASE_NOTES_CHECK_REPLACEMENTS = [
     (
         "    permissions:\n      pull-requests: read\n",
@@ -64,6 +160,9 @@ def main() -> None:
     print("=" * 72)
     print("Updating generated Dependabot workflows...")
     migrate_dependabot_workflows()
+    print("=" * 72)
+    print("Creating black migration workflow...")
+    _migrate_black_migration_workflow()
     print("=" * 72)
     print("Updating auxiliary GitHub workflows...")
     migrate_auxiliary_workflows()
@@ -279,6 +378,16 @@ def migrate_dependabot_workflows() -> None:
                 "          # Approve PRs, add labels, and enable auto-merge.\n"
                 "          permission-pull-requests: write\n",
             ),
+            (
+                "      !contains(github.event.pull_request.title, "
+                "'the repo-config group')\n"
+                "    runs-on:",
+                "      !contains(github.event.pull_request.title, "
+                "'the repo-config group') &&\n"
+                "      !contains(github.event.pull_request.title, "
+                "'Bump black from ')\n"
+                "    runs-on:",
+            ),
         ],
         description="updated Dependabot auto-merge workflow",
     )
@@ -356,6 +465,14 @@ def migrate_auxiliary_workflows() -> None:
         _RELEASE_NOTES_CHECK_REPLACEMENTS,
         description="updated release notes check workflow",
     )
+
+
+def _migrate_black_migration_workflow() -> None:
+    """Create or replace the black formatting migration workflow."""
+    filepath = Path(".github/workflows/black-migration.yaml")
+    action = "Updated" if filepath.exists() else "Created"
+    replace_file_atomically(filepath, _BLACK_MIGRATION_WORKFLOW)
+    print(f"  {action} {filepath}: black formatting migration workflow")
 
 
 _WORKFLOW_ACTION_PINS: dict[str, str] = {
