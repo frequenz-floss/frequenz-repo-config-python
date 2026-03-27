@@ -1,28 +1,28 @@
 {
   "cookiecutter": {
     "Introduction": "",
-    "type": "lib",
+    "type": "actor",
     "name": "test",
     "description": "Test description",
-    "title": "Frequenz Test Library",
+    "title": "Frequenz Test Actor",
     "keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
     "github_org": "frequenz-floss",
-    "license": "MIT",
-    "private_repo": "no",
+    "license": "Proprietary",
+    "private_repo": "yes",
     "author_name": "Frequenz Energy-as-a-Service GmbH",
     "author_email": "floss@frequenz.com",
-    "python_package": "frequenz.test",
-    "pypi_package_name": "frequenz-test",
-    "github_repo_name": "frequenz-test-python",
+    "python_package": "frequenz.actor.test",
+    "pypi_package_name": "frequenz-actor-test",
+    "github_repo_name": "frequenz-actor-test",
     "default_codeowners": "(like @some-org/some-team; defaults to a team based on the repo type)"
   },
   "_cookiecutter": {
     "Introduction": "{{cookiecutter | introduction}}",
     "type": [
-      "lib",
       "actor",
       "api",
       "app",
+      "lib",
       "model"
     ],
     "name": "test",
@@ -31,8 +31,8 @@
     "keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
     "github_org": "frequenz-floss",
     "license": [
-      "MIT",
-      "Proprietary"
+      "Proprietary",
+      "MIT"
     ],
     "private_repo": [
       "{{ 'yes' if cookiecutter.license == 'Proprietary' else 'no' }}",
