@@ -24,10 +24,11 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+        with:
+          username: ${{ secrets.GIT_USER }}
+          password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% endif %}{% raw %}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -58,9 +59,10 @@ jobs:
         with:
           python-version: "3.11"
           nox-session: ci_checks_max
-          # TODO(cookiecutter): Uncomment this for projects with private dependencies
-          # git-username: ${{ secrets.GIT_USER }}
-          # git-password: ${{ secrets.GIT_PASS }}
+          {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+          git-username: ${{ secrets.GIT_USER }}
+          git-password: ${{ secrets.GIT_PASS }}
+          {%- endraw %}{% endif %}{% raw %}
 
   test-docs:
     name: Test documentation website generation
@@ -68,10 +70,11 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+        with:
+          username: ${{ secrets.GIT_USER }}
+          password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% endif %}{% raw %}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
