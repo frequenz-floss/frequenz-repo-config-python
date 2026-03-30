@@ -110,9 +110,6 @@ dev-pytest = [
   "cookiecutter == 2.7.1", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
   "sybil >= 6.1.1, < 11", # Should be consistent with the extra-lint-examples dependency
-  # This is a hack to overcome an outdated version check in requests, see
-  # https://github.com/frequenz-floss/frequenz-repo-config-python/issues/527
-  "chardet < 6",
 ]
 dev = [
   "frequenz-repo-config[dev-mkdocs,dev-flake8,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
