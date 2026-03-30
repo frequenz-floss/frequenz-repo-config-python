@@ -151,6 +151,16 @@ _RELEASE_NOTES_CHECK_REPLACEMENTS = [
 ]
 
 
+_PRIVATE_REPO_CI_OPTIONAL_PATTERNS = {
+    "    permissions:\n      contents: write\n",
+    "          python -m frequenz.repo.config.cli.version.mike.info\n",
+    "        run: |\n"
+    '          mike deploy --update-aliases --title "$TITLE" "$VERSION" '
+    "$ALIASES\n",
+    "          python -m frequenz.repo.config.cli.version.mike.sort versions.json\n",
+}
+
+
 def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
@@ -191,6 +201,8 @@ def main() -> None:
 
 def migrate_ci_workflows() -> None:
     """Update the generated CI workflows to the latest template."""
+    is_private_repo = has_private_repo_indicators()
+
     _migrate_workflow_file(
         Path(".github/workflows/ci-pr.yaml"),
         [
@@ -219,8 +231,15 @@ def migrate_ci_workflows() -> None:
         description="updated CI pull-request workflow",
     )
 
+    ci_workflow = Path(".github/workflows/ci.yaml")
+    private_ci_publish_jobs: list[str] = []
+    if is_private_repo and ci_workflow.exists():
+        private_ci_publish_jobs = find_ci_publish_jobs(
+            _normalize_content(ci_workflow.read_text(encoding="utf-8"))
+        )
+
     _migrate_workflow_file(
-        Path(".github/workflows/ci.yaml"),
+        ci_workflow,
         [
             (
                 "  workflow_dispatch:\n\nenv:\n",
@@ -346,7 +365,18 @@ def migrate_ci_workflows() -> None:
             ),
         ],
         description="updated main CI workflow",
+        ignore_missing_patterns=(
+            _PRIVATE_REPO_CI_OPTIONAL_PATTERNS if is_private_repo else None
+        ),
     )
+
+    if is_private_repo and private_ci_publish_jobs:
+        jobs = ", ".join(f"`{job}`" for job in private_ci_publish_jobs)
+        manual_step(
+            f"{ci_workflow} still contains {jobs}. This repository appears to be "
+            "private, so those publish jobs usually should be removed manually "
+            "after the migration, even though the workflow was updated."
+        )
 
 
 def migrate_dependabot_workflows() -> None:
@@ -561,6 +591,7 @@ def _migrate_workflow_file(
     replacements: list[tuple[str, str]],
     *,
     description: str,
+    ignore_missing_patterns: set[str] | None = None,
 ) -> None:
     """Apply text replacements to a generated workflow file.
 
@@ -580,6 +611,12 @@ def _migrate_workflow_file(
 
     updated = _pin_workflow_action_references(content)
     updated, missing_patterns = _apply_idempotent_replacements(updated, replacements)
+    if ignore_missing_patterns:
+        missing_patterns = [
+            pattern
+            for pattern in missing_patterns
+            if pattern not in ignore_missing_patterns
+        ]
 
     if updated == content:
         if not missing_patterns:
@@ -849,6 +886,49 @@ def read_cookiecutter_str_var(name: str) -> str | None:
         return None
 
     return value
+
+
+def has_private_repo_indicators() -> bool:
+    """Return whether the repository appears to be private."""
+    github_org = read_cookiecutter_str_var("github_org")
+    if github_org is not None and github_org != "frequenz-floss":
+        return True
+
+    license_name = read_cookiecutter_str_var("license")
+    if license_name == "Proprietary":
+        return True
+
+    pyproject_path = Path("pyproject.toml")
+    if pyproject_path.exists():
+        pyproject = _normalize_content(pyproject_path.read_text(encoding="utf-8"))
+        if 'license = "LicenseRef-Proprietary"' in pyproject:
+            return True
+
+    try:
+        stdout = subprocess.check_output(
+            ["gh", "repo", "view", "--json", "owner"],
+            text=True,
+            stderr=subprocess.PIPE,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return False
+
+    try:
+        info: dict[str, Any] = json.loads(stdout)
+        owner: str = info["owner"]["login"]
+    except (KeyError, TypeError, json.JSONDecodeError):
+        return False
+
+    return owner != "frequenz-floss"
+
+
+def find_ci_publish_jobs(content: str) -> list[str]:
+    """Return CI publish job names found in the workflow content."""
+    jobs: list[str] = []
+    for job_name in ("publish-docs", "publish-to-pypi"):
+        if f"\n  {job_name}:\n" in f"\n{content}":
+            jobs.append(job_name)
+    return jobs
 
 
 def manual_step(message: str) -> None:
