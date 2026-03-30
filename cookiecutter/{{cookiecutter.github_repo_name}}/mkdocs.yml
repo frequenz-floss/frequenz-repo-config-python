@@ -71,6 +71,7 @@ markdown_extensions:
   - attr_list
   - def_list
   - footnotes
+  - github-callouts
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
@@ -141,3 +142,5 @@ watch:
   - "{{cookiecutter | src_path}}"
   - README.md
   - CONTRIBUTING.md
+  - DEVELOPMENT.md
+  - MAINTAINERS.md
