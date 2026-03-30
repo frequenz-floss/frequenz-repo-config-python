@@ -178,16 +178,65 @@ The workflow requires:
 ### Interaction with other workflows
 
 The `auto-dependabot.yaml` workflow has a job-level `if` condition that
-**skips** PRs containing `the repo-config group` in the title. This ensures
-repo-config dependency updates are handled exclusively by the migration
-workflow, while all other [Dependabot] PRs continue to be auto-approved and
-merged by the existing workflow.
+**skips** PRs containing `the repo-config group` or `Bump black from ` in the
+title.  This ensures those dependency updates are handled exclusively by their
+respective migration workflows, while all other [Dependabot] PRs continue to
+be auto-approved and merged by the existing workflow.
 
 The `github-actions` ecosystem updates to the *caller workflow itself* (i.e.
 bumping the action's `@<sha>` reference) produce PRs with `the compatible
-group` in the title, which does **not** match the migration workflow's `if`
+group` in the title, which does **not** match any migration workflow's `if`
 condition.  These PRs are handled normally by `auto-dependabot.yaml`.
 
+## Black formatting migration workflow
+
+Projects generated from the template also include a workflow
+(`black-migration.yaml`) that automatically reformats code when [Dependabot]
+upgrades `black` to a new major version.
+
+`black` uses [calendar versioning][calver]: the first component is the year,
+the second the month, and the third a patch number.  Its [stability
+policy][black-stability] guarantees that formatting output stays unchanged
+within the same calendar year, so only the first release of a new year (which
+[Dependabot] treats as a **major** bump) may introduce formatting changes.
+Minor and patch updates remain in the regular [Dependabot] groups and are
+auto-merged normally.
+
+Because major updates are not part of any dependency group, [Dependabot]
+already creates an individual PR for them (titled `Bump black from …`).  No
+extra dependency group or group exclusions are needed.
+
+The workflow uses the same
+[`gh-action-dependabot-migrate`][gh-action-dependabot-migrate] action as the
+repo-config migration, but with an **inline migration script** instead of a
+URL template.  Because the script is embedded in the workflow YAML on the base
+branch (not taken from the PR), the same `pull_request_target` safety model
+applies.  It also keeps `auto-merge-on-changes` disabled so reformatted PRs
+stay open for manual review.
+
+### Security
+
+The workflow gates execution on **two** conditions:
+
+* `github.actor == 'dependabot[bot]'` — ensures only [Dependabot] can trigger
+  it.
+* `contains(github.event.pull_request.title, 'Bump black from ')` — limits it
+  to individual major `black` update PRs.
+
+The inline script is executed with `python3 -I` (isolated mode) to prevent
+importing from the checked-out working directory.  Inside that isolated
+interpreter it uses `sys.executable -Im pip` and `sys.executable -Im black`
+instead of shelling out to `pip` or `black` directly, and push credentials are
+never exposed to the script.
+
+### Requirements
+
+The workflow shares the same [GitHub App][GitHub App] as the repo-config and
+auto-dependabot workflows.  No additional secrets are needed — the black
+migration script does not make GitHub API calls.
+
+[black-stability]: https://black.readthedocs.io/en/stable/the_black_code_style/index.html#stability-policy
+[calver]: https://calver.org/
 [Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable
 [Dependabot]: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 [GitHub App]: https://docs.github.com/en/apps/creating-github-apps
