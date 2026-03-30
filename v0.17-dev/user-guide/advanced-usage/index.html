@@ -808,6 +808,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#black-formatting-migration-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Black formatting migration workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Black formatting migration workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2182,6 +2221,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#black-formatting-migration-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Black formatting migration workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Black formatting migration workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2366,14 +2444,52 @@ requests</a>.</p>
 </ul>
 <h3 id="interaction-with-other-workflows">Interaction with other workflows<a class="headerlink" href="#interaction-with-other-workflows" title="Permanent link">¤</a></h3>
 <p>The <code>auto-dependabot.yaml</code> workflow has a job-level <code>if</code> condition that
-<strong>skips</strong> PRs containing <code>the repo-config group</code> in the title. This ensures
-repo-config dependency updates are handled exclusively by the migration
-workflow, while all other <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> PRs continue to be auto-approved and
-merged by the existing workflow.</p>
+<strong>skips</strong> PRs containing <code>the repo-config group</code> or <code>Bump black from</code> in the
+title.  This ensures those dependency updates are handled exclusively by their
+respective migration workflows, while all other <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> PRs continue to
+be auto-approved and merged by the existing workflow.</p>
 <p>The <code>github-actions</code> ecosystem updates to the <em>caller workflow itself</em> (i.e.
 bumping the action's <code>@&lt;sha&gt;</code> reference) produce PRs with <code>the compatible
-group</code> in the title, which does <strong>not</strong> match the migration workflow's <code>if</code>
+group</code> in the title, which does <strong>not</strong> match any migration workflow's <code>if</code>
 condition.  These PRs are handled normally by <code>auto-dependabot.yaml</code>.</p>
+<h2 id="black-formatting-migration-workflow">Black formatting migration workflow<a class="headerlink" href="#black-formatting-migration-workflow" title="Permanent link">¤</a></h2>
+<p>Projects generated from the template also include a workflow
+(<code>black-migration.yaml</code>) that automatically reformats code when <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a>
+upgrades <code>black</code> to a new major version.</p>
+<p><code>black</code> uses <a href="https://calver.org/">calendar versioning</a>: the first component is the year,
+the second the month, and the third a patch number.  Its <a href="https://black.readthedocs.io/en/stable/the_black_code_style/index.html#stability-policy">stability
+policy</a> guarantees that formatting output stays unchanged
+within the same calendar year, so only the first release of a new year (which
+<a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> treats as a <strong>major</strong> bump) may introduce formatting changes.
+Minor and patch updates remain in the regular <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> groups and are
+auto-merged normally.</p>
+<p>Because major updates are not part of any dependency group, <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a>
+already creates an individual PR for them (titled <code>Bump black from …</code>).  No
+extra dependency group or group exclusions are needed.</p>
+<p>The workflow uses the same
+<a href="https://github.com/frequenz-floss/gh-action-dependabot-migrate"><code>gh-action-dependabot-migrate</code></a> action as the
+repo-config migration, but with an <strong>inline migration script</strong> instead of a
+URL template.  Because the script is embedded in the workflow YAML on the base
+branch (not taken from the PR), the same <code>pull_request_target</code> safety model
+applies.  It also keeps <code>auto-merge-on-changes</code> disabled so reformatted PRs
+stay open for manual review.</p>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link">¤</a></h3>
+<p>The workflow gates execution on <strong>two</strong> conditions:</p>
+<ul>
+<li><code>github.actor == 'dependabot[bot]'</code> — ensures only <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> can trigger
+  it.</li>
+<li><code>contains(github.event.pull_request.title, 'Bump black from ')</code> — limits it
+  to individual major <code>black</code> update PRs.</li>
+</ul>
+<p>The inline script is executed with <code>python3 -I</code> (isolated mode) to prevent
+importing from the checked-out working directory.  Inside that isolated
+interpreter it uses <code>sys.executable -Im pip</code> and <code>sys.executable -Im black</code>
+instead of shelling out to <code>pip</code> or <code>black</code> directly, and push credentials are
+never exposed to the script.</p>
+<h3 id="requirements_1">Requirements<a class="headerlink" href="#requirements_1" title="Permanent link">¤</a></h3>
+<p>The workflow shares the same <a href="https://docs.github.com/en/apps/creating-github-apps">GitHub App</a> as the repo-config and
+auto-dependabot workflows.  No additional secrets are needed — the black
+migration script does not make GitHub API calls.</p>
 
 
 
