@@ -109,7 +109,7 @@ jobs:
       - name: Migrate
         uses: frequenz-floss/gh-action-dependabot-migrate@"""
     # Broken just to avoid flake8 maximum line length check
-    """b389f72f9282346920150a67495efbae450ac07b  # v1.1.0"
+    """b389f72f9282346920150a67495efbae450ac07b  # v1.1.0
         with:
           migration-script: |
             import os
