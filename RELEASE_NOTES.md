@@ -34,4 +34,4 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- The unused cross-arch QEMU-based testing infrastructure has been removed. The `.github/containers/nox-cross-arch/` and `.github/containers/test-installation/` directories, as well as the "Cross-Arch Testing" section in `CONTRIBUTING.md`.
