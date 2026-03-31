@@ -11,6 +11,10 @@ command.
 Projects generated from the template include a GitHub Actions workflow
 (`repo-config-migration.yaml`) that runs the migration script automatically
 when [Dependabot] opens a pull request for the `repo-config` dependency group.
+It is powered by the
+[`gh-action-dependabot-migrate`][gh-action-dependabot-migrate] action — refer
+to its documentation for full details on inputs, authentication options, trust
+model, and security design.
 
 For updates where the migration script does not create additional commits and
 does not report manual steps, the workflow auto-approves and enables
@@ -91,6 +95,24 @@ If intervention is marked as done and you later need more manual work, either
 removing `tool:repo-config:migration:intervention-done` or adding
 `tool:repo-config:migration:intervention-pending` marks intervention as
 pending again.
+
+### Re-triggering migration
+
+The workflow uses the `tool:repo-config:migration:executed` label to avoid
+re-running migration on every trigger for the same PR. If you need to force the
+migration to run again on the current PR:
+
+1. Remove the `tool:repo-config:migration:executed` label from the PR.
+2. Trigger a Dependabot update event by commenting `@dependabot recreate` on
+   the PR.
+
+!!! Caution
+
+    `@dependabot recreate` discards all commits on the PR branch and regenerates
+    it from scratch. This is usually necessary because if the migration script
+    already ran and committed changes, the branch will have diverged from
+    Dependabot's original commit, and a new Dependabot event is required for
+    migration to run automatically again.
 
 !!! Note
 
@@ -206,3 +228,4 @@ templates update commit.
 
 [Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable
 [Dependabot]: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+[gh-action-dependabot-migrate]: https://github.com/frequenz-floss/gh-action-dependabot-migrate
