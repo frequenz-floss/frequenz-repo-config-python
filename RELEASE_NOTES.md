@@ -2,9 +2,11 @@
 
 ## Summary
 
-This release improves workflows security, adds a black migration workflow, and fixes failed migrations from version v0.16.0.
+<!-- Here goes a general summary of what this release is about -->
 
 ## Upgrading
+
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
@@ -16,16 +18,20 @@ curl -sSLf https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config
 
 But you might still need to adapt your code:
 
+<!-- Here upgrade steps for cookiecutter specifically -->
+
 ## New Features
+
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ### Cookiecutter template
 
-- Add a `black-migration.yaml` workflow that automatically reformats code when Dependabot upgrades `black`.
+<!-- Here new features for cookiecutter specifically -->
 
 ## Bug Fixes
 
+<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+
 ### Cookiecutter template
 
-- Fix migration of CI workflow matrices that used `arch`/`os` dimensions with values different from the default template. The v0.16.0 migration relied on exact string matching, so projects with customized matrix items (for example `arch: [amd64]`, `os: [ubuntu-24.04]`) could be left only partially migrated. The new migration step rebuilds the `platform` entries from the existing `arch`/`os` values and only rewrites `runs-on` when it still points to the old matrix keys.
-- Improve workflows security: tighten permissions, avoid potential shell injection, run Python in isolated mode, pin all dependencies using the SHA hash.
 - The unused cross-arch QEMU-based testing infrastructure has been removed. The `.github/containers/nox-cross-arch/` and `.github/containers/test-installation/` directories, as well as the "Cross-Arch Testing" section in `CONTRIBUTING.md`.
