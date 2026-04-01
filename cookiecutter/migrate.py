@@ -54,6 +54,9 @@ def main() -> None:
     print("Updating auxiliary GitHub workflows...")
     migrate_auxiliary_workflows()
     print("=" * 72)
+    print("Normalizing GitHub Action hashes...")
+    migrate_gh_actions_hashes()
+    print("=" * 72)
     print("Updating issue template configuration...")
     migrate_issue_templates()
     print("=" * 72)
@@ -280,6 +283,47 @@ def migrate_auxiliary_workflows() -> None:
         private_repo=private_repo,
         description="adjusted release notes privacy settings",
     )
+
+
+def migrate_gh_actions_hashes() -> None:
+    """Update GitHub Action hashes to point to the actual commit object.
+
+    The hashes we were using are the annotated git tag object, but
+    Dependabot likes to have the pins to the actual commit object the
+    tag points to, not the tag itself.
+    """
+    replacements = [
+        (
+            "frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace",
+            "frequenz-floss/gh-action-setup-git@f9d86a01228ee1cadaac5224d4d7626f1eb23f90",
+        ),
+        (
+            "frequenz-floss/gh-action-setup-python-with-deps@"
+            "0d0d77eac3b54799f31f25a1060ef2c6ebdf9299",  # noqa: E501
+            "frequenz-floss/gh-action-setup-python-with-deps@e4d0b2ef8f5a1612d7827f3abaef17c931d2b946",  # noqa: E501
+        ),
+    ]
+
+    workflows_dir = Path(".github/workflows")
+    if not workflows_dir.is_dir():
+        print(f"  Skipped {workflows_dir}: directory not found")
+        return
+
+    for wf in sorted(workflows_dir.iterdir()):
+        if wf.suffix not in (".yml", ".yaml"):
+            continue
+        try:
+            content = wf.read_text(encoding="utf-8")
+        except OSError:
+            continue
+
+        new_content = content
+        for old, new in replacements:
+            new_content = new_content.replace(old, new)
+
+        if new_content != content:
+            replace_file_atomically(wf, new_content)
+            print(f"  Updated {wf}: normalized GitHub Action hashes")
 
 
 def migrate_issue_templates() -> None:
