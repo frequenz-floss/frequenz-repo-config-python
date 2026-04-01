@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Run nox
-        uses: frequenz-floss/gh-action-nox@e1351cf45e05e85afc1c79ab883e06322892d34c # v1.1.0
+        uses: frequenz-floss/gh-action-nox@80a9845a59ffc71d27b9c41099eb6cb55bc7b671 # v1.1.1
         with:
           python-version: "3.11"
           nox-session: ci_checks_max
