@@ -38,3 +38,4 @@ But you might still need to adapt your code:
 - The unused cross-arch QEMU-based testing infrastructure has been removed. The `.github/containers/nox-cross-arch/` and `.github/containers/test-installation/` directories, as well as the "Cross-Arch Testing" section in `CONTRIBUTING.md`.
 - Private repositories now are generated with credentials uncommented and the publishing workflows disabled.
 - The issue template chooser (`config.yml`) no longer includes the `contact_links` section for private repositories, since GitHub Discussions are typically disabled for them.
+- Normalized the GitHub Action hashes for `gh-action-setup-git` and `gh-action-setup-python-with-deps` to point to the actual commit object, which is what Dependabot expects.
