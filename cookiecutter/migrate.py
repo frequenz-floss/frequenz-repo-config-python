@@ -23,9 +23,11 @@ And remember to follow any manual instructions for each run.
 # R0801 is similarity detection, as the template is always similar to the current script
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, R0801
 
+import functools
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -42,6 +44,18 @@ def main() -> None:
     print("=" * 72)
     print("Removing unused cross-arch testing files...")
     remove_cross_arch_files()
+    print("=" * 72)
+    print("Updating cookiecutter replay file...")
+    migrate_cookiecutter_replay_file()
+    print("=" * 72)
+    print("Updating generated CI workflows...")
+    migrate_ci_workflows()
+    print("=" * 72)
+    print("Updating auxiliary GitHub workflows...")
+    migrate_auxiliary_workflows()
+    print("=" * 72)
+    print("Updating issue template configuration...")
+    migrate_issue_templates()
     print("=" * 72)
     print()
 
@@ -183,6 +197,491 @@ def remove_cross_arch_files() -> None:
             f"Failed to update {contributing}: {exc}. "
             "Please remove the 'Cross-Arch Testing' section manually."
         )
+
+
+def migrate_cookiecutter_replay_file() -> None:
+    """Add new template inputs to the stored cookiecutter replay file."""
+    replay_path = Path(".cookiecutter-replay.json")
+    if not replay_path.exists():
+        print(f"  Skipped {replay_path}: file not found")
+        return
+
+    try:
+        data = json.loads(replay_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as error:
+        manual_step(
+            f"Could not update {replay_path}. Please add the new `private_repo` "
+            f"variable manually ({error})."
+        )
+        return
+
+    cookiecutter_data = data.get("cookiecutter")
+    if not isinstance(cookiecutter_data, dict):
+        manual_step(
+            f"Could not update {replay_path}: missing `cookiecutter` object. "
+            "Please add `private_repo` manually."
+        )
+        return
+
+    private_repo_value = "yes" if _infer_private_repo() else "no"
+    updated_cookiecutter = _insert_key_after(
+        cookiecutter_data,
+        after_key="license",
+        key="private_repo",
+        value=private_repo_value,
+    )
+    data["cookiecutter"] = updated_cookiecutter
+
+    replay_template_data = data.get("_cookiecutter")
+    if isinstance(replay_template_data, dict):
+        data["_cookiecutter"] = _insert_key_after(
+            replay_template_data,
+            after_key="license",
+            key="private_repo",
+            value=_PRIVATE_REPO_COOKIECUTTER_OPTIONS,
+        )
+
+    new_content = json.dumps(data, indent=2)
+    if not new_content.endswith("\n"):
+        new_content += "\n"
+
+    normalized_old = _normalize_content(replay_path.read_text(encoding="utf-8"))
+    if new_content == normalized_old:
+        print(f"  Skipped {replay_path}: already has the expected updates")
+        return
+
+    replace_file_atomically(replay_path, new_content)
+    print(
+        f"  Updated {replay_path}: added `private_repo={private_repo_value}` replay data"
+    )
+
+
+def migrate_ci_workflows() -> None:
+    """Update the generated CI workflows to the latest template."""
+    private_repo = _infer_private_repo()
+
+    _update_workflow_private_repo_settings(
+        Path(".github/workflows/ci-pr.yaml"),
+        private_repo=private_repo,
+        description="adjusted CI pull-request privacy settings",
+    )
+    _update_workflow_private_repo_settings(
+        Path(".github/workflows/ci.yaml"),
+        private_repo=private_repo,
+        description="adjusted main CI privacy settings",
+    )
+
+
+def migrate_auxiliary_workflows() -> None:
+    """Update the remaining generated GitHub workflows."""
+    private_repo = _infer_private_repo()
+    _update_workflow_private_repo_settings(
+        Path(".github/workflows/release-notes-check.yml"),
+        private_repo=private_repo,
+        description="adjusted release notes privacy settings",
+    )
+
+
+def migrate_issue_templates() -> None:
+    """Update issue template configuration for repository privacy.
+
+    Public repositories include a ``contact_links`` entry that points
+    users to GitHub Discussions.  Private repositories should not have
+    this section because Discussions are typically disabled.
+
+    If the file does not exist it is created from scratch, matching what
+    the cookiecutter template would produce for the inferred privacy
+    setting.
+    """
+    config_path = Path(".github/ISSUE_TEMPLATE/config.yml")
+    private_repo = _infer_private_repo()
+
+    if not config_path.exists():
+        content = _create_issue_template_config(private_repo=private_repo)
+        if content is None:
+            return
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        replace_file_atomically(config_path, content)
+        print(f"  Created {config_path}")
+        return
+
+    content = _normalize_content(config_path.read_text(encoding="utf-8"))
+
+    if private_repo:
+        updated = _remove_issue_template_contact_links(content)
+    else:
+        updated = _ensure_issue_template_contact_links(content)
+
+    if updated == content:
+        print(f"  Skipped {config_path}: already up to date")
+        return
+
+    replace_file_atomically(config_path, updated)
+    print(f"  Updated {config_path}: adjusted contact_links for privacy settings")
+
+
+_ISSUE_TEMPLATE_CONFIG_HEADER = (
+    "# GitHub issue template chooser. For more information see:\n"
+    "# https://docs.github.com/en/communities/using-templates-to-encourage"
+    "-useful-issues-and-pull-requests/configuring-issue-templates-for-your"
+    "-repository#configuring-the-template-chooser\n"
+    "\n"
+    "blank_issues_enabled: true\n"
+)
+
+_ISSUE_TEMPLATE_CONTACT_LINKS_BLOCK = (
+    "contact_links:\n"
+    "  - name: Ask a question ❓\n"
+    "    url: https://github.com/{github_org}/{github_repo_name}"
+    "/discussions/new?category=support\n"
+    "    # TODO(cookiecutter): Make sure the GitHub repository has a "
+    'discussion category "Support"\n'
+    '    # Rename the "Q&A" category to "Support" and change the emoji '
+    "to 🆘 (SOS)\n"
+    "    about: Use this if you are not sure how to do something, "
+    "have installation problems, etc.\n"
+)
+
+
+def _create_issue_template_config(*, private_repo: bool) -> str | None:
+    """Create the issue template config content from scratch.
+
+    Args:
+        private_repo: Whether the repository is private.
+
+    Returns:
+        The file content, or ``None`` if the necessary metadata could not
+        be read and a manual step was emitted instead.
+    """
+    if private_repo:
+        return _ISSUE_TEMPLATE_CONFIG_HEADER
+
+    github_org = read_cookiecutter_str_var("github_org")
+    github_repo_name = read_cookiecutter_str_var("github_repo_name")
+    if not github_org or not github_repo_name:
+        manual_step(
+            "Cannot create .github/ISSUE_TEMPLATE/config.yml: "
+            "github_org or github_repo_name not found in "
+            ".cookiecutter-replay.json. Please create the file manually "
+            "(see the cookiecutter template for reference)."
+        )
+        return None
+
+    manual_step(
+        "Make sure the GitHub repository has a discussion category "
+        '"Support". Rename the "Q&A" category to "Support" and change '
+        "the emoji to 🆘 (SOS)."
+    )
+    return _ISSUE_TEMPLATE_CONFIG_HEADER + _ISSUE_TEMPLATE_CONTACT_LINKS_BLOCK.format(
+        github_org=github_org,
+        github_repo_name=github_repo_name,
+    )
+
+
+def _remove_issue_template_contact_links(content: str) -> str:
+    """Remove the ``contact_links`` section from issue template config."""
+    return (
+        re.sub(
+            r"^contact_links:\n(?:[ \t]+[^\n]*\n)*",
+            "",
+            content,
+            flags=re.MULTILINE,
+        ).rstrip("\n")
+        + "\n"
+    )
+
+
+def _ensure_issue_template_contact_links(content: str) -> str:
+    """Ensure the ``contact_links`` section is present in the config."""
+    if "contact_links:" in content:
+        return content
+
+    github_org = read_cookiecutter_str_var("github_org")
+    github_repo_name = read_cookiecutter_str_var("github_repo_name")
+    if not github_org or not github_repo_name:
+        manual_step(
+            "Cannot restore contact_links in .github/ISSUE_TEMPLATE/config.yml: "
+            "github_org or github_repo_name not found in .cookiecutter-replay.json. "
+            "Please add the contact_links section manually."
+        )
+        return content
+
+    block = _ISSUE_TEMPLATE_CONTACT_LINKS_BLOCK.format(
+        github_org=github_org,
+        github_repo_name=github_repo_name,
+    )
+    return content.rstrip("\n") + "\n" + block
+
+
+_SETUP_GIT_DISABLED_BLOCK = (
+    "        # TODO(cookiecutter): Uncomment this for projects with private "
+    "dependencies\n"
+    "        # with:\n"
+    "        #   username: ${{ secrets.GIT_USER }}\n"
+    "        #   password: ${{ secrets.GIT_PASS }}\n"
+)
+
+_SETUP_GIT_ENABLED_BLOCK = (
+    "        with:\n"
+    "          username: ${{ secrets.GIT_USER }}\n"
+    "          password: ${{ secrets.GIT_PASS }}\n"
+)
+
+_NOX_PRIVATE_DEPS_DISABLED_BLOCK = (
+    "          # TODO(cookiecutter): Uncomment this for projects with private "
+    "dependencies\n"
+    "          # git-username: ${{ secrets.GIT_USER }}\n"
+    "          # git-password: ${{ secrets.GIT_PASS }}\n"
+)
+
+_NOX_PRIVATE_DEPS_ENABLED_BLOCK = (
+    "          git-username: ${{ secrets.GIT_USER }}\n"
+    "          git-password: ${{ secrets.GIT_PASS }}\n"
+)
+
+_RELEASE_NOTES_TOKEN_DISABLED_BLOCK = (
+    "          # TODO(cookiecutter): Uncomment the following line for private "
+    "repositories, otherwise remove it\n"
+    "          # token: ${{ secrets.github_token }}\n"
+)
+
+_RELEASE_NOTES_TOKEN_ENABLED_BLOCK = "          token: ${{ secrets.github_token }}\n"
+
+_CREATE_GITHUB_RELEASE_PUBLIC_NEEDS = (
+    "  create-github-release:\n"
+    "    name: Create GitHub release\n"
+    '    needs: ["publish-docs"]\n'
+)
+_CREATE_GITHUB_RELEASE_PRIVATE_NEEDS = (
+    "  create-github-release:\n"
+    "    name: Create GitHub release\n"
+    '    needs: ["nox-all", "test-installation-all"]\n'
+)
+
+_PRIVATE_REPO_COOKIECUTTER_OPTIONS = [
+    "{{ 'yes' if cookiecutter.license == 'Proprietary' else 'no' }}",
+    "{{ 'no' if cookiecutter.license == 'Proprietary' else 'yes' }}",
+]
+
+
+def _normalize_content(content: str) -> str:
+    """Normalize content for stable hashing and comparisons."""
+    content = content.replace("\r\n", "\n")
+    if not content.endswith("\n"):
+        content += "\n"
+    return content
+
+
+def _set_optional_block(
+    content: str, *, disabled: str, enabled: str, include_enabled: bool
+) -> str:
+    """Set a generated optional workflow block to the desired state."""
+    if include_enabled:
+        return content.replace(disabled, enabled)
+    return content.replace(disabled, "").replace(enabled, "")
+
+
+def _remove_job(content: str, job_name: str) -> str:
+    """Remove a top-level workflow job by name."""
+    pattern = re.compile(
+        rf"^  {re.escape(job_name)}:\n.*?(?=^  [a-z0-9-]+:|\Z)",
+        re.MULTILINE | re.DOTALL,
+    )
+    return pattern.sub("", content)
+
+
+def _adjust_ci_workflow_private_repo_settings(
+    content: str, *, private_repo: bool
+) -> str:
+    """Adjust CI workflow sections that depend on repository privacy."""
+    content = _set_optional_block(
+        content,
+        disabled=_SETUP_GIT_DISABLED_BLOCK,
+        enabled=_SETUP_GIT_ENABLED_BLOCK,
+        include_enabled=private_repo,
+    )
+    content = _set_optional_block(
+        content,
+        disabled=_NOX_PRIVATE_DEPS_DISABLED_BLOCK,
+        enabled=_NOX_PRIVATE_DEPS_ENABLED_BLOCK,
+        include_enabled=private_repo,
+    )
+    content = content.replace(
+        _CREATE_GITHUB_RELEASE_PUBLIC_NEEDS,
+        (
+            _CREATE_GITHUB_RELEASE_PRIVATE_NEEDS
+            if private_repo
+            else _CREATE_GITHUB_RELEASE_PUBLIC_NEEDS
+        ),
+    )
+    content = content.replace(
+        _CREATE_GITHUB_RELEASE_PRIVATE_NEEDS,
+        (
+            _CREATE_GITHUB_RELEASE_PRIVATE_NEEDS
+            if private_repo
+            else _CREATE_GITHUB_RELEASE_PUBLIC_NEEDS
+        ),
+    )
+
+    if private_repo:
+        content = _remove_job(content, "publish-docs")
+        content = _remove_job(content, "publish-to-pypi")
+
+    content = re.sub(r"[ \t]+\n", "\n", content)
+    content = re.sub(r"\n{3,}", "\n\n", content)
+
+    return content
+
+
+def _adjust_release_notes_check_private_repo_settings(
+    content: str, *, private_repo: bool
+) -> str:
+    """Adjust release-notes workflow sections that depend on privacy."""
+    return _set_optional_block(
+        content,
+        disabled=_RELEASE_NOTES_TOKEN_DISABLED_BLOCK,
+        enabled=_RELEASE_NOTES_TOKEN_ENABLED_BLOCK,
+        include_enabled=private_repo,
+    )
+
+
+def _update_workflow_private_repo_settings(
+    filepath: Path, *, private_repo: bool, description: str
+) -> None:
+    """Update workflow sections that depend on repository privacy."""
+    if not filepath.exists():
+        return
+
+    content = _normalize_content(filepath.read_text(encoding="utf-8"))
+
+    match filepath.name:
+        case "ci.yaml" | "ci-pr.yaml":
+            updated = _adjust_ci_workflow_private_repo_settings(
+                content, private_repo=private_repo
+            )
+        case "release-notes-check.yml":
+            updated = _adjust_release_notes_check_private_repo_settings(
+                content, private_repo=private_repo
+            )
+        case _:
+            return
+
+    if updated == content:
+        return
+
+    replace_file_atomically(filepath, updated)
+    print(f"  Updated {filepath}: {description}")
+
+
+def _insert_key_after(
+    data: dict[str, Any], *, after_key: str, key: str, value: Any
+) -> dict[str, Any]:
+    """Insert or update a key immediately after another key in a dict."""
+    if key in data:
+        data[key] = value
+        return data
+
+    updated: dict[str, Any] = {}
+    inserted = False
+    for existing_key, existing_value in data.items():
+        updated[existing_key] = existing_value
+        if existing_key == after_key:
+            updated[key] = value
+            inserted = True
+
+    if not inserted:
+        updated[key] = value
+
+    return updated
+
+
+@functools.lru_cache(maxsize=1)
+def _infer_private_repo() -> bool:
+    """Infer whether the repository should be treated as private.
+
+    The authoritative source is the actual GitHub repository visibility,
+    queried via the ``gh`` CLI.  When that is not available (no ``gh``
+    installed, no network, not inside a GitHub-hosted repo, etc.) we fall
+    back to heuristics based on the cookiecutter replay file and
+    ``pyproject.toml``.  A manual-step warning is only emitted when no
+    local metadata is available at all and we have to fall back to a
+    hard-coded default.
+    """
+    github_private = _query_github_visibility()
+    if github_private is not None:
+        return github_private
+
+    # Fallback: infer from project metadata.
+    inferred = _infer_private_repo_from_metadata()
+    if inferred is not None:
+        label = "private" if inferred else "public"
+        manual_step(
+            "  Could not determine repository visibility from GitHub (is the `gh` "
+            f"CLI installed and authenticated?). Inferred the repo is {label} from "
+            "project metadata. If that is wrong, set `private_repo` in "
+            ".cookiecutter-replay.json and re-run."
+        )
+        return inferred
+
+    manual_step(
+        "Could not determine repository visibility from GitHub or "
+        "project metadata. Assuming the repo is *public*. If that is "
+        "wrong, set `private_repo` in .cookiecutter-replay.json and "
+        "re-run."
+    )
+    return False
+
+
+def _query_github_visibility() -> bool | None:
+    """Query the actual GitHub repository visibility via the ``gh`` CLI.
+
+    Returns:
+        ``True`` for private repos, ``False`` for public ones, or ``None``
+        if the visibility could not be determined.
+    """
+    try:
+        stdout = subprocess.check_output(
+            ["gh", "repo", "view", "--json", "isPrivate"],
+            text=True,
+            stderr=subprocess.PIPE,
+        )
+        data = json.loads(stdout)
+        value = data["isPrivate"]
+        if isinstance(value, bool):
+            return value
+        print(f"  Unexpected 'isPrivate' value from gh: {value!r}")
+    except FileNotFoundError:
+        print("  gh CLI not found; cannot query repository visibility.")
+    except subprocess.CalledProcessError as exc:
+        print(f"  Failed to query repository visibility: {exc.stderr.strip()}")
+    except (json.JSONDecodeError, KeyError):
+        print("  Unexpected response from gh; cannot determine visibility.")
+
+    return None
+
+
+def _infer_private_repo_from_metadata() -> bool | None:
+    """Infer repository privacy from project metadata (best-effort).
+
+    Checks, in order: the ``private_repo`` cookiecutter variable, the
+    ``license`` cookiecutter variable, and the ``pyproject.toml`` license
+    field.  Returns ``None`` when no source provides a usable signal.
+    """
+    if private_repo := read_cookiecutter_str_var("private_repo"):
+        return private_repo == "yes"
+
+    if license_name := read_cookiecutter_str_var("license"):
+        return license_name == "Proprietary"
+
+    pyproject_path = Path("pyproject.toml")
+    if pyproject_path.exists():
+        pyproject_content = pyproject_path.read_text(encoding="utf-8")
+        if 'license = "LicenseRef-Proprietary"' in pyproject_content:
+            return True
+        if 'license = "MIT"' in pyproject_content:
+            return False
+
+    return None
 
 
 def apply_patch(patch_content: str) -> None:

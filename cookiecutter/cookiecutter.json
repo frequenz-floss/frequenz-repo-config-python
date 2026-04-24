@@ -16,6 +16,10 @@
     "MIT",
     "Proprietary"
   ],
+  "private_repo": [
+    "{{ 'yes' if cookiecutter.license == 'Proprietary' else 'no' }}",
+    "{{ 'no' if cookiecutter.license == 'Proprietary' else 'yes' }}"
+  ],
   "author_name": "Frequenz Energy-as-a-Service GmbH",
   "author_email": "floss@frequenz.com",
   "python_package": "{{cookiecutter | python_package}}",

@@ -36,10 +36,11 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+        with:
+          username: ${{ secrets.GIT_USER }}
+          password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% endif %}{% raw %}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -84,9 +85,10 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           nox-session: ${{ matrix.nox-session }}
-          # TODO(cookiecutter): Uncomment this for projects with private dependencies
-          # git-username: ${{ secrets.GIT_USER }}
-          # git-password: ${{ secrets.GIT_PASS }}
+          {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+          git-username: ${{ secrets.GIT_USER }}
+          git-password: ${{ secrets.GIT_PASS }}
+          {%- endraw %}{% endif %}{% raw %}
 
   # This job runs if all the `nox` matrix jobs ran and succeeded.
   # It is only used to have a single job that we can require in branch
@@ -117,10 +119,11 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+        with:
+          username: ${{ secrets.GIT_USER }}
+          password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% endif %}{% raw %}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -160,10 +163,11 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+        with:
+          username: ${{ secrets.GIT_USER }}
+          password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% endif %}{% raw %}
 
       - name: Print environment (debug)
         run: env
@@ -223,10 +227,11 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw %}
+        with:
+          username: ${{ secrets.GIT_USER }}
+          password: ${{ secrets.GIT_PASS }}
+        {%- endraw %}{% endif %}{% raw %}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -256,6 +261,7 @@ jobs:
           path: site/
           if-no-files-found: error
 
+  {% endraw %}{% if cookiecutter.private_repo == "no" %}{% raw -%}
   publish-docs:
     name: Publish documentation website to GitHub pages
     needs: ["nox-all", "test-installation-all"]
@@ -267,10 +273,6 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -336,9 +338,14 @@ jobs:
         run: |
           git push origin gh-pages
 
+  {% endraw %}{% endif %}{% raw -%}
   create-github-release:
     name: Create GitHub release
+    {% endraw %}{% if cookiecutter.private_repo == "yes" %}{% raw -%}
+    needs: ["nox-all", "test-installation-all"]
+    {% endraw %}{% else %}{% raw -%}
     needs: ["publish-docs"]
+    {% endraw %}{% endif %}{% raw -%}
     # Create a release only on tags creation
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     permissions:
@@ -383,6 +390,7 @@ jobs:
           REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  {% endraw %}{% if cookiecutter.private_repo == "no" %}{% raw -%}
   publish-to-pypi:
     name: Publish packages to PyPI
     needs: ["create-github-release"]
@@ -400,4 +408,5 @@ jobs:
 
       - name: Publish the Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+  {%- endraw %}{% endif %}{% raw %}
 {%- endraw %}

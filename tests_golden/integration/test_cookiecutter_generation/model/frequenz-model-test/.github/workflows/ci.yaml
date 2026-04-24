@@ -51,9 +51,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           nox-session: ${{ matrix.nox-session }}
-          # TODO(cookiecutter): Uncomment this for projects with private dependencies
-          # git-username: ${{ secrets.GIT_USER }}
-          # git-password: ${{ secrets.GIT_PASS }}
 
   # This job runs if all the `nox` matrix jobs ran and succeeded.
   # It is only used to have a single job that we can require in branch
@@ -84,10 +81,6 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -127,10 +120,6 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
 
       - name: Print environment (debug)
         run: env
@@ -190,10 +179,6 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -234,10 +219,6 @@ jobs:
     steps:
       - name: Setup Git
         uses: frequenz-floss/gh-action-setup-git@16952aac3ccc01d27412fe0dea3ea946530dcace # v1.0.0
-        # TODO(cookiecutter): Uncomment this for projects with private dependencies
-        # with:
-        #   username: ${{ secrets.GIT_USER }}
-        #   password: ${{ secrets.GIT_PASS }}
 
       - name: Fetch sources
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

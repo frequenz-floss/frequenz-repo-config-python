@@ -25,8 +25,6 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: brettcannon/check-for-changed-files@871d7b8b5917a4f6f06662e2262e8ffc51dff6d1 # v1.2.1
         with:
-          # TODO(cookiecutter): Uncomment the following line for private repositories, otherwise remove it
-          # token: ${{ secrets.github_token }}
           file-pattern: "RELEASE_NOTES.md"
           prereq-pattern: "src/**"
           skip-label: "cmd:skip-release-notes"

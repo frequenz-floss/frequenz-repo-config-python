@@ -26,7 +26,7 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- The cookiecutter now asks whether a repository is private, defaults that answer from the selected license, and uses it to toggle private-repository workflow behavior, public publishing jobs, and the link to GitHub Discussions in the issue template chooser.
 
 ## Bug Fixes
 
@@ -35,3 +35,5 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - The unused cross-arch QEMU-based testing infrastructure has been removed. The `.github/containers/nox-cross-arch/` and `.github/containers/test-installation/` directories, as well as the "Cross-Arch Testing" section in `CONTRIBUTING.md`.
+- Private repositories now are generated with credentials uncommented and the publishing workflows disabled.
+- The issue template chooser (`config.yml`) no longer includes the `contact_links` section for private repositories, since GitHub Discussions are typically disabled for them.

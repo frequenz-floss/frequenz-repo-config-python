@@ -1,0 +1,48 @@
+{
+  "cookiecutter": {
+    "Introduction": "",
+    "type": "lib",
+    "name": "test",
+    "description": "Test description",
+    "title": "Frequenz Test Library",
+    "keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
+    "github_org": "frequenz-floss",
+    "license": "Proprietary",
+    "private_repo": "yes",
+    "author_name": "Frequenz Energy-as-a-Service GmbH",
+    "author_email": "floss@frequenz.com",
+    "python_package": "frequenz.test",
+    "pypi_package_name": "frequenz-test",
+    "github_repo_name": "frequenz-test-python",
+    "default_codeowners": "(like @some-org/some-team; defaults to a team based on the repo type)"
+  },
+  "_cookiecutter": {
+    "Introduction": "{{cookiecutter | introduction}}",
+    "type": [
+      "lib",
+      "actor",
+      "api",
+      "app",
+      "model"
+    ],
+    "name": "test",
+    "description": "Test description",
+    "title": "{{cookiecutter | proj_title}}",
+    "keywords": "(comma separated: 'frequenz', <type> and <name> are included automatically)",
+    "github_org": "frequenz-floss",
+    "license": [
+      "Proprietary",
+      "MIT"
+    ],
+    "private_repo": [
+      "{{ 'yes' if cookiecutter.license == 'Proprietary' else 'no' }}",
+      "{{ 'no' if cookiecutter.license == 'Proprietary' else 'yes' }}"
+    ],
+    "author_name": "Frequenz Energy-as-a-Service GmbH",
+    "author_email": "floss@frequenz.com",
+    "python_package": "{{cookiecutter | python_package}}",
+    "pypi_package_name": "{{cookiecutter | pypi_package_name}}",
+    "github_repo_name": "{{cookiecutter | github_repo_name}}",
+    "default_codeowners": "(like @some-org/some-team; defaults to a team based on the repo type)"
+  }
+}
