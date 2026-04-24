@@ -10,7 +10,7 @@ requires = [
   # sure the code is generated using the minimum supported versions, as older
   # versions can't work with code that was generated with newer versions.
   # https://protobuf.dev/support/cross-version-runtime-guarantee/#backwards
-  "protobuf == 6.33.4",
+  "protobuf == 6.33.5",
   "grpcio-tools == 1.76.0",
   "grpcio == 1.76.0",
 ]
@@ -61,10 +61,10 @@ dev-flake8 = [
   "pydoclint == 0.6.10",
   "pydocstyle == 6.3.0",
 ]
-dev-formatting = ["black == 25.1.0", "isort == 6.0.0"]
+dev-formatting = ["black == 26.3.1", "isort == 6.0.0"]
 dev-mkdocs = [
   "Markdown == 3.8.2",
-  "black == 25.1.0",
+  "black == 26.3.1",
   "mike == 2.1.3",
   "mkdocs-gen-files == 0.5.0",
   "mkdocs-literate-nav == 0.6.2",
@@ -91,7 +91,7 @@ dev-pylint = [
   "frequenz-api-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 8.4.1",
+  "pytest == 9.0.3",
   "pylint == 3.3.8",       # We need this to check for the examples
   "frequenz-repo-config[extra-lint-examples] == 0.17.0",
 ]
