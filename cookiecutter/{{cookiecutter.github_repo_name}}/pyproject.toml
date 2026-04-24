@@ -3,17 +3,17 @@
 
 [build-system]
 requires = [
-  "setuptools == 80.9.0",
-  "setuptools_scm[toml] == 8.1.0",
+  "setuptools == 82.0.1",
+  "setuptools_scm[toml] == 10.0.5",
   "frequenz-repo-config[{{cookiecutter.type}}] == 0.17.0",
 {%- if cookiecutter.type == "api" %}
   # We need to pin the protobuf, grpcio and  grpcio-tools dependencies to make
   # sure the code is generated using the minimum supported versions, as older
   # versions can't work with code that was generated with newer versions.
   # https://protobuf.dev/support/cross-version-runtime-guarantee/#backwards
-  "protobuf == 6.33.4",
-  "grpcio-tools == 1.76.0",
-  "grpcio == 1.76.0",
+  "protobuf == 6.33.6",
+  "grpcio-tools == 1.80.0",
+  "grpcio == 1.80.0",
 {%- endif %}
 ]
 build-backend = "setuptools.build_meta"
@@ -46,35 +46,35 @@ requires-python = ">= 3.11, < 4"
 # TODO(cookiecutter): Remove and add more dependencies if appropriate
 {%- if cookiecutter.type in ("actor", "model") %}
 dependencies = [
-  "typing-extensions >= 4.14.1, < 5",
+  "typing-extensions >= 4.15.0, < 5",
   # Make sure to update the version for cross-referencing also in the
   # mkdocs.yml file when changing the version here (look for the config key
   # plugins.mkdocstrings.handlers.python.import)
-  "frequenz-sdk >= 1.0.0rc2100, < 1.0.0rc2200",
+  "frequenz-sdk >= 1.0.0rc2205, < 1.0.0rc2300",
 ]
 {%- elif cookiecutter.type == "app" %}
 dependencies = [
-  "typing-extensions == 4.14.1",
+  "typing-extensions == 4.15.0",
   # Make sure to update the version for cross-referencing also in the
   # mkdocs.yml file when changing the version here (look for the config key
   # plugins.mkdocstrings.handlers.python.import)
-  "frequenz-sdk == 1.0.0rc2100",
+  "frequenz-sdk == 1.0.0rc2205",
 ]
 {%- elif cookiecutter.type == "api" %}
 dependencies = [
-  "frequenz-api-common >= 0.6.3, < 1",
+  "frequenz-api-common >= 0.8.2, < 1",
   # We can't widen beyond the current value unless we bump the minimum
   # requirements too because of protobuf cross-version runtime guarantees:
   # https://protobuf.dev/support/cross-version-runtime-guarantee/#major
-  "protobuf >= 6.33.4, < 8", # Do not widen beyond 8!
+  "protobuf >= 6.33.6, < 8", # Do not widen beyond 8!
   # We couldn't find any document with a spec about the cross-version runtime
   # guarantee for grpcio, so unless we find one in the future, we'll assume
   # major version jumps are not compatible
-  "grpcio >= 1.76.0, < 2", # Do not widen beyond 2!
+  "grpcio >= 1.80.0, < 2", # Do not widen beyond 2!
 ]
 {%- else %}
 dependencies = [
-  "typing-extensions >= 4.14.1, < 5",
+  "typing-extensions >= 4.15.0, < 5",
 ]
 {%- endif %}
 dynamic = ["version"]
@@ -89,34 +89,34 @@ dev-flake8 = [
   "flake8 == 7.3.0",
   "flake8-datetimez == 20.10.0",
   "flake8-docstrings == 1.7.0",
-  "flake8-pyproject == 1.2.3",  # For reading the flake8 config from pyproject.toml
-  "pydoclint == 0.6.10",
+  "flake8-pyproject == 1.2.4",  # For reading the flake8 config from pyproject.toml
+  "pydoclint == 0.8.3",
   "pydocstyle == 6.3.0",
 ]
-dev-formatting = ["black == 25.1.0", "isort == 6.0.0"]
+dev-formatting = ["black == 26.3.1", "isort == 8.0.1"]
 dev-mkdocs = [
-  "Markdown == 3.8.2",
-  "black == 25.1.0",
-  "mike == 2.1.3",
-  "mkdocs-gen-files == 0.5.0",
-  "mkdocs-literate-nav == 0.6.2",
-  "mkdocs-macros-plugin == 1.3.9",
-  "mkdocs-material == 9.6.18",
-  "mkdocstrings[python] == 1.0.0",
-  "mkdocstrings-python == 2.0.1",
+  "Markdown == 3.10.2",
+  "black == 26.3.1",
+  "mike == 2.2.0",
+  "mkdocs-gen-files == 0.6.1",
+  "mkdocs-literate-nav == 0.6.3",
+  "mkdocs-macros-plugin == 1.5.0",
+  "mkdocs-material == 9.7.6",
+  "mkdocstrings[python] == 1.0.4",
+  "mkdocstrings-python == 2.0.3",
   "frequenz-repo-config[{{cookiecutter.type}}] == 0.17.0",
 ]
 dev-mypy = [
-  "mypy == 1.9.0",
+  "mypy == 1.20.2",
 {%- if cookiecutter.type == "api" %}
   "grpc-stubs == 1.53.0.6",
 {%- endif %}
-  "types-Markdown == 3.8.0.20250809",
+  "types-Markdown == 3.10.2.20260408",
   # For checking the noxfile, docs/ script, and tests
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-noxfile = [
-  "nox == 2025.5.1",
+  "nox == 2026.4.10",
   "frequenz-repo-config[{{cookiecutter.type}}] == 0.17.0",
 ]
 dev-pylint = [
@@ -125,13 +125,13 @@ dev-pylint = [
   "{{cookiecutter.pypi_package_name}}[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 8.4.1",
-  "pylint == 3.3.8",       # We need this to check for the examples
+  "pytest == 9.0.3",
+  "pylint == 4.0.5",       # We need this to check for the examples
   "frequenz-repo-config[extra-lint-examples] == 0.17.0",
 {%- if cookiecutter.type != "api" %}
-  "pytest-mock == 3.14.0",
-  "pytest-asyncio == 1.1.0",
-  "async-solipsism == 0.8",
+  "pytest-mock == 3.15.1",
+  "pytest-asyncio == 1.3.0",
+  "async-solipsism == 0.9",
 {%- endif %}
 ]
 dev = [

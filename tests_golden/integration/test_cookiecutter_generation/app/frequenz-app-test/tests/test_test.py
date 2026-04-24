@@ -2,6 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 """Tests for the frequenz.app.test package."""
+
 import pytest
 
 from frequenz.app.test import delete_me

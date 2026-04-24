@@ -27,6 +27,7 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - The cookiecutter now asks whether a repository is private, defaults that answer from the selected license, and uses it to toggle private-repository workflow behavior, public publishing jobs, and the link to GitHub Discussions in the issue template chooser.
+- All dependencies have been updated in the templates.
 
 ## Bug Fixes
 
