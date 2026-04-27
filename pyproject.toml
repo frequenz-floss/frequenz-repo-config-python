@@ -84,11 +84,11 @@ dev-mkdocs = [
   "mkdocs-literate-nav == 0.6.3",
   "mkdocs-macros-plugin == 1.5.0",
   "mkdocs-material == 9.7.6",
-  "mkdocstrings[python] == 1.0.3",
+  "mkdocstrings[python] == 1.0.4",
   "mkdocstrings-python == 2.0.3",
 ]
 dev-mypy = [
-  "mypy == 1.20.0",
+  "mypy == 1.20.2",
   "types-setuptools >= 67.6.0, < 83", # Should match the api dependency
   "types-Markdown == 3.10.2.20260211",
   "types-PyYAML == 6.0.12.20250915",
@@ -105,7 +105,7 @@ dev-pylint = [
   "setuptools >= 67.6.0, < 83", # Should match the api dependency
 ]
 dev-pytest = [
-  "pytest == 9.0.2",
+  "pytest == 9.0.3",
   "pylint == 4.0.5", # We need this to check for the examples
   "cookiecutter == 2.7.1", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
