@@ -124,7 +124,7 @@ plugins:
             - https://frequenz-floss.github.io/frequenz-channels-python/v1/objects.inv
             - https://frequenz-floss.github.io/frequenz-sdk-python/v1.0-pre/objects.inv
 {%- elif cookiecutter.type == "api" %}
-            - https://frequenz-floss.github.io/frequenz-api-common/v0.6/objects.inv
+            - https://frequenz-floss.github.io/frequenz-api-common/v0.8/objects.inv
             - https://grpc.github.io/grpc/python/objects.inv
 {%- endif %}
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv

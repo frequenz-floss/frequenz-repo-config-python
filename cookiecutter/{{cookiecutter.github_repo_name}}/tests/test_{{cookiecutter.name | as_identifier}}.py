@@ -26,6 +26,7 @@ def test_module_import_components() -> None:
 
     assert {{cookiecutter.name | as_identifier}}_pb2_grpc is not None
 {%- else %}
+
 import pytest
 
 from {{cookiecutter.python_package}} import delete_me
