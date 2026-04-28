@@ -106,6 +106,15 @@ Import the following
 * [Protect version
   branches]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/python/Protect version branches.json)
 
+##### API specific rulesets
+
+API repositories should import this variant instead of the generic Python
+*Protect version branches* ruleset, as it also requires the gRPC migration
+workflow check.
+
+* [Protect version
+  branches]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/python/Protect API version branches.json)
+
 ##### Rust specific rulesets
 
 * [Protect version

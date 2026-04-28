@@ -1,0 +1,92 @@
+{
+  "name": "Protect version branches",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "frequenz-floss/frequenz-repo-config-python",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "~DEFAULT_BRANCH",
+        "refs/heads/v[0-9]*.[0-9x]*.x"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "required_signatures"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "require_code_owner_review": false,
+        "require_last_push_approval": true,
+        "dismiss_stale_reviews_on_push": true,
+        "required_approving_review_count": 1,
+        "required_reviewers": [],
+        "required_review_thread_resolution": false,
+        "allowed_merge_methods": [
+          "merge",
+          "squash",
+          "rebase"
+        ]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "Test with nox",
+            "integration_id": 15368
+          },
+          {
+            "context": "DCO"
+          },
+          {
+            "context": "Test documentation website generation",
+            "integration_id": 15368
+          },
+          {
+            "context": "Check release notes are updated",
+            "integration_id": 15368
+          },
+          {
+            "context": "Migrate Repo Config",
+            "integration_id": 15368
+          },
+          {
+            "context": "Fix gRPC/protobuf runtime floors",
+            "integration_id": 15368
+          }
+        ],
+        "strict_required_status_checks_policy": false
+      }
+    },
+    {
+      "type": "deletion"
+    }
+  ],
+  "bypass_actors": [
+    {
+      "actor_id": 2,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "pull_request"
+    },
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": null,
+      "actor_type": "OrganizationAdmin",
+      "bypass_mode": "always"
+    }
+  ]
+}
