@@ -60,6 +60,9 @@ def main() -> None:
     print("Updating issue template configuration...")
     migrate_issue_templates()
     print("=" * 72)
+    print("Setting up the gRPC migration workflow...")
+    migrate_grpc_workflow_setup()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -324,6 +327,141 @@ def migrate_gh_actions_hashes() -> None:
         if new_content != content:
             replace_file_atomically(wf, new_content)
             print(f"  Updated {wf}: normalized GitHub Action hashes")
+
+
+_GRPC_MIGRATION_WORKFLOW_CONTENT = (
+    """\
+# Automatic grpc/protobuf build/runtime sync for Dependabot PRs
+#
+# The template's `pyproject.toml` pins `protobuf`, `grpcio` and `grpcio-tools`
+# in `[build-system].requires` as *exact* versions, and also declares
+# `protobuf` and `grpcio` in `[project].dependencies` with a `>= <build-pin>`
+# lower bound.  The lower bound must always match the exact pin, because the
+# protobuf cross-version runtime guarantee requires the runtime to be at
+# least the version used at generation time:
+#   https://protobuf.dev/support/cross-version-runtime-guarantee/
+#
+# Dependabot correctly bumps `[build-system].requires`, but it does not bump
+# the matching `>=` floor in `[project].dependencies`.  This workflow runs
+# after a Dependabot grpc/protobuf group PR, rewrites the `>=` floor to match
+# the new build pins, and pushes the fix-up commit back onto the PR branch.
+#
+# The companion auto-dependabot workflow skips the `grpc-compatible`,
+# `grpcio-major` and `protobuf-major` groups so those PRs are handled
+# exclusively by this migration workflow.
+#
+# XXX: !!! SECURITY WARNING !!!
+# pull_request_target has write access to the repo, and can read secrets.
+# This is required because Dependabot PRs are treated as fork PRs: the
+# GITHUB_TOKEN is read-only and secrets are unavailable with a plain
+# pull_request trigger.  The action mitigates the risk by:
+#   - Never executing code from the PR (the migration script is fetched
+#     from the repo-config branch configured below, not taken from the PR).
+#   - Gating migration steps on github.actor == 'dependabot[bot]' AND the
+#     PR title.
+#   - Running checkout with persist-credentials: false and isolating
+#     push credentials from the migration script environment.
+# For more details read:
+# https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+
+name: gRPC Migration
+
+on:
+  merge_group:  # To allow using this as a required check for merging
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  # Commit the sync-up to the PR branch.
+  contents: write
+  # Create and normalize migration state labels.
+  issues: write
+  # Read/update pull request metadata and comments.
+  pull-requests: write
+
+jobs:
+  grpc-migration:
+    name: Fix gRPC/protobuf runtime floors
+    # Skip if it was triggered by the merge queue. We only need the workflow to
+    # be executed to meet the "Required check" condition for merging, but we
+    # don't need to actually run the job, having the job present as Skipped is
+    # enough.
+    if: |
+      github.event_name == 'pull_request_target' &&
+      github.actor == 'dependabot[bot]' &&
+      (contains(github.event.pull_request.title, 'the grpc-compatible group') ||
+       contains(github.event.pull_request.title, 'the grpcio-major group') ||
+       contains(github.event.pull_request.title, 'the protobuf-major group'))
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate token
+        id: create-app-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        with:
+          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
+          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+          # Push the sync-up commit to the PR branch.
+          permission-contents: write
+          # Create and normalize migration state labels.
+          permission-issues: write
+          # Read/update pull request metadata and labels.
+          permission-pull-requests: write
+      - name: Migrate
+        uses: frequenz-floss/gh-action-dependabot-migrate@"""  # Avoid going over 100 chars
+    + """27763fb5eb56476d91abe00132e8a0614171f92f # v1.2.0
+        with:
+          script-url-template: >- # v0.18.0
+            https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/"""
+    + """529d30b554392e6d8b66e84e92c04ac9cd170da7/cookiecutter/scripts/dependabot-grpc-fixer.py
+          token: ${{ steps.create-app-token.outputs.token }}
+          version-iteration: "false"
+          sign-commits: "true"
+          auto-merged-label: "tool:auto-merged"
+          migrated-label: "tool:grpc:migration:executed"
+          intervention-pending-label: "tool:grpc:migration:intervention-pending"
+          intervention-done-label: "tool:grpc:migration:intervention-done"
+"""
+)
+"""Final content of the grpc-migration workflow installed by the migration."""
+
+_OLD_GRPC_GROUP_BLOCK = """\
+      grpc:
+        patterns:
+          - "grpcio"
+          - "grpcio-tools"
+          - "protobuf"
+"""
+"""Verbatim representation of the old monolithic 'grpc' Dependabot group."""
+
+_NEW_GRPC_GROUPS_BLOCK = """\
+      # We group grpcio and protobuf updates together, as they need special
+      # handling on the pyproject.toml file because of the protobuf/grpcio
+      # build/runtime cross-version guarantees and wrong dependabot handling
+      # of build/runtime dependencies.
+      grpc-compatible:
+        update-types:
+          - "patch"
+          - "minor"
+        patterns:
+          - "grpcio"
+          - "grpcio-tools"
+          - "protobuf"
+      # For major updates we split it up. It was observed in the past that
+      # grpcio releases lag behind protobuf releases, and they are not
+      # compatible with a major protobuf update for a while, so we shouldn't
+      # block the update of one with the other.
+      grpcio-major:
+        patterns:
+          - "grpcio"
+          - "grpcio-tools"
+      protobuf-major:
+        patterns:
+          - "protobuf"
+"""
+"""The three new Dependabot groups that replace the old 'grpc' group."""
+
+_GRPC_EXCLUDE_PATTERN_NAMES = ("grpcio", "grpcio-tools", "protobuf")
+"""Package names that must be excluded from broad Dependabot groups."""
 
 
 def migrate_issue_templates() -> None:
@@ -973,6 +1111,353 @@ def read_cookiecutter_str_var(name: str) -> str | None:
         return None
 
     return value
+
+
+def migrate_grpc_workflow_setup() -> None:
+    """Set up the gRPC migration workflow for API repositories.
+
+    Only API repositories pin grpc/protobuf as build-time dependencies and
+    therefore need the dedicated migration workflow.  For all other project
+    types this step is a no-op.
+
+    For API repositories the step:
+
+    * Updates ``.github/dependabot.yml`` to add the new
+      ``grpc-compatible`` / ``grpcio-major`` / ``protobuf-major`` groups
+      (replacing any old ``grpc`` group), and to exclude grpc/protobuf
+      packages from the ``patch`` and ``minor`` groups.
+    * Updates ``.github/workflows/auto-dependabot.yaml`` so the new grpc
+      group PRs are skipped by the auto-merge workflow.
+    * Installs (or replaces) ``.github/workflows/grpc-migration.yaml``.
+    * Adds ``Fix gRPC/protobuf runtime floors`` to the
+      ``Protect version branches`` GitHub ruleset.
+    """
+    project_type = read_cookiecutter_str_var("type")
+    if project_type != "api":
+        print(
+            "  Skipped: not an API project "
+            f"(type={project_type!r}); the gRPC migration workflow is only "
+            "needed for API repositories."
+        )
+        return
+
+    _migrate_grpc_dependabot_config()
+    _migrate_grpc_auto_dependabot_workflow()
+    _install_grpc_migration_workflow()
+    _migrate_grpc_ruleset()
+
+
+def _migrate_grpc_dependabot_config() -> None:
+    """Update ``.github/dependabot.yml`` for the new grpc grouping."""
+    path = Path(".github/dependabot.yml")
+    if not path.exists():
+        manual_step(
+            f"{path} not found; please update it manually to use the new "
+            "grpc-compatible / grpcio-major / protobuf-major Dependabot "
+            "groups (see the cookiecutter template for reference)."
+        )
+        return
+
+    original = _normalize_content(path.read_text(encoding="utf-8"))
+    content = original
+    notes: list[str] = []
+
+    content, group_note = _update_grpc_groups(content)
+    if group_note:
+        notes.append(group_note)
+
+    content, exclude_note = _ensure_grpc_exclude_patterns(content)
+    if exclude_note:
+        notes.append(exclude_note)
+
+    if content == original:
+        print(f"  Skipped {path}: already up to date")
+        return
+
+    replace_file_atomically(path, content)
+    print(f"  Updated {path}: " + "; ".join(notes))
+
+
+def _update_grpc_groups(content: str) -> tuple[str, str | None]:
+    """Replace the old grpc group with the new three groups, or insert them.
+
+    If a customized ``grpc:`` group is detected (i.e. the file has an entry
+    matching ``      grpc:`` but the surrounding content does not match the
+    old default verbatim) a manual-step warning is emitted and the content
+    is returned unchanged.
+    """
+    if _NEW_GRPC_GROUPS_BLOCK in content:
+        return content, None
+
+    if _OLD_GRPC_GROUP_BLOCK in content:
+        return (
+            content.replace(_OLD_GRPC_GROUP_BLOCK, _NEW_GRPC_GROUPS_BLOCK, 1),
+            "replaced old 'grpc' group with grpc-compatible / "
+            "grpcio-major / protobuf-major",
+        )
+
+    if re.search(r"^      grpc:\s*$", content, flags=re.MULTILINE):
+        manual_step(
+            ".github/dependabot.yml has a customized 'grpc:' Dependabot "
+            "group.  Please replace it manually with the new "
+            "'grpc-compatible', 'grpcio-major' and 'protobuf-major' "
+            "groups (see the cookiecutter template for reference)."
+        )
+        return content, None
+
+    # No grpc group present: append the three new groups to the existing
+    # `groups:` block of the pip ecosystem.  We anchor on the well-known
+    # `mkdocstrings` group, which is the last group emitted by the
+    # template, to keep the insertion point deterministic.
+    mkdocstrings_pattern = re.compile(
+        r"(      mkdocstrings:\n"
+        r"        patterns:\n"
+        r'          - "mkdocstrings\*"\n'
+        r'          - "mkdocstrings\[python\]"\n)',
+    )
+    match = mkdocstrings_pattern.search(content)
+    if match is None:
+        manual_step(
+            ".github/dependabot.yml does not contain the expected "
+            "'mkdocstrings' Dependabot group; cannot insert the new grpc "
+            "groups automatically.  Please add the 'grpc-compatible', "
+            "'grpcio-major' and 'protobuf-major' groups manually (see the "
+            "cookiecutter template for reference)."
+        )
+        return content, None
+
+    insertion = match.group(1) + _NEW_GRPC_GROUPS_BLOCK
+    return (
+        content[: match.start()] + insertion + content[match.end() :],
+        "added grpc-compatible / grpcio-major / protobuf-major groups",
+    )
+
+
+def _ensure_grpc_exclude_patterns(content: str) -> tuple[str, str | None]:
+    """Add the grpc exclude-patterns block to ``patch`` and ``minor`` groups.
+
+    Idempotent: if both groups already declare the grpc/protobuf packages
+    as ``exclude-patterns`` this function is a no-op.  When a group is
+    missing some packages, only those missing entries are appended at the
+    end of the existing ``exclude-patterns`` list.
+    """
+    updated = content
+    changed_groups: list[str] = []
+
+    for group_name in ("patch", "minor"):
+        new = _ensure_grpc_exclude_in_group(updated, group_name)
+        if new != updated:
+            updated = new
+            changed_groups.append(group_name)
+
+    if not changed_groups:
+        return content, None
+    return updated, "added grpc exclude-patterns to " + " and ".join(changed_groups)
+
+
+def _ensure_grpc_exclude_in_group(content: str, group_name: str) -> str:
+    """Add the grpc exclude-patterns block to a single Dependabot group."""
+    # Match the group header followed by its body up to (but not including)
+    # the next sibling key (8 spaces) or the next top-level dash.
+    group_pattern = re.compile(
+        rf"(      {re.escape(group_name)}:\n"
+        rf"(?:        [^\n]*\n)*?"
+        rf"        exclude-patterns:\n"
+        rf"((?:          [^\n]*\n)*))",
+    )
+
+    match = group_pattern.search(content)
+    if match is None:
+        return content
+
+    existing_excludes = match.group(2)
+    missing = [
+        name
+        for name in _GRPC_EXCLUDE_PATTERN_NAMES
+        if f'"{name}"' not in existing_excludes
+    ]
+    if not missing:
+        return content
+
+    # Append only missing dependencies, so partially migrated/customized
+    # projects do not get duplicate exclude-patterns.
+    if any(name in existing_excludes for name in _GRPC_EXCLUDE_PATTERN_NAMES):
+        missing_block = "".join(f'          - "{name}"\n' for name in missing)
+    else:
+        missing_block = (
+            "          # These need a migration script to fix Dependabot not updating the\n"
+            "          # runtime dependencies\n"
+            + "".join(f'          - "{name}"\n' for name in missing)
+        )
+
+    new_block = match.group(1) + missing_block
+    return content[: match.start()] + new_block + content[match.end() :]
+
+
+_AUTO_DEPENDABOT_GRPC_GROUPS = (
+    "the grpc-compatible group",
+    "the grpcio-major group",
+    "the protobuf-major group",
+)
+"""Dependabot PR title fragments handled by the grpc migration workflow."""
+
+
+def _migrate_grpc_auto_dependabot_workflow() -> None:
+    """Update auto-dependabot.yaml to skip the new grpc group PRs."""
+    path = Path(".github/workflows/auto-dependabot.yaml")
+    if not path.exists():
+        # Some older repos used `.yml`.
+        alt = Path(".github/workflows/auto-dependabot.yml")
+        if alt.exists():
+            path = alt
+        else:
+            manual_step(
+                "Cannot find .github/workflows/auto-dependabot.yaml; "
+                "please add the new grpc-compatible / grpcio-major / "
+                "protobuf-major skip conditions manually (see the "
+                "cookiecutter template for reference)."
+            )
+            return
+
+    content = _normalize_content(path.read_text(encoding="utf-8"))
+    missing_groups = [
+        group for group in _AUTO_DEPENDABOT_GRPC_GROUPS if group not in content
+    ]
+    if not missing_groups:
+        print(f"  Skipped {path}: already skips grpc Dependabot groups")
+        return
+
+    anchor = (
+        "      !contains(github.event.pull_request.title, "
+        "'the repo-config group') &&\n"
+    )
+    if anchor not in content:
+        manual_step(
+            f"{path} does not match the expected layout; please add "
+            "skip conditions for "
+            + ", ".join(f"'{group}'" for group in missing_groups)
+            + " manually."
+        )
+        return
+
+    missing_lines = "".join(
+        "      !contains(github.event.pull_request.title, " f"'{group}') &&\n"
+        for group in missing_groups
+    )
+    updated = content.replace(anchor, anchor + missing_lines, 1)
+    replace_file_atomically(path, updated)
+    print(f"  Updated {path}: skip the new grpc Dependabot groups")
+
+
+def _install_grpc_migration_workflow() -> None:
+    """Install or replace the grpc-migration workflow file.
+
+    The workflow is always overwritten because some repositories carry
+    earlier experimental versions of it that need to be brought up to the
+    final shape.
+    """
+    path = Path(".github/workflows/grpc-migration.yaml")
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    new_content = _GRPC_MIGRATION_WORKFLOW_CONTENT
+    if path.exists():
+        old_content = _normalize_content(path.read_text(encoding="utf-8"))
+        if old_content == new_content:
+            print(f"  Skipped {path}: already up to date")
+            return
+        replace_file_atomically(path, new_content)
+        print(f"  Updated {path}: replaced with the latest workflow")
+        return
+
+    replace_file_atomically(path, new_content)
+    print(f"  Created {path}")
+
+
+_GRPC_REQUIRED_CHECK_CONTEXT = "Fix gRPC/protobuf runtime floors"
+"""Required-status-check context name added to the version-branches ruleset."""
+
+
+def _migrate_grpc_ruleset() -> None:
+    """Add the grpc check to the 'Protect version branches' ruleset."""
+    rule_name = "Protect version branches"
+    docs_url = (
+        "https://frequenz-floss.github.io/frequenz-repo-config-python/"
+        "user-guide/start-a-new-project/configure-github/#rulesets"
+    )
+    settings_url = get_ruleset_settings_url() or docs_url
+
+    ruleset = get_ruleset(rule_name)
+    if ruleset is None:
+        manual_step(
+            f"The '{rule_name}' GitHub ruleset was not found (or the gh CLI "
+            "is not available / the API call failed). "
+            "If it should exist for this repository, import it following "
+            f"the instructions at {docs_url} and make sure it requires the "
+            f"'{_GRPC_REQUIRED_CHECK_CONTEXT}' status check."
+        )
+        return
+
+    ruleset_id = ruleset.get("id")
+    if not isinstance(ruleset_id, int):
+        manual_step(
+            f"Failed to determine the '{rule_name}' ruleset ID from the "
+            f"GitHub API response. Please add the "
+            f"'{_GRPC_REQUIRED_CHECK_CONTEXT}' required check manually at "
+            f"{settings_url}."
+        )
+        return
+
+    required_status_checks_found = False
+    changed = False
+    for rule in ruleset.get("rules", []):
+        if rule.get("type") != "required_status_checks":
+            continue
+        required_status_checks_found = True
+        params = rule.setdefault("parameters", {})
+        checks = params.setdefault("required_status_checks", [])
+        if not isinstance(checks, list):
+            manual_step(
+                f"The '{rule_name}' ruleset has an unexpected "
+                "required_status_checks shape. Please add the "
+                f"'{_GRPC_REQUIRED_CHECK_CONTEXT}' required check manually "
+                f"at {settings_url}."
+            )
+            return
+        if any(c.get("context") == _GRPC_REQUIRED_CHECK_CONTEXT for c in checks):
+            continue
+        checks.append(
+            {
+                "context": _GRPC_REQUIRED_CHECK_CONTEXT,
+                "integration_id": 15368,
+            }
+        )
+        changed = True
+
+    if not required_status_checks_found:
+        manual_step(
+            f"The '{rule_name}' ruleset does not contain a "
+            "required_status_checks rule. Please add the "
+            f"'{_GRPC_REQUIRED_CHECK_CONTEXT}' required check manually at "
+            f"{settings_url}."
+        )
+        return
+
+    if not changed:
+        print(f"  Ruleset '{rule_name}' already requires the grpc check")
+        return
+
+    if not update_ruleset(ruleset_id, ruleset):
+        manual_step(
+            f"Failed to update the '{rule_name}' ruleset via the GitHub "
+            f"API. Please add the '{_GRPC_REQUIRED_CHECK_CONTEXT}' "
+            f"required check manually at {settings_url}."
+        )
+        return
+
+    print(
+        f"  Updated ruleset '{rule_name}': added "
+        f"'{_GRPC_REQUIRED_CHECK_CONTEXT}' required check"
+    )
 
 
 def manual_step(message: str) -> None:
