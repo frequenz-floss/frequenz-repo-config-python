@@ -1,0 +1,20 @@
+[
+  {
+    "dependencyName": "grpcio",
+    "directory": "/sub",
+    "packageEcosystem": "pip",
+    "newVersion": "2.0.0"
+  },
+  {
+    "dependencyName": "grpcio",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "2.0.0"
+  },
+  {
+    "dependencyName": "grpcio",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "2.1.0"
+  }
+]

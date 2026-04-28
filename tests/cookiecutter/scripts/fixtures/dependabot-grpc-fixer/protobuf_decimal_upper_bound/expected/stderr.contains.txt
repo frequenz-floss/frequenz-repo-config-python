@@ -1,0 +1,1 @@
+Found a 'protobuf' dependency entry in pyproject.toml but it does not match the shape the fixer requires

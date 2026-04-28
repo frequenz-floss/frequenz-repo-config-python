@@ -1,0 +1,50 @@
+[
+  {
+    "dependencyName": "grpcio",
+    "dependencyType": "direct:production",
+    "updateType": "version-update:semver-minor",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "targetBranch": "v0.x.x",
+    "prevVersion": "1.72.1",
+    "newVersion": "1.80.0",
+    "compatScore": 0,
+    "maintainerChanges": false,
+    "dependencyGroup": "grpc",
+    "alertState": "",
+    "ghsaId": "",
+    "cvss": 0
+  },
+  {
+    "dependencyName": "grpcio-tools",
+    "dependencyType": "direct:development",
+    "updateType": "version-update:semver-minor",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "targetBranch": "v0.x.x",
+    "prevVersion": "1.72.1",
+    "newVersion": "1.80.0",
+    "compatScore": 0,
+    "maintainerChanges": false,
+    "dependencyGroup": "grpc",
+    "alertState": "",
+    "ghsaId": "",
+    "cvss": 0
+  },
+  {
+    "dependencyName": "protobuf",
+    "dependencyType": "direct:production",
+    "updateType": "version-update:semver-major",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "targetBranch": "v0.x.x",
+    "prevVersion": "6.32.1",
+    "newVersion": "7.34.1",
+    "compatScore": 0,
+    "maintainerChanges": false,
+    "dependencyGroup": "grpc",
+    "alertState": "",
+    "ghsaId": "",
+    "cvss": 0
+  }
+]

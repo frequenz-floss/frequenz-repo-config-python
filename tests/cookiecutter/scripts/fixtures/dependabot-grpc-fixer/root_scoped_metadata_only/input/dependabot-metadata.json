@@ -1,0 +1,26 @@
+[
+  {
+    "dependencyName": "grpcio",
+    "directory": "/subdir",
+    "packageEcosystem": "pip",
+    "newVersion": "2.0.0"
+  },
+  {
+    "dependencyName": "grpcio",
+    "directory": "/",
+    "packageEcosystem": "npm",
+    "newVersion": "9.9.9"
+  },
+  {
+    "dependencyName": "grpcio",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "2.0.0"
+  },
+  {
+    "dependencyName": "protobuf",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "7.34.1"
+  }
+]

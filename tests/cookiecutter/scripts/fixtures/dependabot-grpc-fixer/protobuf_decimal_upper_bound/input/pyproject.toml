@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "protobuf >= 6.32.1, < 7.0", # Do not widen beyond 7!
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "dependencyName": "grpcio-tools",
+    "dependencyType": "direct:development",
+    "updateType": "version-update:semver-minor",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "targetBranch": "v0.x.x",
+    "prevVersion": "1.72.1",
+    "newVersion": "1.80.0",
+    "compatScore": 0,
+    "maintainerChanges": false,
+    "dependencyGroup": "grpc",
+    "alertState": "",
+    "ghsaId": "",
+    "cvss": 0
+  }
+]

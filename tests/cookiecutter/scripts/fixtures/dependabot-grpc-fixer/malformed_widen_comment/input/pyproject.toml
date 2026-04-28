@@ -1,0 +1,4 @@
+[project]
+dependencies = [
+  "grpcio >= 1.72.1, < 2", # Do not widen past 2!
+]
