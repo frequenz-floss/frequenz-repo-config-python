@@ -188,6 +188,215 @@ bumping the action's `@<sha>` reference) produce PRs with `the compatible
 group` in the title, which does **not** match any migration workflow's `if`
 condition.  These PRs are handled normally by `auto-dependabot.yaml`.
 
+## gRPC migration workflow
+
+API projects generated from the template include a workflow
+(`grpc-migration.yaml`) that automatically syncs the runtime `>=` floors
+for `grpcio` and `protobuf` in `pyproject.toml` after [Dependabot] bumps
+the matching build-time pins.
+
+API templates pin `protobuf`, `grpcio` and `grpcio-tools` in
+`[build-system].requires` as exact versions and also declare `protobuf`
+and `grpcio` in `[project].dependencies` with a `>= <build-pin>` lower
+bound.  The lower bound must always match the exact pin: the protobuf
+[cross-version runtime guarantee][protobuf-cross-version] requires the
+runtime to be at least the version used at generation time.
+
+[Dependabot] correctly bumps `[build-system].requires` but it does not
+bump the matching `>=` floor in `[project].dependencies`.  This workflow
+runs after a [Dependabot] grpc/protobuf group PR, rewrites the `>=` floor
+to match the new build pins, and pushes the fix-up commit back onto the
+PR branch.
+
+The workflow uses the
+[`dependabot-grpc-fixer.py`][dependabot-grpc-fixer] script shipped by
+this repository.  Shipping it as a separate script makes it easy to keep
+all API projects updated without regenerating the workflow file, and the
+workflow itself stays short.
+
+The companion `auto-dependabot.yaml` workflow skips the
+`grpc-compatible`, `grpcio-major` and `protobuf-major` Dependabot groups
+so those PRs are handled exclusively by this migration workflow.
+
+The migration script lives at
+`cookiecutter/scripts/dependabot-grpc-fixer.py` in this repository, and
+the workflow fetches it from the URL configured in `script-url-template`.
+The script should be fetched from an immutable release tag or commit
+SHA from a trusted source.
+
+### Creating the caller workflow
+
+If you need to set it up in an API project that wasn't generated from the
+template (or recreate it), create
+`.github/workflows/grpc-migration.yaml` in your repository:
+
+{% raw %}
+```yaml
+# Automatic grpc/protobuf build/runtime sync for Dependabot PRs
+#
+# The template's `pyproject.toml` pins `protobuf`, `grpcio` and `grpcio-tools`
+# in `[build-system].requires` as *exact* versions, and also declares
+# `protobuf` and `grpcio` in `[project].dependencies` with a `>= <build-pin>`
+# lower bound.  The lower bound must always match the exact pin, because the
+# protobuf cross-version runtime guarantee requires the runtime to be at
+# least the version used at generation time:
+#   https://protobuf.dev/support/cross-version-runtime-guarantee/
+#
+# Dependabot correctly bumps `[build-system].requires`, but it does not bump
+# the matching `>=` floor in `[project].dependencies`.  This workflow runs
+# after a Dependabot grpc/protobuf group PR, rewrites the `>=` floor to match
+# the new build pins, and pushes the fix-up commit back onto the PR branch.
+#
+# The companion auto-dependabot workflow skips the `grpc-compatible`,
+# `grpcio-major` and `protobuf-major` groups so those PRs are handled
+# exclusively by this migration workflow.
+#
+# XXX: !!! SECURITY WARNING !!!
+# pull_request_target has write access to the repo, and can read secrets.
+# This is required because Dependabot PRs are treated as fork PRs: the
+# GITHUB_TOKEN is read-only and secrets are unavailable with a plain
+# pull_request trigger.  The action mitigates the risk by:
+#   - Never executing code from the PR (the migration script is fetched
+#     from the repo-config branch configured below, not taken from the PR).
+#   - Gating migration steps on github.actor == 'dependabot[bot]' AND the
+#     PR title.
+#   - Running checkout with persist-credentials: false and isolating
+#     push credentials from the migration script environment.
+# For more details read:
+# https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+
+name: gRPC Migration
+
+on:
+  merge_group:  # To allow using this as a required check for merging
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  # Commit the sync-up to the PR branch.
+  contents: write
+  # Create and normalize migration state labels.
+  issues: write
+  # Read/update pull request metadata and comments.
+  pull-requests: write
+
+jobs:
+  grpc-migration:
+    name: Fix gRPC/protobuf runtime floors
+    # Skip if it was triggered by the merge queue. We only need the workflow to
+    # be executed to meet the "Required check" condition for merging, but we
+    # don't need to actually run the job, having the job present as Skipped is
+    # enough.
+    if: |
+      github.event_name == 'pull_request_target' &&
+      github.actor == 'dependabot[bot]' &&
+      (contains(github.event.pull_request.title, 'the grpc-compatible group') ||
+       contains(github.event.pull_request.title, 'the grpcio-major group') ||
+       contains(github.event.pull_request.title, 'the protobuf-major group'))
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate token
+        id: create-app-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        with:
+          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
+          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+          # Push the sync-up commit to the PR branch.
+          permission-contents: write
+          # Create and normalize migration state labels.
+          permission-issues: write
+          # Read/update pull request metadata and labels.
+          permission-pull-requests: write
+      - name: Migrate
+        uses: frequenz-floss/gh-action-dependabot-migrate@27763fb5eb56476d91abe00132e8a0614171f92f # v1.2.0
+        with:
+          {% endraw -%}
+          script-url-template: >- # {{ ref_name }}
+            https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/{{ git.commit }}/cookiecutter/scripts/dependabot-grpc-fixer.py
+          {% raw -%}
+          token: ${{ steps.create-app-token.outputs.token }}
+          version-iteration: "false"
+          sign-commits: "true"
+          auto-merged-label: "tool:auto-merged"
+          migrated-label: "tool:grpc:migration:executed"
+          intervention-pending-label: "tool:grpc:migration:intervention-pending"
+          intervention-done-label: "tool:grpc:migration:intervention-done"
+```
+{% endraw %}
+
+The key grpc-specific settings are:
+
+* **`script-url-template`** — points to the
+  `dependabot-grpc-fixer.py` script in this repository.  Unlike the
+  repo-config migration workflow, the URL has no `{version}` placeholder:
+  use the same branch or immutable ref that provides the fixer version you
+  want this workflow to run.
+* **`if` condition** — matches PRs whose title contains
+  `the grpc-compatible group`, `the grpcio-major group` or
+  `the protobuf-major group`, which is how [Dependabot] names PRs for the
+  matching groups in `.github/dependabot.yml`.
+* **`merge_group` trigger** — lets you use the workflow as a required
+  check in repositories that gate merges through the merge queue.
+
+!!! Note
+
+    Keep third-party actions pinned to commit hashes.  [Dependabot]
+    updates those references through the `github-actions` ecosystem.
+
+!!! Warning "Security"
+
+    The workflow uses `pull_request_target` because [Dependabot] PRs are
+    treated as fork PRs: `GITHUB_TOKEN` is read-only and secrets are
+    unavailable with a plain `pull_request` trigger.  The action
+    mitigates the risk by never executing code from the PR — the
+    migration script is fetched from the URL configured in the base
+    branch workflow, not from the PR branch.  For details, see
+    [Preventing pwn requests][preventing-pwn-requests].
+
+### Requirements
+
+The workflow requires:
+
+* **A [GitHub App][GitHub App]** configured as described in the [GitHub App
+  for Dependabot
+  workflows](start-a-new-project/configure-github.md#github-app-for-dependabot-workflows)
+  section.  The same app used by `auto-dependabot.yaml` and
+  `repo-config-migration.yaml` is fine.
+* **Auto-merge enabled** in the repository settings (Settings > General >
+  Pull Requests > Allow auto-merge).
+* **The three new Dependabot groups** in `.github/dependabot.yml`:
+
+    ```yaml
+    groups:
+      grpc-compatible:
+        update-types:
+          - "patch"
+          - "minor"
+        patterns:
+          - "grpcio"
+          - "grpcio-tools"
+          - "protobuf"
+      grpcio-major:
+        patterns:
+          - "grpcio"
+          - "grpcio-tools"
+      protobuf-major:
+        patterns:
+          - "protobuf"
+    ```
+
+* **The `auto-dependabot.yaml` workflow** must skip these three groups
+  in its job-level `if` condition so the migration workflow handles them
+  exclusively.
+
+### Interaction with other workflows
+
+The `auto-dependabot.yaml` workflow has a job-level `if` condition that
+skips PRs containing `the grpc-compatible group`, `the grpcio-major
+group` or `the protobuf-major group` in the title (alongside `the
+repo-config group` and `Bump black from `).  This ensures those updates
+are handled exclusively by their respective migration workflows.
+
 ## Black formatting migration workflow
 
 Projects generated from the template also include a workflow
@@ -241,4 +450,7 @@ migration script does not make GitHub API calls.
 [Dependabot]: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 [GitHub App]: https://docs.github.com/en/apps/creating-github-apps
 [gh-action-dependabot-migrate]: https://github.com/frequenz-floss/gh-action-dependabot-migrate
+[dependabot-grpc-fixer]: https://github.com/llucax/frequenz-repo-config-python/blob/fix-grpc-group/cookiecutter/scripts/dependabot-grpc-fixer.py
 [migration-workflow]: update-to-a-new-version.md#automated-migration-workflow
+[preventing-pwn-requests]: https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+[protobuf-cross-version]: https://protobuf.dev/support/cross-version-runtime-guarantee/
