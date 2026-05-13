@@ -43,13 +43,13 @@ dev-flake8 = [
   "flake8-datetimez == 20.10.0",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.4",  # For reading the flake8 config from pyproject.toml
-  "pydoclint == 0.8.3",
+  "pydoclint == 0.8.4",
   "pydocstyle == 6.3.0",
 ]
-dev-formatting = ["black == 26.3.1", "isort == 8.0.1"]
+dev-formatting = ["black == 26.5.1", "isort == 8.0.1"]
 dev-mkdocs = [
   "Markdown == 3.10.2",
-  "black == 26.3.1",
+  "black == 26.5.1",
   "mike == 2.2.0",
   "mkdocs-gen-files == 0.6.1",
   "mkdocs-literate-nav == 0.6.3",
@@ -60,8 +60,8 @@ dev-mkdocs = [
   "frequenz-repo-config[lib] == 0.17.0",
 ]
 dev-mypy = [
-  "mypy == 1.20.2",
-  "types-Markdown == 3.10.2.20260408",
+  "mypy == 2.1.0",
+  "types-Markdown == 3.10.2.20260518",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-test[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
