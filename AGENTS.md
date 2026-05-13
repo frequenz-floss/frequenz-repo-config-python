@@ -1,99 +1,54 @@
-# AGENTS.md - AI Coding Agent Instructions
+# OVERVIEW
+Opinionated repository configuration and scaffolding for Frequenz projects.
+Core stack: Python 3.11+, cookiecutter, nox, mkdocs, protobuf/gRPC.
 
-Condensed instructions for AI agents. See [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for full details.
+# STRUCTURE
+- `src/frequenz/repo/config/`: Main package; nox, mkdocs, pytest, setuptools, CLI helpers.
+- `cookiecutter/`: Template sources, hooks, local extensions, migration script.
+- `cookiecutter/{{cookiecutter.github_repo_name}}/`: Embedded generated-repo skeleton.
+- `tests/`: Unit tests plus `tests/integration/` for template generation.
+- `tests_golden/`: Reference outputs for integration tests; generated, do not edit directly.
+- `docs/`: MkDocs documentation source tree.
+- `.github/`: Workflows, issue templates, release-note templates, migration script template.
 
-## Project Overview
+# WHERE TO LOOK
+- Template author workflow: `cookiecutter/`, `cookiecutter/migrate.py`, `tests/integration/test_cookiecutter_generation.py`.
+- Generated scaffold files: `cookiecutter/{{cookiecutter.github_repo_name}}/`.
+- Default nox behavior: `src/frequenz/repo/config/nox/default.py`, `nox/session.py`.
+- Docs generation/versioning: `src/frequenz/repo/config/mkdocs/`, `docs/_scripts/`, `mkdocs.yml`.
+- Template migrations: `cookiecutter/migrate.py`, `.github/cookiecutter-migrate.template.py`.
+- Golden-test contract: `tests/integration/test_cookiecutter_generation.py`, `tests_golden/`.
+- Release/CI policy: `CONTRIBUTING.md`, `.github/workflows/`, `RELEASE_NOTES.md`, `.github/RELEASE_NOTES.template.md`.
 
-Python package (3.11+) providing repository configuration and scaffolding for Frequenz projects: cookiecutter templates (actor, api, app, lib, model), nox sessions, protobuf/gRPC utilities, MkDocs and pytest utilities.
+# CONVENTIONS
+- Header: License + copyright header required.
+- Dataclasses: prefer `kw_only=True`; use `frozen=True` for immutables.
+- Strict typing, Google-style docstrings, positional-only/keyword-only when useful.
+- Prefer `pyproject.toml` as the canonical configuration source.
+- `setuptools_scm` managed; avoid manual version bumps.
+- Formatting: Black/isort, double quotes, 4 spaces in Python, 2 spaces in YAML/TOML/JSON.
+- `RELEASE_NOTES.md` and `cookiecutter/migrate.py`: reset after a release from templates in `.github/`, consult the git history to match the style used in the past if you need to change them.
+- When this project changes, `cookiecutter/` or `src/`, downstream projects are affected. Always add migration steps to `cookiecutter/migrate.py` when necessary.
 
-**Package:** `src/frequenz/repo/config/` (namespace package, `setuptools_scm` versioning)
+# ANTI-PATTERNS
+- Do not edit `tests_golden/` by hand.
+- Do not treat `cookiecutter/{{cookiecutter.github_repo_name}}/` as the live repo root.
+- Do not bypass `cookiecutter/migrate.py` when template changes affect existing repos.
+- Do not edit generated outputs under `build/` or `site/` as primary sources.
+- Do not bypass updating AGENTS.md files when changing structure or conventions.
+- Do not bypass updating `docs/` when changing public APIs or user-facing features.
+- Do not skip updating `cookiecutter/migrate.py` when changes need to be propagated to existing generated repos.
+- Do not add generic repo-agnostic guidance.
 
-## Quick Reference
+# UNIQUE STYLES
+- Idempotent migrations via `migrate.py` with `manual_step()` markers.
+- Template workflow splits naturally into template edit, golden update, migration result.
 
-```sh
-# Setup
-pip install -e .[dev]              # All dev dependencies
-pip install -e .[dev-noxfile]      # Just noxfile deps
-
-# Test
-nox -s pytest_max                  # Full test suite
-nox -R -s pytest_max               # Reuse venv (faster)
-pytest tests/                      # Direct pytest
-UPDATE_GOLDEN=1 pytest tests/integration/test_cookiecutter_generation.py::test_golden
-
-# Lint (run before committing)
-nox                                # All checks
-nox -s formatting                  # black + isort
-nox -s mypy                        # Type checking
-nox -R -s mypy                     # Reuse venv
-```
-
-**Markers:** `integration`, `cookiecutter`
-
-## Project Structure
-
-```
-src/frequenz/repo/config/       # Main package (_core.py, nox/, mkdocs/, pytest/, setuptools/, cli/)
-tests/                          # Unit tests, tests/integration/ for integration tests
-tests_golden/                   # Golden test fixtures
-cookiecutter/                   # Cookiecutter templates
-```
-
-## Code Patterns
-
-```python
-# File header (required)
-# License: MIT
-# Copyright © 2023 Frequenz Energy-as-a-Service GmbH
-"""Module docstring."""
-
-import dataclasses
-from typing import Self, assert_never
-
-# Dataclasses: always kw_only + frozen if intended to be immutable
-@dataclasses.dataclass(kw_only=True, frozen=True)
-class Config:
-    """Docstring."""
-    opts: CommandsOptions = dataclasses.field(default_factory=CommandsOptions)
-
-# Functions: strict typing, Google docstrings
-def func(session: _nox.Session, /, *, flag: bool = True) -> list[str]:
-    """Brief description.
-
-    Args:
-        session: The nox session.
-        flag: Optional flag.
-
-    Returns:
-        List of strings.
-    """
-```
-
-| Type | Convention | Example |
-|------|------------|---------|
-| Files/functions | snake_case | `api_pages.py`, `find_dirs()` |
-| Classes | PascalCase | `RepositoryType` |
-| Constants | UPPER_SNAKE | `UPDATE_GOLDEN` |
-| Private | `_` prefix | `_impl()` |
-
-**Formatting:** black formatting using 4 spaces (Python), 2 spaces (YAML/TOML/JSON), 88 line length, 100 max, double quotes
-
-When changing files that are regularly reset (like `RELEASE_NOTES.md` or `cookiecutter/migrate.py`), consult the git history to match the style used in the past.
-
-## Commit Messages
-- Use imperative mood: "Add", "Fix", "Update"
-- Use a 50-character limit for the subject line (can go a bit over if necessary), and wrap body at 80 characters
-- Include a brief description of the change in the body if needed, focus on the what and why, and avoid describing how, especially if it is obvious from the code/diff
-- Separate changes into logical commits
-- Consult the recent git history, specifically of the files being committed, to match style and conventions in commit messages used previously.
-
-## Cookiecutter Template Changes
-
-See [CONTRIBUTING.md](CONTRIBUTING.md#modifying-cookiecutter-templates) for the full workflow. Summary:
-
-1. Edit templates in `cookiecutter/{{cookiecutter.github_repo_name}}/`
-2. Update golden files: `UPDATE_GOLDEN=1 pytest tests/integration/test_cookiecutter_generation.py::test_golden`
-3. Write migration in `cookiecutter/migrate.py` (idempotent; use `manual_step()` for non-automatable changes)
-4. Validate: `python3 cookiecutter/migrate.py && git diff .github/`
-5. Update `RELEASE_NOTES.md`
-6. Commit separately: templates first, then this repo's migration result
+# COMMANDS
+- `pip install -e .[dev]`: Full dev environment.
+- `nox`: Run full tests/checks (formatting, flake8, mypy, pylint, pytest).
+- `nox -s pytest_max`: Full test suite.
+- `UPDATE_GOLDEN=1 pytest tests/integration/test_cookiecutter_generation.py::test_golden`: Refresh golden fixtures.
+- `python3 cookiecutter/migrate.py`: Validate migration logic.
+- `mkdocs build`: Build docs locally.
+- Consult `CONTRIBUTING.md` for full cookiecutter, docs, and release workflows.
