@@ -1,0 +1,8 @@
+[
+  {
+    "dependencyName": "grpcio",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "1abc"
+  }
+]

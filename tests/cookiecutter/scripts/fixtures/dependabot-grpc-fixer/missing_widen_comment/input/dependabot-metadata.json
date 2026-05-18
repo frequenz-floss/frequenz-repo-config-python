@@ -1,0 +1,26 @@
+[
+  {
+    "dependencyName": "grpcio",
+    "dependencyType": "direct:production",
+    "updateType": "version-update:semver-minor",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "1.80.0"
+  },
+  {
+    "dependencyName": "grpcio-tools",
+    "dependencyType": "direct:development",
+    "updateType": "version-update:semver-minor",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "1.80.0"
+  },
+  {
+    "dependencyName": "protobuf",
+    "dependencyType": "direct:production",
+    "updateType": "version-update:semver-major",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "7.34.1"
+  }
+]

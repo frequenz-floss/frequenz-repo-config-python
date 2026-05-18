@@ -106,6 +106,15 @@ Import the following
 * [Protect version
   branches]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/python/Protect version branches.json)
 
+##### API specific rulesets
+
+API repositories should import this variant instead of the generic Python
+*Protect version branches* ruleset, as it also requires the gRPC migration
+workflow check.
+
+* [Protect version
+  branches]({{config.repo_url}}/blob/{{ref_name}}/github-rulesets/python/Protect API version branches.json)
+
 ##### Rust specific rulesets
 
 * [Protect version
@@ -130,7 +139,7 @@ Pages](index.md#initialize-github-pages.md) section.
 
 ### GitHub App for Dependabot workflows
 
-The templates include two workflows that act on [Dependabot] PRs:
+The templates include several workflows that act on [Dependabot] PRs:
 
 * **`auto-dependabot.yaml`** — auto-approves and enables auto-merge for
   routine dependency updates.
@@ -139,8 +148,16 @@ The templates include two workflows that act on [Dependabot] PRs:
   it requires manual approval and merge (see
   [Automated migration workflow](../update-to-a-new-version.md#automated-migration-workflow)
   for details).
+* **`black-migration.yaml`** — reformats code when [Dependabot] opens a major
+  `black` update PR (see
+  [Black formatting migration workflow](../advanced-usage.md#black-formatting-migration-workflow)
+  for details).
+* **`grpc-migration.yaml`** — for API projects only, syncs `grpcio` and
+  `protobuf` runtime floors after matching Dependabot updates (see
+  [gRPC migration workflow](../advanced-usage.md#grpc-migration-workflow)
+  for details).
 
-Both workflows use a [GitHub App][GitHub App] installation token instead of
+These workflows use a [GitHub App][GitHub App] installation token instead of
 `GITHUB_TOKEN`. This is intentional: actions performed with `GITHUB_TOKEN` do
 not trigger certain follow-up workflow runs, which can prevent merge queue CI
 (`merge_group`) from starting.
@@ -150,7 +167,7 @@ repository with at least `Pull requests: write` and `Contents: write`
 permissions (add `Workflows: write` if migrations can touch
 `.github/workflows/*` files).
 
-If the migration script needs to make authenticated API calls (e.g. updating
+If a migration script needs to make authenticated API calls (e.g. updating
 repository settings or branch rulesets), you should also provide the
 `REPO_CONFIG_MIGRATION_TOKEN` secret with a dedicated, least-privilege token
 scoped to exactly what the script needs. The `REPO_CONFIG_MIGRATION_TOKEN` is

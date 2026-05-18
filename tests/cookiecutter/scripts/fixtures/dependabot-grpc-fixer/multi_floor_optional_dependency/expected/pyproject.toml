@@ -1,0 +1,9 @@
+[project]
+dependencies = [
+  "grpcio >= 1.72.1, < 2", # Do not widen beyond 2!
+]
+
+[project.optional-dependencies]
+grpc = [
+  "grpcio >= 1.72.1, < 2", # Do not widen beyond 2!
+]

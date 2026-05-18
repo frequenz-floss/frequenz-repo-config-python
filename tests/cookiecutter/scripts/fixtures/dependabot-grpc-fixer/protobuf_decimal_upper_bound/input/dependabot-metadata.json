@@ -1,0 +1,8 @@
+[
+  {
+    "dependencyName": "protobuf",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "7.34.1"
+  }
+]

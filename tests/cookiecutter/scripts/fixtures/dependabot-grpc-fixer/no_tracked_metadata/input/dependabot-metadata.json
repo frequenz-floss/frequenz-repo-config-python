@@ -1,0 +1,8 @@
+[
+  {
+    "dependencyName": "some-other-dep",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "1.0.0"
+  }
+]

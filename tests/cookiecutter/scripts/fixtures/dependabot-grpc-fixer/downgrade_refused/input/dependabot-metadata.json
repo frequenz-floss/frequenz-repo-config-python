@@ -1,0 +1,14 @@
+[
+  {
+    "dependencyName": "protobuf",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "5.28.3"
+  },
+  {
+    "dependencyName": "grpcio",
+    "directory": "/",
+    "packageEcosystem": "pip",
+    "newVersion": "2.0.0"
+  }
+]

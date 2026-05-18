@@ -24,6 +24,11 @@ jobs:
     if: |
       github.actor == 'dependabot[bot]' &&
       !contains(github.event.pull_request.title, 'the repo-config group') &&
+      {% endraw %}{% if cookiecutter.type == "api" %}{% raw -%}
+      !contains(github.event.pull_request.title, 'the grpc-compatible group') &&
+      !contains(github.event.pull_request.title, 'the grpcio-major group') &&
+      !contains(github.event.pull_request.title, 'the protobuf-major group') &&
+      {% endraw %}{% endif %}{% raw -%}
       !contains(github.event.pull_request.title, 'Bump black from ')
     runs-on: ubuntu-slim
     steps:

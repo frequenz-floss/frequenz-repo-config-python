@@ -28,6 +28,9 @@ But you might still need to adapt your code:
 
 - The cookiecutter now asks whether a repository is private, defaults that answer from the selected license, and uses it to toggle private-repository workflow behavior, public publishing jobs, and the link to GitHub Discussions in the issue template chooser.
 - All dependencies have been updated in the templates.
+- API projects now ship a dedicated `grpc-migration.yaml` workflow that runs after Dependabot bumps `grpcio`/`grpcio-tools`/`protobuf` and rewrites the matching runtime `>=` floors in `pyproject.toml`.
+- API projects now have a better grpcio/protobuf updates grouping in Dependabot, which should make upgrading easier, and plays nicer with the new `grpc-migration.yaml` workflow.
+- API projects should now use the new API-specific *Protect version branches* ruleset variant, which includes the required `Fix gRPC/protobuf runtime floors` check without affecting non-API Python projects.
 
 ## Bug Fixes
 

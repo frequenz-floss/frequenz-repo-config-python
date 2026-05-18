@@ -405,6 +405,11 @@ def remove_unneeded_files() -> None:
 
     if cookiecutter.type != "api":
         _shutil.rmtree("proto")
+        # The grpc-migration workflow is templated to render an empty file
+        # for non-API projects (see the `if cookiecutter.type == "api"`
+        # guard at the top of the template). Drop the leftover empty file
+        # so generated non-API projects don't carry it around.
+        _pathlib.Path(".github/workflows/grpc-migration.yaml").unlink()
 
 
 def adjust_src_root() -> None:
