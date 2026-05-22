@@ -286,6 +286,105 @@ def migrate_auxiliary_workflows() -> None:
         private_repo=private_repo,
         description="adjusted release notes privacy settings",
     )
+    _migrate_dependabot_migration_workflows()
+
+
+def _migrate_dependabot_migration_workflows() -> None:
+    """Use the unreleased Dependabot migration action features explicitly."""
+    _migrate_black_migration_workflow()
+    _migrate_repo_config_migration_workflow()
+
+
+def _migrate_black_migration_workflow() -> None:
+    """Update the black migration workflow to use explicit version iteration."""
+    path = Path(".github/workflows/black-migration.yaml")
+    content = _read_expected_workflow(path)
+    if content is None:
+        return
+
+    original = content
+    content = _update_dependabot_migrate_action_ref(content)
+    content = _ensure_line_after(
+        content,
+        path=path,
+        anchor='          auto-merge-on-changes: "false"\n',
+        line='          version-iteration: "false"\n',
+    )
+
+    if content == original:
+        print(f"  Skipped {path}: already up to date")
+        return
+
+    replace_file_atomically(path, content)
+    print(f"  Updated {path}: use explicit Dependabot migration iteration")
+
+
+def _migrate_repo_config_migration_workflow() -> None:
+    """Update the repo-config migration workflow to use minor iteration."""
+    path = Path(".github/workflows/repo-config-migration.yaml")
+    content = _read_expected_workflow(path)
+    if content is None:
+        return
+
+    original = content
+    content = _update_dependabot_migrate_action_ref(content)
+    content = _ensure_line_after(
+        content,
+        path=path,
+        anchor="          migration-token: ${{ secrets.REPO_CONFIG_MIGRATION_TOKEN }}\n",
+        line='          version-iteration: "minor"\n',
+    )
+    content = _ensure_line_after(
+        content,
+        path=path,
+        anchor='          version-iteration: "minor"\n',
+        line='          if-no-iterations: "pass"\n',
+    )
+
+    if content == original:
+        print(f"  Skipped {path}: already up to date")
+        return
+
+    replace_file_atomically(path, content)
+    print(f"  Updated {path}: use explicit Dependabot migration iteration")
+
+
+def _read_expected_workflow(path: Path) -> str | None:
+    """Read an expected workflow file and normalize its line endings."""
+    if not path.exists():
+        manual_step(
+            f"{path} is missing. Generated projects are expected to have this "
+            "workflow; please restore it from the template or apply the "
+            "Dependabot migration workflow updates manually."
+        )
+        return None
+
+    return _normalize_content(path.read_text(encoding="utf-8"))
+
+
+def _update_dependabot_migrate_action_ref(content: str) -> str:
+    """Point the Dependabot migration action to the testing branch."""
+    return re.sub(
+        r"^        uses: frequenz-floss/gh-action-dependabot-migrate@[^\n]*$",
+        r"        uses: frequenz-floss/gh-action-dependabot-migrate@"
+        r"27763fb5eb56476d91abe00132e8a0614171f92f # v1.2.0",
+        content,
+        count=1,
+        flags=re.MULTILINE,
+    )
+
+
+def _ensure_line_after(content: str, *, path: Path, anchor: str, line: str) -> str:
+    """Ensure ``line`` exists immediately after a known workflow input line."""
+    if line in content:
+        return content
+    if anchor not in content:
+        manual_step(
+            f"{path} does not match the expected layout; please add "
+            f"{line.strip()!r} manually."
+        )
+        return content
+    return content.replace(anchor, anchor + line, 1)
 
 
 def migrate_gh_actions_hashes() -> None:
