@@ -185,10 +185,7 @@ These are the steps to create a new release:
 
 5. A GitHub action will test the tag and if all goes well it will create
    a [GitHub
-   Release](https://github.com/frequenz-floss/frequenz-api-test/releases),
-   and upload a new package to
-   [PyPI](https://pypi.org/project/frequenz-api-test/)
-   automatically.
+   Release](https://github.com/frequenz-floss/frequenz-api-test/releases).
 
 6. Once this is done, reset the `RELEASE_NOTES.md` with the template:
 
