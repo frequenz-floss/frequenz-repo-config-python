@@ -63,6 +63,9 @@ def main() -> None:
     print("Setting up the gRPC migration workflow...")
     migrate_grpc_workflow_setup()
     print("=" * 72)
+    print("Fixing nox test path typo in CONTRIBUTING.md...")
+    migrate_contributing_nox_test_path()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -202,6 +205,69 @@ def remove_cross_arch_files() -> None:
         manual_step(
             f"Failed to update {contributing}: {exc}. "
             "Please remove the 'Cross-Arch Testing' section manually."
+        )
+
+
+def migrate_contributing_nox_test_path() -> None:
+    """Fix the ``test/`` -> ``tests/`` typo in CONTRIBUTING.md nox examples.
+
+    Earlier versions of the template referenced ``test/test_*.py`` (singular)
+    in the example ``nox -R -s ...`` command lines, while the real directory
+    is ``tests/``.  This step rewrites those exact lines to use ``tests/``.
+
+    Only the three known buggy lines are touched; the function is a no-op if
+    none of them are present (e.g. the file was already fixed, customized,
+    or removed).
+    """
+    contributing = Path("CONTRIBUTING.md")
+    if not contributing.exists():
+        manual_step(
+            f"{contributing} does not exist. Please replace 'test/test_*.py' "
+            "with 'tests/test_*.py' in the nox example commands manually."
+        )
+        return
+
+    try:
+        text = contributing.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {contributing}: {exc}. "
+            "Please replace 'test/test_*.py' with 'tests/test_*.py' "
+            "in the nox example commands manually."
+        )
+        return
+
+    replacements = [
+        (
+            "nox -R -s pytest -- test/test_*.py",
+            "nox -R -s pytest -- tests/test_*.py",
+        ),
+        (
+            "nox -R -s pylint -- test/test_*.py",
+            "nox -R -s pylint -- tests/test_*.py",
+        ),
+        (
+            "nox -R -s mypy -- test/test_*.py",
+            "nox -R -s mypy -- tests/test_*.py",
+        ),
+    ]
+
+    new_text = text
+    for old, new in replacements:
+        new_text = new_text.replace(old, new)
+
+    if new_text == text:
+        print(f"  Skipped {contributing}: nox test path already correct")
+        return
+
+    try:
+        replace_file_atomically(contributing, new_text)
+        print(f"  Updated {contributing}: fixed nox 'test/' -> 'tests/' typo")
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {contributing}: {exc}. "
+            "Please replace 'test/test_*.py' with 'tests/test_*.py' "
+            "in the nox example commands manually."
         )
 
 
