@@ -63,6 +63,12 @@ def main() -> None:
     print("Setting up the gRPC migration workflow...")
     migrate_grpc_workflow_setup()
     print("=" * 72)
+    print("Fixing nox test path typo in CONTRIBUTING.md...")
+    migrate_contributing_nox_test_path()
+    print("=" * 72)
+    print("Adjusting CONTRIBUTING.md release section for repo privacy...")
+    migrate_contributing_release_pypi_mention()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -202,6 +208,175 @@ def remove_cross_arch_files() -> None:
         manual_step(
             f"Failed to update {contributing}: {exc}. "
             "Please remove the 'Cross-Arch Testing' section manually."
+        )
+
+
+def migrate_contributing_nox_test_path() -> None:
+    """Fix the ``test/`` -> ``tests/`` typo in CONTRIBUTING.md nox examples.
+
+    Earlier versions of the template referenced ``test/test_*.py`` (singular)
+    in the example ``nox -R -s ...`` command lines, while the real directory
+    is ``tests/``.  This step rewrites those exact lines to use ``tests/``.
+
+    Only the three known buggy lines are touched; the function is a no-op if
+    none of them are present (e.g. the file was already fixed, customized,
+    or removed).
+    """
+    contributing = Path("CONTRIBUTING.md")
+    if not contributing.exists():
+        manual_step(
+            f"{contributing} does not exist. Please replace 'test/test_*.py' "
+            "with 'tests/test_*.py' in the nox example commands manually."
+        )
+        return
+
+    try:
+        text = contributing.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {contributing}: {exc}. "
+            "Please replace 'test/test_*.py' with 'tests/test_*.py' "
+            "in the nox example commands manually."
+        )
+        return
+
+    replacements = [
+        (
+            "nox -R -s pytest -- test/test_*.py",
+            "nox -R -s pytest -- tests/test_*.py",
+        ),
+        (
+            "nox -R -s pylint -- test/test_*.py",
+            "nox -R -s pylint -- tests/test_*.py",
+        ),
+        (
+            "nox -R -s mypy -- test/test_*.py",
+            "nox -R -s mypy -- tests/test_*.py",
+        ),
+    ]
+
+    new_text = text
+    for old, new in replacements:
+        new_text = new_text.replace(old, new)
+
+    if new_text == text:
+        print(f"  Skipped {contributing}: nox test path already correct")
+        return
+
+    try:
+        replace_file_atomically(contributing, new_text)
+        print(f"  Updated {contributing}: fixed nox 'test/' -> 'tests/' typo")
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {contributing}: {exc}. "
+            "Please replace 'test/test_*.py' with 'tests/test_*.py' "
+            "in the nox example commands manually."
+        )
+
+
+_CONTRIBUTING_RELEASE_WITH_PYPI = """\
+5. A GitHub action will test the tag and if all goes well it will create
+   a [GitHub
+   Release](https://github.com/{github_org}/{github_repo_name}/releases),
+   and upload a new package to
+   [PyPI](https://pypi.org/project/{pypi_package_name}/)
+   automatically.
+"""
+"""Old release-section paragraph that always mentions PyPI."""
+
+_CONTRIBUTING_RELEASE_WITHOUT_PYPI = """\
+5. A GitHub action will test the tag and if all goes well it will create
+   a [GitHub
+   Release](https://github.com/{github_org}/{github_repo_name}/releases).
+"""
+"""New release-section paragraph for private repos (no PyPI mention)."""
+
+
+def migrate_contributing_release_pypi_mention() -> None:
+    """Drop the PyPI publishing sentence from CONTRIBUTING.md for private repos.
+
+    The template now gates the "upload a new package to PyPI automatically"
+    sentence in the release section on ``cookiecutter.private_repo == "no"``.
+    Public repositories render to the same text as before, so they need no
+    changes.  Private repositories had a stale PyPI mention that this step
+    removes.
+
+    The function is a no-op if the file does not exist, if the release
+    paragraph does not match the known shape (e.g. it was customized), or
+    if it has already been migrated.
+    """
+    contributing = Path("CONTRIBUTING.md")
+
+    if not _infer_private_repo():
+        print(f"  Skipped {contributing}: public repository, no change needed")
+        return
+
+    if not contributing.exists():
+        manual_step(
+            f"{contributing} does not exist. "
+            "Please remove the 'upload a new package to PyPI automatically' "
+            "sentence from the release section manually."
+        )
+        return
+
+    try:
+        text = contributing.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {contributing}: {exc}. "
+            "Please remove the 'upload a new package to PyPI automatically' "
+            "sentence from the release section manually."
+        )
+        return
+
+    github_org = read_cookiecutter_str_var("github_org")
+    github_repo_name = read_cookiecutter_str_var("github_repo_name")
+    pypi_package_name = read_cookiecutter_str_var("pypi_package_name")
+    if not (github_org and github_repo_name and pypi_package_name):
+        manual_step(
+            f"Cannot adjust {contributing}: missing github_org, "
+            "github_repo_name or pypi_package_name in "
+            ".cookiecutter-replay.json. Please remove the 'upload a new "
+            "package to PyPI automatically' sentence from the release "
+            "section manually."
+        )
+        return
+
+    old_block = _CONTRIBUTING_RELEASE_WITH_PYPI.format(
+        github_org=github_org,
+        github_repo_name=github_repo_name,
+        pypi_package_name=pypi_package_name,
+    )
+    new_block = _CONTRIBUTING_RELEASE_WITHOUT_PYPI.format(
+        github_org=github_org,
+        github_repo_name=github_repo_name,
+    )
+
+    if new_block in text and old_block not in text:
+        print(f"  Skipped {contributing}: already migrated")
+        return
+
+    if old_block not in text:
+        manual_step(
+            f"{contributing} release section does not match the expected "
+            "layout; please remove the 'upload a new package to PyPI "
+            "automatically' sentence manually."
+        )
+        return
+
+    new_text = text.replace(old_block, new_block, 1)
+
+    try:
+        replace_file_atomically(contributing, new_text)
+        print(
+            f"  Updated {contributing}: removed PyPI publish mention "
+            "from the release section (private repo)"
+        )
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {contributing}: {exc}. "
+            "Please remove the 'upload a new package to PyPI automatically' "
+            "sentence from the release section manually."
         )
 
 
