@@ -75,6 +75,9 @@ def main() -> None:
     print("Setting up the isort migration workflow...")
     migrate_isort_workflow_setup()
     print("=" * 72)
+    print("Excluding submodules from isort for API projects...")
+    migrate_isort_skip_glob_submodules()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -1391,6 +1394,103 @@ def read_cookiecutter_str_var(name: str) -> str | None:
         return None
 
     return value
+
+
+def migrate_isort_skip_glob_submodules() -> None:
+    """Exclude the ``submodules/`` directory from isort for API projects.
+
+    API repositories may embed external git submodules under ``submodules/``
+    that don't follow our import sorting rules.  Without an explicit exclusion,
+    the automatic isort migration workflow descends into them when running
+    ``isort .``.  The template now sets ``skip_glob = ["submodules/*"]`` under
+    ``[tool.isort]`` for API projects; this step mirrors that change in
+    existing repositories.
+
+    The function is a no-op for non-API projects, when ``pyproject.toml``
+    does not exist, or when the option already excludes ``submodules/``.
+    """
+    project_type = read_cookiecutter_str_var("type")
+    if project_type != "api":
+        print(
+            "  Skipped: not an API project "
+            f"(type={project_type!r}); only API repositories ship a "
+            "submodules/ directory."
+        )
+        return
+
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        manual_step(
+            f"{pyproject} not found; please add "
+            '`skip_glob = ["submodules/*"]` under `[tool.isort]` manually.'
+        )
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {pyproject}: {exc}. Please add "
+            '`skip_glob = ["submodules/*"]` under `[tool.isort]` manually.'
+        )
+        return
+
+    isort_section_match = re.search(
+        r"(?ms)^\[tool\.isort\]\n.*?(?=^\[|\Z)",
+        content,
+    )
+    if isort_section_match is None:
+        manual_step(
+            f"{pyproject} does not contain a [tool.isort] section; please add "
+            '`skip_glob = ["submodules/*"]` manually.'
+        )
+        return
+
+    isort_section = isort_section_match.group(0)
+    if '"submodules/*"' in isort_section or "'submodules/*'" in isort_section:
+        print(f"  Skipped {pyproject}: already skips submodules/ in isort")
+        return
+
+    if re.search(r"^skip_glob\s*=", isort_section, flags=re.MULTILINE):
+        manual_step(
+            f"{pyproject} already contains a [tool.isort] skip_glob option; "
+            'please add `"submodules/*"` to it manually.'
+        )
+        return
+
+    new_line = (
+        "# Submodules may contain external code that doesn't follow our import "
+        'sorting rules.\nskip_glob = ["submodules/*"]\n'
+    )
+
+    # Anchor on the canonical [tool.isort] section as shipped by the template.
+    # Heavily customized layouts fall back to a manual step.
+    anchor_re = re.compile(
+        r"\[tool\.isort\]\n"
+        r'profile = "black"\n'
+        r"line_length = 88\n"
+        r"src_paths = \[[^\n]*\]\n",
+    )
+    match = anchor_re.search(content)
+    if match is None:
+        manual_step(
+            f"{pyproject} does not match the expected [tool.isort] layout; "
+            'please add `skip_glob = ["submodules/*"]` under `[tool.isort]` '
+            "manually."
+        )
+        return
+
+    anchor = match.group(0)
+    new_content = content.replace(anchor, anchor + new_line, 1)
+
+    try:
+        replace_file_atomically(pyproject, new_content)
+        print(f"  Updated {pyproject}: added isort skip_glob for submodules/")
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please add "
+            '`skip_glob = ["submodules/*"]` under `[tool.isort]` manually.'
+        )
 
 
 def migrate_black_extend_exclude_submodules() -> None:
