@@ -150,6 +150,9 @@ line-length = 88
 target-version = ['py311']
 {%- if cookiecutter.type != "api" %}
 include = '\.pyi?$'
+{%- else %}
+# Submodules may contain external code that doesn't follow our formatting rules.
+extend-exclude = '^/submodules/'
 {%- endif %}
 
 [tool.isort]
