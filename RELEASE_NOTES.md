@@ -43,6 +43,7 @@ But you might still need to adapt your code:
 - Private repositories now are generated with credentials uncommented and the publishing workflows disabled.
 - The issue template chooser (`config.yml`) no longer includes the `contact_links` section for private repositories, since GitHub Discussions are typically disabled for them.
 - Normalized the GitHub Action hashes for `gh-action-setup-git` and `gh-action-setup-python-with-deps` to point to the actual commit object, which is what Dependabot expects.
+- API projects now configure black with `extend-exclude = '^/submodules/'` so the formatting check doesn't descend into external git submodules that don't follow our formatting rules.
 - `CONTRIBUTING.md`
   * Fixed the nox example commands in  to use the correct `tests/` directory instead of the non-existent `test/` directory.
   * Fixed the wrong mention to PyPI publishing when releasing for private repositories.
