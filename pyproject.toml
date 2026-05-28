@@ -126,6 +126,7 @@ Support = "https://github.com/frequenz-floss/frequenz-repo-config-python/discuss
 line-length = 88
 target-version = ['py311']
 include = '\.pyi?$'
+extend-exclude = '^/cookiecutter/{{cookiecutter.github_repo_name}}/'
 
 [tool.isort]
 profile = "black"
