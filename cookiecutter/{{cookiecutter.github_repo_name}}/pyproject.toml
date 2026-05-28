@@ -160,6 +160,10 @@ profile = "black"
 line_length = 88
 {#- We don't include "py" here for API because we don't want to check generated files #}
 src_paths = ["benchmarks", "examples", "src", "tests"]
+{%- if cookiecutter.type == "api" %}
+# Submodules may contain external code that doesn't follow our import sorting rules.
+skip_glob = ["submodules/*"]
+{%- endif %}
 
 [tool.flake8]
 # We give some flexibility to go over 88, there are cases like long URLs or
