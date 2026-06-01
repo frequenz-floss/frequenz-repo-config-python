@@ -29,6 +29,9 @@ updates:
         exclude-patterns:
           # pydoclint has shipped breaking changes in patch updates often
           - "pydoclint"
+          # isort can change import ordering even in patch releases, so it is
+          # routed through the isort-migration.yaml workflow as an individual PR
+          - "isort"
 {%- if cookiecutter.type == "api" %}
           # These need a migration script to fix Dependabot not updating the
           # runtime dependencies
@@ -52,6 +55,10 @@ updates:
           - "frequenz-repo-config"
           - "frequenz-repo-config[{{ cookiecutter.type }}]"
           - "frequenz-repo-config[extra-lint-examples]"
+          # isort can intentionally change import ordering in minor releases,
+          # so it is routed through the isort-migration.yaml workflow as an
+          # individual PR
+          - "isort"
           - "markdown-callouts"
           - "mkdocs-gen-files"
           - "mkdocs-literate-nav"

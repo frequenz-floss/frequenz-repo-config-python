@@ -72,6 +72,12 @@ def main() -> None:
     print("Excluding submodules from black for API projects...")
     migrate_black_extend_exclude_submodules()
     print("=" * 72)
+    print("Setting up the isort migration workflow...")
+    migrate_isort_workflow_setup()
+    print("=" * 72)
+    print("Excluding submodules from isort for API projects...")
+    migrate_isort_skip_glob_submodules()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -1390,6 +1396,103 @@ def read_cookiecutter_str_var(name: str) -> str | None:
     return value
 
 
+def migrate_isort_skip_glob_submodules() -> None:
+    """Exclude the ``submodules/`` directory from isort for API projects.
+
+    API repositories may embed external git submodules under ``submodules/``
+    that don't follow our import sorting rules.  Without an explicit exclusion,
+    the automatic isort migration workflow descends into them when running
+    ``isort .``.  The template now sets ``skip_glob = ["submodules/*"]`` under
+    ``[tool.isort]`` for API projects; this step mirrors that change in
+    existing repositories.
+
+    The function is a no-op for non-API projects, when ``pyproject.toml``
+    does not exist, or when the option already excludes ``submodules/``.
+    """
+    project_type = read_cookiecutter_str_var("type")
+    if project_type != "api":
+        print(
+            "  Skipped: not an API project "
+            f"(type={project_type!r}); only API repositories ship a "
+            "submodules/ directory."
+        )
+        return
+
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        manual_step(
+            f"{pyproject} not found; please add "
+            '`skip_glob = ["submodules/*"]` under `[tool.isort]` manually.'
+        )
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {pyproject}: {exc}. Please add "
+            '`skip_glob = ["submodules/*"]` under `[tool.isort]` manually.'
+        )
+        return
+
+    isort_section_match = re.search(
+        r"(?ms)^\[tool\.isort\]\n.*?(?=^\[|\Z)",
+        content,
+    )
+    if isort_section_match is None:
+        manual_step(
+            f"{pyproject} does not contain a [tool.isort] section; please add "
+            '`skip_glob = ["submodules/*"]` manually.'
+        )
+        return
+
+    isort_section = isort_section_match.group(0)
+    if '"submodules/*"' in isort_section or "'submodules/*'" in isort_section:
+        print(f"  Skipped {pyproject}: already skips submodules/ in isort")
+        return
+
+    if re.search(r"^skip_glob\s*=", isort_section, flags=re.MULTILINE):
+        manual_step(
+            f"{pyproject} already contains a [tool.isort] skip_glob option; "
+            'please add `"submodules/*"` to it manually.'
+        )
+        return
+
+    new_line = (
+        "# Submodules may contain external code that doesn't follow our import "
+        'sorting rules.\nskip_glob = ["submodules/*"]\n'
+    )
+
+    # Anchor on the canonical [tool.isort] section as shipped by the template.
+    # Heavily customized layouts fall back to a manual step.
+    anchor_re = re.compile(
+        r"\[tool\.isort\]\n"
+        r'profile = "black"\n'
+        r"line_length = 88\n"
+        r"src_paths = \[[^\n]*\]\n",
+    )
+    match = anchor_re.search(content)
+    if match is None:
+        manual_step(
+            f"{pyproject} does not match the expected [tool.isort] layout; "
+            'please add `skip_glob = ["submodules/*"]` under `[tool.isort]` '
+            "manually."
+        )
+        return
+
+    anchor = match.group(0)
+    new_content = content.replace(anchor, anchor + new_line, 1)
+
+    try:
+        replace_file_atomically(pyproject, new_content)
+        print(f"  Updated {pyproject}: added isort skip_glob for submodules/")
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please add "
+            '`skip_glob = ["submodules/*"]` under `[tool.isort]` manually.'
+        )
+
+
 def migrate_black_extend_exclude_submodules() -> None:
     """Exclude the ``submodules/`` directory from black for API projects.
 
@@ -1816,6 +1919,268 @@ def _migrate_grpc_ruleset() -> None:
         f"  Updated ruleset '{rule_name}': added "
         f"'{_GRPC_REQUIRED_CHECK_CONTEXT}' required check"
     )
+
+
+_ISORT_MIGRATION_WORKFLOW_CONTENT = (
+    """\
+# Automatic isort migration for Dependabot PRs
+#
+# When Dependabot upgrades isort, this workflow installs the new version and
+# runs `isort .` so the PR already contains any import-ordering changes
+# introduced by the upgrade, while leaving the PR open for review.
+#
+# isort follows SemVer but its release policy
+# (https://github.com/PyCQA/isort/blob/main/docs/major_releases/release_policy.md)
+# explicitly allows intentional formatting changes in minor releases, and
+# patch releases may also adjust output in smaller bug-fix ways.  Because of
+# that, isort is excluded from the regular `patch` and `minor` Dependabot
+# groups: every isort bump produces an individual `Bump isort from …` PR and
+# is routed through this migration workflow.
+#
+# The companion auto-dependabot workflow skips those PRs so they're handled
+# exclusively by this migration workflow.
+#
+# XXX: !!! SECURITY WARNING !!!
+# pull_request_target has write access to the repo, and can read secrets.
+# This is required because Dependabot PRs are treated as fork PRs: the
+# GITHUB_TOKEN is read-only and secrets are unavailable with a plain
+# pull_request trigger.  The action mitigates the risk by:
+#   - Never executing code from the PR (the migration script is embedded
+#     in this workflow file on the base branch, not taken from the PR).
+#   - Gating migration steps on github.actor == 'dependabot[bot]'.
+#   - Running checkout with persist-credentials: false and isolating
+#     push credentials from the migration script environment.
+# For more details read:
+# https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+
+name: isort Migration
+
+on:
+  merge_group:  # To allow using this as a required check for merging
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  # Commit reformatted files back to the PR branch.
+  contents: write
+  # Create and normalize migration state labels.
+  issues: write
+  # Read/update pull request metadata and comments.
+  pull-requests: write
+
+jobs:
+  isort-migration:
+    name: Migrate isort
+    # Skip if it was triggered by the merge queue. We only need the workflow to
+    # be executed to meet the "Required check" condition for merging, but we
+    # don't need to actually run the job, having the job present as Skipped is
+    # enough.
+    if: |
+      github.event_name == 'pull_request_target' &&
+      github.actor == 'dependabot[bot]' &&
+      contains(github.event.pull_request.title, 'Bump isort from ')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate token
+        id: create-app-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        with:
+          app-id: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_ID }}
+          private-key: ${{ secrets.FREQUENZ_AUTO_DEPENDABOT_APP_PRIVATE_KEY }}
+          # Push reformatted files to the PR branch.
+          permission-contents: write
+          # Create and normalize migration state labels.
+          permission-issues: write
+          # Read/update pull request metadata and labels.
+          permission-pull-requests: write
+      - name: Migrate
+        uses: frequenz-floss/gh-action-dependabot-migrate@"""  # Avoid going over 100 chars
+    + """27763fb5eb56476d91abe00132e8a0614171f92f # v1.2.0
+        with:
+          migration-script: |
+            import os
+            import subprocess
+            import sys
+
+            version = os.environ["MIGRATION_VERSION"].lstrip("v")
+            subprocess.run(
+                [sys.executable, "-Im", "pip", "install", f"isort=={version}"],
+                check=True,
+            )
+            subprocess.run([sys.executable, "-Im", "isort", "."], check=True)
+          token: ${{ steps.create-app-token.outputs.token }}
+          auto-merge-on-changes: "false"
+          version-iteration: "false"
+          sign-commits: "true"
+          auto-merged-label: "tool:auto-merged"
+          migrated-label: "tool:isort:migration:executed"
+          intervention-pending-label: "tool:isort:migration:intervention-pending"
+          intervention-done-label: "tool:isort:migration:intervention-done"
+"""
+)
+"""Final content of the isort-migration workflow installed by the migration."""
+
+
+_AUTO_DEPENDABOT_ISORT_SKIP_LINE = (
+    "      !contains(github.event.pull_request.title, 'Bump isort from ')\n"
+)
+"""Skip condition added to auto-dependabot.yaml for the isort migration."""
+
+_AUTO_DEPENDABOT_BLACK_SKIP_LINE = (
+    "      !contains(github.event.pull_request.title, 'Bump black from ')\n"
+)
+"""Existing skip condition used as an insertion anchor."""
+
+
+def migrate_isort_workflow_setup() -> None:
+    """Set up the isort migration workflow.
+
+    The step:
+
+    * Installs (or replaces) ``.github/workflows/isort-migration.yaml``.
+    * Updates ``.github/workflows/auto-dependabot.yaml`` so individual
+      ``Bump isort from …`` PRs are skipped by the auto-merge workflow.
+    * Updates ``.github/dependabot.yml`` to exclude ``isort`` from the
+      ``patch`` and ``minor`` Dependabot groups, so every isort bump
+      becomes an individual PR routed through the migration workflow.
+    """
+    _install_isort_migration_workflow()
+    _migrate_isort_auto_dependabot_workflow()
+    _migrate_isort_dependabot_config()
+
+
+def _install_isort_migration_workflow() -> None:
+    """Install or replace the isort-migration workflow file.
+
+    The workflow is always overwritten because some repositories may carry
+    earlier experimental versions of it that need to be brought up to the
+    final shape.
+    """
+    path = Path(".github/workflows/isort-migration.yaml")
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    new_content = _ISORT_MIGRATION_WORKFLOW_CONTENT
+    if path.exists():
+        old_content = _normalize_content(path.read_text(encoding="utf-8"))
+        if old_content == new_content:
+            print(f"  Skipped {path}: already up to date")
+            return
+        replace_file_atomically(path, new_content)
+        print(f"  Updated {path}: replaced with the latest workflow")
+        return
+
+    replace_file_atomically(path, new_content)
+    print(f"  Created {path}")
+
+
+def _migrate_isort_auto_dependabot_workflow() -> None:
+    """Update auto-dependabot.yaml to skip individual isort bump PRs."""
+    path = Path(".github/workflows/auto-dependabot.yaml")
+    if not path.exists():
+        # Some older repos used `.yml`.
+        alt = Path(".github/workflows/auto-dependabot.yml")
+        if alt.exists():
+            path = alt
+        else:
+            manual_step(
+                "Cannot find .github/workflows/auto-dependabot.yaml; please "
+                "add the 'Bump isort from ' skip condition manually (see the "
+                "cookiecutter template for reference)."
+            )
+            return
+
+    content = _normalize_content(path.read_text(encoding="utf-8"))
+    if _AUTO_DEPENDABOT_ISORT_SKIP_LINE in content:
+        print(f"  Skipped {path}: already skips individual isort bump PRs")
+        return
+
+    # Insert the isort skip line right after the existing black skip line so
+    # both individual-PR migrations stay grouped together.  The black skip
+    # currently has no trailing ` &&` (it's the last condition); we need to
+    # turn it into a chained condition.
+    if _AUTO_DEPENDABOT_BLACK_SKIP_LINE not in content:
+        manual_step(
+            f"{path} does not contain the expected 'Bump black from ' skip "
+            "condition; please add the 'Bump isort from ' skip condition "
+            "manually."
+        )
+        return
+
+    new_black_line = _AUTO_DEPENDABOT_BLACK_SKIP_LINE.rstrip("\n") + " &&\n"
+    updated = content.replace(
+        _AUTO_DEPENDABOT_BLACK_SKIP_LINE,
+        new_black_line + _AUTO_DEPENDABOT_ISORT_SKIP_LINE,
+        1,
+    )
+    replace_file_atomically(path, updated)
+    print(f"  Updated {path}: skip individual isort bump PRs")
+
+
+def _migrate_isort_dependabot_config() -> None:
+    """Add ``isort`` to the ``patch`` and ``minor`` Dependabot exclude lists."""
+    path = Path(".github/dependabot.yml")
+    if not path.exists():
+        manual_step(
+            f"{path} not found; please add 'isort' to the exclude-patterns "
+            "of the 'patch' and 'minor' Dependabot groups manually."
+        )
+        return
+
+    original = _normalize_content(path.read_text(encoding="utf-8"))
+    content = original
+    changed_groups: list[str] = []
+
+    for group_name in ("patch", "minor"):
+        new = _ensure_isort_exclude_in_group(content, group_name)
+        if new != content:
+            content = new
+            changed_groups.append(group_name)
+
+    if not changed_groups:
+        print(f"  Skipped {path}: already excludes 'isort' from patch/minor")
+        return
+
+    replace_file_atomically(path, content)
+    print(
+        f"  Updated {path}: added 'isort' to exclude-patterns of "
+        + " and ".join(changed_groups)
+    )
+
+
+def _ensure_isort_exclude_in_group(content: str, group_name: str) -> str:
+    """Add ``isort`` to the ``exclude-patterns`` of a Dependabot group.
+
+    Idempotent: if the group already excludes ``isort`` the content is
+    returned unchanged.  If the group exists but has no ``exclude-patterns``
+    key a manual step is recorded and the content is returned unchanged.
+    If the group itself is missing the content is returned unchanged (the
+    template may not have that group, e.g. on heavily customized projects;
+    the user can then add the isort exclude manually).
+    """
+    group_pattern = re.compile(
+        rf"(      {re.escape(group_name)}:\n"
+        rf"(?:        [^\n]*\n)*?"
+        rf"        exclude-patterns:\n"
+        rf"((?:          [^\n]*\n)*))",
+    )
+    match = group_pattern.search(content)
+    if match is None:
+        # Either the group is missing or it has no exclude-patterns block.
+        if re.search(rf"^      {re.escape(group_name)}:\s*$", content, re.MULTILINE):
+            manual_step(
+                f".github/dependabot.yml has a '{group_name}' Dependabot "
+                "group without an 'exclude-patterns' block; please add "
+                "'isort' to its excludes manually."
+            )
+        return content
+
+    existing_excludes = match.group(2)
+    if '"isort"' in existing_excludes:
+        return content
+
+    isort_entry = '          - "isort"\n'
+    new_block = match.group(1) + isort_entry
+    return content[: match.start()] + new_block + content[match.end() :]
 
 
 def manual_step(message: str) -> None:

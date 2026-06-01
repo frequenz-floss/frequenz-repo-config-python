@@ -178,10 +178,11 @@ The workflow requires:
 ### Interaction with other workflows
 
 The `auto-dependabot.yaml` workflow has a job-level `if` condition that
-**skips** PRs containing `the repo-config group` or `Bump black from ` in the
-title.  This ensures those dependency updates are handled exclusively by their
-respective migration workflows, while all other [Dependabot] PRs continue to
-be auto-approved and merged by the existing workflow.
+**skips** PRs containing `the repo-config group`, `Bump black from ` or `Bump
+isort from ` in the title.  This ensures those dependency updates are handled
+exclusively by their respective migration workflows, while all other
+[Dependabot] PRs continue to be auto-approved and merged by the existing
+workflow.
 
 The `github-actions` ecosystem updates to the *caller workflow itself* (i.e.
 bumping the action's `@<sha>` reference) produce PRs with `the compatible
@@ -394,8 +395,9 @@ The workflow requires:
 The `auto-dependabot.yaml` workflow has a job-level `if` condition that
 skips PRs containing `the grpc-compatible group`, `the grpcio-major
 group` or `the protobuf-major group` in the title (alongside `the
-repo-config group` and `Bump black from `).  This ensures those updates
-are handled exclusively by their respective migration workflows.
+repo-config group`, `Bump black from ` and `Bump isort from `).  This
+ensures those updates are handled exclusively by their respective
+migration workflows.
 
 ## Black formatting migration workflow
 
@@ -444,8 +446,59 @@ The workflow shares the same [GitHub App][GitHub App] as the repo-config and
 auto-dependabot workflows.  No additional secrets are needed — the black
 migration script does not make GitHub API calls.
 
+## isort migration workflow
+
+Projects generated from the template also include a workflow
+(`isort-migration.yaml`) that automatically reorders imports when [Dependabot]
+upgrades `isort`.
+
+`isort` follows [SemVer], but its [release policy][isort-release-policy] is
+looser than `black`'s: major releases are for substantial formatting changes,
+**minor releases may include intentional formatting changes**, and patch
+releases may also adjust output in smaller bug-fix ways.  Because of that,
+`isort` is excluded from the regular `patch` and `minor` [Dependabot] groups in
+the template's `dependabot.yml`, so every `isort` bump produces an individual
+`Bump isort from …` PR and is routed through this migration workflow.
+
+The companion `auto-dependabot.yaml` workflow skips those PRs so they're
+handled exclusively by this migration workflow.
+
+The workflow uses the same
+[`gh-action-dependabot-migrate`][gh-action-dependabot-migrate] action as the
+black migration, with the same **inline migration script** pattern (the script
+is embedded in the workflow YAML on the base branch, not taken from the PR).
+It also keeps `auto-merge-on-changes` disabled so reordered PRs stay open for
+manual review.
+
+### Security
+
+The workflow gates execution on **two** conditions:
+
+* `github.actor == 'dependabot[bot]'` — ensures only [Dependabot] can trigger
+  it.
+* `contains(github.event.pull_request.title, 'Bump isort from ')` — limits it
+  to individual `isort` update PRs.
+
+The inline script is executed with `python3 -I` (isolated mode) to prevent
+importing from the checked-out working directory.  Inside that isolated
+interpreter it uses `sys.executable -Im pip` and `sys.executable -Im isort`
+instead of shelling out to `pip` or `isort` directly, and push credentials are
+never exposed to the script.
+
+### Requirements
+
+The workflow shares the same [GitHub App][GitHub App] as the repo-config and
+auto-dependabot workflows.  No additional secrets are needed — the isort
+migration script does not make GitHub API calls.
+
+It also relies on the template's `dependabot.yml` excluding `isort` from the
+`patch` and `minor` groups, so every `isort` update arrives as an individual
+PR.
+
 [black-stability]: https://black.readthedocs.io/en/stable/the_black_code_style/index.html#stability-policy
 [calver]: https://calver.org/
+[isort-release-policy]: https://github.com/PyCQA/isort/blob/main/docs/major_releases/release_policy.md
+[SemVer]: https://semver.org/
 [Cookiecutter]: https://cookiecutter.readthedocs.io/en/stable
 [Dependabot]: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
 [GitHub App]: https://docs.github.com/en/apps/creating-github-apps

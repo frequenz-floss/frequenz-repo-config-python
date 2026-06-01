@@ -22,7 +22,8 @@ jobs:
     name: Auto-merge Dependabot PR
     if: |
       github.actor == 'dependabot[bot]' &&
-      !contains(github.event.pull_request.title, 'Bump black from ')
+      !contains(github.event.pull_request.title, 'Bump black from ') &&
+      !contains(github.event.pull_request.title, 'Bump isort from ')
     runs-on: ubuntu-slim
     steps:
       - name: Generate GitHub App token
