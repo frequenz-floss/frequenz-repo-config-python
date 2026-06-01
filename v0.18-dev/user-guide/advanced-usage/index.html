@@ -897,6 +897,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#isort-migration-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        isort migration workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="isort migration workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2360,6 +2399,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#isort-migration-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        isort migration workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="isort migration workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2544,10 +2622,11 @@ requests</a>.</p>
 </ul>
 <h3 id="interaction-with-other-workflows">Interaction with other workflows<a class="headerlink" href="#interaction-with-other-workflows" title="Permanent link">¤</a></h3>
 <p>The <code>auto-dependabot.yaml</code> workflow has a job-level <code>if</code> condition that
-<strong>skips</strong> PRs containing <code>the repo-config group</code> or <code>Bump black from</code> in the
-title.  This ensures those dependency updates are handled exclusively by their
-respective migration workflows, while all other <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> PRs continue to
-be auto-approved and merged by the existing workflow.</p>
+<strong>skips</strong> PRs containing <code>the repo-config group</code>, <code>Bump black from</code> or <code>Bump
+isort from</code> in the title.  This ensures those dependency updates are handled
+exclusively by their respective migration workflows, while all other
+<a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> PRs continue to be auto-approved and merged by the existing
+workflow.</p>
 <p>The <code>github-actions</code> ecosystem updates to the <em>caller workflow itself</em> (i.e.
 bumping the action's <code>@&lt;sha&gt;</code> reference) produce PRs with <code>the compatible
 group</code> in the title, which does <strong>not</strong> match any migration workflow's <code>if</code>
@@ -2664,7 +2743,7 @@ template (or recreate it), create
 </span><span id="__span-3-77"><a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">frequenz-floss/gh-action-dependabot-migrate@27763fb5eb56476d91abe00132e8a0614171f92f</span><span class="w"> </span><span class="c1"># v1.2.0</span>
 </span><span id="__span-3-78"><a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 </span><span id="__span-3-79"><a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a><span class="w">          </span><span class="nt">script-url-template</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"> </span><span class="c1"># v0.x.x</span>
-</span><span id="__span-3-80"><a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a><span class="w">            </span><span class="no">https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/d7063387fd3c5568da491f7476acdc89ea42b477/cookiecutter/scripts/dependabot-grpc-fixer.py</span>
+</span><span id="__span-3-80"><a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a><span class="w">            </span><span class="no">https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/e5f4e3968e5bc86758c46c41bdca5999dd80746c/cookiecutter/scripts/dependabot-grpc-fixer.py</span>
 </span><span id="__span-3-81"><a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a><span class="w">          </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.create-app-token.outputs.token }}</span>
 </span><span id="__span-3-82"><a id="__codelineno-3-82" name="__codelineno-3-82" href="#__codelineno-3-82"></a><span class="w">          </span><span class="nt">version-iteration</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
 </span><span id="__span-3-83"><a id="__codelineno-3-83" name="__codelineno-3-83" href="#__codelineno-3-83"></a><span class="w">          </span><span class="nt">sign-commits</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
@@ -2742,8 +2821,9 @@ branch workflow, not from the PR branch.  For details, see
 <p>The <code>auto-dependabot.yaml</code> workflow has a job-level <code>if</code> condition that
 skips PRs containing <code>the grpc-compatible group</code>, <code>the grpcio-major
 group</code> or <code>the protobuf-major group</code> in the title (alongside <code>the
-repo-config group</code> and <code>Bump black from</code>).  This ensures those updates
-are handled exclusively by their respective migration workflows.</p>
+repo-config group</code>, <code>Bump black from</code> and <code>Bump isort from</code>).  This
+ensures those updates are handled exclusively by their respective
+migration workflows.</p>
 <h2 id="black-formatting-migration-workflow">Black formatting migration workflow<a class="headerlink" href="#black-formatting-migration-workflow" title="Permanent link">¤</a></h2>
 <p>Projects generated from the template also include a workflow
 (<code>black-migration.yaml</code>) that automatically reformats code when <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a>
@@ -2782,6 +2862,45 @@ never exposed to the script.</p>
 <p>The workflow shares the same <a href="https://docs.github.com/en/apps/creating-github-apps">GitHub App</a> as the repo-config and
 auto-dependabot workflows.  No additional secrets are needed — the black
 migration script does not make GitHub API calls.</p>
+<h2 id="isort-migration-workflow">isort migration workflow<a class="headerlink" href="#isort-migration-workflow" title="Permanent link">¤</a></h2>
+<p>Projects generated from the template also include a workflow
+(<code>isort-migration.yaml</code>) that automatically reorders imports when <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a>
+upgrades <code>isort</code>.</p>
+<p><code>isort</code> follows <a href="https://semver.org/">SemVer</a>, but its <a href="https://github.com/PyCQA/isort/blob/main/docs/major_releases/release_policy.md">release policy</a> is
+looser than <code>black</code>'s: major releases are for substantial formatting changes,
+<strong>minor releases may include intentional formatting changes</strong>, and patch
+releases may also adjust output in smaller bug-fix ways.  Because of that,
+<code>isort</code> is excluded from the regular <code>patch</code> and <code>minor</code> <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> groups in
+the template's <code>dependabot.yml</code>, so every <code>isort</code> bump produces an individual
+<code>Bump isort from …</code> PR and is routed through this migration workflow.</p>
+<p>The companion <code>auto-dependabot.yaml</code> workflow skips those PRs so they're
+handled exclusively by this migration workflow.</p>
+<p>The workflow uses the same
+<a href="https://github.com/frequenz-floss/gh-action-dependabot-migrate"><code>gh-action-dependabot-migrate</code></a> action as the
+black migration, with the same <strong>inline migration script</strong> pattern (the script
+is embedded in the workflow YAML on the base branch, not taken from the PR).
+It also keeps <code>auto-merge-on-changes</code> disabled so reordered PRs stay open for
+manual review.</p>
+<h3 id="security_1">Security<a class="headerlink" href="#security_1" title="Permanent link">¤</a></h3>
+<p>The workflow gates execution on <strong>two</strong> conditions:</p>
+<ul>
+<li><code>github.actor == 'dependabot[bot]'</code> — ensures only <a href="https://docs.github.com/en/code-security/dependabot/dependabot-version-updates">Dependabot</a> can trigger
+  it.</li>
+<li><code>contains(github.event.pull_request.title, 'Bump isort from ')</code> — limits it
+  to individual <code>isort</code> update PRs.</li>
+</ul>
+<p>The inline script is executed with <code>python3 -I</code> (isolated mode) to prevent
+importing from the checked-out working directory.  Inside that isolated
+interpreter it uses <code>sys.executable -Im pip</code> and <code>sys.executable -Im isort</code>
+instead of shelling out to <code>pip</code> or <code>isort</code> directly, and push credentials are
+never exposed to the script.</p>
+<h3 id="requirements_3">Requirements<a class="headerlink" href="#requirements_3" title="Permanent link">¤</a></h3>
+<p>The workflow shares the same <a href="https://docs.github.com/en/apps/creating-github-apps">GitHub App</a> as the repo-config and
+auto-dependabot workflows.  No additional secrets are needed — the isort
+migration script does not make GitHub API calls.</p>
+<p>It also relies on the template's <code>dependabot.yml</code> excluding <code>isort</code> from the
+<code>patch</code> and <code>minor</code> groups, so every <code>isort</code> update arrives as an individual
+PR.</p>
 
 
 
