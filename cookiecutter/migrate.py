@@ -69,6 +69,9 @@ def main() -> None:
     print("Adjusting CONTRIBUTING.md release section for repo privacy...")
     migrate_contributing_release_pypi_mention()
     print("=" * 72)
+    print("Excluding submodules from black for API projects...")
+    migrate_black_extend_exclude_submodules()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -1385,6 +1388,87 @@ def read_cookiecutter_str_var(name: str) -> str | None:
         return None
 
     return value
+
+
+def migrate_black_extend_exclude_submodules() -> None:
+    """Exclude the ``submodules/`` directory from black for API projects.
+
+    API repositories may embed external git submodules under ``submodules/``
+    that don't follow our formatting rules.  Without an explicit exclusion,
+    black descends into them and fails the formatting check.  The template
+    now sets ``extend-exclude = '^/submodules/'`` under ``[tool.black]`` for
+    API projects; this step mirrors that change in existing repositories.
+
+    The function is a no-op for non-API projects, when ``pyproject.toml``
+    does not exist, or when the option is already present.
+    """
+    project_type = read_cookiecutter_str_var("type")
+    if project_type != "api":
+        print(
+            "  Skipped: not an API project "
+            f"(type={project_type!r}); only API repositories ship a "
+            "submodules/ directory."
+        )
+        return
+
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        manual_step(
+            f"{pyproject} not found; please add "
+            "`extend-exclude = '^/submodules/'` under `[tool.black]` "
+            "manually."
+        )
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {pyproject}: {exc}. Please add "
+            "`extend-exclude = '^/submodules/'` under `[tool.black]` "
+            "manually."
+        )
+        return
+
+    new_line = (
+        "# Submodules may contain external code that doesn't follow our "
+        "formatting rules.\nextend-exclude = '^/submodules/'\n"
+    )
+
+    if "extend-exclude = '^/submodules/'" in content:
+        print(f"  Skipped {pyproject}: already excludes submodules/ from black")
+        return
+
+    # Anchor on the canonical [tool.black] section as shipped by the template,
+    # but allow the target-version to differ (some projects have upgraded to
+    # newer Python versions).
+    anchor_re = re.compile(
+        r"\[tool\.black\]\nline-length = 88\ntarget-version = \[ *'py\d+' *\]\n",
+    )
+    match = anchor_re.search(content)
+    if match is None:
+        manual_step(
+            f"{pyproject} does not match the expected [tool.black] layout; "
+            "please add `extend-exclude = '^/submodules/'` under "
+            "`[tool.black]` manually."
+        )
+        return
+
+    anchor = match.group(0)
+    new_content = content.replace(anchor, anchor + new_line, 1)
+
+    try:
+        replace_file_atomically(pyproject, new_content)
+        print(
+            f"  Updated {pyproject}: excluded submodules/ from black via "
+            "extend-exclude"
+        )
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please add "
+            "`extend-exclude = '^/submodules/'` under `[tool.black]` "
+            "manually."
+        )
 
 
 def migrate_grpc_workflow_setup() -> None:
