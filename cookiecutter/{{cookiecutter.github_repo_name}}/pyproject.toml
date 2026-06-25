@@ -212,7 +212,6 @@ disable = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-vv"
 filterwarnings = [
   "error",
   "once::DeprecationWarning",
