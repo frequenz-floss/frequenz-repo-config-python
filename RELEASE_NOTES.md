@@ -26,7 +26,7 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- Generated `pyproject.toml` no longer sets `addopts = "-vv"` under `[tool.pytest.ini_options]` as this is too verbose for a default.
 
 ## Bug Fixes
 
