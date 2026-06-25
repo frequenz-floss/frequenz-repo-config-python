@@ -26,6 +26,7 @@ And remember to follow any manual instructions for each run.
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -38,6 +39,9 @@ _manual_steps: list[str] = []  # pylint: disable=invalid-name
 def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
+    print("=" * 72)
+    print("Removing default `-vv` from pytest addopts...")
+    migrate_pytest_addopts_default()
     print("=" * 72)
     print()
 
@@ -306,6 +310,75 @@ def read_cookiecutter_str_var(name: str) -> str | None:
         return None
 
     return value
+
+
+def migrate_pytest_addopts_default() -> None:
+    """Remove the default ``-vv`` from pytest addopts in ``pyproject.toml``.
+
+    Earlier versions of the template set ``addopts = "-vv"`` under
+    ``[tool.pytest.ini_options]``.  For projects with many tests this
+    default produces a wall of output that makes it hard to see the
+    results from other, previous, sessions.  The template no longer ships
+    this default; this step removes the matching line from existing
+    projects.
+
+    The function is a no-op when ``pyproject.toml`` does not exist, when
+    the ``[tool.pytest.ini_options]`` section is missing, or when the
+    section has no ``addopts`` line (already migrated).  A manual step is
+    emitted when ``addopts`` is present but no longer matches the
+    template default, so the maintainer can decide whether to drop
+    ``-vv`` from the customized value.
+    """
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        print(f"  Skipped {pyproject}: file not found")
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {pyproject}: {exc}. Please remove "
+            '`addopts = "-vv"` from `[tool.pytest.ini_options]` manually.'
+        )
+        return
+
+    pytest_section_match = re.search(
+        r"(?ms)^\[tool\.pytest\.ini_options\]\n.*?(?=^\[|\Z)",
+        content,
+    )
+    if pytest_section_match is None:
+        print(f"  Skipped {pyproject}: no [tool.pytest.ini_options] section")
+        return
+
+    pytest_section = pytest_section_match.group(0)
+    addopts_match = re.search(r"^addopts\s*=.*$", pytest_section, flags=re.MULTILINE)
+    if addopts_match is None:
+        print(f"  Skipped {pyproject}: no addopts in [tool.pytest.ini_options]")
+        return
+
+    addopts_line = addopts_match.group(0)
+    if addopts_line != 'addopts = "-vv"':
+        manual_step(
+            f"{pyproject} has a customized `{addopts_line}` line under "
+            "[tool.pytest.ini_options]; please drop `-vv` from it manually "
+            "if appropriate."
+        )
+        return
+
+    new_content = content.replace(f"{addopts_line}\n", "", 1)
+
+    try:
+        replace_file_atomically(pyproject, new_content)
+        print(
+            f"  Updated {pyproject}: removed default `-vv` from "
+            "[tool.pytest.ini_options]"
+        )
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please remove "
+            '`addopts = "-vv"` from `[tool.pytest.ini_options]` manually.'
+        )
 
 
 def manual_step(message: str) -> None:
