@@ -28,9 +28,15 @@ But you might still need to adapt your code:
 
 - Generated `pyproject.toml` no longer sets `addopts = "-vv"` under `[tool.pytest.ini_options]` as this is too verbose for a default.
 
+## Enhancements
+
+- Improved the docstring documentation and cross-references across the `frequenz.repo.config` package.
+
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+
+- Fixed several typos and broken code examples in the docstrings.
 
 ### Cookiecutter template
 
