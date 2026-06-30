@@ -24,8 +24,8 @@ def flatten(iterables: Iterable[Iterable[_T]], /) -> Iterable[_T]:
     Returns:
         The flattened iterable.
 
-    Example:
-        >>> assert list(flatten([(1, 2), (3, 4)]) == [1, 2, 3, 4]
+    Examples:
+        >>> assert list(flatten([(1, 2), (3, 4)])) == [1, 2, 3, 4]
     """
     return (item for sublist in iterables for item in sublist)
 
@@ -40,7 +40,7 @@ def replace(iterable: Iterable[_T], replacements: Mapping[_T, _T], /) -> Iterabl
     Yields:
         The next element in the iterable, with the replacements applied.
 
-    Example:
+    Examples:
         >>> assert list(replace([1, 2, 3], {1: 4, 2: 5})) == [4, 5, 3]
     """
     for item in iterable:
@@ -73,7 +73,8 @@ def existing_paths(paths: Iterable[str], /) -> Iterable[_pathlib.Path]:
     Returns:
         An iterable with the valid paths as `pathlib.Path` objects.
 
-    Example:
+    Examples:
+        >>> import pathlib
         >>> assert list(existing_paths([".", "/fake"])) == [pathlib.Path(".")]
     """
     return deduplicate(p for p in map(_pathlib.Path, paths) if p.exists())
