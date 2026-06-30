@@ -101,7 +101,7 @@ def _path_to_import_statement(path: Path) -> str:
 
 
 class _CustomPythonCodeBlockParser(CodeBlockParser):
-    """Code block parser that validates extracted code examples using pylint.
+    """A code block parser that validates extracted code examples using pylint.
 
     This parser is a modified version of the default Python code block parser
     from the Sybil library.
@@ -212,11 +212,12 @@ def _validate_with_pylint(
 
 
 class MyPythonCodeBlockParser(PythonCodeBlockParser):
-    """Custom Python code block parser that uses the custom code block parser."""
+    """A custom Python code block parser that uses the custom code block parser."""
 
     codeblock_parser_class: type[_CustomPythonCodeBlockParser] = (
         _CustomPythonCodeBlockParser
     )
+    """The code block parser class used to validate the examples."""
 
 
 def get_sybil_arguments() -> dict[str, Any]:

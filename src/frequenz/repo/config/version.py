@@ -193,7 +193,7 @@ class BranchVersion:
         return self.name
 
     def __lt__(self, other: BranchVersion) -> bool:
-        """Compare two branch version information.
+        """Compare two branch versions.
 
         If `minor` is `None`, it is considered to be greater than any other `minor`.
 
@@ -250,7 +250,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         tags: list[str] | None = None,
         branches: list[str] | None = None,
     ) -> None:
-        """Initialize the environment variables.
+        """Initialize the repository version information.
 
         Args:
             sha: The current commit hash.

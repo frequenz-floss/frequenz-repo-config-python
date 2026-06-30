@@ -27,22 +27,22 @@ class CommandsOptions:
     """Command-line options for each command."""
 
     black: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `black` command."""
+    """The command-line options for the `black` command."""
 
     flake8: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `flake8` command."""
+    """The command-line options for the `flake8` command."""
 
     isort: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `isort` command."""
+    """The command-line options for the `isort` command."""
 
     mypy: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `mypy` command."""
+    """The command-line options for the `mypy` command."""
 
     pylint: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `pylint` command."""
+    """The command-line options for the `pylint` command."""
 
     pytest: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `pytest` command."""
+    """The command-line options for the `pytest` command."""
 
     def copy(self) -> Self:
         """Create a new object as a copy of self.
@@ -66,13 +66,13 @@ class Config:
     """Configuration for nox sessions."""
 
     opts: CommandsOptions = _dataclasses.field(default_factory=CommandsOptions)
-    """Command-line options for each command used by sessions."""
+    """The command-line options for each command used by sessions."""
 
     sessions: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """List of sessions to run."""
+    """The list of sessions to run."""
 
     source_paths: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """List of paths containing source files that should be analyzed by the sessions.
+    """The list of paths containing source files that should be analyzed by the sessions.
 
     Source paths are inspected for `__init__.py` files to look for packages.
     The path should be the top-level directory containing packages that will be
@@ -85,7 +85,7 @@ class Config:
     """
 
     extra_paths: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """List of extra paths to be analyzed by the sessions.
+    """The list of extra paths to be analyzed by the sessions.
 
     These are not inspected for packages, as they are passed verbatim to the
     tools invoked by the sessions.

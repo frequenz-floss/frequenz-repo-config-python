@@ -42,7 +42,7 @@ common_command_options: _config.CommandsOptions = _config.CommandsOptions(
     mypy=[],
     pytest=[],
 )
-"""Default command-line options for all types of repositories."""
+"""The default command-line options for all types of repositories."""
 
 common_config = _config.Config(
     opts=common_command_options.copy(),
@@ -65,19 +65,19 @@ common_config = _config.Config(
         "tests",
     ],
 )
-"""Default configuration for all types of repositories."""
+"""The default configuration for all types of repositories."""
 
 actor_command_options: _config.CommandsOptions = common_command_options.copy()
-"""Default command-line options for actors."""
+"""The default command-line options for actors."""
 
 actor_config: _config.Config = common_config.copy()
-"""Default configuration for actors."""
+"""The default configuration for actors."""
 
 api_command_options: _config.CommandsOptions = common_command_options.copy()
-"""Default command-line options for APIs."""
+"""The default command-line options for APIs."""
 
 api_config: _config.Config = common_config.copy()
-"""Default configuration for APIs.
+"""The default configuration for APIs.
 
 Same as [`common_config`][..common_config], but with an empty `source_paths` (as the
 sources are automatically generated, we don't want to test anything in there).
@@ -87,19 +87,19 @@ sources are automatically generated, we don't want to test anything in there).
 api_config.source_paths = []
 
 app_command_options: _config.CommandsOptions = common_command_options.copy()
-"""Default command-line options for applications."""
+"""The default command-line options for applications."""
 
 app_config: _config.Config = common_config.copy()
-"""Default configuration for applications."""
+"""The default configuration for applications."""
 
 lib_command_options: _config.CommandsOptions = common_command_options.copy()
-"""Default command-line options for libraries."""
+"""The default command-line options for libraries."""
 
 lib_config: _config.Config = common_config.copy()
-"""Default configuration for libraries."""
+"""The default configuration for libraries."""
 
 model_command_options: _config.CommandsOptions = common_command_options.copy()
-"""Default command-line options for models."""
+"""The default command-line options for models."""
 
 model_config: _config.Config = common_config.copy()
-"""Default configuration for models."""
+"""The default configuration for models."""
