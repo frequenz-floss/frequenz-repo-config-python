@@ -29,7 +29,7 @@ plugins:
 
 This will do the hooking and provide some useful variables and filters:
 
-* [`slugify`][frequenz.repo.config.mkdocs.mkdocstrings_macros.slugify]: A filter to
+* [`slugify`][.slugify]: A filter to
     slugify a text. Useful to generate anchors for headings.
 * [`code_annotation_marker`][..annotations.CODE_ANNOTATION_MARKER]: A variable
     to inject the appropriate HTML code for showing an example code annotation
@@ -94,7 +94,7 @@ def define_env(env: macros.MacrosPlugin) -> None:
 If you don't want to pull in all the default variables and filters, you can still define
 your own `define_env()` function and do the same configuration in the `mkdocs.yml` file
 as in the [Customized usage] section, but instead call the
-[`hook_macros_plugin()`][frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin]
+[`hook_macros_plugin()`][.hook_macros_plugin]
 at the end.
 
 Here is an example of how to do it:
@@ -235,7 +235,7 @@ def hook_env_with_everything(
 
     This function is a convenience function that adds all variables and filters and
     macros provided by this module and calls
-    [`hook_macros_plugin()`][frequenz.repo.config.mkdocs.mkdocstrings_macros.hook_macros_plugin]
+    [`hook_macros_plugin()`][..hook_macros_plugin]
     at the end.
 
     Args:

@@ -4,7 +4,7 @@
 """Version information for a repository.
 
 This module provides the
-[`RepoVersionInfo`][frequenz.repo.config.version.RepoVersionInfo] class to get information
+[`RepoVersionInfo`][.RepoVersionInfo] class to get information
 about the repository version.
 
 It handles many scenarios and queries, like:
@@ -18,11 +18,11 @@ It handles many scenarios and queries, like:
 
 Repository tag names are expected to follow the [semantic versioning][semver]
 specification, but usually with a leading `v` (e.g. `v1.0.0`).
-[`to_semver()`][frequenz.repo.config.version.to_semver] can be used to convert a version
+[`to_semver()`][.to_semver] can be used to convert a version
 string to a semantic version, even if it has a leading `v`.
 
 Repository branch names can be parsed with
-[`BranchVersion.parse()`][frequenz.repo.config.version.BranchVersion.parse] and are
+[`BranchVersion.parse()`][.BranchVersion.parse] and are
 expected to follow the format:
 
 - `vX.x.x` for major branches, where `X` is the major version number. For example,
@@ -331,7 +331,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
 
         Returns:
             If we are at a tag, return the [current
-                tag][frequenz.repo.config.version.RepoVersionInfo.current_tag]. If we
+                tag][..current_tag]. If we
                 are at a branch, return the last tag matching the branch major and minor
                 (if any). If there are no matching tags, return `None`.
         """

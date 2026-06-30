@@ -3,14 +3,14 @@
 
 """Utilities to work with GitHub.
 
-- [`abort()`][frequenz.repo.config.github.abort] to print an error message using GitHub
+- [`abort()`][.abort] to print an error message using GitHub
     Actions commands and exit.
-- [`require_env()`][frequenz.repo.config.github.require_env] to get an environment
+- [`require_env()`][.require_env] to get an environment
     variable or exit with an error if it is not defined.
-- [`get_tags()`][frequenz.repo.config.github.get_tags] to get the tags of a repository.
-- [`get_branches()`][frequenz.repo.config.github.get_branches] to get the branches of a
+- [`get_tags()`][.get_tags] to get the tags of a repository.
+- [`get_branches()`][.get_branches] to get the branches of a
     repository.
-- [`configure_logging()`][frequenz.repo.config.github.configure_logging] to configure
+- [`configure_logging()`][.configure_logging] to configure
     logging for GitHub Actions.
 """
 
@@ -192,7 +192,7 @@ def configure_logging(level: int | None = None) -> None:
     """Configure logging for GitHub Actions.
 
     The
-    [`GitHubActionsFormatter`][frequenz.repo.config.github.GitHubActionsFormatter]
+    [`GitHubActionsFormatter`][..GitHubActionsFormatter]
     is used to format the logs, using [GitHub Action
     commands](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions).
 

@@ -7,7 +7,7 @@ Code examples are often wrapped in triple backticks (````python`) within our doc
 This plugin extracts these code examples and validates them using pylint.
 
 The main utility function is
-[`get_sybil_arguments()`][frequenz.repo.config.pytest.examples.get_sybil_arguments],
+[`get_sybil_arguments()`][.get_sybil_arguments],
 which returns a dictionary that can be used to pass to the [`Sybil()`][sybil.Sybil]
 constructor.
 

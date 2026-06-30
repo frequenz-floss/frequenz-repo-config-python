@@ -6,11 +6,11 @@
 This module provides these tools:
 
 * Building the mike version information from the repository information
-  ([`build_mike_version()`][frequenz.repo.config.mkdocs.mike.build_mike_version]).
+  ([`build_mike_version()`][.build_mike_version]).
 * Sorting the mike version information `version.json` file
-  ([`sort_mike_versions()`][frequenz.repo.config.mkdocs.mike.sort_mike_versions]).
+  ([`sort_mike_versions()`][.sort_mike_versions]).
 * Comparing mike versions
-  ([`compare_mike_version()`][frequenz.repo.config.mkdocs.mike.compare_mike_version]).
+  ([`compare_mike_version()`][.compare_mike_version]).
 
 Mike versions have the format `vX.Y(-pre|-dev)?`, where `X` is the major version, `Y` is
 the minor version, and the optional suffix is either `-pre` for pre-release versions or
@@ -233,7 +233,7 @@ def sort_mike_versions(versions: list[str], *, reverse: bool = True) -> list[str
     - Other versions appear first and are sorted alphabetically.
 
     The versions are sorted in-place using
-    [`compare_mike_version()`][frequenz.repo.config.mkdocs.mike.compare_mike_version].
+    [`compare_mike_version()`][..compare_mike_version].
 
     Example:
 

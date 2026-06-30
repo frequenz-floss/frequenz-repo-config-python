@@ -5,7 +5,7 @@
 
 This module provides the default configuration for the different types of
 repositories defined by
-[`frequenz.repo.config.RepositoryType`][frequenz.repo.config.RepositoryType].
+[`RepositoryType`][...RepositoryType].
 
 The [`actor_config`][.actor_config], [`api_config`][.api_config],
 [`app_config`][.app_config], [`lib_config`][.lib_config], and
@@ -23,8 +23,8 @@ command-line options for the same types of repositories, and the
 options for all types of repositories.
 
 They can be modified before being passed to
-[`nox.configure()`][frequenz.repo.config.nox.configure] by using the
-[`CommandsOptions.copy()`][frequenz.repo.config.nox.config.CommandsOptions.copy]
+[`nox.configure()`][..configure] by using the
+[`CommandsOptions.copy()`][..config.CommandsOptions.copy]
 method.
 """
 

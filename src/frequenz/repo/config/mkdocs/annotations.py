@@ -48,9 +48,9 @@ The CSS file should contain the following rules:
 # Macros integration
 
 If you want to show an example of how an annotation looks, you can use the
-[`CODE_ANNOTATION_MARKER`][frequenz.repo.config.mkdocs.annotations.CODE_ANNOTATION_MARKER]
+[`CODE_ANNOTATION_MARKER`][.CODE_ANNOTATION_MARKER]
 variable to inject the appropriate HTML code. See
-[frequenz.repo.config.mkdocs.mkdocstrings_macros][] for more information.
+[`mkdocstrings_macros`][..mkdocstrings_macros] for more information.
 
 # References
 
