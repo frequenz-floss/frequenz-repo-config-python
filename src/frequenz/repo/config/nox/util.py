@@ -80,7 +80,7 @@ def existing_paths(paths: Iterable[str], /) -> Iterable[_pathlib.Path]:
 
 
 def is_python_file(path: _pathlib.Path, /) -> bool:
-    """Check if a path is a Python file.
+    """Return whether a path is a Python file.
 
     Args:
         path: The path to check.

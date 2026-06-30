@@ -23,13 +23,13 @@ from .. import protobuf as _protobuf
 
 
 def _is_internal(path_parts: Tuple[str, ...]) -> bool:
-    """Tell if the path is internal judging by the parts.
+    """Return whether the path is internal, judging by its parts.
 
     Args:
         path_parts: Path.parts of the path to check.
 
     Returns:
-        True if the path is internal.
+        Whether the path is internal.
     """
 
     def with_underscore_not_init(part: str) -> bool:

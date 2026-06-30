@@ -420,15 +420,15 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         return bigger_tag.minor + 1
 
     def is_tag(self) -> bool:
-        """Tell whether we are at a stable release."""
+        """Return whether we are at a stable release."""
         return self._ref.startswith("refs/tags/")
 
     def is_branch(self) -> bool:
-        """Tell whether we are at a major branch."""
+        """Return whether we are at a branch."""
         return self._ref.startswith("refs/heads/")
 
     def is_tag_last_minor_for_major(self) -> bool:
-        """Tell whether the current tag is the last minor version for the major version.
+        """Return whether the current tag is the last minor version for the major version.
 
         If we are not at a tag or there are not tags in the repo, return `False`.
 
@@ -459,7 +459,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         return tag >= max(minor_tags, key=lambda tag_: tag_.minor)
 
     def is_tag_latest(self) -> bool:
-        """Tell whether the current tag is the latest tag.
+        """Return whether the current tag is the latest tag.
 
         The latest tag is the tag with the biggest major, minor and patch
         version. If the current tag is a prerelease, then only prereleases are used to
@@ -493,7 +493,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         return tag == latest[0]
 
     def is_branch_latest(self) -> bool:
-        """Tell whether the current branch is the latest.
+        """Return whether the current branch is the latest.
 
         The latest branch is the branch with the biggest major and minor, but if minor
         is `None`, then it is considered the biggest minor.
