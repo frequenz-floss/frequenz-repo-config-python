@@ -198,7 +198,7 @@ def configure(
 
     Args:
         conf: The configuration to use to configure nox, or the repository type to use
-            to configure nox.  The later will use the default configuration in
+            to configure nox.  The latter will use the default configuration in
             [`frequenz.repo.config.nox.default`][] for that type of repository.
         import_default_sessions: Whether to import the default sessions or not.
             This is only necessary if you want to avoid using the default provided

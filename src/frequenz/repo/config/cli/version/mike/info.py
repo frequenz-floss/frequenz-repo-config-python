@@ -3,7 +3,7 @@
 
 """Command-line tool to get the current `mike` version information of a repository.
 
-For now this tool is designed to be used in GitHub Actions workflows, but is is possible
+For now this tool is designed to be used in GitHub Actions workflows, but it is possible
 to use it in other environments as well. To do so the `gh` tool should be properly
 configured and have at least read-access to the repository, and the following environment
 variables should be set:

@@ -49,7 +49,7 @@ def generate_python_api_pages(
     not included.
 
     A summary page is generated as `SUMMARY.md` which is compatible with the
-    `mkdocs-literary-nav` plugin.
+    `mkdocs-literate-nav` plugin.
 
     Args:
         src_path: Path where the code is located.

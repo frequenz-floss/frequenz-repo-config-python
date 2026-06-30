@@ -34,13 +34,13 @@ This will do the hooking and provide some useful variables and filters:
 * [`code_annotation_marker`]: A variable to inject the appropriate HTML code for showing
     an example code annotation as a number (see
     [frequenz.repo.config.mkdocs.annotations][] for more information).
-* [`version`]: A varaible with the version information of the repository as exposed by
+* [`version`]: A variable with the version information of the repository as exposed by
     [`get_repo_version_info()`][frequenz.repo.config.github.get_repo_version_info],
     which means some environment variables are required (this variable will be `None`
     otherwise), please read the function documentation for more details.
 * [`version_requirement`]: A variable with the version requirement for the current
     version of the repository. It is built using the information from `version`. Also
-    only available if the rigth environment variables are set, and if the resulting
+    only available if the right environment variables are set, and if the resulting
     version is a tag (will be empty for branches). If you want to get the version
     requirement for a branch, you need to provide a `repo_url` variable in the
     `mkdocs.yaml` file or do a custom setup. Please read the [Customized usage]
@@ -146,13 +146,13 @@ def add_version_variables(
 
     This function will add 2 new macro variables to `env`:
 
-    * [`version`]: A varaible with the version information of the repository as exposed by
+    * [`version`]: A variable with the version information of the repository as exposed by
         [`get_repo_version_info()`][frequenz.repo.config.github.get_repo_version_info],
         which means some environment variables are required (this variable will be `None`
         otherwise), please read the function documentation for more details.
     * [`version_requirement`]: A variable with the version requirement for the current
         version of the repository. It is built using the information from `version`. Also
-        only available if the rigth environment variables are set, and if the resulting
+        only available if the right environment variables are set, and if the resulting
         version is a tag (will be empty for branches). If you want to get the version
         requirement for a branch, you need to provide a `repo_url` or a `repo_url`
         config in the `mkdocs.yml` file.

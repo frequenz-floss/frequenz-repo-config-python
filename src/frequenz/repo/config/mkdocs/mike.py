@@ -17,7 +17,7 @@ the minor version, and the optional suffix is either `-pre` for pre-release vers
 `-dev` for development versions.
 
 Stable (tagged) versions have the format `vX.Y`, unless they are pre-release versions,
-then they have the format `vX.Y-pre`. Develoment branches have the format `vX.Y-dev`.
+then they have the format `vX.Y-pre`. Development branches have the format `vX.Y-dev`.
 
 * Tag `v1.0.0` -> `v1.0`
 * Tag `v2.1.0-alpha.1` -> `v2.1-pre`

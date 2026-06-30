@@ -1,7 +1,7 @@
 # License: MIT
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
-"""Setuptool hooks to build protobuf files.
+"""Setuptools hooks to build protobuf files.
 
 This module contains a setuptools command that can be used to compile protocol
 buffer files in a project.

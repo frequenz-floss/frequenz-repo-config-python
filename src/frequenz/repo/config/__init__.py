@@ -210,7 +210,7 @@ answer no and copy the list of missing stubs to the `pyproject.toml` file.
 
 ### API reference generation
 
-The API documnentation can be automatically generated from the source files using the
+The API documentation can be automatically generated from the source files using the
 [`frequenz.repo.config.mkdocs`][] package as when run as a
 [`mkdocs-gen-files`](https://oprypin.github.io/mkdocs-gen-files/) plugin script.
 
@@ -228,7 +228,7 @@ plugins:
 
 By default this script will look for files in the `src/` directory and generate the
 documentation files in the `python-reference/` directory inside `mkdocs` output directory
-(`site` by defaul).
+(`site` by default).
 
 If you need to customize the above paths, you can create a new script to use with the
 `mkdocs-gen-files` plugin as follows:
@@ -325,7 +325,7 @@ linting the examples in your code's *docstrings*.
 
 # APIs
 
-## Protobuf configuation
+## Protobuf configuration
 
 Support is provided to generate files from *protobuf* files.  To do this, it is possible
 to configure the options to use while generating the files for different purposes
@@ -425,7 +425,7 @@ to make sure the generated files are included in the wheel:
 [tool.setuptools.package-data]
 "*" = ["*.pyi"]
 
-[tools.pytest.ini_options]
+[tool.pytest.ini_options]
 testpaths = ["pytests"]
 ```
 

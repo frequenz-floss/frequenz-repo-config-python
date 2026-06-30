@@ -181,10 +181,10 @@ def min_dependencies() -> list[str]:
     """Extract the minimum dependencies from pyproject.toml.
 
     Returns:
-        The minimun dependencies defined in pyproject.toml.
+        The minimum dependencies defined in pyproject.toml.
 
     Raises:
-        RuntimeError: If minimun dependencies are not properly set in pyproject.toml.
+        RuntimeError: If minimum dependencies are not properly set in pyproject.toml.
     """
     with open("pyproject.toml", "rb") as toml_file:
         data = _tomllib.load(toml_file)
@@ -212,7 +212,7 @@ def discover_paths() -> list[str]:
 
     Currently the following paths are discovered:
 
-    - The `testpaths` option in the `tools.pytest.ini_options` section of
+    - The `testpaths` option in the `tool.pytest.ini_options` section of
       `pyproject.toml`.
 
     Returns:
