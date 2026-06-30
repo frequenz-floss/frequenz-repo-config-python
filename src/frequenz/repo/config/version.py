@@ -23,7 +23,7 @@ string to a semantic version, even if it has a leading `v`.
 
 Repository branch names can be parsed with
 [`BranchVersion.parse()`][frequenz.repo.config.version.BranchVersion.parse] and are
-expected follow the format:
+expected to follow the format:
 
 - `vX.x.x` for major branches, where `X` is the major version number. For example,
   `v1.x.x` is the major branch for the major version 1.

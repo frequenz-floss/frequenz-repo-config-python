@@ -3,7 +3,7 @@
 
 """Predefined nox sessions.
 
-This module defines the predefined nox sessions that are used by the default.
+This module defines the predefined nox sessions that are used by default.
 """
 
 import nox

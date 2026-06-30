@@ -138,7 +138,7 @@ def find_toplevel_package_dirs(
             `root`.
 
     Returns:
-        The top-level paths that contains a `__init__.py` file, with `root`
+        The top-level paths that contain a `__init__.py` file, with `root`
         removed.
 
     Examples:

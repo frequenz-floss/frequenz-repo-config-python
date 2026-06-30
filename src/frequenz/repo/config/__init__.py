@@ -62,7 +62,7 @@ If you need further customization or to define new sessions, you can use the
 following modules:
 
 - [`frequenz.repo.config.nox.config`][]: Low-level utilities to configure nox
-  sessions. It defines the `Config` and CommandsOptions` classes and the actual
+  sessions. It defines the `Config` and `CommandsOptions` classes and the actual
   implementation of the `configure()` function. It also defines the `get()`
   function, which can be used to get the currently used configuration object.
 
@@ -111,7 +111,7 @@ The following optional dependencies are used and must be defined:
 
   - `pytest`: To run the tests.
 
-For some of these you should install too any other dependencies that are used
+For some of these you should also install any other dependencies that are used
 by the project. For example, if the project uses `pytest-asyncio`, you should
 include it in the `dev-pytest` optional dependency.
 
@@ -189,7 +189,7 @@ strict = true
 You can just call `mypy` to check the package of your sources or you can use `mypy
 tests` to check the tests, for example.
 
-You might also need to extra optional dependencies to install type checking stubs for
+You might also need to add extra optional dependencies to install type checking stubs for
 some packages.  For example for API projects you need the `grpc-stubs` package:
 
 ```toml
@@ -202,7 +202,7 @@ dev-mypy = [
 ]
 ```
 
-You can use `mypy --install-types` to install to get a list of missing stubs, `mypy`
+You can use `mypy --install-types` to get a list of missing stubs, `mypy`
 will list them for you and ask if you want to proceed with the installation.  You can
 answer no and copy the list of missing stubs to the `pyproject.toml` file.
 
@@ -308,7 +308,7 @@ To do so there is some setup that's needed:
     ```
 
    This will make sure that you have the appropriate dependencies installed to run the
-   the tests linting and that `mypy` doesn't complain about the `sybil` module not being
+   tests linting and that `mypy` doesn't complain about the `sybil` module not being
    typed.
 
 3. Exclude the `src/conftest.py` file from the distribution package, as it shouldn't be
@@ -366,7 +366,7 @@ api_pages.generate_protobuf_api_pages()
 ```
 
 This will use the configuration in the `pyproject.toml` file and requires `docker` to
-run (it uses the `pseudomuto/protoc-gen-doc` docker image.
+run (it uses the `pseudomuto/protoc-gen-doc` docker image).
 
 ### `setuptools` gRPC support
 

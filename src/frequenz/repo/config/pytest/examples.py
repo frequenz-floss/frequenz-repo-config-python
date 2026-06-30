@@ -108,7 +108,7 @@ class _CustomPythonCodeBlockParser(CodeBlockParser):
     It uses pylint to validate the extracted code examples.
 
     All code examples are preceded by the original file's import statements as
-    well as an wildcard import of the file itself.
+    well as a wildcard import of the file itself.
     This allows us to use the code examples as if they were part of the original
     file.
 

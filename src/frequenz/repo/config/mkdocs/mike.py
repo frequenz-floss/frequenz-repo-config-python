@@ -22,7 +22,7 @@ then they have the format `vX.Y-pre`. Development branches have the format `vX.Y
 * Tag `v1.0.0` -> `v1.0`
 * Tag `v2.1.0-alpha.1` -> `v2.1-pre`
 * Branch `v1.x.x` (with no releases) -> `v1.0-dev`
-* Branch `v1.x.x (with releases an existing release, for example `v1.0.0`) -> `v1.1-dev`
+* Branch `v1.x.x` (with an existing release, for example `v1.0.0`) -> `v1.1-dev`
 * Branch `v1.1.x` -> `v1.1-dev`
 
 Aliases have the format `vX(-pre|-dev)?`, where `X` is the major version and the
@@ -61,7 +61,7 @@ class MikeVersionInfo:
 def build_mike_version(repo_info: RepoVersionInfo) -> MikeVersionInfo:
     """Build the mike version information from the given repository information.
 
-    The version is build based on if a tag or a branch is checked out.
+    The version is built based on whether a tag or a branch is checked out.
 
     For tags, the title is the tag name, the version is "vX.Y", where X is the major
     version and Y is the minor version of the tag. If the tag is the last minor version
