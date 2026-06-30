@@ -18,7 +18,8 @@ def ci_checks_max(session: nox.Session) -> None:
 
     This is faster than running the checks separately, so it is suitable for CI.
 
-    This does NOT run pytest_min, so that needs to be run separately as well.
+    This does NOT run [`pytest_min`][..pytest_min], so that needs to be run separately as
+    well.
 
     Args:
         session: the nox session.

@@ -4,12 +4,13 @@
 """Configuration utilities for nox.
 
 This module provides utilities to configure the nox sessions. It provides a
-`Config` and a `CommandsOptions` class, which are used to configure the nox sessions.
+[`Config`][.Config] and a [`CommandsOptions`][.CommandsOptions] class, which are used to
+configure the nox sessions.
 
-The `get()` function can be used to retrieve the current configuration object
+The [`get()`][.get] function can be used to retrieve the current configuration object
 so it can be used when implementing custom nox sessions.
 
-The `configure()` function must be called before `get()` is used.
+The [`configure()`][.configure] function must be called before [`get()`][.get] is used.
 """
 
 import dataclasses as _dataclasses
@@ -124,8 +125,8 @@ class Config:
         """Return the file paths to run the checks on.
 
         If positional arguments are present in the nox session, those are used
-        as the file paths verbatim, and if not, all **existing** `source_paths`
-        and `extra_paths` are used.
+        as the file paths verbatim, and if not, all **existing** [`source_paths`][..source_paths]
+        and [`extra_paths`][..extra_paths] are used.
 
         Args:
             session: The nox session to use to look for command-line arguments.
@@ -154,7 +155,7 @@ _CONFIG: Config | None = None
 def get() -> Config:
     """Get the global configuration object.
 
-    This will assert if `configure()` wasn't called before.
+    This will assert if [`configure()`][..configure] wasn't called before.
 
     Returns:
         The global configuration object.

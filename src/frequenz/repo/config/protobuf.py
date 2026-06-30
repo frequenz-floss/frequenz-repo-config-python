@@ -18,7 +18,7 @@ class ProtobufConfig:
     """A configuration for the protobuf files.
 
     The configuration can be loaded from the `pyproject.toml` file using the class
-    method `from_pyproject_toml()`.
+    method [`from_pyproject_toml()`][.from_pyproject_toml].
     """
 
     proto_path: str = "proto"

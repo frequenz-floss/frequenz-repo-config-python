@@ -31,14 +31,15 @@ This will do the hooking and provide some useful variables and filters:
 
 * [`slugify`][frequenz.repo.config.mkdocs.mkdocstrings_macros.slugify]: A filter to
     slugify a text. Useful to generate anchors for headings.
-* [`code_annotation_marker`]: A variable to inject the appropriate HTML code for showing
-    an example code annotation as a number (see
-    [frequenz.repo.config.mkdocs.annotations][] for more information).
-* [`version`]: A variable with the version information of the repository as exposed by
+* [`code_annotation_marker`][..annotations.CODE_ANNOTATION_MARKER]: A variable
+    to inject the appropriate HTML code for showing an example code annotation
+    as a number (see the [`annotations` module][..annotations] for more
+    information).
+* `version`: A variable with the version information of the repository as exposed by
     [`get_repo_version_info()`][frequenz.repo.config.github.get_repo_version_info],
-    which means some environment variables are required (this variable will be `None`
-    otherwise), please read the function documentation for more details.
-* [`version_requirement`]: A variable with the version requirement for the current
+    which means some environment variables are required (this variable will be
+    `None` otherwise), please read the function documentation for more details.
+* `version_requirement`: A variable with the version requirement for the current
     version of the repository. It is built using the information from `version`. Also
     only available if the right environment variables are set, and if the resulting
     version is a tag (will be empty for branches). If you want to get the version
@@ -67,8 +68,9 @@ plugins:
 ```
 
 Then you need to add the `define_env()` function to the `path/to/macros.py` file.
-A convenience [`hook_env_with_everything()`] is provided to pull all the same default
-variables and filters and call the hooking function at the end as with the *pluglet*.
+A convenience [`hook_env_with_everything()`][.hook_env_with_everything] is provided to
+pull all the same default variables and filters and call the hooking function at the end
+as with the *pluglet*.
 
 You also need to make sure to call the function at the end, after you define your own
 variables, filters and macros. You can optionally pass a `repo_url` in this case so the
@@ -146,11 +148,12 @@ def add_version_variables(
 
     This function will add 2 new macro variables to `env`:
 
-    * [`version`]: A variable with the version information of the repository as exposed by
+    * `version`: A variable with the version information of the repository as exposed by
         [`get_repo_version_info()`][frequenz.repo.config.github.get_repo_version_info],
-        which means some environment variables are required (this variable will be `None`
-        otherwise), please read the function documentation for more details.
-    * [`version_requirement`]: A variable with the version requirement for the current
+        which means some environment variables are required (this variable will
+        be `None` otherwise), please read the function documentation for more
+        details.
+    * `version_requirement`: A variable with the version requirement for the current
         version of the repository. It is built using the information from `version`. Also
         only available if the right environment variables are set, and if the resulting
         version is a tag (will be empty for branches). If you want to get the version
