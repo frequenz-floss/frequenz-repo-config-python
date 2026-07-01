@@ -85,7 +85,7 @@ dev-mkdocs = [
   "mkdocs-macros-plugin == 1.5.0",
   "mkdocs-material == 9.7.6",
   "mkdocstrings[python] == 1.0.4",
-  "mkdocstrings-python == 2.0.3",
+  "mkdocstrings-python == 2.0.5",
 ]
 dev-mypy = [
   "mypy == 2.1.0",
@@ -106,7 +106,7 @@ dev-pylint = [
 ]
 dev-pytest = [
   "pytest == 9.0.3",
-  "pylint == 4.0.5", # We need this to check for the examples
+  "pylint == 4.0.6", # We need this to check for the examples
   "cookiecutter == 2.7.1", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
   "sybil >= 6.1.1, < 11", # Should be consistent with the extra-lint-examples dependency
