@@ -2,7 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 [build-system]
-requires = ["setuptools == 82.0.1", "setuptools_scm[toml] == 10.0.5"]
+requires = ["setuptools == 82.0.1", "setuptools_scm[toml] == 10.2.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -105,7 +105,7 @@ dev-pylint = [
   "setuptools >= 67.6.0, < 83", # Should match the api dependency
 ]
 dev-pytest = [
-  "pytest == 9.0.3",
+  "pytest == 9.1.1",
   "pylint == 4.0.6", # We need this to check for the examples
   "cookiecutter == 2.7.1", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
