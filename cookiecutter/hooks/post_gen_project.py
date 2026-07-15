@@ -128,6 +128,8 @@ def finish_setup() -> None:
             finish_lib_setup()
         case "model":
             finish_model_setup()
+        case unknown_repo_type:
+            assert False, f"Unhandled repository type {unknown_repo_type!r}"
 
     initialize_git_submodules()
     commit_git_changes(first_commit=was_repo_initialized)
