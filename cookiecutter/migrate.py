@@ -40,6 +40,12 @@ def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    print("Enabling exhaustive match checks for mypy...")
+    migrate_mypy_exhaustive_match()
+    print("=" * 72)
+    print()
+
+    print("=" * 72)
     print("Removing default `-vv` from pytest addopts...")
     migrate_pytest_addopts_default()
     print("=" * 72)
@@ -387,6 +393,68 @@ def migrate_pytest_addopts_default() -> None:
         manual_step(
             f"Failed to update {pyproject}: {exc}. Please remove "
             '`addopts = "-vv"` from `[tool.pytest.ini_options]` manually.'
+        )
+
+
+def migrate_mypy_exhaustive_match() -> None:
+    """Enable mypy's ``exhaustive-match`` error code in ``pyproject.toml``.
+
+    The error code reports match statements that leave enum or union variants
+    unhandled.  The migration adds it to projects that do not already have an
+    ``enable_error_code`` setting.  Projects with a custom setting require a
+    manual merge so none of their existing error codes are discarded.
+    """
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        print(f"  Skipped {pyproject}: file not found")
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {pyproject}: {exc}. Please add "
+            '`enable_error_code = ["exhaustive-match"]` under `[tool.mypy]` '
+            "manually."
+        )
+        return
+
+    mypy_section_match = re.search(r"(?ms)^\[tool\.mypy\]\n.*?(?=^\[|\Z)", content)
+    if mypy_section_match is None:
+        manual_step(
+            f"{pyproject} has no [tool.mypy] section. Please add "
+            '`enable_error_code = ["exhaustive-match"]` manually.'
+        )
+        return
+
+    mypy_section = mypy_section_match.group(0)
+    error_code_match = re.search(
+        r"^enable_error_code\s*=.*$", mypy_section, flags=re.MULTILINE
+    )
+    if error_code_match is not None:
+        error_code_line = error_code_match.group(0)
+        if "exhaustive-match" in error_code_line:
+            print(f"  Skipped {pyproject}: exhaustive-match already enabled")
+        else:
+            manual_step(
+                f"{pyproject} has a customized `{error_code_line}` line under "
+                "[tool.mypy]; please add `exhaustive-match` to it manually."
+            )
+        return
+
+    new_content = content.replace(
+        "[tool.mypy]",
+        '[tool.mypy]\nenable_error_code = ["exhaustive-match"]',
+        1,
+    )
+    try:
+        replace_file_atomically(pyproject, new_content)
+        print(f"  Updated {pyproject}: enabled exhaustive-match")
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please add "
+            '`enable_error_code = ["exhaustive-match"]` under `[tool.mypy]` '
+            "manually."
         )
 
 
