@@ -180,6 +180,7 @@ namespace_packages = true
 #no_incremental = true
 packages = ["frequenz.app.test"]
 strict = true
+enable_error_code = ["exhaustive-match"]
 
 [[tool.mypy.overrides]]
 module = ["mkdocs_macros.*", "sybil", "sybil.*"]
