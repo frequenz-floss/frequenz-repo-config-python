@@ -1,7 +1,7 @@
 # License: MIT
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
-"""Base types used accross the project."""
+"""Base types used across the project."""
 
 import enum as _enum
 

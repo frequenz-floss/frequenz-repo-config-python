@@ -7,7 +7,7 @@ Code examples are often wrapped in triple backticks (````python`) within our doc
 This plugin extracts these code examples and validates them using pylint.
 
 The main utility function is
-[`get_sybil_arguments()`][frequenz.repo.config.pytest.examples.get_sybil_arguments],
+[`get_sybil_arguments()`][.get_sybil_arguments],
 which returns a dictionary that can be used to pass to the [`Sybil()`][sybil.Sybil]
 constructor.
 
@@ -101,14 +101,14 @@ def _path_to_import_statement(path: Path) -> str:
 
 
 class _CustomPythonCodeBlockParser(CodeBlockParser):
-    """Code block parser that validates extracted code examples using pylint.
+    """A code block parser that validates extracted code examples using pylint.
 
     This parser is a modified version of the default Python code block parser
     from the Sybil library.
     It uses pylint to validate the extracted code examples.
 
     All code examples are preceded by the original file's import statements as
-    well as an wildcard import of the file itself.
+    well as a wildcard import of the file itself.
     This allows us to use the code examples as if they were part of the original
     file.
 
@@ -212,11 +212,12 @@ def _validate_with_pylint(
 
 
 class MyPythonCodeBlockParser(PythonCodeBlockParser):
-    """Custom Python code block parser that uses the custom code block parser."""
+    """A custom Python code block parser that uses the custom code block parser."""
 
     codeblock_parser_class: type[_CustomPythonCodeBlockParser] = (
         _CustomPythonCodeBlockParser
     )
+    """The code block parser class used to validate the examples."""
 
 
 def get_sybil_arguments() -> dict[str, Any]:

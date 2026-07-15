@@ -4,12 +4,13 @@
 """Configuration utilities for nox.
 
 This module provides utilities to configure the nox sessions. It provides a
-`Config` and a `CommandsOptions` class, which are used to configure the nox sessions.
+[`Config`][.Config] and a [`CommandsOptions`][.CommandsOptions] class, which are used to
+configure the nox sessions.
 
-The `get()` function can be used to retrieve the current configuration object
+The [`get()`][.get] function can be used to retrieve the current configuration object
 so it can be used when implementing custom nox sessions.
 
-The `configure()` function must be called before `get()` is used.
+The [`configure()`][.configure] function must be called before [`get()`][.get] is used.
 """
 
 import dataclasses as _dataclasses
@@ -26,22 +27,22 @@ class CommandsOptions:
     """Command-line options for each command."""
 
     black: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `black` command."""
+    """The command-line options for the `black` command."""
 
     flake8: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `flake8` command."""
+    """The command-line options for the `flake8` command."""
 
     isort: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `isort` command."""
+    """The command-line options for the `isort` command."""
 
     mypy: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `mypy` command."""
+    """The command-line options for the `mypy` command."""
 
     pylint: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `pylint` command."""
+    """The command-line options for the `pylint` command."""
 
     pytest: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """Command-line options for the `pytest` command."""
+    """The command-line options for the `pytest` command."""
 
     def copy(self) -> Self:
         """Create a new object as a copy of self.
@@ -65,13 +66,13 @@ class Config:
     """Configuration for nox sessions."""
 
     opts: CommandsOptions = _dataclasses.field(default_factory=CommandsOptions)
-    """Command-line options for each command used by sessions."""
+    """The command-line options for each command used by sessions."""
 
     sessions: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """List of sessions to run."""
+    """The list of sessions to run."""
 
     source_paths: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """List of paths containing source files that should be analyzed by the sessions.
+    """The list of paths containing source files that should be analyzed by the sessions.
 
     Source paths are inspected for `__init__.py` files to look for packages.
     The path should be the top-level directory containing packages that will be
@@ -84,7 +85,7 @@ class Config:
     """
 
     extra_paths: list[str] = _dataclasses.field(default_factory=lambda: [])
-    """List of extra paths to be analyzed by the sessions.
+    """The list of extra paths to be analyzed by the sessions.
 
     These are not inspected for packages, as they are passed verbatim to the
     tools invoked by the sessions.
@@ -124,8 +125,8 @@ class Config:
         """Return the file paths to run the checks on.
 
         If positional arguments are present in the nox session, those are used
-        as the file paths verbatim, and if not, all **existing** `source_paths`
-        and `extra_paths` are used.
+        as the file paths verbatim, and if not, all **existing** [`source_paths`][..source_paths]
+        and [`extra_paths`][..extra_paths] are used.
 
         Args:
             session: The nox session to use to look for command-line arguments.
@@ -154,7 +155,7 @@ _CONFIG: Config | None = None
 def get() -> Config:
     """Get the global configuration object.
 
-    This will assert if `configure()` wasn't called before.
+    This will assert if [`configure()`][..configure] wasn't called before.
 
     Returns:
         The global configuration object.
@@ -198,7 +199,7 @@ def configure(
 
     Args:
         conf: The configuration to use to configure nox, or the repository type to use
-            to configure nox.  The later will use the default configuration in
+            to configure nox.  The latter will use the default configuration in
             [`frequenz.repo.config.nox.default`][] for that type of repository.
         import_default_sessions: Whether to import the default sessions or not.
             This is only necessary if you want to avoid using the default provided

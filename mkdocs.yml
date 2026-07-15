@@ -114,6 +114,7 @@ plugins:
             show_source: true
             show_symbol_type_toc: true
             signature_crossrefs: true
+            relative_crossrefs: true
           inventories:
             - https://cookiecutter.readthedocs.io/en/stable/objects.inv
             - https://docs.python.org/3/objects.inv

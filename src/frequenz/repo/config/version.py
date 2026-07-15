@@ -4,7 +4,7 @@
 """Version information for a repository.
 
 This module provides the
-[`RepoVersionInfo`][frequenz.repo.config.version.RepoVersionInfo] class to get information
+[`RepoVersionInfo`][.RepoVersionInfo] class to get information
 about the repository version.
 
 It handles many scenarios and queries, like:
@@ -18,12 +18,12 @@ It handles many scenarios and queries, like:
 
 Repository tag names are expected to follow the [semantic versioning][semver]
 specification, but usually with a leading `v` (e.g. `v1.0.0`).
-[`to_semver()`][frequenz.repo.config.version.to_semver] can be used to convert a version
+[`to_semver()`][.to_semver] can be used to convert a version
 string to a semantic version, even if it has a leading `v`.
 
 Repository branch names can be parsed with
-[`BranchVersion.parse()`][frequenz.repo.config.version.BranchVersion.parse] and are
-expected follow the format:
+[`BranchVersion.parse()`][.BranchVersion.parse] and are
+expected to follow the format:
 
 - `vX.x.x` for major branches, where `X` is the major version number. For example,
   `v1.x.x` is the major branch for the major version 1.
@@ -193,7 +193,7 @@ class BranchVersion:
         return self.name
 
     def __lt__(self, other: BranchVersion) -> bool:
-        """Compare two branch version information.
+        """Compare two branch versions.
 
         If `minor` is `None`, it is considered to be greater than any other `minor`.
 
@@ -250,7 +250,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         tags: list[str] | None = None,
         branches: list[str] | None = None,
     ) -> None:
-        """Initialize the environment variables.
+        """Initialize the repository version information.
 
         Args:
             sha: The current commit hash.
@@ -331,7 +331,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
 
         Returns:
             If we are at a tag, return the [current
-                tag][frequenz.repo.config.version.RepoVersionInfo.current_tag]. If we
+                tag][..current_tag]. If we
                 are at a branch, return the last tag matching the branch major and minor
                 (if any). If there are no matching tags, return `None`.
         """
@@ -420,15 +420,15 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         return bigger_tag.minor + 1
 
     def is_tag(self) -> bool:
-        """Tell whether we are at a stable release."""
+        """Return whether we are at a stable release."""
         return self._ref.startswith("refs/tags/")
 
     def is_branch(self) -> bool:
-        """Tell whether we are at a major branch."""
+        """Return whether we are at a branch."""
         return self._ref.startswith("refs/heads/")
 
     def is_tag_last_minor_for_major(self) -> bool:
-        """Tell whether the current tag is the last minor version for the major version.
+        """Return whether the current tag is the last minor version for the major version.
 
         If we are not at a tag or there are not tags in the repo, return `False`.
 
@@ -459,7 +459,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         return tag >= max(minor_tags, key=lambda tag_: tag_.minor)
 
     def is_tag_latest(self) -> bool:
-        """Tell whether the current tag is the latest tag.
+        """Return whether the current tag is the latest tag.
 
         The latest tag is the tag with the biggest major, minor and patch
         version. If the current tag is a prerelease, then only prereleases are used to
@@ -493,7 +493,7 @@ class RepoVersionInfo:  # pylint: disable=too-many-instance-attributes
         return tag == latest[0]
 
     def is_branch_latest(self) -> bool:
-        """Tell whether the current branch is the latest.
+        """Return whether the current branch is the latest.
 
         The latest branch is the branch with the biggest major and minor, but if minor
         is `None`, then it is considered the biggest minor.

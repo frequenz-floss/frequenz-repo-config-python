@@ -24,8 +24,8 @@ def flatten(iterables: Iterable[Iterable[_T]], /) -> Iterable[_T]:
     Returns:
         The flattened iterable.
 
-    Example:
-        >>> assert list(flatten([(1, 2), (3, 4)]) == [1, 2, 3, 4]
+    Examples:
+        >>> assert list(flatten([(1, 2), (3, 4)])) == [1, 2, 3, 4]
     """
     return (item for sublist in iterables for item in sublist)
 
@@ -40,7 +40,7 @@ def replace(iterable: Iterable[_T], replacements: Mapping[_T, _T], /) -> Iterabl
     Yields:
         The next element in the iterable, with the replacements applied.
 
-    Example:
+    Examples:
         >>> assert list(replace([1, 2, 3], {1: 4, 2: 5})) == [4, 5, 3]
     """
     for item in iterable:
@@ -73,14 +73,15 @@ def existing_paths(paths: Iterable[str], /) -> Iterable[_pathlib.Path]:
     Returns:
         An iterable with the valid paths as `pathlib.Path` objects.
 
-    Example:
+    Examples:
+        >>> import pathlib
         >>> assert list(existing_paths([".", "/fake"])) == [pathlib.Path(".")]
     """
     return deduplicate(p for p in map(_pathlib.Path, paths) if p.exists())
 
 
 def is_python_file(path: _pathlib.Path, /) -> bool:
-    """Check if a path is a Python file.
+    """Return whether a path is a Python file.
 
     Args:
         path: The path to check.
@@ -138,7 +139,7 @@ def find_toplevel_package_dirs(
             `root`.
 
     Returns:
-        The top-level paths that contains a `__init__.py` file, with `root`
+        The top-level paths that contain a `__init__.py` file, with `root`
         removed.
 
     Examples:
@@ -181,10 +182,10 @@ def min_dependencies() -> list[str]:
     """Extract the minimum dependencies from pyproject.toml.
 
     Returns:
-        The minimun dependencies defined in pyproject.toml.
+        The minimum dependencies defined in pyproject.toml.
 
     Raises:
-        RuntimeError: If minimun dependencies are not properly set in pyproject.toml.
+        RuntimeError: If minimum dependencies are not properly set in pyproject.toml.
     """
     with open("pyproject.toml", "rb") as toml_file:
         data = _tomllib.load(toml_file)
@@ -212,7 +213,7 @@ def discover_paths() -> list[str]:
 
     Currently the following paths are discovered:
 
-    - The `testpaths` option in the `tools.pytest.ini_options` section of
+    - The `testpaths` option in the `tool.pytest.ini_options` section of
       `pyproject.toml`.
 
     Returns:

@@ -11,8 +11,8 @@ Normally annotations are shown with a `(+)` button that expands the annotation. 
 able to explain code step by step, it is good to have annotations with numbers, shown as
 `(1)`, `(2)`, etc., to be able to follow the notes in a particular order.
 
-To do this, we need some custom CSS rules. Before this customization was officially
-supported and documented, but now they are not officially supported anymore, so it could
+To do this, we need some custom CSS rules. This customization was previously officially
+supported and documented, but it is not officially supported anymore, so it could
 eventually break (it already did once).
 
 If that happens we either need to look into how to fix the CSS ourselves or remove the
@@ -47,10 +47,10 @@ The CSS file should contain the following rules:
 
 # Macros integration
 
-If you want to show an example on how an annotation looks like, you can use the
-[`CODE_ANNOTATION_MARKER`][frequenz.repo.config.mkdocs.annotations.CODE_ANNOTATION_MARKER]
+If you want to show an example of how an annotation looks, you can use the
+[`CODE_ANNOTATION_MARKER`][.CODE_ANNOTATION_MARKER]
 variable to inject the appropriate HTML code. See
-[frequenz.repo.config.mkdocs.mkdocstrings_macros][] for more information.
+[`mkdocstrings_macros`][..mkdocstrings_macros] for more information.
 
 # References
 

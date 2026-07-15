@@ -1,7 +1,7 @@
 # License: MIT
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
-"""Setuptool hooks to build protobuf files.
+"""Setuptools hooks to build protobuf files.
 
 This module contains a setuptools command that can be used to compile protocol
 buffer files in a project.
@@ -23,7 +23,7 @@ from .. import protobuf as _protobuf
 
 
 class CompileProto(_setuptools.Command):
-    """Build the Python protobuf files."""
+    """A command to build the Python protobuf files."""
 
     proto_path: str
     """The path of the root directory containing the protobuf files."""
@@ -32,13 +32,13 @@ class CompileProto(_setuptools.Command):
     """The glob pattern to use to find the protobuf files."""
 
     include_paths: str | Iterable[str]
-    """Iterable or comma-separated list of paths to include when compiling the protobuf files."""
+    """The iterable or comma-separated list of paths to include when compiling protobuf files."""
 
     py_path: str
     """The path of the root directory where the Python files will be generated."""
 
     description: str = "compile protobuf files"
-    """Description of the command."""
+    """The description of the command."""
 
     # We need the cast here because Command.user_options has the type annoatation
     # ClassVar[list[tuple[str, str, str]] | list[tuple[str, str | None, str]]] but the
@@ -65,7 +65,7 @@ class CompileProto(_setuptools.Command):
             ),
         ],
     )
-    """Options of the command."""
+    """The options of the command."""
 
     def initialize_options(self) -> None:
         """Initialize options."""

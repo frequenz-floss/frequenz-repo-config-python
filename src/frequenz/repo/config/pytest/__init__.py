@@ -7,6 +7,6 @@ This package contains utilities for testing with [`pytest`](https://pypi.org/pro
 
 The following modules are available:
 
-- [`examples`][frequenz.repo.config.pytest.examples]: Utilities to enable linting of
+- [`examples`][.examples]: Utilities to enable linting of
   code examples in docstrings.
 """

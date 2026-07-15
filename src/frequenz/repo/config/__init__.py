@@ -5,7 +5,7 @@ r"""Frequenz project setup tools and common configuration.
 
 The tools are provided to configure the main types of repositories most commonly used at
 Frequenz, defined in
-[`frequenz.repo.config.RepositoryType`][].
+[`RepositoryType`][.RepositoryType].
 
 - actor: SDK actors
 - api: gRPC APIs
@@ -20,14 +20,14 @@ Frequenz, defined in
 ### Writing the `noxfile.py`
 
 Projects wanting to use `nox` to run lint checkers and other utilities can use
-the [`frequenz.repo.config.nox`][] package.
+the [`nox`][.nox] package.
 
 When writing the `noxfile.py` you should import the `nox` module from this
-package and use the [`frequenz.repo.config.nox.configure`][] function,
+package and use the [`nox.configure`][.nox.configure] function,
 which will configure all nox sessions.
 
 To use the default options, you should call `configure()` using one of the [repository
-types][frequenz.repo.config.RepositoryType].  For example:
+types][.RepositoryType].  For example:
 
 ```python
 from frequenz.repo.config import RepositoryType, nox
@@ -39,8 +39,8 @@ Again, make sure to pick the correct project default configuration based on the 
 your project (`actor_config`, `api_config`, `app_config`, `lib_config`, `model_config`).
 
 If you need to use some custom configuration, you can start from the default settings in
-the [`frequenz.repo.config.nox.default`][] module,
-[copying][frequenz.repo.config.nox.config.Config.copy] it and changing whatever you
+the [`nox.default`][.nox.default] module,
+[copying][.nox.config.Config.copy] it and changing whatever you
 need to customize.  For example:
 
 ```python
@@ -61,15 +61,15 @@ nox.configure(config)
 If you need further customization or to define new sessions, you can use the
 following modules:
 
-- [`frequenz.repo.config.nox.config`][]: Low-level utilities to configure nox
-  sessions. It defines the `Config` and CommandsOptions` classes and the actual
+- [`nox.config`][.nox.config]: Low-level utilities to configure nox
+  sessions. It defines the `Config` and `CommandsOptions` classes and the actual
   implementation of the `configure()` function. It also defines the `get()`
   function, which can be used to get the currently used configuration object.
 
-- [`frequenz.repo.config.nox.session`][]: Predefined nox sessions. These are
+- [`nox.session`][.nox.session]: Predefined nox sessions. These are
   the sessions that are used by default.
 
-- [`frequenz.repo.config.nox.util`][]: General purpose utility functions.
+- [`nox.util`][.nox.util]: General purpose utility functions.
 
 ### `pyproject.toml` configuration
 
@@ -111,7 +111,7 @@ The following optional dependencies are used and must be defined:
 
   - `pytest`: To run the tests.
 
-For some of these you should install too any other dependencies that are used
+For some of these you should also install any other dependencies that are used
 by the project. For example, if the project uses `pytest-asyncio`, you should
 include it in the `dev-pytest` optional dependency.
 
@@ -189,7 +189,7 @@ strict = true
 You can just call `mypy` to check the package of your sources or you can use `mypy
 tests` to check the tests, for example.
 
-You might also need to extra optional dependencies to install type checking stubs for
+You might also need to add extra optional dependencies to install type checking stubs for
 some packages.  For example for API projects you need the `grpc-stubs` package:
 
 ```toml
@@ -202,7 +202,7 @@ dev-mypy = [
 ]
 ```
 
-You can use `mypy --install-types` to install to get a list of missing stubs, `mypy`
+You can use `mypy --install-types` to get a list of missing stubs, `mypy`
 will list them for you and ask if you want to proceed with the installation.  You can
 answer no and copy the list of missing stubs to the `pyproject.toml` file.
 
@@ -210,8 +210,8 @@ answer no and copy the list of missing stubs to the `pyproject.toml` file.
 
 ### API reference generation
 
-The API documnentation can be automatically generated from the source files using the
-[`frequenz.repo.config.mkdocs`][] package as when run as a
+The API documentation can be automatically generated from the source files using the
+[`mkdocs`][.mkdocs] package as when run as a
 [`mkdocs-gen-files`](https://oprypin.github.io/mkdocs-gen-files/) plugin script.
 
 To enable it you just need to make sure the `mkdocs-gen-files`, `mkdocs-literate-nav`
@@ -228,7 +228,7 @@ plugins:
 
 By default this script will look for files in the `src/` directory and generate the
 documentation files in the `python-reference/` directory inside `mkdocs` output directory
-(`site` by defaul).
+(`site` by default).
 
 If you need to customize the above paths, you can create a new script to use with the
 `mkdocs-gen-files` plugin as follows:
@@ -276,7 +276,7 @@ To do so there is some setup that's needed:
     Unfortunately, because of how Sybil works, the [`Sybil`][sybil.Sybil] class needs to
     be instantiated in the `conftest.py` file. To easily do this, the convenience
     function
-    [`get_sybil_arguments()`][frequenz.repo.config.pytest.examples.get_sybil_arguments]
+    [`get_sybil_arguments()`][.pytest.examples.get_sybil_arguments]
     is provided to get the arguments to pass to the `Sybil()` constructor to be able to
     collect and lint the examples.
 
@@ -308,7 +308,7 @@ To do so there is some setup that's needed:
     ```
 
    This will make sure that you have the appropriate dependencies installed to run the
-   the tests linting and that `mypy` doesn't complain about the `sybil` module not being
+   tests linting and that `mypy` doesn't complain about the `sybil` module not being
    typed.
 
 3. Exclude the `src/conftest.py` file from the distribution package, as it shouldn't be
@@ -325,7 +325,7 @@ linting the examples in your code's *docstrings*.
 
 # APIs
 
-## Protobuf configuation
+## Protobuf configuration
 
 Support is provided to generate files from *protobuf* files.  To do this, it is possible
 to configure the options to use while generating the files for different purposes
@@ -366,7 +366,7 @@ api_pages.generate_protobuf_api_pages()
 ```
 
 This will use the configuration in the `pyproject.toml` file and requires `docker` to
-run (it uses the `pseudomuto/protoc-gen-doc` docker image.
+run (it uses the `pseudomuto/protoc-gen-doc` docker image).
 
 ### `setuptools` gRPC support
 
@@ -425,7 +425,7 @@ to make sure the generated files are included in the wheel:
 [tool.setuptools.package-data]
 "*" = ["*.pyi"]
 
-[tools.pytest.ini_options]
+[tool.pytest.ini_options]
 testpaths = ["pytests"]
 ```
 

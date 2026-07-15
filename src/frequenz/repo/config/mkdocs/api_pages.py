@@ -6,7 +6,7 @@
 It uses the following `mkdocs` plugins:
 
 * `mkdocs-gen-files` to generate the API documentation pages.
-* `mkdocs-literate-nav` to make use of the generate `SUMMARY.md` file.
+* `mkdocs-literate-nav` to make use of the generated `SUMMARY.md` file.
 
 Based on the recipe at:
 https://mkdocstrings.github.io/recipes/#automatic-code-reference-pages
@@ -23,13 +23,13 @@ from .. import protobuf as _protobuf
 
 
 def _is_internal(path_parts: Tuple[str, ...]) -> bool:
-    """Tell if the path is internal judging by the parts.
+    """Return whether the path is internal, judging by its parts.
 
     Args:
         path_parts: Path.parts of the path to check.
 
     Returns:
-        True if the path is internal.
+        Whether the path is internal.
     """
 
     def with_underscore_not_init(part: str) -> bool:
@@ -45,11 +45,11 @@ def generate_python_api_pages(
 ) -> None:
     """Generate API documentation pages for the code.
 
-    Internal modules (those starting with an underscore except from `__init__`) are
+    Internal modules (those starting with an underscore except for `__init__`) are
     not included.
 
     A summary page is generated as `SUMMARY.md` which is compatible with the
-    `mkdocs-literary-nav` plugin.
+    `mkdocs-literate-nav` plugin.
 
     Args:
         src_path: Path where the code is located.
@@ -87,13 +87,10 @@ def generate_python_api_pages(
 def generate_protobuf_api_pages(
     src_path: str = "proto", dst_path: str = "protobuf-reference"
 ) -> None:
-    """Generate API documentation pages for the code.
-
-    Internal modules (those starting with an underscore except from `__init__`) are
-    not included.
+    """Generate API documentation pages for the protocol buffer files.
 
     A summary page is generated as `SUMMARY.md` which is compatible with the
-    `mkdocs-literary-nav` plugin.
+    `mkdocs-literate-nav` plugin.
 
     Args:
         src_path: Path where the code is located.

@@ -6,23 +6,23 @@
 This module provides these tools:
 
 * Building the mike version information from the repository information
-  ([`build_mike_version()`][frequenz.repo.config.mkdocs.mike.build_mike_version]).
+  ([`build_mike_version()`][.build_mike_version]).
 * Sorting the mike version information `version.json` file
-  ([`sort_mike_versions()`][frequenz.repo.config.mkdocs.mike.sort_mike_versions]).
+  ([`sort_mike_versions()`][.sort_mike_versions]).
 * Comparing mike versions
-  ([`compare_mike_version()`][frequenz.repo.config.mkdocs.mike.compare_mike_version]).
+  ([`compare_mike_version()`][.compare_mike_version]).
 
 Mike versions have the format `vX.Y(-pre|-dev)?`, where `X` is the major version, `Y` is
 the minor version, and the optional suffix is either `-pre` for pre-release versions or
 `-dev` for development versions.
 
 Stable (tagged) versions have the format `vX.Y`, unless they are pre-release versions,
-then they have the format `vX.Y-pre`. Develoment branches have the format `vX.Y-dev`.
+then they have the format `vX.Y-pre`. Development branches have the format `vX.Y-dev`.
 
 * Tag `v1.0.0` -> `v1.0`
 * Tag `v2.1.0-alpha.1` -> `v2.1-pre`
 * Branch `v1.x.x` (with no releases) -> `v1.0-dev`
-* Branch `v1.x.x (with releases an existing release, for example `v1.0.0`) -> `v1.1-dev`
+* Branch `v1.x.x` (with an existing release, for example `v1.0.0`) -> `v1.1-dev`
 * Branch `v1.1.x` -> `v1.1-dev`
 
 Aliases have the format `vX(-pre|-dev)?`, where `X` is the major version and the
@@ -61,7 +61,7 @@ class MikeVersionInfo:
 def build_mike_version(repo_info: RepoVersionInfo) -> MikeVersionInfo:
     """Build the mike version information from the given repository information.
 
-    The version is build based on if a tag or a branch is checked out.
+    The version is built based on whether a tag or a branch is checked out.
 
     For tags, the title is the tag name, the version is "vX.Y", where X is the major
     version and Y is the minor version of the tag. If the tag is the last minor version
@@ -233,7 +233,7 @@ def sort_mike_versions(versions: list[str], *, reverse: bool = True) -> list[str
     - Other versions appear first and are sorted alphabetically.
 
     The versions are sorted in-place using
-    [`compare_mike_version()`][frequenz.repo.config.mkdocs.mike.compare_mike_version].
+    [`compare_mike_version()`][..compare_mike_version].
 
     Example:
 
