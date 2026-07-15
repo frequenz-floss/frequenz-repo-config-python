@@ -3018,7 +3018,7 @@ string to a semantic version, even if it has a leading <code>v</code>.</p>
   
       classmethod
   " href="#frequenz.repo.config.version.BranchVersion.parse"><code>BranchVersion.parse()</code></a> and are
-expected follow the format:</p>
+expected to follow the format:</p>
 <ul>
 <li><code>vX.x.x</code> for major branches, where <code>X</code> is the major version number. For example,
   <code>v1.x.x</code> is the major branch for the major version 1.</li>
@@ -3221,7 +3221,7 @@ be greater than any other <code>minor</code>.</p>
 </span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 </span><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194"></a>
 </span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BranchVersion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two branch version information.</span>
+</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two branch versions.</span>
 </span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197"></a>
 </span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198"></a><span class="sd">        If `minor` is `None`, it is considered to be greater than any other `minor`.</span>
 </span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199"></a>
@@ -3360,7 +3360,7 @@ be greater than any other <code>minor</code>.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Compare two branch version information.</p>
+        <p>Compare two branch versions.</p>
 <p>If <code>minor</code> is <code>None</code>, it is considered to be greater than any other <code>minor</code>.</p>
 
 
@@ -3456,7 +3456,7 @@ be greater than any other <code>minor</code>.</p>
 <span class="normal"><a href="#__codelineno-0-225">225</a></span>
 <span class="normal"><a href="#__codelineno-0-226">226</a></span>
 <span class="normal"><a href="#__codelineno-0-227">227</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BranchVersion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare two branch version information.</span>
+</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare two branch versions.</span>
 </span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197"></a>
 </span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198"></a><span class="sd">    If `minor` is `None`, it is considered to be greater than any other `minor`.</span>
 </span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199"></a>
@@ -4045,7 +4045,7 @@ the next minor version is 1.1, the new minor branch will be "v1.1.x".</p>
 </span><span id="__span-0-250"><a id="__codelineno-0-250" name="__codelineno-0-250"></a>        <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-251"><a id="__codelineno-0-251" name="__codelineno-0-251"></a>        <span class="n">branches</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-252"><a id="__codelineno-0-252" name="__codelineno-0-252"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the environment variables.</span>
+</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the repository version information.</span>
 </span><span id="__span-0-254"><a id="__codelineno-0-254" name="__codelineno-0-254"></a>
 </span><span id="__span-0-255"><a id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="sd">        Args:</span>
 </span><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="sd">            sha: The current commit hash.</span>
@@ -4126,7 +4126,7 @@ the next minor version is 1.1, the new minor branch will be "v1.1.x".</p>
 </span><span id="__span-0-331"><a id="__codelineno-0-331" name="__codelineno-0-331"></a>
 </span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332"></a><span class="sd">        Returns:</span>
 </span><span id="__span-0-333"><a id="__codelineno-0-333" name="__codelineno-0-333"></a><span class="sd">            If we are at a tag, return the [current</span>
-</span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="sd">                tag][frequenz.repo.config.version.RepoVersionInfo.current_tag]. If we</span>
+</span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="sd">                tag][..current_tag]. If we</span>
 </span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335"></a><span class="sd">                are at a branch, return the last tag matching the branch major and minor</span>
 </span><span id="__span-0-336"><a id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="sd">                (if any). If there are no matching tags, return `None`.</span>
 </span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337"></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -4215,15 +4215,15 @@ the next minor version is 1.1, the new minor branch will be "v1.1.x".</p>
 </span><span id="__span-0-420"><a id="__codelineno-0-420" name="__codelineno-0-420"></a>        <span class="k">return</span> <span class="n">bigger_tag</span><span class="o">.</span><span class="n">minor</span> <span class="o">+</span> <span class="mi">1</span>
 </span><span id="__span-0-421"><a id="__codelineno-0-421" name="__codelineno-0-421"></a>
 </span><span id="__span-0-422"><a id="__codelineno-0-422" name="__codelineno-0-422"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-423"><a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Tell whether we are at a stable release.&quot;&quot;&quot;</span>
+</span><span id="__span-0-423"><a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether we are at a stable release.&quot;&quot;&quot;</span>
 </span><span id="__span-0-424"><a id="__codelineno-0-424" name="__codelineno-0-424"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;refs/tags/&quot;</span><span class="p">)</span>
 </span><span id="__span-0-425"><a id="__codelineno-0-425" name="__codelineno-0-425"></a>
 </span><span id="__span-0-426"><a id="__codelineno-0-426" name="__codelineno-0-426"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-427"><a id="__codelineno-0-427" name="__codelineno-0-427"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Tell whether we are at a major branch.&quot;&quot;&quot;</span>
+</span><span id="__span-0-427"><a id="__codelineno-0-427" name="__codelineno-0-427"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether we are at a branch.&quot;&quot;&quot;</span>
 </span><span id="__span-0-428"><a id="__codelineno-0-428" name="__codelineno-0-428"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;refs/heads/&quot;</span><span class="p">)</span>
 </span><span id="__span-0-429"><a id="__codelineno-0-429" name="__codelineno-0-429"></a>
 </span><span id="__span-0-430"><a id="__codelineno-0-430" name="__codelineno-0-430"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_tag_last_minor_for_major</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-431"><a id="__codelineno-0-431" name="__codelineno-0-431"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Tell whether the current tag is the last minor version for the major version.</span>
+</span><span id="__span-0-431"><a id="__codelineno-0-431" name="__codelineno-0-431"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the current tag is the last minor version for the major version.</span>
 </span><span id="__span-0-432"><a id="__codelineno-0-432" name="__codelineno-0-432"></a>
 </span><span id="__span-0-433"><a id="__codelineno-0-433" name="__codelineno-0-433"></a><span class="sd">        If we are not at a tag or there are not tags in the repo, return `False`.</span>
 </span><span id="__span-0-434"><a id="__codelineno-0-434" name="__codelineno-0-434"></a>
@@ -4254,7 +4254,7 @@ the next minor version is 1.1, the new minor branch will be "v1.1.x".</p>
 </span><span id="__span-0-459"><a id="__codelineno-0-459" name="__codelineno-0-459"></a>        <span class="k">return</span> <span class="n">tag</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">minor_tags</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tag_</span><span class="p">:</span> <span class="n">tag_</span><span class="o">.</span><span class="n">minor</span><span class="p">)</span>
 </span><span id="__span-0-460"><a id="__codelineno-0-460" name="__codelineno-0-460"></a>
 </span><span id="__span-0-461"><a id="__codelineno-0-461" name="__codelineno-0-461"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_tag_latest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-462"><a id="__codelineno-0-462" name="__codelineno-0-462"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Tell whether the current tag is the latest tag.</span>
+</span><span id="__span-0-462"><a id="__codelineno-0-462" name="__codelineno-0-462"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the current tag is the latest tag.</span>
 </span><span id="__span-0-463"><a id="__codelineno-0-463" name="__codelineno-0-463"></a>
 </span><span id="__span-0-464"><a id="__codelineno-0-464" name="__codelineno-0-464"></a><span class="sd">        The latest tag is the tag with the biggest major, minor and patch</span>
 </span><span id="__span-0-465"><a id="__codelineno-0-465" name="__codelineno-0-465"></a><span class="sd">        version. If the current tag is a prerelease, then only prereleases are used to</span>
@@ -4288,7 +4288,7 @@ the next minor version is 1.1, the new minor branch will be "v1.1.x".</p>
 </span><span id="__span-0-493"><a id="__codelineno-0-493" name="__codelineno-0-493"></a>        <span class="k">return</span> <span class="n">tag</span> <span class="o">==</span> <span class="n">latest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="__span-0-494"><a id="__codelineno-0-494" name="__codelineno-0-494"></a>
 </span><span id="__span-0-495"><a id="__codelineno-0-495" name="__codelineno-0-495"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_branch_latest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-496"><a id="__codelineno-0-496" name="__codelineno-0-496"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Tell whether the current branch is the latest.</span>
+</span><span id="__span-0-496"><a id="__codelineno-0-496" name="__codelineno-0-496"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the current branch is the latest.</span>
 </span><span id="__span-0-497"><a id="__codelineno-0-497" name="__codelineno-0-497"></a>
 </span><span id="__span-0-498"><a id="__codelineno-0-498" name="__codelineno-0-498"></a><span class="sd">        The latest branch is the branch with the biggest major and minor, but if minor</span>
 </span><span id="__span-0-499"><a id="__codelineno-0-499" name="__codelineno-0-499"></a><span class="sd">        is `None`, then it is considered the biggest minor.</span>
@@ -4534,7 +4534,7 @@ the next minor version is 1.1, the new minor branch will be "v1.1.x".</p>
 
     <div class="doc doc-contents ">
 
-        <p>Initialize the environment variables.</p>
+        <p>Initialize the repository version information.</p>
 
 
 <table>
@@ -4664,7 +4664,7 @@ the next minor version is 1.1, the new minor branch will be "v1.1.x".</p>
 </span><span id="__span-0-250"><a id="__codelineno-0-250" name="__codelineno-0-250"></a>    <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-251"><a id="__codelineno-0-251" name="__codelineno-0-251"></a>    <span class="n">branches</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-252"><a id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the environment variables.</span>
+</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the repository version information.</span>
 </span><span id="__span-0-254"><a id="__codelineno-0-254" name="__codelineno-0-254"></a>
 </span><span id="__span-0-255"><a id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="sd">    Args:</span>
 </span><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="sd">        sha: The current commit hash.</span>
@@ -4807,7 +4807,7 @@ are at a branch, return the last tag matching the branch major and minor
 </span><span id="__span-0-331"><a id="__codelineno-0-331" name="__codelineno-0-331"></a>
 </span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332"></a><span class="sd">    Returns:</span>
 </span><span id="__span-0-333"><a id="__codelineno-0-333" name="__codelineno-0-333"></a><span class="sd">        If we are at a tag, return the [current</span>
-</span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="sd">            tag][frequenz.repo.config.version.RepoVersionInfo.current_tag]. If we</span>
+</span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="sd">            tag][..current_tag]. If we</span>
 </span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335"></a><span class="sd">            are at a branch, return the last tag matching the branch major and minor</span>
 </span><span id="__span-0-336"><a id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="sd">            (if any). If there are no matching tags, return `None`.</span>
 </span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337"></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -5093,7 +5093,7 @@ current branch is invalid or is not a major branch.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Tell whether we are at a major branch.</p>
+        <p>Return whether we are at a branch.</p>
 
 
             <details class="mkdocstrings-source">
@@ -5101,7 +5101,7 @@ current branch is invalid or is not a major branch.</p>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-426">426</a></span>
 <span class="normal"><a href="#__codelineno-0-427">427</a></span>
 <span class="normal"><a href="#__codelineno-0-428">428</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-426"><a id="__codelineno-0-426" name="__codelineno-0-426"></a><span class="k">def</span><span class="w"> </span><span class="nf">is_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-427"><a id="__codelineno-0-427" name="__codelineno-0-427"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Tell whether we are at a major branch.&quot;&quot;&quot;</span>
+</span><span id="__span-0-427"><a id="__codelineno-0-427" name="__codelineno-0-427"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether we are at a branch.&quot;&quot;&quot;</span>
 </span><span id="__span-0-428"><a id="__codelineno-0-428" name="__codelineno-0-428"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;refs/heads/&quot;</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
@@ -5122,7 +5122,7 @@ current branch is invalid or is not a major branch.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Tell whether the current branch is the latest.</p>
+        <p>Return whether the current branch is the latest.</p>
 <p>The latest branch is the branch with the biggest major and minor, but if minor
 is <code>None</code>, then it is considered the biggest minor.</p>
 
@@ -5153,7 +5153,7 @@ is <code>None</code>, then it is considered the biggest minor.</p>
 <span class="normal"><a href="#__codelineno-0-516">516</a></span>
 <span class="normal"><a href="#__codelineno-0-517">517</a></span>
 <span class="normal"><a href="#__codelineno-0-518">518</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-495"><a id="__codelineno-0-495" name="__codelineno-0-495"></a><span class="k">def</span><span class="w"> </span><span class="nf">is_branch_latest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-496"><a id="__codelineno-0-496" name="__codelineno-0-496"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Tell whether the current branch is the latest.</span>
+</span><span id="__span-0-496"><a id="__codelineno-0-496" name="__codelineno-0-496"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the current branch is the latest.</span>
 </span><span id="__span-0-497"><a id="__codelineno-0-497" name="__codelineno-0-497"></a>
 </span><span id="__span-0-498"><a id="__codelineno-0-498" name="__codelineno-0-498"></a><span class="sd">    The latest branch is the branch with the biggest major and minor, but if minor</span>
 </span><span id="__span-0-499"><a id="__codelineno-0-499" name="__codelineno-0-499"></a><span class="sd">    is `None`, then it is considered the biggest minor.</span>
@@ -5195,7 +5195,7 @@ is <code>None</code>, then it is considered the biggest minor.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Tell whether we are at a stable release.</p>
+        <p>Return whether we are at a stable release.</p>
 
 
             <details class="mkdocstrings-source">
@@ -5203,7 +5203,7 @@ is <code>None</code>, then it is considered the biggest minor.</p>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-422">422</a></span>
 <span class="normal"><a href="#__codelineno-0-423">423</a></span>
 <span class="normal"><a href="#__codelineno-0-424">424</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-422"><a id="__codelineno-0-422" name="__codelineno-0-422"></a><span class="k">def</span><span class="w"> </span><span class="nf">is_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-423"><a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Tell whether we are at a stable release.&quot;&quot;&quot;</span>
+</span><span id="__span-0-423"><a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether we are at a stable release.&quot;&quot;&quot;</span>
 </span><span id="__span-0-424"><a id="__codelineno-0-424" name="__codelineno-0-424"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;refs/tags/&quot;</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
@@ -5224,7 +5224,7 @@ is <code>None</code>, then it is considered the biggest minor.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Tell whether the current tag is the last minor version for the major version.</p>
+        <p>Return whether the current tag is the last minor version for the major version.</p>
 <p>If we are not at a tag or there are not tags in the repo, return <code>False</code>.</p>
 <p>If the <code>current_tag</code> is a pre-release, only pre-release tags are considered and
 if is not a pre-release, only stable tags are considered.</p>
@@ -5262,7 +5262,7 @@ if is not a pre-release, only stable tags are considered.</p>
 <span class="normal"><a href="#__codelineno-0-457">457</a></span>
 <span class="normal"><a href="#__codelineno-0-458">458</a></span>
 <span class="normal"><a href="#__codelineno-0-459">459</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-430"><a id="__codelineno-0-430" name="__codelineno-0-430"></a><span class="k">def</span><span class="w"> </span><span class="nf">is_tag_last_minor_for_major</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-431"><a id="__codelineno-0-431" name="__codelineno-0-431"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Tell whether the current tag is the last minor version for the major version.</span>
+</span><span id="__span-0-431"><a id="__codelineno-0-431" name="__codelineno-0-431"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the current tag is the last minor version for the major version.</span>
 </span><span id="__span-0-432"><a id="__codelineno-0-432" name="__codelineno-0-432"></a>
 </span><span id="__span-0-433"><a id="__codelineno-0-433" name="__codelineno-0-433"></a><span class="sd">    If we are not at a tag or there are not tags in the repo, return `False`.</span>
 </span><span id="__span-0-434"><a id="__codelineno-0-434" name="__codelineno-0-434"></a>
@@ -5310,7 +5310,7 @@ if is not a pre-release, only stable tags are considered.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Tell whether the current tag is the latest tag.</p>
+        <p>Return whether the current tag is the latest tag.</p>
 <p>The latest tag is the tag with the biggest major, minor and patch
 version. If the current tag is a prerelease, then only prereleases are used to
 determine the biggest.</p>
@@ -5352,7 +5352,7 @@ determine the biggest.</p>
 <span class="normal"><a href="#__codelineno-0-491">491</a></span>
 <span class="normal"><a href="#__codelineno-0-492">492</a></span>
 <span class="normal"><a href="#__codelineno-0-493">493</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-461"><a id="__codelineno-0-461" name="__codelineno-0-461"></a><span class="k">def</span><span class="w"> </span><span class="nf">is_tag_latest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="__span-0-462"><a id="__codelineno-0-462" name="__codelineno-0-462"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Tell whether the current tag is the latest tag.</span>
+</span><span id="__span-0-462"><a id="__codelineno-0-462" name="__codelineno-0-462"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the current tag is the latest tag.</span>
 </span><span id="__span-0-463"><a id="__codelineno-0-463" name="__codelineno-0-463"></a>
 </span><span id="__span-0-464"><a id="__codelineno-0-464" name="__codelineno-0-464"></a><span class="sd">    The latest tag is the tag with the biggest major, minor and patch</span>
 </span><span id="__span-0-465"><a id="__codelineno-0-465" name="__codelineno-0-465"></a><span class="sd">    version. If the current tag is a prerelease, then only prereleases are used to</span>

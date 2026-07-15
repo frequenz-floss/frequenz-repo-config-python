@@ -2451,16 +2451,80 @@
         <p>Default nox configuration for different types of repositories.</p>
 <p>This module provides the default configuration for the different types of
 repositories defined by
-<a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="../../#frequenz.repo.config.RepositoryType"><code>frequenz.repo.config.RepositoryType</code></a>.</p>
-<p>The <code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>, and <code>model_config</code>
-variables are the default configurations for libraries, APIs, actors and applications,
-respectively. The <code>common_config</code> variable is the default configuration for all types of
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="../../#frequenz.repo.config.RepositoryType"><code>RepositoryType</code></a>.</p>
+<p>The <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.actor_config
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.actor_config"><code>actor_config</code></a>, <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.api_config
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.api_config"><code>api_config</code></a>,
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.app_config
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.app_config"><code>app_config</code></a>, <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.lib_config
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.lib_config"><code>lib_config</code></a>, and
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.model_config
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.model_config"><code>model_config</code></a> variables are the default configurations for actors,
+APIs, applications, libraries, and models, respectively. The
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.common_config
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.common_config"><code>common_config</code></a> variable is the default configuration for all types of
 repositories.</p>
-<p>The <code>actor_command_options</code>, <code>api_command_options</code>, <code>app_command_options</code>,
-<code>lib_command_options</code>, and <code>model_command_options</code> variables are the default
+<p>The <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.actor_command_options
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.actor_command_options"><code>actor_command_options</code></a>,
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.api_command_options
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.api_command_options"><code>api_command_options</code></a>, <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.app_command_options
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.app_command_options"><code>app_command_options</code></a>,
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.lib_command_options
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.lib_command_options"><code>lib_command_options</code></a>, and
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.model_command_options
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.model_command_options"><code>model_command_options</code></a> variables are the default
 command-line options for the same types of repositories, and the
-<code>common_command_options</code> variable is the default command-line options for all types of
-repositories.</p>
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.common_command_options
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.common_command_options"><code>common_command_options</code></a> variable is the default command-line
+options for all types of repositories.</p>
 <p>They can be modified before being passed to
 <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.configure" href="../#frequenz.repo.config.nox.configure"><code>nox.configure()</code></a> by using the
 <a class="autorefs autorefs-internal" title="copy" href="../config/#frequenz.repo.config.nox.config.CommandsOptions.copy"><code>CommandsOptions.copy()</code></a>
@@ -2513,7 +2577,7 @@ method.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default command-line options for actors.</p>
+        <p>The default command-line options for actors.</p>
 
     </div>
 
@@ -2547,7 +2611,7 @@ method.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default configuration for actors.</p>
+        <p>The default configuration for actors.</p>
 
     </div>
 
@@ -2583,7 +2647,7 @@ method.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default command-line options for APIs.</p>
+        <p>The default command-line options for APIs.</p>
 
     </div>
 
@@ -2617,9 +2681,14 @@ method.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default configuration for APIs.</p>
-<p>Same as <code>common_config</code>, but with an empty <code>source_paths</code> (as the sources are
-automatically generated, we don't want to test anything in there).</p>
+        <p>The default configuration for APIs.</p>
+<p>Same as <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default.common_config
+
+
+  
+      module-attribute
+  " href="#frequenz.repo.config.nox.default.common_config"><code>common_config</code></a>, but with an empty <code>source_paths</code> (as the
+sources are automatically generated, we don't want to test anything in there).</p>
 
     </div>
 
@@ -2655,7 +2724,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default command-line options for applications.</p>
+        <p>The default command-line options for applications.</p>
 
     </div>
 
@@ -2689,7 +2758,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default configuration for applications.</p>
+        <p>The default configuration for applications.</p>
 
     </div>
 
@@ -2731,7 +2800,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default command-line options for all types of repositories.</p>
+        <p>The default command-line options for all types of repositories.</p>
 
     </div>
 
@@ -2783,7 +2852,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default configuration for all types of repositories.</p>
+        <p>The default configuration for all types of repositories.</p>
 
     </div>
 
@@ -2819,7 +2888,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default command-line options for libraries.</p>
+        <p>The default command-line options for libraries.</p>
 
     </div>
 
@@ -2853,7 +2922,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default configuration for libraries.</p>
+        <p>The default configuration for libraries.</p>
 
     </div>
 
@@ -2889,7 +2958,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default command-line options for models.</p>
+        <p>The default command-line options for models.</p>
 
     </div>
 
@@ -2923,7 +2992,7 @@ automatically generated, we don't want to test anything in there).</p>
 
     <div class="doc doc-contents ">
 
-        <p>Default configuration for models.</p>
+        <p>The default configuration for models.</p>
 
     </div>
 

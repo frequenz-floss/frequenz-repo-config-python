@@ -2187,15 +2187,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#frequenz.repo.config--protobuf-configuation" class="md-nav__link">
+  <a href="#frequenz.repo.config--protobuf-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Protobuf configuation
+        Protobuf configuration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Protobuf configuation">
+    <nav class="md-nav" aria-label="Protobuf configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2378,7 +2378,7 @@
         <p>Frequenz project setup tools and common configuration.</p>
 <p>The tools are provided to configure the main types of repositories most commonly used at
 Frequenz, defined in
-<a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="#frequenz.repo.config.RepositoryType"><code>frequenz.repo.config.RepositoryType</code></a>.</p>
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="#frequenz.repo.config.RepositoryType"><code>RepositoryType</code></a>.</p>
 <ul>
 <li>actor: SDK actors</li>
 <li>api: gRPC APIs</li>
@@ -2390,9 +2390,9 @@ Frequenz, defined in
 <h4 id="frequenz.repo.config--nox-running-tests-and-linters"><code>nox</code> (running tests and linters)<a class="headerlink" href="#frequenz.repo.config--nox-running-tests-and-linters" title="Permanent link">¤</a></h4>
 <h5 id="frequenz.repo.config--writing-the-noxfilepy">Writing the <code>noxfile.py</code><a class="headerlink" href="#frequenz.repo.config--writing-the-noxfilepy" title="Permanent link">¤</a></h5>
 <p>Projects wanting to use <code>nox</code> to run lint checkers and other utilities can use
-the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox" href="nox/#frequenz.repo.config.nox"><code>frequenz.repo.config.nox</code></a> package.</p>
+the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox" href="nox/#frequenz.repo.config.nox"><code>nox</code></a> package.</p>
 <p>When writing the <code>noxfile.py</code> you should import the <code>nox</code> module from this
-package and use the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.configure" href="nox/#frequenz.repo.config.nox.configure"><code>frequenz.repo.config.nox.configure</code></a> function,
+package and use the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.configure" href="nox/#frequenz.repo.config.nox.configure"><code>nox.configure</code></a> function,
 which will configure all nox sessions.</p>
 <p>To use the default options, you should call <code>configure()</code> using one of the <a class="autorefs autorefs-internal" title="frequenz.repo.config.RepositoryType" href="#frequenz.repo.config.RepositoryType">repository
 types</a>.  For example:</p>
@@ -2403,7 +2403,7 @@ types</a>.  For example:</p>
 <p>Again, make sure to pick the correct project default configuration based on the type of
 your project (<code>actor_config</code>, <code>api_config</code>, <code>app_config</code>, <code>lib_config</code>, <code>model_config</code>).</p>
 <p>If you need to use some custom configuration, you can start from the default settings in
-the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default" href="nox/default/#frequenz.repo.config.nox.default"><code>frequenz.repo.config.nox.default</code></a> module,
+the <a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.default" href="nox/default/#frequenz.repo.config.nox.default"><code>nox.default</code></a> module,
 <a class="autorefs autorefs-internal" title="copy" href="nox/config/#frequenz.repo.config.nox.config.Config.copy">copying</a> it and changing whatever you
 need to customize.  For example:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">nox</span>
@@ -2423,17 +2423,17 @@ outside of <code>nox</code>.</p>
 following modules:</p>
 <ul>
 <li>
-<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config" href="nox/config/#frequenz.repo.config.nox.config"><code>frequenz.repo.config.nox.config</code></a>: Low-level utilities to configure nox
-  sessions. It defines the <code>Config</code> and CommandsOptions<code>classes and the actual
-  implementation of the</code>configure()<code>function. It also defines the</code>get()`
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.config" href="nox/config/#frequenz.repo.config.nox.config"><code>nox.config</code></a>: Low-level utilities to configure nox
+  sessions. It defines the <code>Config</code> and <code>CommandsOptions</code> classes and the actual
+  implementation of the <code>configure()</code> function. It also defines the <code>get()</code>
   function, which can be used to get the currently used configuration object.</p>
 </li>
 <li>
-<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.session" href="nox/session/#frequenz.repo.config.nox.session"><code>frequenz.repo.config.nox.session</code></a>: Predefined nox sessions. These are
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.session" href="nox/session/#frequenz.repo.config.nox.session"><code>nox.session</code></a>: Predefined nox sessions. These are
   the sessions that are used by default.</p>
 </li>
 <li>
-<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.util" href="nox/util/#frequenz.repo.config.nox.util"><code>frequenz.repo.config.nox.util</code></a>: General purpose utility functions.</p>
+<p><a class="autorefs autorefs-internal" title="frequenz.repo.config.nox.util" href="nox/util/#frequenz.repo.config.nox.util"><code>nox.util</code></a>: General purpose utility functions.</p>
 </li>
 </ul>
 <h5 id="frequenz.repo.config--pyprojecttoml-configuration"><code>pyproject.toml</code> configuration<a class="headerlink" href="#frequenz.repo.config--pyprojecttoml-configuration" title="Permanent link">¤</a></h5>
@@ -2486,7 +2486,7 @@ sessions.</p>
 <ul>
 <li><code>pytest</code>: To run the tests.</li>
 </ul>
-<p>For some of these you should install too any other dependencies that are used
+<p>For some of these you should also install any other dependencies that are used
 by the project. For example, if the project uses <code>pytest-asyncio</code>, you should
 include it in the <code>dev-pytest</code> optional dependency.</p>
 <p>It is also recommended, but not required, to provide a global <code>dev</code> optional
@@ -2552,7 +2552,7 @@ follows:</p>
 </span></code></pre></div>
 <p>You can just call <code>mypy</code> to check the package of your sources or you can use <code>mypy
 tests</code> to check the tests, for example.</p>
-<p>You might also need to extra optional dependencies to install type checking stubs for
+<p>You might also need to add extra optional dependencies to install type checking stubs for
 some packages.  For example for API projects you need the <code>grpc-stubs</code> package:</p>
 <div class="language-toml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[project.optional-dependencies]</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># ...</span>
@@ -2562,13 +2562,13 @@ some packages.  For example for API projects you need the <code>grpc-stubs</code
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="c1"># ...</span>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">]</span>
 </span></code></pre></div>
-<p>You can use <code>mypy --install-types</code> to install to get a list of missing stubs, <code>mypy</code>
+<p>You can use <code>mypy --install-types</code> to get a list of missing stubs, <code>mypy</code>
 will list them for you and ask if you want to proceed with the installation.  You can
 answer no and copy the list of missing stubs to the <code>pyproject.toml</code> file.</p>
 <h4 id="frequenz.repo.config--mkdocs-generating-documentation"><code>mkdocs</code> (generating documentation)<a class="headerlink" href="#frequenz.repo.config--mkdocs-generating-documentation" title="Permanent link">¤</a></h4>
 <h5 id="frequenz.repo.config--api-reference-generation">API reference generation<a class="headerlink" href="#frequenz.repo.config--api-reference-generation" title="Permanent link">¤</a></h5>
-<p>The API documnentation can be automatically generated from the source files using the
-<a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs" href="mkdocs/#frequenz.repo.config.mkdocs"><code>frequenz.repo.config.mkdocs</code></a> package as when run as a
+<p>The API documentation can be automatically generated from the source files using the
+<a class="autorefs autorefs-internal" title="frequenz.repo.config.mkdocs" href="mkdocs/#frequenz.repo.config.mkdocs"><code>mkdocs</code></a> package as when run as a
 <a href="https://oprypin.github.io/mkdocs-gen-files/"><code>mkdocs-gen-files</code></a> plugin script.</p>
 <p>To enable it you just need to make sure the <code>mkdocs-gen-files</code>, <code>mkdocs-literate-nav</code>
 and <code>mkdocstrings[python]</code> packages are installed (look at the <code>pyproject.toml</code>
@@ -2581,7 +2581,7 @@ configuration in the <code>nox</code> section) and add the following configurati
 </span></code></pre></div>
 <p>By default this script will look for files in the <code>src/</code> directory and generate the
 documentation files in the <code>python-reference/</code> directory inside <code>mkdocs</code> output directory
-(<code>site</code> by defaul).</p>
+(<code>site</code> by default).</p>
 <p>If you need to customize the above paths, you can create a new script to use with the
 <code>mkdocs-gen-files</code> plugin as follows:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">frequenz.repo.config.mkdocs</span><span class="w"> </span><span class="kn">import</span> <span class="n">api_pages</span>
@@ -2648,7 +2648,7 @@ collect and lint the examples.</p>
 </li>
 </ol>
 <p>This will make sure that you have the appropriate dependencies installed to run the
-   the tests linting and that <code>mypy</code> doesn't complain about the <code>sybil</code> module not being
+   tests linting and that <code>mypy</code> doesn't complain about the <code>sybil</code> module not being
    typed.</p>
 <ol>
 <li>
@@ -2663,7 +2663,7 @@ collect and lint the examples.</p>
 <p>Now you should be able to run <code>nox -s pytest</code> (or <code>pytest</code> directly) and see the tests
 linting the examples in your code's <em>docstrings</em>.</p>
 <h3 id="frequenz.repo.config--apis">APIs<a class="headerlink" href="#frequenz.repo.config--apis" title="Permanent link">¤</a></h3>
-<h4 id="frequenz.repo.config--protobuf-configuation">Protobuf configuation<a class="headerlink" href="#frequenz.repo.config--protobuf-configuation" title="Permanent link">¤</a></h4>
+<h4 id="frequenz.repo.config--protobuf-configuration">Protobuf configuration<a class="headerlink" href="#frequenz.repo.config--protobuf-configuration" title="Permanent link">¤</a></h4>
 <p>Support is provided to generate files from <em>protobuf</em> files.  To do this, it is possible
 to configure the options to use while generating the files for different purposes
 (language bindings, documentation, etc.).</p>
@@ -2694,7 +2694,7 @@ section:</p>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">api_pages</span><span class="o">.</span><span class="n">generate_protobuf_api_pages</span><span class="p">()</span>
 </span></code></pre></div>
 <p>This will use the configuration in the <code>pyproject.toml</code> file and requires <code>docker</code> to
-run (it uses the <code>pseudomuto/protoc-gen-doc</code> docker image.</p>
+run (it uses the <code>pseudomuto/protoc-gen-doc</code> docker image).</p>
 <h5 id="frequenz.repo.config--setuptools-grpc-support"><code>setuptools</code> gRPC support<a class="headerlink" href="#frequenz.repo.config--setuptools-grpc-support" title="Permanent link">¤</a></h5>
 <p>When configuring APIs it is assumed that they have a gRPC interface.</p>
 <p>The project structure is assumed to be as described in the <em>Protobuf configuration</em>
@@ -2740,7 +2740,7 @@ to make sure the generated files are included in the wheel:</p>
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="k">[tool.setuptools.package-data]</span>
 </span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="s2">&quot;*&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.pyi&quot;</span><span class="p">]</span>
 </span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="k">[tools.pytest.ini_options]</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="k">[tool.pytest.ini_options]</span>
 </span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pytests&quot;</span><span class="p">]</span>
 </span></code></pre></div>
 <p>Finally you need to make sure to include the generated <code>*.pyi</code> files in the

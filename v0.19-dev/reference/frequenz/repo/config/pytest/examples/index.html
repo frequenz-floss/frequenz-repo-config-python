@@ -1883,6 +1883,40 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label=" MyPythonCodeBlockParser">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attributes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser.codeblock_parser_class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;codeblock_parser_class
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -2188,6 +2222,40 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label=" MyPythonCodeBlockParser">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attributes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser.codeblock_parser_class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;codeblock_parser_class
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -2313,7 +2381,7 @@ typically <code>src/conftest.py</code>, with the following contents:</p>
 
 
 
-        <p>Custom Python code block parser that uses the custom code block parser.</p>
+        <p>A custom Python code block parser that uses the custom code block parser.</p>
 
 
 
@@ -2329,12 +2397,14 @@ typically <code>src/conftest.py</code>, with the following contents:</p>
 <span class="normal"><a href="#__codelineno-0-216">216</a></span>
 <span class="normal"><a href="#__codelineno-0-217">217</a></span>
 <span class="normal"><a href="#__codelineno-0-218">218</a></span>
-<span class="normal"><a href="#__codelineno-0-219">219</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyPythonCodeBlockParser</span><span class="p">(</span><span class="n">PythonCodeBlockParser</span><span class="p">):</span>
-</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom Python code block parser that uses the custom code block parser.&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-219">219</a></span>
+<span class="normal"><a href="#__codelineno-0-220">220</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyPythonCodeBlockParser</span><span class="p">(</span><span class="n">PythonCodeBlockParser</span><span class="p">):</span>
+</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A custom Python code block parser that uses the custom code block parser.&quot;&quot;&quot;</span>
 </span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a>
 </span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217"></a>    <span class="n">codeblock_parser_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">_CustomPythonCodeBlockParser</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a>        <span class="n">_CustomPythonCodeBlockParser</span>
 </span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219"></a>    <span class="p">)</span>
+</span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The code block parser class used to validate the examples.&quot;&quot;&quot;</span>
 </span></code></pre></div></td></tr></table></div>
               </details>
 
@@ -2346,7 +2416,34 @@ typically <code>src/conftest.py</code>, with the following contents:</p>
 
 
 
+<h5 id="frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser-attributes">Attributes<a href="#frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser-attributes" class="headerlink" title="Permanent link">¤</a></h5>
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h6 id="frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser.codeblock_parser_class" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">codeblock_parser_class</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#frequenz.repo.config.pytest.examples.MyPythonCodeBlockParser.codeblock_parser_class" class="headerlink" title="Permanent link">¤</a></h6>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">codeblock_parser_class</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#type">type</a></span><span class="p">[</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n"><span title="frequenz.repo.config.pytest.examples._CustomPythonCodeBlockParser">_CustomPythonCodeBlockParser</span></span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">]</span> <span class="o">=</span> <span class="n"><span title="frequenz.repo.config.pytest.examples._CustomPythonCodeBlockParser">_CustomPythonCodeBlockParser</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The code block parser class used to validate the examples.</p>
+
+    </div>
+
+</div>
 
 
 
@@ -2402,8 +2499,7 @@ typically <code>src/conftest.py</code>, with the following contents:</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/frequenz/repo/config/pytest/examples.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-222">222</a></span>
-<span class="normal"><a href="#__codelineno-0-223">223</a></span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-223">223</a></span>
 <span class="normal"><a href="#__codelineno-0-224">224</a></span>
 <span class="normal"><a href="#__codelineno-0-225">225</a></span>
 <span class="normal"><a href="#__codelineno-0-226">226</a></span>
@@ -2411,16 +2507,17 @@ typically <code>src/conftest.py</code>, with the following contents:</p>
 <span class="normal"><a href="#__codelineno-0-228">228</a></span>
 <span class="normal"><a href="#__codelineno-0-229">229</a></span>
 <span class="normal"><a href="#__codelineno-0-230">230</a></span>
-<span class="normal"><a href="#__codelineno-0-231">231</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_sybil_arguments</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the arguments to pass when instantiating the Sybil object to lint docs examples.</span>
-</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224"></a>
-</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225"></a><span class="sd">    Returns:</span>
-</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226"></a><span class="sd">        The arguments to pass when instantiating the Sybil object.</span>
-</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228"></a>    <span class="k">return</span> <span class="p">{</span>
-</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229"></a>        <span class="s2">&quot;parsers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">MyPythonCodeBlockParser</span><span class="p">()],</span>
-</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230"></a>        <span class="s2">&quot;patterns&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*.py&quot;</span><span class="p">],</span>
-</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231"></a>    <span class="p">}</span>
+<span class="normal"><a href="#__codelineno-0-231">231</a></span>
+<span class="normal"><a href="#__codelineno-0-232">232</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_sybil_arguments</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the arguments to pass when instantiating the Sybil object to lint docs examples.</span>
+</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225"></a>
+</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226"></a><span class="sd">    Returns:</span>
+</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227"></a><span class="sd">        The arguments to pass when instantiating the Sybil object.</span>
+</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229"></a>    <span class="k">return</span> <span class="p">{</span>
+</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230"></a>        <span class="s2">&quot;parsers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">MyPythonCodeBlockParser</span><span class="p">()],</span>
+</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231"></a>        <span class="s2">&quot;patterns&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;*.py&quot;</span><span class="p">],</span>
+</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232"></a>    <span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>

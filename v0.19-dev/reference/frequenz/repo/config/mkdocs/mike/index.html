@@ -2432,12 +2432,12 @@
 the minor version, and the optional suffix is either <code>-pre</code> for pre-release versions or
 <code>-dev</code> for development versions.</p>
 <p>Stable (tagged) versions have the format <code>vX.Y</code>, unless they are pre-release versions,
-then they have the format <code>vX.Y-pre</code>. Develoment branches have the format <code>vX.Y-dev</code>.</p>
+then they have the format <code>vX.Y-pre</code>. Development branches have the format <code>vX.Y-dev</code>.</p>
 <ul>
 <li>Tag <code>v1.0.0</code> -&gt; <code>v1.0</code></li>
 <li>Tag <code>v2.1.0-alpha.1</code> -&gt; <code>v2.1-pre</code></li>
 <li>Branch <code>v1.x.x</code> (with no releases) -&gt; <code>v1.0-dev</code></li>
-<li>Branch <code>v1.x.x (with releases an existing release, for example</code>v1.0.0<code>) -&gt;</code>v1.1-dev`</li>
+<li>Branch <code>v1.x.x</code> (with an existing release, for example <code>v1.0.0</code>) -&gt; <code>v1.1-dev</code></li>
 <li>Branch <code>v1.1.x</code> -&gt; <code>v1.1-dev</code></li>
 </ul>
 <p>Aliases have the format <code>vX(-pre|-dev)?</code>, where <code>X</code> is the major version and the
@@ -2645,7 +2645,7 @@ development versions.</p>
     <div class="doc doc-contents ">
 
         <p>Build the mike version information from the given repository information.</p>
-<p>The version is build based on if a tag or a branch is checked out.</p>
+<p>The version is built based on whether a tag or a branch is checked out.</p>
 <p>For tags, the title is the tag name, the version is "vX.Y", where X is the major
 version and Y is the minor version of the tag. If the tag is the last minor version
 for the major version, the alias "vX" is added. If the tag is the latest tag, the
@@ -2819,7 +2819,7 @@ determined for some other reason.</p>
 <span class="normal"><a href="#__codelineno-0-136">136</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_mike_version</span><span class="p">(</span><span class="n">repo_info</span><span class="p">:</span> <span class="n">RepoVersionInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MikeVersionInfo</span><span class="p">:</span>
 </span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the mike version information from the given repository information.</span>
 </span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a>
-</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    The version is build based on if a tag or a branch is checked out.</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    The version is built based on whether a tag or a branch is checked out.</span>
 </span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65"></a>
 </span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="sd">    For tags, the title is the tag name, the version is &quot;vX.Y&quot;, where X is the major</span>
 </span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">    version and Y is the minor version of the tag. If the tag is the last minor version</span>
@@ -3260,7 +3260,7 @@ determined for some other reason.</p>
 </span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233"></a><span class="sd">    - Other versions appear first and are sorted alphabetically.</span>
 </span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234"></a>
 </span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235"></a><span class="sd">    The versions are sorted in-place using</span>
-</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="sd">    [`compare_mike_version()`][frequenz.repo.config.mkdocs.mike.compare_mike_version].</span>
+</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="sd">    [`compare_mike_version()`][..compare_mike_version].</span>
 </span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237"></a>
 </span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238"></a><span class="sd">    Example:</span>
 </span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239"></a>
