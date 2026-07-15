@@ -27,6 +27,7 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - Generated `pyproject.toml` no longer sets `addopts = "-vv"` under `[tool.pytest.ini_options]` as this is too verbose for a default.
+- Generated projects enable mypy's `exhaustive-match` error code.
 
 ## Enhancements
 
