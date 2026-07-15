@@ -63,6 +63,12 @@ def main() -> None:
     print("=" * 72)
     print()
 
+    print("=" * 72)
+    print("Enabling asyncio debug mode for pytest...")
+    migrate_pytest_asyncio_debug()
+    print("=" * 72)
+    print()
+
     if _manual_steps:
         print(
             "\033[5;33m⚠️⚠️⚠️\033[0;33m Remember to check the manual steps: \033[5;33m⚠️⚠️⚠️\033[0m"
@@ -723,6 +729,94 @@ def migrate_build_dependencies() -> None:
             f"Failed to update {pyproject}: {exc}. Please bump "
             + ", ".join(updated)
             + " in [build-system] requires manually."
+        )
+
+
+def migrate_pytest_asyncio_debug() -> None:
+    """Enable asyncio debug mode in pytest when ``pytest-asyncio`` is used.
+
+    The function is a no-op for projects that do not depend on
+    ``pytest-asyncio`` or already configure ``asyncio_debug``.  Existing
+    values are preserved because they represent an explicit project choice.
+    """
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        manual_step(
+            f"{pyproject} not found. Please add "
+            "`asyncio_debug = true` to `[tool.pytest.ini_options]` manually."
+        )
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {pyproject}: {exc}. Please add "
+            "`asyncio_debug = true` to `[tool.pytest.ini_options]` manually."
+        )
+        return
+
+    repo_type = read_cookiecutter_str_var("type")
+    if repo_type == "api" and "pytest-asyncio" not in content:
+        print(f"  Skipped {pyproject}: API project and pytest-asyncio is not used")
+        return
+
+    if "pytest-asyncio" not in content:
+        manual_step(
+            f"{pyproject} does not depend on pytest-asyncio; please make sure this "
+            "is OK or add `asyncio_debug = true` to `[tool.pytest.ini_options]` "
+            "manually."
+        )
+        return
+
+    pytest_section_match = re.search(
+        r"(?ms)^\[tool\.pytest\.ini_options\]\n.*?(?=^\[|\Z)",
+        content,
+    )
+    if pytest_section_match is None:
+        manual_step(
+            f"{pyproject} uses pytest-asyncio but has no "
+            "`[tool.pytest.ini_options]` section; please add the section and "
+            "set `asyncio_debug = true` manually."
+        )
+        return
+
+    pytest_section = pytest_section_match.group(0)
+    asyncio_debug_match = re.search(
+        r"^asyncio_debug\s*=.*$", pytest_section, flags=re.MULTILINE
+    )
+    if asyncio_debug_match is not None:
+        print(f"  Skipped {pyproject}: {asyncio_debug_match.group(0)} is already set")
+        return
+
+    asyncio_mode_match = re.search(
+        r"^asyncio_mode\s*=.*$", pytest_section, flags=re.MULTILINE
+    )
+    if asyncio_mode_match is None:
+        manual_step(
+            f"{pyproject} uses pytest-asyncio but has no `asyncio_mode` setting "
+            "under `[tool.pytest.ini_options]`; please add "
+            "`asyncio_debug = true` there manually."
+        )
+        return
+
+    new_pytest_section = (
+        pytest_section[: asyncio_mode_match.start()]
+        + "asyncio_debug = true\n"
+        + pytest_section[asyncio_mode_match.start() :]
+    )
+    new_content = content.replace(pytest_section, new_pytest_section, 1)
+
+    try:
+        replace_file_atomically(pyproject, new_content)
+        print(
+            f"  Updated {pyproject}: enabled asyncio debug mode under "
+            "[tool.pytest.ini_options]"
+        )
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please add "
+            "`asyncio_debug = true` to `[tool.pytest.ini_options]` manually."
         )
 
 
