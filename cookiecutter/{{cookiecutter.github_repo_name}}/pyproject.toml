@@ -225,6 +225,7 @@ filterwarnings = [
 ]
 {%- if cookiecutter.type != "api" %}
 testpaths = ["tests", "src"]
+asyncio_debug = true
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 required_plugins = ["pytest-asyncio", "pytest-mock"]
