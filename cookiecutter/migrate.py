@@ -331,7 +331,10 @@ def migrate_pytest_addopts_default() -> None:
     """
     pyproject = Path("pyproject.toml")
     if not pyproject.exists():
-        print(f"  Skipped {pyproject}: file not found")
+        manual_step(
+            f"{pyproject} was not found. Please remove "
+            '`addopts = "-vv"` from `[tool.pytest.ini_options]` manually.'
+        )
         return
 
     try:
@@ -348,13 +351,19 @@ def migrate_pytest_addopts_default() -> None:
         content,
     )
     if pytest_section_match is None:
-        print(f"  Skipped {pyproject}: no [tool.pytest.ini_options] section")
+        manual_step(
+            f"No [tool.pytest.ini_options] section found in {pyproject}. Please remove "
+            '`addopts = "-vv"` from `[tool.pytest.ini_options]` manually.'
+        )
         return
 
     pytest_section = pytest_section_match.group(0)
     addopts_match = re.search(r"^addopts\s*=.*$", pytest_section, flags=re.MULTILINE)
     if addopts_match is None:
-        print(f"  Skipped {pyproject}: no addopts in [tool.pytest.ini_options]")
+        print(
+            f"  Skipped {pyproject}: no addopts in [tool.pytest.ini_options], "
+            "nothiing to remove"
+        )
         return
 
     addopts_line = addopts_match.group(0)
