@@ -49,6 +49,12 @@ def main() -> None:
     print("Removing default `-vv` from pytest addopts...")
     migrate_pytest_addopts_default()
     print("=" * 72)
+    print("Removing the dummy DCO merge-queue workflow...")
+    migrate_remove_dco_merge_queue_workflow()
+    print("=" * 72)
+    print("Pinning the DCO check in the 'Protect version branches' ruleset...")
+    migrate_protect_version_branches_ruleset()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -318,6 +324,34 @@ def read_cookiecutter_str_var(name: str) -> str | None:
     return value
 
 
+def _infer_private_repo_from_metadata() -> bool | None:
+    """Infer repository privacy from the cookiecutter replay metadata.
+
+    Checks, in order: the ``private_repo`` cookiecutter variable, the
+    ``license`` cookiecutter variable, and the ``pyproject.toml`` license
+    field.
+
+    Returns:
+        ``True`` for private repos, ``False`` for public ones, or ``None``
+        when no source provides a usable signal.
+    """
+    if private_repo := read_cookiecutter_str_var("private_repo"):
+        return private_repo == "yes"
+
+    if license_name := read_cookiecutter_str_var("license"):
+        return license_name == "Proprietary"
+
+    pyproject_path = Path("pyproject.toml")
+    if pyproject_path.exists():
+        pyproject_content = pyproject_path.read_text(encoding="utf-8")
+        if 'license = "LicenseRef-Proprietary"' in pyproject_content:
+            return True
+        if 'license = "MIT"' in pyproject_content:
+            return False
+
+    return None
+
+
 def migrate_pytest_addopts_default() -> None:
     """Remove the default ``-vv`` from pytest addopts in ``pyproject.toml``.
 
@@ -456,6 +490,123 @@ def migrate_mypy_exhaustive_match() -> None:
             '`enable_error_code = ["exhaustive-match"]` under `[tool.mypy]` '
             "manually."
         )
+
+
+def migrate_remove_dco_merge_queue_workflow() -> None:
+    """Remove the obsolete dummy DCO merge-queue workflow.
+
+    Older versions of the template shipped
+    ``.github/workflows/dco-merge-queue.yml``, a dummy workflow that
+    provided a passing ``DCO`` status check on the merge queue because the
+    DCO GitHub App did not run on ``merge_group`` events.  The DCO app now
+    runs on ``merge_group`` events, so this workflow is obsolete and the
+    template no longer ships it.
+
+    The function is a no-op when the workflow file does not exist (already
+    migrated).  A manual step is emitted if the file exists but cannot be
+    removed.
+    """
+    workflow = Path(".github/workflows/dco-merge-queue.yml")
+    if not workflow.exists():
+        print(f"  Skipped {workflow}: file not found")
+        return
+
+    try:
+        workflow.unlink()
+        print(f"  Removed {workflow}")
+    except OSError as exc:
+        manual_step(f"Failed to remove {workflow}: {exc}. Please delete it manually.")
+
+
+def migrate_protect_version_branches_ruleset() -> None:
+    """Pin the DCO status check in the 'Protect version branches' ruleset.
+
+    Uses the GitHub API (via the ``gh`` CLI) to ensure the ``DCO`` required
+    status check in the 'Protect version branches' ruleset is pinned to the
+    DCO GitHub App (integration ID ``1861``).  Previously the check accepted
+    a ``DCO`` status from any integration, which was needed for the dummy
+    merge-queue workflow; now that the DCO app reports on ``merge_group``
+    events the check is pinned to the app.
+
+    An existing ``DCO`` check is always pinned in place.  A missing check is
+    only added for public repositories; private repositories handle DCO
+    manually, so a missing check there is left untouched.  Repository
+    visibility is inferred from the cookiecutter replay metadata.
+
+    If the ruleset is already up to date, prints an informational message.
+    If the ruleset is not found, the repository visibility cannot be
+    determined, or the API call fails, issues a manual-step message.
+    """
+    rule_name = "Protect version branches"
+    dco_integration_id = 1861
+    docs_url = (
+        "https://frequenz-floss.github.io/frequenz-repo-config-python/"
+        "user-guide/start-a-new-project/configure-github/#rulesets"
+    )
+
+    ruleset_url = get_ruleset_settings_url() or docs_url
+
+    ruleset = get_ruleset(rule_name)
+    if ruleset is None:
+        manual_step(
+            f"The '{rule_name}' GitHub ruleset was not found (or the gh CLI "
+            "is not available / the API call failed). "
+            "Please check whether it should exist for this repository. "
+            f"If it should, import it following the instructions at: {docs_url}"
+        )
+        return
+
+    ruleset_id = ruleset.get("id")
+    if not isinstance(ruleset_id, int):
+        manual_step(
+            f"Failed to determine the '{rule_name}' ruleset ID from the "
+            f"GitHub API response. Please update it manually at: {ruleset_url}"
+        )
+        return
+
+    changes: list[str] = []
+
+    for rule in ruleset.get("rules", []):
+        if rule.get("type") != "required_status_checks":
+            continue
+        params = rule.setdefault("parameters", {})
+        checks = params.setdefault("required_status_checks", [])
+        dco_check = next((c for c in checks if c.get("context") == "DCO"), None)
+        if dco_check is not None:
+            # Fix an existing DCO check regardless of repo visibility.
+            if dco_check.get("integration_id") != dco_integration_id:
+                dco_check["integration_id"] = dco_integration_id
+                changes.append("pin 'DCO' status check to the DCO app")
+            continue
+        # A missing DCO check is required for public repos, but private repos
+        # handle DCO manually (so it is legitimately absent); only add it when
+        # the replay metadata says the repo is public.
+        private_repo = _infer_private_repo_from_metadata()
+        if private_repo is False:
+            checks.append({"context": "DCO", "integration_id": dco_integration_id})
+            changes.append("add 'DCO' status check pinned to the DCO app")
+        elif private_repo is None:
+            manual_step(
+                "Could not determine from the cookiecutter replay metadata "
+                f"whether this repository is private, so a 'DCO' check was not "
+                f"added to the '{rule_name}' ruleset. If this repository is "
+                f"public, add a 'DCO' check pinned to the DCO app "
+                f"(integration_id {dco_integration_id}) at {ruleset_url}."
+            )
+
+    if not changes:
+        print(f"  Ruleset '{rule_name}' is already up to date")
+        return
+
+    if not update_ruleset(ruleset_id, ruleset):
+        manual_step(
+            f"Failed to update the '{rule_name}' ruleset via the GitHub API. "
+            f"Please apply the following changes manually at {ruleset_url}: "
+            + "; ".join(changes)
+        )
+        return
+
+    print(f"  Updated ruleset '{rule_name}': " + ", ".join(changes))
 
 
 def manual_step(message: str) -> None:
