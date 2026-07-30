@@ -245,6 +245,8 @@ class RepoConfigExtension(_Extension):
         repo_type = cookiecutter["type"]
         extended_keywords = ["frequenz", "python", repo_type]
         match repo_type:
+            case "actor":
+                pass
             case "api":
                 extended_keywords.extend(["grpc", "protobuf", "rpc"])
             case "app":
@@ -253,6 +255,8 @@ class RepoConfigExtension(_Extension):
                 extended_keywords.extend(["library"])
             case "model":
                 extended_keywords.extend(["ai", "ml", "machine-learning"])
+            case unknown_repo_type:
+                assert False, f"Unhandled repository type {unknown_repo_type!r}"
         extended_keywords.append(cookiecutter["name"])
         default = self._get_from_json("keywords")
         cookiecutter_keywords = cookiecutter["keywords"]

@@ -243,6 +243,7 @@ namespace_packages = true
 #no_incremental = true
 packages = ["{{cookiecutter.python_package}}"]
 strict = true
+enable_error_code = ["exhaustive-match"]
 
 [[tool.mypy.overrides]]
 module = ["mkdocs_macros.*", "sybil", "sybil.*"]
