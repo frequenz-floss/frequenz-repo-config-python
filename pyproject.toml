@@ -2,7 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 [build-system]
-requires = ["setuptools == 83.0.0", "setuptools_scm[toml] == 10.2.0"]
+requires = ["setuptools == 83.0.0", "setuptools_scm[toml] == 10.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -83,8 +83,8 @@ dev-mkdocs = [
   "mkdocs-gen-files == 0.6.1",
   "mkdocs-literate-nav == 0.6.3",
   "mkdocs-macros-plugin == 1.5.0",
-  "mkdocs-material == 9.7.6",
-  "mkdocstrings[python] == 1.0.4",
+  "mkdocs-material == 9.7.7",
+  "mkdocstrings[python] == 1.0.6",
   "mkdocstrings-python == 2.0.5",
 ]
 dev-mypy = [
