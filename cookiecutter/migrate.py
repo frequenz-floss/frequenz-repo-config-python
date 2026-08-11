@@ -439,7 +439,7 @@ def migrate_pytest_addopts_default() -> None:
     if addopts_match is None:
         print(
             f"  Skipped {pyproject}: no addopts in [tool.pytest.ini_options], "
-            "nothiing to remove"
+            "nothing to remove"
         )
         return
 
