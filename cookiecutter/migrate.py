@@ -735,9 +735,11 @@ def migrate_build_dependencies() -> None:
 def migrate_pytest_asyncio_debug() -> None:
     """Enable asyncio debug mode in pytest when ``pytest-asyncio`` is used.
 
-    The function is a no-op for projects that do not depend on
-    ``pytest-asyncio`` or already configure ``asyncio_debug``.  Existing
-    values are preserved because they represent an explicit project choice.
+    The step is skipped for projects that do not mention ``pytest-asyncio``
+    in their ``pyproject.toml`` at all, as there is nothing to configure for
+    them.  Projects that already configure ``asyncio_debug`` are also left
+    untouched, because the existing value represents an explicit project
+    choice.
     """
     pyproject = Path("pyproject.toml")
     if not pyproject.exists():
@@ -751,21 +753,16 @@ def migrate_pytest_asyncio_debug() -> None:
         content = pyproject.read_text(encoding="utf-8")
     except OSError as exc:
         manual_step(
-            f"Failed to read {pyproject}: {exc}. Please add "
-            "`asyncio_debug = true` to `[tool.pytest.ini_options]` manually."
+            f"Failed to read {pyproject}: {exc}. If the project uses "
+            "pytest-asyncio, please add `asyncio_debug = true` to "
+            "`[tool.pytest.ini_options]` manually."
         )
         return
 
-    repo_type = read_cookiecutter_str_var("type")
-    if repo_type == "api" and "pytest-asyncio" not in content:
-        print(f"  Skipped {pyproject}: API project and pytest-asyncio is not used")
-        return
-
     if "pytest-asyncio" not in content:
-        manual_step(
-            f"{pyproject} does not depend on pytest-asyncio; please make sure this "
-            "is OK or add `asyncio_debug = true` to `[tool.pytest.ini_options]` "
-            "manually."
+        print(
+            f"  Skipped {pyproject}: the project does not use pytest-asyncio, "
+            "there is nothing to update"
         )
         return
 
