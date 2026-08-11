@@ -2,36 +2,8 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
-
-## Upgrading
-
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
-
-### Cookiecutter template
-
-All upgrading should be done via the migration script or regenerating the templates.
-
-```bash
-curl -sSLf https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config-python/<tag>/cookiecutter/migrate.py | python3 -I
-```
-
-But you might still need to adapt your code:
-
-<!-- Here upgrade steps for cookiecutter specifically -->
-
-## New Features
-
-<!-- Here goes the main new features and examples or instructions on how to use them -->
-
-### Cookiecutter template
-
-<!-- Here new features for cookiecutter specifically -->
+This release fixes the building of distribution packages.
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
-### Cookiecutter template
-
-<!-- Here bug fixes for cookiecutter specifically -->
+- Fixed the building of distribution packages, which was failing with `setuptools-scm was unable to detect version`. When building a wheel from a source distribution there is no git repository to get the version from, so `setuptools-scm` 10.0.x reads it from `PKG-INFO` using an entry point provided by `vcs-versioning`, but it doesn't declare any upper bound for it. `vcs-versioning` 2.x dropped that entry point and moved the fallback to `setuptools-scm` itself, so builds started failing as soon as `vcs-versioning` 2.x was picked up. `setuptools-scm` was updated to 10.2.1, which provides the fallback again and bounds `vcs-versioning` to the 2.x series.
