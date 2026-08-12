@@ -2,7 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 [build-system]
-requires = ["setuptools == 83.0.0", "setuptools_scm[toml] == 10.2.1"]
+requires = ["setuptools == 84.0.0", "setuptools_scm[toml] == 10.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -57,7 +57,7 @@ actor = []
 api = [
   "grpcio-tools >= 1.47.0, < 2",
   "mypy-protobuf >= 3.0.0, < 6",
-  "setuptools >= 67.6.0, < 84",
+  "setuptools >= 67.6.0, < 85",
 ]
 app = []
 lib = []
@@ -89,7 +89,7 @@ dev-mkdocs = [
 ]
 dev-mypy = [
   "mypy == 2.1.0",
-  "types-setuptools >= 67.6.0, < 83", # Should match the api dependency
+  "types-setuptools >= 67.6.0, < 85", # Should match the api dependency
   "types-Markdown == 3.10.2.20260518",
   "types-PyYAML == 6.0.12.20260518",
   "types-babel == 2.11.0.15",
