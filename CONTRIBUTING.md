@@ -221,6 +221,55 @@ That said, if you want to test the actual website in **your fork**, you can
 always use `mike deploy --push --remote your-fork-remote`, and then access the
 GitHub pages produced for your fork.
 
+## Extra release steps for this repository
+
+[Releasing](#releasing) below describes the procedure that is shared by every
+project generated from these templates, and it is kept as close to the
+generated file as possible so it can be updated automatically. This repository
+*is* the template, so it needs a few extra steps around that procedure. They
+are collected here, and this is where new repository-specific steps should be
+added.
+
+### Before creating the tag
+
+1. Bump the `frequenz-repo-config` version used by the cookiecutter template to
+   the version you are about to release. Generated projects pin an exact
+   version, so forgetting this ships a template that installs the *previous*
+   release. This is what happened in v0.18.0, which was released with the
+   template still pinning 0.17.0.
+
+   The pin appears four times in
+   `cookiecutter/{{cookiecutter.github_repo_name}}/pyproject.toml`
+   (in `[build-system]` `requires`, `dev-mkdocs`, `dev-noxfile` and
+   `dev-pytest`), and the golden fixtures have to be regenerated afterwards:
+
+   ```sh
+   UPDATE_GOLDEN=1 pytest tests/integration/test_cookiecutter_generation.py::test_golden
+   ```
+
+2. Consider bumping the other versions pinned by the template
+   (`cookiecutter/{{cookiecutter.github_repo_name}}/pyproject.toml` and the
+   actions used in `cookiecutter/{{cookiecutter.github_repo_name}}/.github/`).
+   Dependabot doesn't manage the template, so these only move when someone
+   updates them by hand. Add the corresponding migration steps to
+   `cookiecutter/migrate.py` if existing projects need them.
+
+3. While cleaning up `RELEASE_NOTES.md`, leave the literal `<tag>` in the
+   migration script URL as it is. It is a deliberate placeholder and it is
+   *not* substituted at release time.
+
+### After the release is published
+
+For a patch release cut from a maintenance branch (`vX.Y.x`), skip the
+`cookiecutter/migrate.py` half of the reset. The migration script on that
+branch still describes the migration from the previous minor release, so
+resetting it would drop steps that projects upgrading to that branch still
+need.
+
+Maintenance branches (`vX.Y.x`) are created on demand, when the first backport
+is needed, and need no ruleset or Dependabot changes: the existing rules
+already match that name pattern.
+
 ## Releasing
 
 These are the steps to create a new release:
