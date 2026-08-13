@@ -2,7 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 [build-system]
-requires = ["setuptools == 83.0.0", "setuptools_scm[toml] == 10.2.1"]
+requires = ["setuptools == 84.0.0", "setuptools_scm[toml] == 10.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -57,7 +57,7 @@ actor = []
 api = [
   "grpcio-tools >= 1.47.0, < 2",
   "mypy-protobuf >= 3.0.0, < 6",
-  "setuptools >= 67.6.0, < 84",
+  "setuptools >= 67.6.0, < 85",
 ]
 app = []
 lib = []
@@ -102,7 +102,7 @@ dev-pylint = [
   # dev-pytest already defines a dependency to pylint because of the examples
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
-  "setuptools >= 67.6.0, < 84", # Should match the api dependency
+  "setuptools >= 67.6.0, < 85", # Should match the api dependency
 ]
 dev-pytest = [
   "pytest == 9.1.1",
