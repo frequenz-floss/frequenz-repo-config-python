@@ -45,7 +45,7 @@ jobs:
           filter_mode: nofilter
           github_token: ${{ secrets.github_token }}
           protolint_flags: proto/
-          protolint_version: "0.53.0"
+          protolint_version: "0.56.4"
           reporter: github-check
 
   {% endraw %}{% endif %}{% raw -%}
