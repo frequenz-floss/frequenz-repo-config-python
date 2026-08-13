@@ -78,7 +78,7 @@ dev-flake8 = [
 dev-formatting = ["black == 26.5.1", "isort == 8.0.1"]
 dev-mkdocs = [
   "black == 26.5.1",
-  "Markdown == 3.10.2",
+  "Markdown == 3.10.3",
   "mike == 2.2.0",
   "mkdocs-gen-files == 0.6.1",
   "mkdocs-literate-nav == 0.6.3",
@@ -106,7 +106,7 @@ dev-pylint = [
 ]
 dev-pytest = [
   "pytest == 9.1.1",
-  "pylint == 4.0.6", # We need this to check for the examples
+  "pylint == 4.0.7", # We need this to check for the examples
   "cookiecutter == 2.7.1", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
   "sybil >= 6.1.1, < 11", # Should be consistent with the extra-lint-examples dependency
