@@ -2,11 +2,9 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release removes the now unnecessary DCO dummy workflow for the merge queue, enables debug mode for `pytest-asyncio` and exhaustive matching in `mypy`, makes `pytest` less verbose, improves the contributing guide's release steps, and brings the cookiecutter template up to date with the latest dependencies and GitHub Actions.
 
 ## Upgrading
-
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ### Cookiecutter template
 
@@ -21,8 +19,6 @@ But you might still need to adapt your code:
 - Generated API projects now build their Python bindings with `protobuf` 7.x (`grpcio-tools` 1.83.0 requires it), so the runtime requirement was raised to `protobuf >= 7.35.1, < 9`. Consumers of the generated bindings need to be able to install `protobuf` 7.x.
 
 ## New Features
-
-<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ### Cookiecutter template
 
@@ -45,11 +41,9 @@ But you might still need to adapt your code:
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
-
 - Fixed several typos and broken code examples in the docstrings.
 - Fixed the building of distribution packages, which was failing with `setuptools-scm was unable to detect version`. When building a wheel from a source distribution there is no git repository to get the version from, so `setuptools-scm` 10.0.x reads it from `PKG-INFO` using an entry point provided by `vcs-versioning`, but it doesn't declare any upper bound for it. `vcs-versioning` 2.x dropped that entry point and moved the fallback to `setuptools-scm` itself, so builds started failing as soon as `vcs-versioning` 2.x was picked up. `setuptools-scm` was updated to 10.2.1, which provides the fallback again and bounds `vcs-versioning` to the 2.x series (backport from v0.18.2).
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- The `frequenz-repo-config` version pinned by the template is bumped to the version being released again. It was left pointing at 0.17.0 in the v0.18.x series, so generated projects installed an outdated `frequenz-repo-config`.
