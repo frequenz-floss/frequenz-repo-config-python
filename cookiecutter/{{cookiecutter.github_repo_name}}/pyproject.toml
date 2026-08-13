@@ -4,7 +4,7 @@
 [build-system]
 requires = [
   "setuptools == 83.0.0",
-  "setuptools_scm[toml] == 10.0.5",
+  "setuptools_scm[toml] == 10.2.1",
   "frequenz-repo-config[{{cookiecutter.type}}] == 0.17.0",
 {%- if cookiecutter.type == "api" %}
   # We need to pin the protobuf, grpcio and  grpcio-tools dependencies to make
