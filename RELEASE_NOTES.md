@@ -28,6 +28,7 @@ But you might still need to adapt your code:
 
 - Generated `pyproject.toml` no longer sets `addopts = "-vv"` under `[tool.pytest.ini_options]` as this is too verbose for a default.
 - Generated projects enable mypy's `exhaustive-match` error code.
+- Generated non-API projects enable asyncio debug mode during tests to provide extra runtime checks.
 - Removed the dummy DCO workflow for the merge queue, as the DCO GitHub App now runs on `merge_group` events. The `DCO` required status check in the "Protect version branches" ruleset is now pinned to the DCO GitHub App; the migration script removes the workflow and updates the ruleset (via the `gh` CLI) for existing repositories.
 
 ## Enhancements

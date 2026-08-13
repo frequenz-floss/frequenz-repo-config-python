@@ -63,6 +63,12 @@ def main() -> None:
     print("=" * 72)
     print()
 
+    print("=" * 72)
+    print("Enabling asyncio debug mode for pytest...")
+    migrate_pytest_asyncio_debug()
+    print("=" * 72)
+    print()
+
     if _manual_steps:
         print(
             "\033[5;33m⚠️⚠️⚠️\033[0;33m Remember to check the manual steps: \033[5;33m⚠️⚠️⚠️\033[0m"
@@ -358,6 +364,31 @@ def _infer_private_repo_from_metadata() -> bool | None:
     return None
 
 
+def specifier_ensures_min_version(specifier: str, min_version: tuple[int, ...]) -> bool:
+    """Return whether a version specifier guarantees a minimum version.
+
+    Only ``==``, ``>=``, ``~=`` and ``>`` clauses can establish a lower
+    bound, and only plain numeric versions are understood (a clause like
+    ``== 1.*`` is ignored).  The check is conservative: ``False`` is
+    returned whenever no clause proves the minimum version is respected.
+
+    Args:
+        specifier: A PEP 440 version specifier, e.g. ``">= 1.2, < 2"``.
+        min_version: The minimum version to check for, e.g. ``(1, 2)``.
+
+    Returns:
+        Whether `specifier` guarantees a version of at least `min_version`.
+    """
+    for clause in specifier.split(","):
+        clause_match = re.match(r"(==|>=|~=|>)\s*v?(\d+(?:\.\d+)*)$", clause.strip())
+        if clause_match is None:
+            continue
+        version = tuple(int(part) for part in clause_match.group(2).split("."))
+        if version >= min_version:
+            return True
+    return False
+
+
 def migrate_pytest_addopts_default() -> None:
     """Remove the default ``-vv`` from pytest addopts in ``pyproject.toml``.
 
@@ -408,7 +439,7 @@ def migrate_pytest_addopts_default() -> None:
     if addopts_match is None:
         print(
             f"  Skipped {pyproject}: no addopts in [tool.pytest.ini_options], "
-            "nothiing to remove"
+            "nothing to remove"
         )
         return
 
@@ -723,6 +754,224 @@ def migrate_build_dependencies() -> None:
             f"Failed to update {pyproject}: {exc}. Please bump "
             + ", ".join(updated)
             + " in [build-system] requires manually."
+        )
+
+
+def bump_pytest_asyncio_requirement(
+    pyproject: Path, content: str, old_specifiers: list[str]
+) -> str | None:
+    """Bump too old simple pytest-asyncio requirements to ``>= 1.2.0``.
+
+    Requirements declared as a plain ``>= X.Y[.Z]`` lower bound are bumped
+    to ``>= 1.2.0`` (where the ``asyncio_debug`` option was added) and the
+    updated ``pyproject.toml`` is written to disk.  The new lower bound does
+    not affect which version gets installed (that still resolves to the
+    latest allowed version), it only guarantees a version that understands
+    the option.
+
+    A manual step is emitted instead for more complex specifiers or when
+    the bump would cross a major version boundary, as that might bring
+    other incompatible changes.
+
+    Args:
+        pyproject: The path to the ``pyproject.toml`` file to update.
+        content: The current contents of `pyproject`.
+        old_specifiers: The pytest-asyncio version specifiers (stripped)
+            that do not guarantee ``asyncio_debug`` support.
+
+    Returns:
+        The updated contents of `pyproject` (already written to disk), or
+            `None` if a manual step was emitted instead.
+    """
+    upgrade_manually = (
+        f"{pyproject} requires `pytest-asyncio {old_specifiers[0]}`, which "
+        "does not guarantee the >= 1.2.0 needed by the `asyncio_debug` "
+        "option (older versions emit a `PytestConfigWarning`, which "
+        '`filterwarnings = ["error", ...]` turns into a test failure). '
+        "Please upgrade pytest-asyncio and add `asyncio_debug = true` to "
+        "`[tool.pytest.ini_options]` manually."
+    )
+
+    simple_versions: list[str] = []
+    for specifier in old_specifiers:
+        simple_match = re.match(r">=\s*v?(\d+(?:\.\d+){0,2})$", specifier)
+        if simple_match is None:
+            manual_step(upgrade_manually)
+            return None
+        simple_versions.append(simple_match.group(1))
+
+    crossing_major = [
+        specifier
+        for specifier, version in zip(old_specifiers, simple_versions)
+        if version.split(".")[0] != "1"
+    ]
+    if crossing_major:
+        manual_step(
+            f"{pyproject} requires `pytest-asyncio {crossing_major[0]}`, but "
+            "the `asyncio_debug` option needs pytest-asyncio >= 1.2.0 and "
+            "the upgrade crosses a major version boundary, which might "
+            "include other incompatible changes. Please upgrade "
+            "pytest-asyncio and add `asyncio_debug = true` to "
+            "`[tool.pytest.ini_options]` manually."
+        )
+        return None
+
+    def bump(match: re.Match[str]) -> str:
+        version = tuple(int(part) for part in match.group(2).split(".") if part)
+        if version >= (1, 2):
+            return match.group(0)
+        quote = match.group(1)
+        return f"{quote}pytest-asyncio >= 1.2.0{quote}"
+
+    new_content = re.sub(r"""(["'])pytest-asyncio\s*>=\s*v?([\d.]+)\1""", bump, content)
+    if new_content == content:
+        manual_step(upgrade_manually)
+        return None
+
+    try:
+        replace_file_atomically(pyproject, new_content)
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please upgrade "
+            "pytest-asyncio to >= 1.2.0 and add `asyncio_debug = true` to "
+            "`[tool.pytest.ini_options]` manually."
+        )
+        return None
+
+    print(
+        f"  Updated {pyproject}: bumped the pytest-asyncio requirement to "
+        "`>= 1.2.0`, as needed by the `asyncio_debug` option"
+    )
+    return new_content
+
+
+def migrate_pytest_asyncio_debug() -> None:
+    """Enable asyncio debug mode in pytest when ``pytest-asyncio`` is used.
+
+    The step is skipped for projects that do not mention ``pytest-asyncio``
+    in their ``pyproject.toml`` at all, as there is nothing to configure for
+    them.  Projects that already configure ``asyncio_debug`` are also left
+    untouched, because the existing value represents an explicit project
+    choice.
+
+    The ``asyncio_debug`` option was added in pytest-asyncio 1.2.0, and older
+    versions emit a ``PytestConfigWarning`` for it, which the template's
+    ``filterwarnings = ["error", ...]`` configuration turns into a test
+    failure.  Requirements declared as a plain ``>= X.Y[.Z]`` lower bound are
+    bumped to ``>= 1.2.0`` automatically when the bump stays within the same
+    major version; a manual step is emitted instead for more complex
+    specifiers or when the upgrade would cross a major version boundary.
+    """
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        manual_step(
+            f"{pyproject} not found. Please add "
+            "`asyncio_debug = true` to `[tool.pytest.ini_options]` manually."
+        )
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {pyproject}: {exc}. If the project uses "
+            "pytest-asyncio, please add `asyncio_debug = true` to "
+            "`[tool.pytest.ini_options]` manually."
+        )
+        return
+
+    if "pytest-asyncio" not in content:
+        print(
+            f"  Skipped {pyproject}: the project does not use pytest-asyncio, "
+            "there is nothing to update"
+        )
+        return
+
+    pytest_section_match = re.search(
+        r"(?ms)^\[tool\.pytest\.ini_options\]\n.*?(?=^\[|\Z)",
+        content,
+    )
+    if pytest_section_match is None:
+        manual_step(
+            f"{pyproject} uses pytest-asyncio but has no "
+            "`[tool.pytest.ini_options]` section; please add the section and "
+            "set `asyncio_debug = true` manually."
+        )
+        return
+
+    pytest_section = pytest_section_match.group(0)
+    asyncio_debug_match = re.search(
+        r"^asyncio_debug\s*=.*$", pytest_section, flags=re.MULTILINE
+    )
+    if asyncio_debug_match is not None:
+        print(f"  Skipped {pyproject}: {asyncio_debug_match.group(0)} is already set")
+        return
+
+    specifiers = re.findall(r"""["']pytest-asyncio\s*([=><~!][^"']*)["']""", content)
+    if not specifiers:
+        manual_step(
+            f"{pyproject} does not declare a pytest-asyncio version, so it is "
+            "not possible to tell if it supports the `asyncio_debug` option "
+            "(added in pytest-asyncio 1.2.0; older versions emit a "
+            '`PytestConfigWarning`, which `filterwarnings = ["error", ...]` '
+            "turns into a test failure). Please make sure pytest-asyncio >= "
+            "1.2.0 is used and add `asyncio_debug = true` to "
+            "`[tool.pytest.ini_options]` manually."
+        )
+        return
+
+    old_specifiers = [
+        specifier.strip()
+        for specifier in specifiers
+        if not specifier_ensures_min_version(specifier, (1, 2))
+    ]
+    if old_specifiers:
+        bumped_content = bump_pytest_asyncio_requirement(
+            pyproject, content, old_specifiers
+        )
+        if bumped_content is None:
+            return
+        content = bumped_content
+        pytest_section_match = re.search(
+            r"(?ms)^\[tool\.pytest\.ini_options\]\n.*?(?=^\[|\Z)", content
+        )
+        if pytest_section_match is None:
+            manual_step(
+                f"{pyproject} has no `[tool.pytest.ini_options]` section after "
+                "updating the pytest-asyncio requirement; please add the "
+                "section and set `asyncio_debug = true` manually."
+            )
+            return
+        pytest_section = pytest_section_match.group(0)
+
+    asyncio_mode_match = re.search(
+        r"^asyncio_mode\s*=.*$", pytest_section, flags=re.MULTILINE
+    )
+    if asyncio_mode_match is None:
+        manual_step(
+            f"{pyproject} uses pytest-asyncio but has no `asyncio_mode` setting "
+            "under `[tool.pytest.ini_options]`; please add "
+            "`asyncio_debug = true` there manually."
+        )
+        return
+
+    new_pytest_section = (
+        pytest_section[: asyncio_mode_match.start()]
+        + "asyncio_debug = true\n"
+        + pytest_section[asyncio_mode_match.start() :]
+    )
+    new_content = content.replace(pytest_section, new_pytest_section, 1)
+
+    try:
+        replace_file_atomically(pyproject, new_content)
+        print(
+            f"  Updated {pyproject}: enabled asyncio debug mode under "
+            "[tool.pytest.ini_options]"
+        )
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {pyproject}: {exc}. Please add "
+            "`asyncio_debug = true` to `[tool.pytest.ini_options]` manually."
         )
 
 
