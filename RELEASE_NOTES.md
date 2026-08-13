@@ -18,7 +18,7 @@ curl -sSLf https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config
 
 But you might still need to adapt your code:
 
-<!-- Here upgrade steps for cookiecutter specifically -->
+- Generated API projects now build their Python bindings with `protobuf` 7.x (`grpcio-tools` 1.83.0 requires it), so the runtime requirement was raised to `protobuf >= 7.35.1, < 9`. Consumers of the generated bindings need to be able to install `protobuf` 7.x.
 
 ## New Features
 
@@ -38,6 +38,10 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - The `Releasing` section of `CONTRIBUTING.md` now covers the milestone handling, explains that the release notes are read from the `RELEASE_NOTES.md` committed at the tagged commit (so they can't be cleaned up after tagging), and that the tag signature is required by the *Protect released tags* ruleset, which also makes released tags immutable. The migration script updates existing repositories.
+- All pinned dependencies were updated to their latest versions, most notably `setuptools` to 84.0.0, `mypy` to 2.3.0, `pytest` to 9.1.1, `pylint` to 4.0.7, `nox` to 2026.8.10, `pydoclint` to 0.9.1, `pytest-asyncio` to 1.4.0 and `flake8-datetimez` to 26.8.1 (its first release in almost 6 years).
+- The `frequenz-sdk` requirement was bumped to 1.0.0rc2211 and, for API projects, `frequenz-api-common` to 0.8.11, `protobuf` to 7.35.1 and `grpcio`/`grpcio-tools` to 1.83.0.
+- All GitHub Actions used by the generated workflows were updated to their latest releases, including the major bumps of `actions/checkout` to v7 and `actions/labeler` to v7 (no configuration changes are needed for either).
+- API projects now run `protolint` 0.56.4 in CI (up from 0.53.0), which may report new issues in existing `.proto` files.
 
 ## Bug Fixes
 
