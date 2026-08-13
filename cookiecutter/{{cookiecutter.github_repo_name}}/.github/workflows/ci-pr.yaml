@@ -31,7 +31,7 @@ jobs:
         {%- endraw %}{% endif %}{% raw %}
 
       - name: Fetch sources
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: true
 
@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Run nox
-        uses: frequenz-floss/gh-action-nox@e1351cf45e05e85afc1c79ab883e06322892d34c # v1.1.0
+        uses: frequenz-floss/gh-action-nox@dff549a59033ed078a375a32b1f8f17beb7df690 # v1.1.2
         with:
           python-version: "3.11"
           nox-session: ci_checks_max
@@ -77,12 +77,12 @@ jobs:
         {%- endraw %}{% endif %}{% raw %}
 
       - name: Fetch sources
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: true
 
       - name: Setup Python
-        uses: frequenz-floss/gh-action-setup-python-with-deps@e4d0b2ef8f5a1612d7827f3abaef17c931d2b946 # v1.0.2
+        uses: frequenz-floss/gh-action-setup-python-with-deps@29d63cb1d7ce634b2f4b925044b1b193e1d5bddc # v1.0.6
         with:
           python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
           dependencies: .[dev-mkdocs]
@@ -98,7 +98,7 @@ jobs:
           python -I "$(command -v mike)" set-default "$MIKE_VERSION"
 
       - name: Upload site
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: docs-site
           path: site/
