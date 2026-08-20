@@ -35,6 +35,10 @@ But you might still need to adapt your code:
 
 - Improved the docstring documentation and cross-references across the `frequenz.repo.config` package.
 
+### Cookiecutter template
+
+- The `Releasing` section of `CONTRIBUTING.md` now covers the milestone handling, explains that the release notes are read from the `RELEASE_NOTES.md` committed at the tagged commit (so they can't be cleaned up after tagging), and that the tag signature is required by the *Protect released tags* ruleset, which also makes released tags immutable. The migration script updates existing repositories.
+
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->
