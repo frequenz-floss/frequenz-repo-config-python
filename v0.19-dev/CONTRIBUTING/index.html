@@ -2502,8 +2502,8 @@ require admin permissions, or changes that would make the script overly
 complex), use the <code>manual_step()</code> function to clearly communicate to users
 what they need to do manually:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">manual_step</span><span class="p">(</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="s2">&quot;Update branch protection rules in GitHub settings:</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="s2">&quot;    Settings &gt; Branches &gt; Enable &#39;Require status checks&#39;&quot;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="s2">"Update branch protection rules in GitHub settings:</span><span class="se">\n</span><span class="s2">"</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="s2">"    Settings &gt; Branches &gt; Enable 'Require status checks'"</span>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="4-validate-with-this-repository">4. Validate with this repository<a class="headerlink" href="#4-validate-with-this-repository" title="Permanent link">¤</a></h4>
@@ -2565,24 +2565,30 @@ GitHub pages produced for your fork.</p>
 <h2 id="releasing">Releasing<a class="headerlink" href="#releasing" title="Permanent link">¤</a></h2>
 <p>These are the steps to create a new release:</p>
 <ol>
-<li>
-<p>Get the latest head you want to create a release from.</p>
-</li>
-<li>
-<p>Update the <code>RELEASE_NOTES.md</code> file if it is not complete, up to date, and
-   remove template comments (<code>&lt;!-- ... -&gt;</code>) and empty sections. Submit a pull
+<li>Get the latest head you want to create a release from.</li>
+</ol>
+<p>If you use milestones, check that the milestone for this release has no open
+   issues left, and move whatever won't make it to a later milestone.</p>
+<ol>
+<li>Update the <code>RELEASE_NOTES.md</code> file if it is not complete, up to date, and
+   remove template comments (<code>&lt;!-- ... --&gt;</code>) and empty sections. Submit a pull
    request if an update is needed, wait until it is merged, and update the
    latest head you want to create a release from to get the new merged pull
-   request.</p>
-</li>
-<li>
-<p>Create a new signed tag using the release notes and
+   request.</li>
+</ol>
+<p>This can't be left for later: the notes published with the release are read
+   from the <code>RELEASE_NOTES.md</code> committed at the tagged commit, not from the tag
+   message.</p>
+<ol>
+<li>Create a new signed tag using the release notes and
    a <a href="https://semver.org/">semver</a> compatible version number with a <code>v</code> prefix,
-   for example:</p>
-</li>
+   for example:</li>
 </ol>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-s<span class="w"> </span>--cleanup<span class="o">=</span>whitespace<span class="w"> </span>-F<span class="w"> </span>RELEASE_NOTES.md<span class="w"> </span>v0.0.1
 </span></code></pre></div>
+<p>The signature is not optional: the <em>Protect released tags</em> ruleset rejects
+   unsigned tags. It also forbids updating or deleting a released tag, so make
+   sure you are tagging the commit you want.</p>
 <ol>
 <li>
 <p>Push the new tag.</p>
@@ -2605,7 +2611,13 @@ GitHub pages produced for your fork.</p>
 <p>Commit the new release notes and migration script, and create a PR (this step
    should be automated eventually too).</p>
 <ol>
-<li>Celebrate!</li>
+<li>
+<p>If you use milestones, close the milestone for this release, and create the
+   next one if it doesn't exist yet.</p>
+</li>
+<li>
+<p>Celebrate!</p>
+</li>
 </ol>
 
 
