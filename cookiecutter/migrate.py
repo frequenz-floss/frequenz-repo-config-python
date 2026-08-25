@@ -653,7 +653,7 @@ def migrate_protect_version_branches_ruleset() -> None:
 
 
 _BUILD_DEPENDENCIES_PINS = {
-    "setuptools": "83.0.0",
+    "setuptools": "84.0.0",
     "setuptools_scm[toml]": "10.2.1",
 }
 """Build dependencies pinned by the template, mapped to their new versions."""
