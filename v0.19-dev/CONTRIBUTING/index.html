@@ -2188,6 +2188,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#extra-release-steps-for-this-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extra release steps for this repository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extra release steps for this repository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-creating-the-tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before creating the tag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after-the-release-is-published" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        After the release is published
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#releasing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2365,6 +2404,45 @@
     <span class="md-ellipsis">
       
         Building the documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extra-release-steps-for-this-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extra release steps for this repository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extra release steps for this repository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-creating-the-tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before creating the tag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after-the-release-is-published" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        After the release is published
       
     </span>
   </a>
@@ -2562,6 +2640,51 @@ local <code>gh-pages</code> branch to the <code>origin</code> remote.</p>
 <p>That said, if you want to test the actual website in <strong>your fork</strong>, you can
 always use <code>mike deploy --push --remote your-fork-remote</code>, and then access the
 GitHub pages produced for your fork.</p>
+<h2 id="extra-release-steps-for-this-repository">Extra release steps for this repository<a class="headerlink" href="#extra-release-steps-for-this-repository" title="Permanent link">¤</a></h2>
+<p><a href="#releasing">Releasing</a> below describes the procedure that is shared by every
+project generated from these templates, and it is kept as close to the
+generated file as possible so it can be updated automatically. This repository
+<em>is</em> the template, so it needs a few extra steps around that procedure. They
+are collected here, and this is where new repository-specific steps should be
+added.</p>
+<h3 id="before-creating-the-tag">Before creating the tag<a class="headerlink" href="#before-creating-the-tag" title="Permanent link">¤</a></h3>
+<ol>
+<li>Bump the <code>frequenz-repo-config</code> version used by the cookiecutter template to
+   the version you are about to release. Generated projects pin an exact
+   version, so forgetting this ships a template that installs the <em>previous</em>
+   release. This is what happened in v0.18.0, which was released with the
+   template still pinning 0.17.0.</li>
+</ol>
+<p>The pin appears four times in
+   <code>cookiecutter/{{cookiecutter.github_repo_name}}/pyproject.toml</code>
+   (in <code>[build-system]</code> <code>requires</code>, <code>dev-mkdocs</code>, <code>dev-noxfile</code> and
+   <code>dev-pytest</code>), and the golden fixtures have to be regenerated afterwards:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nv">UPDATE_GOLDEN</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>pytest<span class="w"> </span>tests/integration/test_cookiecutter_generation.py::test_golden
+</span></code></pre></div>
+<ol>
+<li>
+<p>Consider bumping the other versions pinned by the template
+   (<code>cookiecutter/{{cookiecutter.github_repo_name}}/pyproject.toml</code> and the
+   actions used in <code>cookiecutter/{{cookiecutter.github_repo_name}}/.github/</code>).
+   Dependabot doesn't manage the template, so these only move when someone
+   updates them by hand. Add the corresponding migration steps to
+   <code>cookiecutter/migrate.py</code> if existing projects need them.</p>
+</li>
+<li>
+<p>While cleaning up <code>RELEASE_NOTES.md</code>, leave the literal <code>&lt;tag&gt;</code> in the
+   migration script URL as it is. It is a deliberate placeholder and it is
+   <em>not</em> substituted at release time.</p>
+</li>
+</ol>
+<h3 id="after-the-release-is-published">After the release is published<a class="headerlink" href="#after-the-release-is-published" title="Permanent link">¤</a></h3>
+<p>For a patch release cut from a maintenance branch (<code>vX.Y.x</code>), skip the
+<code>cookiecutter/migrate.py</code> half of the reset. The migration script on that
+branch still describes the migration from the previous minor release, so
+resetting it would drop steps that projects upgrading to that branch still
+need.</p>
+<p>Maintenance branches (<code>vX.Y.x</code>) are created on demand, when the first backport
+is needed, and need no ruleset or Dependabot changes: the existing rules
+already match that name pattern.</p>
 <h2 id="releasing">Releasing<a class="headerlink" href="#releasing" title="Permanent link">¤</a></h2>
 <p>These are the steps to create a new release:</p>
 <ol>
@@ -2584,7 +2707,7 @@ GitHub pages produced for your fork.</p>
    a <a href="https://semver.org/">semver</a> compatible version number with a <code>v</code> prefix,
    for example:</li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-s<span class="w"> </span>--cleanup<span class="o">=</span>whitespace<span class="w"> </span>-F<span class="w"> </span>RELEASE_NOTES.md<span class="w"> </span>v0.0.1
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-s<span class="w"> </span>--cleanup<span class="o">=</span>whitespace<span class="w"> </span>-F<span class="w"> </span>RELEASE_NOTES.md<span class="w"> </span>v0.0.1
 </span></code></pre></div>
 <p>The signature is not optional: the <em>Protect released tags</em> ruleset rejects
    unsigned tags. It also forbids updating or deleting a released tag, so make
@@ -2605,8 +2728,8 @@ GitHub pages produced for your fork.</p>
 <p>Once this is done, reset the <code>RELEASE_NOTES.md</code> with the template:</p>
 </li>
 </ol>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cp<span class="w"> </span>.github/RELEASE_NOTES.template.md<span class="w"> </span>RELEASE_NOTES.md
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>cp<span class="w"> </span>.github/cookiecutter-migrate.template.py<span class="w"> </span>cookiecutter/migrate.py
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>cp<span class="w"> </span>.github/RELEASE_NOTES.template.md<span class="w"> </span>RELEASE_NOTES.md
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>cp<span class="w"> </span>.github/cookiecutter-migrate.template.py<span class="w"> </span>cookiecutter/migrate.py
 </span></code></pre></div>
 <p>Commit the new release notes and migration script, and create a PR (this step
    should be automated eventually too).</p>
