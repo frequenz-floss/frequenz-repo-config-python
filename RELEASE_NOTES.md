@@ -24,6 +24,8 @@ But you might still need to adapt your code:
 
 <!-- Here goes the main new features and examples or instructions on how to use them -->
 
+- Add a helper to resolve the branch corresponding to a release tag.
+
 ### Cookiecutter template
 
 <!-- Here new features for cookiecutter specifically -->
