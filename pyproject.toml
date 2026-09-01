@@ -85,10 +85,10 @@ dev-mkdocs = [
   "mkdocs-macros-plugin == 1.5.0",
   "mkdocs-material == 9.7.7",
   "mkdocstrings[python] == 1.0.6",
-  "mkdocstrings-python == 2.0.5",
+  "mkdocstrings-python == 2.0.7",
 ]
 dev-mypy = [
-  "mypy == 2.3.0",
+  "mypy == 2.3.1",
   "types-setuptools >= 67.6.0, < 85", # Should match the api dependency
   "types-Markdown == 3.10.2.20260712",
   "types-PyYAML == 6.0.12.20260724",
