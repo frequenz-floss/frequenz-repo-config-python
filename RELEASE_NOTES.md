@@ -35,3 +35,5 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 <!-- Here bug fixes for cookiecutter specifically -->
+
+- Update Pylint automatically when an isort 9 Dependabot update requires it.

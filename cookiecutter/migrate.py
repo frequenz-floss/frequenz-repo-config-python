@@ -26,6 +26,7 @@ And remember to follow any manual instructions for each run.
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -37,6 +38,8 @@ _manual_steps: list[str] = []  # pylint: disable=invalid-name
 
 def main() -> None:
     """Run the migration steps."""
+    update_pylint_for_isort_9()
+
     # Add a separation line like this one after each migration step.
     print("=" * 72)
     print()
@@ -138,6 +141,19 @@ def replace_file_contents_atomically(  # noqa; DOC501
         content = filepath.read_text(encoding="utf-8")
 
     replace_file_atomically(filepath, content.replace(old, new, count))
+
+
+def update_pylint_for_isort_9() -> None:
+    """Update pylint pins that conflict with isort 9."""
+    pyproject = Path("pyproject.toml")
+    if not pyproject.exists():
+        return
+
+    content = pyproject.read_text(encoding="utf-8")
+    updated, count = re.subn(r"pylint == 4\.0\.[0-7]", "pylint == 4.0.8", content)
+    if count:
+        replace_file_atomically(pyproject, updated)
+        print("Updated pylint to 4.0.8 for compatibility with isort 9.")
 
 
 def calculate_file_sha256_skip_lines(filepath: Path, skip_lines: int) -> str | None:
