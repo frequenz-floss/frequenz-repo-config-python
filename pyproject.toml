@@ -106,7 +106,7 @@ dev-pylint = [
 ]
 dev-pytest = [
   "pytest == 9.1.1",
-  "pylint == 4.0.7", # We need this to check for the examples
+  "pylint == 4.0.8", # We need this to check for the examples
   "cookiecutter == 2.7.1", # For checking the cookiecutter scripts
   "jinja2 == 3.1.6", # For checking the cookiecutter scripts
   "sybil >= 6.1.1, < 11", # Should be consistent with the extra-lint-examples dependency
