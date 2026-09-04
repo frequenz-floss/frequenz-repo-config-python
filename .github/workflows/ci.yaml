@@ -46,6 +46,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+      - name: Set up uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.11.14"
+
       - name: Run nox
         uses: frequenz-floss/gh-action-nox@dff549a59033ed078a375a32b1f8f17beb7df690 # v1.1.2
         with:
