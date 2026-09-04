@@ -87,6 +87,52 @@ def to_semver(version: str) -> semver.Version | None:
         return None
 
 
+def resolve_release_branch(release_tag: str, branches: list[str]) -> BranchVersion:
+    """Resolve the branch to update after creating a release tag.
+
+    Patch releases prefer their maintenance branch (``vX.Y.x``), then the
+    major branch (``vX.x.x``). Major and minor releases prefer their major
+    branch; a new major release falls back to the preceding major branch.
+    Pre-release tags are resolved as their corresponding stable release.
+
+    Args:
+        release_tag: The semantic version tag for the release.
+        branches: The repository branch names.
+
+    Returns:
+        The branch corresponding to the release tag.
+
+    Raises:
+        ValueError: If the tag is invalid or no corresponding branch exists.
+    """
+    tag = to_semver(release_tag)
+    if tag is None:
+        raise ValueError(f"Invalid release tag: {release_tag!r}")
+
+    branch_versions = _build_branches(branches)
+    candidates: list[tuple[int, int | None]]
+    if tag.patch > 0:
+        candidates = [(tag.major, tag.minor), (tag.major, None)]
+    else:
+        candidates = [(tag.major, None)]
+        if tag.major > 0:
+            candidates.append((tag.major - 1, None))
+
+    for major, minor in candidates:
+        for branch in branch_versions.values():
+            if branch.major == major and branch.minor == minor:
+                return branch
+
+    candidate_names = [
+        f"v{major}.{minor}.x" if minor is not None else f"v{major}.x.x"
+        for major, minor in candidates
+    ]
+    raise ValueError(
+        f"No release branch found for tag {release_tag!r}; expected one of "
+        f"{candidate_names!r}"
+    )
+
+
 def _build_tags(tags: list[str]) -> dict[str, semver.Version]:
     """Build the tags dictionary.
 

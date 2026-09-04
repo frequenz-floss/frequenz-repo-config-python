@@ -13,6 +13,7 @@ from frequenz.repo.config.version import (
     RepoVersionInfo,
     _build_branches,
     _build_tags,
+    resolve_release_branch,
     to_semver,
 )
 
@@ -149,6 +150,40 @@ def test_build_branches(
 ) -> None:
     """Test _build_branches() skip invalid branches and is sorted."""
     assert _build_branches(branches) == expected
+
+
+@pytest.mark.parametrize(
+    ["release_tag", "branches", "expected"],
+    [
+        ("v2.0.0", ["v2.x.x", "v1.x.x"], "v2.x.x"),
+        ("v2.0.0", ["v1.x.x"], "v1.x.x"),
+        ("v1.4.0", ["v1.x.x", "v1.4.x"], "v1.x.x"),
+        ("v1.4.1", ["v1.x.x", "v1.4.x"], "v1.4.x"),
+        ("v1.4.1", ["v1.x.x"], "v1.x.x"),
+        ("v1.4.1-rc.1", ["v1.x.x", "v1.4.x"], "v1.4.x"),
+    ],
+)
+def test_resolve_release_branch(
+    release_tag: str, branches: list[str], expected: str
+) -> None:
+    """Test release tags resolve to the appropriate branch."""
+    assert resolve_release_branch(release_tag, branches).name == expected
+
+
+def test_resolve_release_branch_rejects_invalid_tag() -> None:
+    """Test an invalid release tag raises a clear error."""
+    with pytest.raises(ValueError, match="Invalid release tag: 'release-1.4.1'"):
+        resolve_release_branch("release-1.4.1", ["v1.x.x"])
+
+
+def test_resolve_release_branch_rejects_missing_branch() -> None:
+    """Test missing candidate branches raise a clear error."""
+    with pytest.raises(
+        ValueError,
+        match="No release branch found for tag 'v1.4.1'; expected one of "
+        "\\['v1.4.x', 'v1.x.x'\\]",
+    ):
+        resolve_release_branch("v1.4.1", ["v2.x.x"])
 
 
 _test_tags_1 = [
