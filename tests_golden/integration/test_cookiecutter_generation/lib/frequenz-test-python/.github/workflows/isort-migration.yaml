@@ -73,21 +73,10 @@ jobs:
         with:
           migration-script: |
             import os
-            import re
             import subprocess
             import sys
-            from pathlib import Path
 
             version = os.environ["MIGRATION_VERSION"].lstrip("v")
-            if tuple(map(int, version.split(".")[:2])) >= (9, 0):
-                pyproject = Path("pyproject.toml")
-                pyproject.write_text(
-                    re.sub(
-                        r'pylint == 4\.0\.[0-7]',
-                        'pylint == 4.0.8',
-                        pyproject.read_text(),
-                    )
-                )
             subprocess.run(
                 [sys.executable, "-Im", "pip", "install", f"isort=={version}"],
                 check=True,
