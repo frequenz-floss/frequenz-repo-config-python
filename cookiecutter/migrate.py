@@ -66,6 +66,9 @@ def main() -> None:
     print("Converting deprecation admonitions and finding the undocumented ones...")
     migrate_deprecation_admonitions()
     print("=" * 72)
+    print("Making the use of our own deprecated symbols an error in pytest...")
+    migrate_own_deprecations_are_errors()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -1746,6 +1749,153 @@ def _has_indented_body(lines: list[str], index: int, indent: str, end: int) -> b
             continue
         return len(line) - len(line.lstrip()) > len(indent)
     return False
+
+
+def find_python_package(pyproject_content: str) -> str | None:
+    """Find the Python package (import name) of the current project.
+
+    The cookiecutter replay file is the authoritative source, as it is what
+    generated the project in the first place.  Projects that lost it (or that
+    were never generated from the template) fall back to the packages `mypy`
+    is configured to check.
+
+    Args:
+        pyproject_content: The contents of the project's `pyproject.toml`.
+
+    Returns:
+        The Python package name, or `None` if it could not be determined.
+    """
+    package = read_cookiecutter_str_var("python_package")
+    if package is not None:
+        return package
+
+    mypy_section_match = re.search(
+        r"(?ms)^\[tool\.mypy\]\n.*?(?=^\[|\Z)", pyproject_content
+    )
+    if mypy_section_match is None:
+        return None
+
+    packages_match = re.search(
+        r"""^packages\s*=\s*\[\s*["']([\w.]+)["']""",
+        mypy_section_match.group(0),
+        flags=re.MULTILINE,
+    )
+    if packages_match is None:
+        return None
+
+    return packages_match.group(1)
+
+
+def migrate_own_deprecations_are_errors() -> None:
+    """Make using the project's own deprecated symbols an error in pytest.
+
+    Deprecations coming from dependencies stay mere warnings, as there is not
+    always a fix available for them, but a symbol this project deprecated
+    itself should never be used by the time it is released, so tests using one
+    must fail.
+
+    The filter is a heuristic: it matches deprecation messages mentioning the
+    fully qualified name of the deprecated symbol, which is the message style
+    prescribed by the [deprecations
+    guide](https://github.com/frequenz-floss/docs/blob/v0.x.x/python/deprecations.md).
+
+    It is inserted right after the `once::` entries, so any project-specific
+    filter later in the list can still override it.
+    """
+    pyproject = Path("pyproject.toml")
+    hint = (
+        "Please add an `error:` filter for the project's own deprecation "
+        "warnings to `filterwarnings` in `[tool.pytest.ini_options]` manually "
+        "(see the release notes for an example)."
+    )
+
+    if not pyproject.exists():
+        manual_step(f"{pyproject} not found. {hint}")
+        return
+
+    try:
+        content = pyproject.read_text(encoding="utf-8")
+    except OSError as exc:
+        manual_step(f"Failed to read {pyproject}: {exc}. {hint}")
+        return
+
+    package = find_python_package(content)
+    if package is None:
+        manual_step(
+            "Could not determine the Python package of this project (no "
+            f"`.cookiecutter-replay.json` and no `packages` in `[tool.mypy]`). {hint}"
+        )
+        return
+
+    pytest_section_match = re.search(
+        r"(?ms)^\[tool\.pytest\.ini_options\]\n.*?(?=^\[|\Z)", content
+    )
+    if pytest_section_match is None:
+        manual_step(f"{pyproject} has no `[tool.pytest.ini_options]` section. {hint}")
+        return
+
+    # Dots may or may not be escaped in a filter written by hand
+    package_re = r"\\?\.".join(map(re.escape, package.split(".")))
+    pytest_section = pytest_section_match.group(0)
+    if re.search(
+        rf"""^\s*["']error:.*{package_re}.*DeprecationWarning["'],?$""",
+        pytest_section,
+        flags=re.MULTILINE,
+    ):
+        print(f"  Skipped {pyproject}: deprecations of {package} are already errors")
+        return
+
+    # We insert after the last `once::` entry, as later filters take precedence
+    anchor_matches = list(
+        re.finditer(
+            r"""^(\s*)["']once::(?:Pending)?DeprecationWarning["'],$""",
+            pytest_section,
+            flags=re.MULTILINE,
+        )
+    )
+    if not anchor_matches:
+        old_style = "-Wdefault::DeprecationWarning" in pytest_section
+        manual_step(
+            f"{pyproject} has no `once::DeprecationWarning` entry in "
+            "`filterwarnings` under `[tool.pytest.ini_options]`"
+            + (
+                "; the project still configures warnings via `addopts`, so you "
+                "should run the v0.14.0 migration script first. "
+                if old_style
+                else ". "
+            )
+            + hint
+        )
+        return
+
+    new_filter = r"""
+        # But using our own deprecated symbols is an error, so we don't release code
+        # still using our own deprecated symbols, which will be noise for users.
+        # This is only a heuristic: it catches deprecation messages mentioning the
+        # fully qualified name of the deprecated symbol, as in "pkg.mod.OldThing is
+        # deprecated since v1.2.0. Use [pkg.mod.NewThing][] instead.". This is the
+        # recommended style in the deprecation guide:
+        # https://github.com/frequenz-floss/docs/blob/v0.x.x/python/deprecations.md
+        'error:.*{package}\.[\w\.]+ (is|was) deprecated:DeprecationWarning',
+    """
+    anchor_match = anchor_matches[-1]
+    indent = anchor_match.group(1)
+    new_entry = "\n".join(
+        f"{indent}{line.strip()}" for line in new_filter.strip().splitlines()
+    ).replace("{package}", package.replace(".", r"\."))
+
+    insert_at = anchor_match.end()
+    new_pytest_section = (
+        pytest_section[:insert_at] + "\n" + new_entry + pytest_section[insert_at:]
+    )
+
+    try:
+        replace_file_contents_atomically(
+            pyproject, pytest_section, new_pytest_section, 1, content=content
+        )
+        print(f"  Updated {pyproject}: deprecations of {package} are now errors")
+    except OSError as exc:
+        manual_step(f"Failed to update {pyproject}: {exc}. {hint}")
 
 
 def manual_step(message: str) -> None:
