@@ -34,4 +34,4 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here bug fixes for cookiecutter specifically -->
+- The mkdocstrings `paths` key in `mkdocs.yml` is back under `handlers.python`, where it belongs. Since v0.14.0 the template generated it directly under `handlers`, where mkdocstrings reads it as a handler name and aborts the build with `ModuleNotFoundError: No module named 'mkdocstrings_handlers.paths'`, so newly generated projects could not build their documentation. Existing projects are unaffected, as previous migration steps always moved the key to the correct place. The migration script now fixes both this location and the older `handlers.python.options` one.
