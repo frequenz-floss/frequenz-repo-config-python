@@ -54,6 +54,7 @@ dev-formatting = ["black == 26.5.1", "isort == 8.0.1"]
 dev-mkdocs = [
   "Markdown == 3.10.3",
   "black == 26.5.1",
+  "griffe-warnings-deprecated == 1.1.1",
   "mike == 2.2.0",
   "mkdocs-gen-files == 0.6.1",
   "mkdocs-literate-nav == 0.6.3",
