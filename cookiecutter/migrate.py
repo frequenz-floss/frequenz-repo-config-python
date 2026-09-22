@@ -32,6 +32,7 @@ import subprocess
 import sys
 import tempfile
 from collections.abc import Iterator
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, SupportsIndex
 
@@ -54,7 +55,7 @@ def main() -> None:
     print("Adding the `Deprecated` admonition style to mkdocstrings.css...")
     migrate_deprecated_admonition_css()
     print("=" * 72)
-    print("Converting deprecation admonitions in docstrings...")
+    print("Converting deprecation admonitions and finding the undocumented ones...")
     migrate_deprecation_admonitions()
     print("=" * 72)
     print()
@@ -471,8 +472,83 @@ _ADMONITION_RE = re.compile(
 )
 """A Google-style docstring section header, as griffe parses admonitions."""
 
+_DEPRECATED_ADMONITION_RE = re.compile(r"^(?P<indent>[ \t]*)Deprecated:[ \t]*$")
+"""A `Deprecated:` admonition header, written the way it should be."""
+
+_DEPRECATION_MENTION_RE = re.compile(r"deprecat", re.IGNORECASE)
+"""Any mention of a deprecation, however it is worded."""
+
+_DEPRECATION_HELPERS = frozenset({"deprecated_member"})
+"""Helpers that deprecate a symbol the `deprecated` decorator cannot reach.
+
+`frequenz.core.enum.deprecated_member` marks an enum member, and nothing
+renders its message, so the member's docstring is the only place a reader can
+learn that it is deprecated. A call to one is worth reporting even though it
+says nothing in prose.
+"""
+
+_DEPRECATIONS_GUIDE_URL = (
+    "https://github.com/frequenz-floss/docs/blob/v0.x.x/python/deprecations.md"
+)
+"""The guide on how deprecations are marked and documented at Frequenz."""
+
 _SKIPPED_DIRS = frozenset({"__pycache__", "build", "dist", "node_modules", "site"})
 """Directory names never searched for Python sources."""
+
+_TEST_FILE_RE = re.compile(r"^(conftest|test_.+|.+_test)\.py$")
+"""A file holding tests rather than documented code."""
+
+_THIS_SCRIPT = Path(__file__).resolve() if "__file__" in globals() else None
+"""This script, when it was run from a file rather than piped into `python3`.
+
+A checked out copy of this script is itself full of the word "deprecated", so
+it is skipped entirely.
+"""
+
+_MAX_MENTIONS_PER_FILE = 10
+"""How many mentions of a deprecation are reported for a single file.
+
+A module that implements deprecation support, rather than one that deprecates
+something, says the word on nearly every line and would bury the rest of the
+report under itself.
+"""
+
+
+@dataclass
+class _DeprecationReport:
+    """The deprecations a scan of the sources leaves for a human to deal with."""
+
+    duplicated: list[str] = field(default_factory=list)
+    """Admonitions on a symbol that a `deprecated` decorator already marks."""
+
+    ambiguous: list[str] = field(default_factory=list)
+    """Admonitions that are not a plain `Warning: Deprecated`."""
+
+    unrendered: list[str] = field(default_factory=list)
+    """Symbols a helper deprecates without the documentation showing it."""
+
+    unmarked: list[str] = field(default_factory=list)
+    """Docstrings talking about a deprecation that nothing marks as one."""
+
+
+@dataclass(frozen=True, kw_only=True)
+class _Docstring:
+    """A docstring found in a source, and how its symbol is marked."""
+
+    start: int
+    """The line the docstring starts at."""
+
+    end: int
+    """The line the docstring ends at."""
+
+    name: str
+    """The qualified name of the symbol it documents."""
+
+    decorated: bool = False
+    """Whether that symbol carries a `deprecated` decorator."""
+
+    helper_line: int | None = None
+    """Where a helper from `_DEPRECATION_HELPERS` deprecates that symbol."""
 
 
 def migrate_griffe_warnings_deprecated_dependency() -> None:
@@ -571,9 +647,9 @@ def migrate_griffe_warnings_deprecated_extension() -> None:
     manual_hint = (
         "Please add the extension manually to the mkdocs.yml file under "
         "plugins.mkdocstrings.handlers.python.options.extensions:\n"
-        f"\t- griffe_warnings_deprecated:\n"
-        f"\t    kind: deprecated\n"
-        f"\t    title: Deprecated",
+        "\t- griffe_warnings_deprecated:\n"
+        "\t    kind: deprecated\n"
+        "\t    title: Deprecated"
     )
 
     if not mkdocs.exists():
@@ -636,7 +712,7 @@ def migrate_deprecated_admonition_css() -> None:
     css = Path("docs/_css/mkdocstrings.css")
     manual_hint = (
         "Please add the `Deprecated` admonition style to your mkdocstrings CSS "
-        "manually:\n\n{_DEPRECATED_ADMONITION_CSS}\n\n"
+        f"manually:\n\n{_DEPRECATED_ADMONITION_CSS}\n"
     )
 
     if not css.exists():
@@ -664,7 +740,7 @@ def migrate_deprecated_admonition_css() -> None:
 
 
 def migrate_deprecation_admonitions() -> None:
-    """Convert hand-written deprecation admonitions in docstrings.
+    """Convert hand-written deprecation admonitions, and report the rest.
 
     Deprecations are now surfaced as a `Deprecated:` admonition, never as
     `Warning: Deprecated`, because a title replaces the word "Deprecated" in
@@ -676,24 +752,40 @@ def migrate_deprecation_admonitions() -> None:
     must be deleted rather than rewritten because the griffe extension now
     generates one, and any other variant, such as `Note: Deprecated` or a
     custom title, where only a human can tell what was meant.
+
+    Whatever is left is found by searching the docstrings for the word
+    "deprecated" itself, since most projects announce their deprecations as
+    plain prose that no parser can recognize.
     """
     converted_total = 0
-    duplicated: list[str] = []
-    ambiguous: list[str] = []
+    report = _DeprecationReport()
 
     for path in _iter_python_files(Path(".")):
         try:
             content = path.read_text(encoding="utf-8")
-            tree = ast.parse(content)
-        except (OSError, UnicodeDecodeError, SyntaxError, ValueError) as exc:
+        except (OSError, UnicodeDecodeError) as exc:
             manual_step(
-                f"Failed to read or parse {path}: {exc}. Please replace its "
+                f"Failed to read {path}: {exc}. Please replace its "
                 "`Warning: Deprecated` admonitions with `Deprecated:` manually."
             )
             continue
 
+        try:
+            tree = ast.parse(content)
+        except (SyntaxError, ValueError) as exc:
+            # A file that never says the word has nothing to convert anyway,
+            # and cookiecutter templates that only look like Python are
+            # common enough to be worth not complaining about.
+            if _DEPRECATION_MENTION_RE.search(content):
+                manual_step(
+                    f"Failed to parse {path}: {exc}. Please replace its "
+                    "`Warning: Deprecated` admonitions with `Deprecated:` "
+                    "manually."
+                )
+            continue
+
         new_content, converted = _convert_deprecation_admonitions(
-            path, content, tree, duplicated, ambiguous
+            path, content, tree, report
         )
         if new_content is None:
             continue
@@ -713,23 +805,61 @@ def migrate_deprecation_admonitions() -> None:
     if converted_total == 0:
         print("  No `Warning: Deprecated` admonitions found to convert")
 
-    if duplicated:
+    if report.duplicated:
         manual_step(
             "These symbols carry both a `deprecated` decorator and a "
             "hand-written admonition, so the documentation would now show two. "
             "Please delete the hand-written one, moving anything it says that "
             "the decorator message does not into the decorator message:\n"
-            + "\n".join(f"      {location}" for location in duplicated)
+            + _indented_list(report.duplicated)
         )
 
-    if ambiguous:
+    if report.ambiguous:
         manual_step(
             "These deprecation admonitions are not a plain "
             "`Warning: Deprecated`, so they were left alone. Please rewrite "
             "them as `Deprecated:` with no title, moving any extra wording "
-            "into the body:\n"
-            + "\n".join(f"      {location}" for location in ambiguous)
+            "into the body:\n" + _indented_list(report.ambiguous)
         )
+
+    if report.unrendered:
+        manual_step(
+            "These symbols are deprecated by a helper, such as "
+            "`deprecated_member()`, that warns at runtime but renders nothing "
+            "in the documentation, and their docstring carries no "
+            "`Deprecated:` admonition, so the rendered page never says they "
+            "are deprecated. Please add one to each of these docstrings:\n"
+            + _indented_list(report.unrendered)
+        )
+
+    if report.unmarked:
+        manual_step(
+            "These docstrings talk about a deprecation without carrying a "
+            "`Deprecated:` admonition, so nothing marks it as one on the "
+            "rendered page. The docstrings are searched for the word itself, "
+            "case-insensitively, so expect false positives; please check each "
+            "one and document the real deprecations:\n"
+            + _indented_list(report.unmarked)
+        )
+
+    if report.duplicated or report.ambiguous or report.unrendered or report.unmarked:
+        manual_step(
+            "The deprecations guide explains how each of the deprecations "
+            "listed above should be marked and documented:\n"
+            f"      {_DEPRECATIONS_GUIDE_URL}"
+        )
+
+
+def _indented_list(locations: list[str]) -> str:
+    """Indent the locations of a report so they read as a list.
+
+    Args:
+        locations: The locations to format.
+
+    Returns:
+        The locations, one per line, indented under the message.
+    """
+    return "\n".join(f"      {location}" for location in locations)
 
 
 def _iter_python_files(root: Path) -> Iterator[Path]:
@@ -750,16 +880,19 @@ def _iter_python_files(root: Path) -> Iterator[Path]:
             and not name.endswith(".egg-info")
         )
         for filename in sorted(filenames):
-            if filename.endswith(".py"):
-                yield Path(dirpath, filename)
+            if not filename.endswith(".py"):
+                continue
+            path = Path(dirpath, filename)
+            if _THIS_SCRIPT is not None and path.resolve() == _THIS_SCRIPT:
+                continue
+            yield path
 
 
 def _convert_deprecation_admonitions(  # pylint: disable=too-many-locals
     path: Path,
     content: str,
     tree: ast.Module,
-    duplicated: list[str],
-    ambiguous: list[str],
+    report: _DeprecationReport,
 ) -> tuple[str | None, int]:
     """Rewrite the `Warning: Deprecated` admonitions in one Python source.
 
@@ -767,10 +900,7 @@ def _convert_deprecation_admonitions(  # pylint: disable=too-many-locals
         path: The path of the source, only used to build report locations.
         content: The source as read from disk.
         tree: The parsed source.
-        duplicated: Collects the locations of admonitions on decorated
-            symbols, which must be deleted by hand.
-        ambiguous: Collects the locations of admonitions that are not a plain
-            `Warning: Deprecated`, which must be rewritten by hand.
+        report: Collects everything found that a human has to deal with.
 
     Returns:
         The new source and the number of admonitions converted, or `None` and
@@ -778,12 +908,15 @@ def _convert_deprecation_admonitions(  # pylint: disable=too-many-locals
     """
     lines = content.splitlines(keepends=True)
     converted = 0
+    reported: set[int] = set()
+    docstrings = _collect_docstrings(tree)
 
-    for start, end, name, decorated in _collect_docstrings(tree):
+    for docstring in docstrings:
         # The summary is always the first line, so sections start on the next
         # one, and only the ones at the docstring's own indentation are
         # sections: anything deeper belongs to an `Args:` entry or similar.
-        last = min(end, len(lines))
+        start = docstring.start
+        last = min(docstring.end, len(lines))
         indents = [
             len(line) - len(line.lstrip()) for line in lines[start:last] if line.strip()
         ]
@@ -803,64 +936,237 @@ def _convert_deprecation_admonitions(  # pylint: disable=too-many-locals
                 continue
             if kind != "Deprecated" and not _is_deprecation_title(title):
                 continue
-            if not _has_indented_body(lines, index, indent, end):
+            if not _has_indented_body(lines, index, indent, docstring.end):
                 continue
 
-            location = f"{path}:{index + 1} ({name})"
-            if decorated:
-                duplicated.append(location)
+            location = f"{path}:{index + 1} ({docstring.name})"
+            if docstring.decorated:
+                report.duplicated.append(location)
+                reported.add(index)
             elif kind == "Deprecated":
                 if title:
-                    ambiguous.append(f"{location}: custom title `{kind}: {title}`")
+                    report.ambiguous.append(
+                        f"{location}: custom title `{kind}: {title}`"
+                    )
+                    reported.add(index)
             elif kind == "Warning" and title == "Deprecated":
                 newline = lines[index][len(lines[index].rstrip("\r\n")) :]
                 lines[index] = f"{indent}Deprecated:{newline}"
                 converted += 1
             else:
-                ambiguous.append(f"{location}: `{kind}: {title}`")
+                report.ambiguous.append(f"{location}: `{kind}: {title}`")
+                reported.add(index)
+
+    if not _is_test_code(path):
+        headers, admonitions = _find_deprecated_admonitions(lines)
+        report.unrendered.extend(
+            _find_unrendered_deprecations(path, lines, docstrings, headers)
+        )
+        report.unmarked.extend(
+            _find_unmarked_deprecations(path, lines, docstrings, reported | admonitions)
+        )
 
     if converted == 0:
         return None, 0
     return "".join(lines), converted
 
 
-def _collect_docstrings(tree: ast.Module) -> list[tuple[int, int, str, bool]]:
+def _is_test_code(path: Path) -> bool:
+    """Tell whether a source holds tests rather than documented code.
+
+    Every deprecation is supposed to be covered by a test asserting that it
+    warns, so tests are where the word appears most and where it never means
+    anything is missing.
+
+    Args:
+        path: The path of the source.
+
+    Returns:
+        Whether the source is a test.
+    """
+    return "tests" in path.parts or _TEST_FILE_RE.match(path.name) is not None
+
+
+def _find_deprecated_admonitions(lines: list[str]) -> tuple[set[int], set[int]]:
+    """Locate the `Deprecated:` admonitions already written in a source.
+
+    Args:
+        lines: The source lines.
+
+    Returns:
+        The indexes of the header lines, and the indexes of every line the
+        admonitions occupy, header and body alike.
+    """
+    headers: set[int] = set()
+    occupied: set[int] = set()
+
+    # An admonition body is indented deeper than its header, so the block ends
+    # at the first line that is not, which is also where the docstring ends.
+    body_indent: int | None = None
+    for index, line in enumerate(lines):
+        if body_indent is not None:
+            if not line.strip() or len(line) - len(line.lstrip()) > body_indent:
+                occupied.add(index)
+                continue
+            body_indent = None
+        header = _DEPRECATED_ADMONITION_RE.match(line)
+        if header is not None:
+            body_indent = len(header["indent"])
+            headers.add(index)
+            occupied.add(index)
+
+    return headers, occupied
+
+
+def _find_unrendered_deprecations(
+    path: Path, lines: list[str], docstrings: list[_Docstring], headers: set[int]
+) -> list[str]:
+    """Find the symbols a helper deprecates without the documentation saying so.
+
+    A helper such as `deprecated_member()` warns at runtime, but the griffe
+    extension only renders the decorator, so the member's own docstring has to
+    carry the admonition or the rendered page says nothing at all. A symbol
+    whose docstring already has one is therefore not reported.
+
+    Args:
+        path: The path of the source, only used to build report locations.
+        lines: The source lines, after the admonitions were converted.
+        docstrings: The docstrings found in the source.
+        headers: The indexes of the `Deprecated:` admonition headers.
+
+    Returns:
+        One `path:line (name)` location per symbol, in source order, cut short
+        after `_MAX_MENTIONS_PER_FILE` of them.
+    """
+    found = sorted(
+        (docstring.helper_line, f"{path}:{docstring.helper_line} ({docstring.name})")
+        for docstring in docstrings
+        if docstring.helper_line is not None
+        and headers.isdisjoint(
+            range(docstring.start - 1, min(docstring.end, len(lines)))
+        )
+    )
+    return _cut_short(path, [location for _, location in found])
+
+
+def _find_unmarked_deprecations(
+    path: Path, lines: list[str], docstrings: list[_Docstring], excluded: set[int]
+) -> list[str]:
+    """Find the docstrings that talk about a deprecation without marking it.
+
+    Most deprecations are announced as prose, in an `Args:` entry, an
+    attribute docstring or a module summary, so the only way to find them all
+    is to search for the word itself and let a human sort out the false
+    positives.
+
+    Only docstrings are searched. A deprecation has to be said in the
+    documentation to reach the reader, and the word appears all over the code
+    around one, in the `warnings.warn()` call that announces it at runtime and
+    in every filter that silences it again, none of which is anything to fix.
+    A `deprecated` decorator needs no exclusion either, since its message is
+    not a docstring.
+
+    Args:
+        path: The path of the source, only used to build report locations.
+        lines: The source lines, after the admonitions were converted.
+        docstrings: The docstrings found in the source.
+        excluded: The indexes of the lines already reported on their own, and
+            of the admonitions that already render as written.
+
+    Returns:
+        One `path:line: text` location per mention left, in source order, cut
+        short after `_MAX_MENTIONS_PER_FILE` of them.
+    """
+    candidates: set[int] = set()
+    for docstring in docstrings:
+        candidates.update(range(docstring.start - 1, min(docstring.end, len(lines))))
+    candidates -= excluded
+
+    return _cut_short(
+        path,
+        [
+            f"{path}:{index + 1}: {lines[index].strip()}"
+            for index in sorted(candidates)
+            if _DEPRECATION_MENTION_RE.search(lines[index])
+        ],
+    )
+
+
+def _cut_short(path: Path, found: list[str]) -> list[str]:
+    """Keep a file's findings from burying the rest of the report.
+
+    Args:
+        path: The path the findings are in.
+        found: The locations found in it.
+
+    Returns:
+        The locations, cut short after `_MAX_MENTIONS_PER_FILE` of them.
+    """
+    if len(found) <= _MAX_MENTIONS_PER_FILE:
+        return found
+
+    rest = len(found) - _MAX_MENTIONS_PER_FILE
+    return found[:_MAX_MENTIONS_PER_FILE] + [f"{path}: ... and {rest} more"]
+
+
+def _collect_docstrings(tree: ast.Module) -> list[_Docstring]:
     """Locate every docstring in a module, with the symbol that owns it.
+
+    Attributes count too, through the string literal that follows their
+    assignment: a module-level alias or an enum member is exactly the kind of
+    symbol the decorator cannot reach, so the admonition is all it has.
 
     Args:
         tree: The parsed module.
 
     Returns:
-        One `(first line, last line, qualified name, decorated)` tuple per
-        docstring, where `decorated` tells whether the owner carries a
-        `deprecated` decorator.
+        One `_Docstring` per docstring found, in no particular order.
     """
-    found: list[tuple[int, int, str, bool]] = []
+    found: list[_Docstring] = []
 
-    module_docstring = _docstring_node(tree)
-    if module_docstring is not None:
+    def record(
+        docstring: ast.Constant,
+        name: str,
+        *,
+        decorated: bool = False,
+        helper_line: int | None = None,
+    ) -> None:
         found.append(
-            (
-                module_docstring.lineno,
-                module_docstring.end_lineno or module_docstring.lineno,
-                "<module>",
-                False,
+            _Docstring(
+                start=docstring.lineno,
+                end=docstring.end_lineno or docstring.lineno,
+                name=name,
+                decorated=decorated,
+                helper_line=helper_line,
             )
         )
 
+    module_docstring = _docstring_node(tree)
+    if module_docstring is not None:
+        record(module_docstring, "<module>")
+
     def walk(node: ast.AST, prefix: str) -> None:
+        body = getattr(node, "body", None)
+        if isinstance(body, list):
+            for previous, statement in zip(body, body[1:]):
+                target = _assignment_target(previous)
+                attribute_docstring = _string_expression(statement)
+                if target is not None and attribute_docstring is not None:
+                    record(
+                        attribute_docstring,
+                        f"{prefix}.{target}" if prefix else target,
+                        helper_line=_deprecation_helper_line(previous),
+                    )
+
         for child in ast.iter_child_nodes(node):
             if isinstance(child, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
                 qualified_name = f"{prefix}.{child.name}" if prefix else child.name
                 docstring = _docstring_node(child)
                 if docstring is not None:
-                    found.append(
-                        (
-                            docstring.lineno,
-                            docstring.end_lineno or docstring.lineno,
-                            qualified_name,
-                            _has_deprecated_decorator(child),
-                        )
+                    record(
+                        docstring,
+                        qualified_name,
+                        decorated=_has_deprecated_decorator(child),
                     )
                 walk(child, qualified_name)
             elif hasattr(child, "body"):
@@ -868,6 +1174,33 @@ def _collect_docstrings(tree: ast.Module) -> list[tuple[int, int, str, bool]]:
 
     walk(tree, "")
     return found
+
+
+def _deprecation_helper_line(statement: ast.stmt) -> int | None:
+    """Return the line where a helper deprecates the symbol a statement assigns.
+
+    Args:
+        statement: The assignment to inspect.
+
+    Returns:
+        The line of the call, or `None` when the statement assigns something
+        else.
+    """
+    if not isinstance(statement, (ast.Assign, ast.AnnAssign)):
+        return None
+
+    call = statement.value
+    if not isinstance(call, ast.Call):
+        return None
+
+    if isinstance(call.func, ast.Attribute):
+        name = call.func.attr
+    elif isinstance(call.func, ast.Name):
+        name = call.func.id
+    else:
+        return None
+
+    return call.lineno if name in _DEPRECATION_HELPERS else None
 
 
 def _docstring_node(node: ast.AST) -> ast.Constant | None:
@@ -882,15 +1215,47 @@ def _docstring_node(node: ast.AST) -> ast.Constant | None:
     body = getattr(node, "body", None)
     if not isinstance(body, list) or not body:
         return None
+    return _string_expression(body[0])
 
-    first = body[0]
+
+def _string_expression(statement: ast.stmt) -> ast.Constant | None:
+    """Return the string literal a statement consists of, if that is all it is.
+
+    Args:
+        statement: The statement to inspect.
+
+    Returns:
+        The string constant, or `None` when the statement is something else.
+    """
     if (
-        isinstance(first, ast.Expr)
-        and isinstance(first.value, ast.Constant)
-        and isinstance(first.value.value, str)
+        isinstance(statement, ast.Expr)
+        and isinstance(statement.value, ast.Constant)
+        and isinstance(statement.value.value, str)
     ):
-        return first.value
+        return statement.value
     return None
+
+
+def _assignment_target(statement: ast.stmt) -> str | None:
+    """Return the name a statement assigns to, if it assigns to just one.
+
+    Args:
+        statement: The statement to inspect.
+
+    Returns:
+        The name assigned to, or `None` when the statement is not a plain
+        assignment to a single name.
+    """
+    if isinstance(statement, ast.Assign):
+        targets = statement.targets
+    elif isinstance(statement, ast.AnnAssign):
+        targets = [statement.target]
+    else:
+        return None
+
+    if len(targets) != 1 or not isinstance(targets[0], ast.Name):
+        return None
+    return targets[0].id
 
 
 def _has_deprecated_decorator(
