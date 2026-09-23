@@ -52,6 +52,8 @@ handling is opt-in anyway, so this should never happen during a normal,
 unattended run.
 """
 
+# pylint: disable=invalid-name
+
 import argparse
 import json
 import os
