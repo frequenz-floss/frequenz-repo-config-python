@@ -35,3 +35,4 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 - The mkdocstrings `paths` key in `mkdocs.yml` is back under `handlers.python`, where it belongs. Since v0.14.0 the template generated it directly under `handlers`, where mkdocstrings reads it as a handler name and aborts the build with `ModuleNotFoundError: No module named 'mkdocstrings_handlers.paths'`, so newly generated projects could not build their documentation. Existing projects are unaffected, as previous migration steps always moved the key to the correct place. The migration script now fixes both this location and the older `handlers.python.options` one.
+- The instructions printed after generating a project, and the "Start a new project" guide, now use `v0.0-dev` as the initial `mike` version instead of `v0.1-dev`. A `v0.x.x` branch with no releases is published by the CI as `v0.0-dev`, so following the old instructions left a stale `v0.1-dev` version holding the `latest` alias.
