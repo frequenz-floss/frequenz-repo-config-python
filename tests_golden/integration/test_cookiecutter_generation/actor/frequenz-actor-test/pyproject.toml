@@ -180,7 +180,11 @@ namespace_packages = true
 # used but getting the original ignored error when removing the type: ignore.
 # See for example: https://github.com/python/mypy/issues/2960
 #no_incremental = true
-packages = ["frequenz.actor.test"]
+# Paths checked when running `mypy` without arguments. They must all exist and
+# contain Python files. The nox `mypy` session warns about (and in CI fails on)
+# Python files not covered here; use `exclude` for any that shouldn't be checked.
+mypy_path = "src"
+files = ["src", "tests", "docs", "noxfile.py"]
 strict = true
 enable_error_code = ["exhaustive-match"]
 

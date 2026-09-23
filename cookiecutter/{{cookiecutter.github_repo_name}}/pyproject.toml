@@ -242,7 +242,16 @@ namespace_packages = true
 # used but getting the original ignored error when removing the type: ignore.
 # See for example: https://github.com/python/mypy/issues/2960
 #no_incremental = true
-packages = ["{{cookiecutter.python_package}}"]
+# Paths checked when running `mypy` without arguments. They must all exist and
+# contain Python files. The nox `mypy` session warns about (and in CI fails on)
+# Python files not covered here; use `exclude` for any that shouldn't be checked.
+{%- if cookiecutter.type == "api" %}
+mypy_path = "py"
+files = ["py", "pytests", "docs", "noxfile.py"]
+{%- else %}
+mypy_path = "src"
+files = ["src", "tests", "docs", "noxfile.py"]
+{%- endif %}
 strict = true
 enable_error_code = ["exhaustive-match"]
 
