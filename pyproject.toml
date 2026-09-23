@@ -200,7 +200,27 @@ namespace_packages = true
 # used but getting the original ignored error when removing the type: ignore.
 # See for example: https://github.com/python/mypy/issues/2960
 #no_incremental = true
-packages = ["frequenz.repo.config"]
+# Paths checked when running `mypy` without arguments. They must all exist and
+# contain Python files. The nox `mypy` session warns about (and in CI fails on)
+# Python files not covered here; use `exclude` for any that shouldn't be checked.
+mypy_path = "src"
+files = [
+  ".github/cookiecutter-migrate.template.py",
+  "cookiecutter/hooks",
+  "cookiecutter/local_extensions.py",
+  "cookiecutter/migrate.py",
+  "cookiecutter/scripts",
+  "docs",
+  "noxfile.py",
+  "src",
+  "tests",
+]
+exclude = [
+  # Jinja templates, not valid Python until cookiecutter renders them
+  '^cookiecutter/\{\{cookiecutter\.github_repo_name\}\}/',
+  # Generated from the templates above, checked in the generated projects
+  '^tests_golden/',
+]
 strict = true
 enable_error_code = ["exhaustive-match"]
 
