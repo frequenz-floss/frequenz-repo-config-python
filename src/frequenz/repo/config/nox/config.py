@@ -91,6 +91,24 @@ class Config:
     tools invoked by the sessions.
     """
 
+    mypy_unchecked_files_error_in_ci: bool = True
+    """Whether Python files mypy doesn't check make the `mypy` session fail in CI.
+
+    The [`mypy`][....session.mypy] session warns about Python files in the
+    repository that are not covered by the `files` option in the `tool.mypy`
+    section of `pyproject.toml`, nor matched by its `exclude` option. If this is
+    `True` and the session runs in CI (the `CI` environment variable is set to
+    anything but an empty string, `0`, `false`, `no` or `off`, case-insensitive),
+    it fails instead. Stray local files can't be a problem there, as CI only sees
+    committed files.
+    """
+
+    mypy_unchecked_files_max_listed: int = 5
+    """How many Python files mypy doesn't check the `mypy` session lists.
+
+    If there are more, the rest are only counted, to keep the message short.
+    """
+
     def __post_init__(self) -> None:
         """Initialize the configuration object.
 

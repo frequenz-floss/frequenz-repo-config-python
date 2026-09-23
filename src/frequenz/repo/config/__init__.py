@@ -182,12 +182,28 @@ follows:
 [tool.mypy]
 explicit_package_bases = true
 namespace_packages = true
-packages = ["your_package_name"]  # Use the actual package name here
+mypy_path = "src"
+files = ["src", "tests", "docs", "noxfile.py"]
 strict = true
 ```
 
-You can just call `mypy` to check the package of your sources or you can use `mypy
-tests` to check the tests, for example.
+You can just call `mypy` to check all the paths in `files`, or you can use `mypy
+tests` to check only the tests, for example.
+
+Every path in `files` must exist and contain Python files, otherwise `mypy`
+fails, so add directories like `examples` or `benchmarks` only if your project
+has them.
+
+The [`mypy` nox session][.nox.session.mypy] requires `files` and fails without
+it. It also warns about Python files in the repository that `mypy` doesn't
+check, and fails in CI because of them. Add them to `files` if they should be
+type-checked, or to `exclude` if not, for example:
+
+```toml
+[tool.mypy]
+# ...
+exclude = ["^scripts/legacy/"]
+```
 
 You might also need to add extra optional dependencies to install type checking stubs for
 some packages.  For example for API projects you need the `grpc-stubs` package:
