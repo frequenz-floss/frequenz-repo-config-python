@@ -129,12 +129,17 @@ initial setup is needed for it to work correctly:
 ```sh
 pip install -e .[dev-mkdocs]  # Not necessary if you already installed .[dev]
 # Creates the branch gh-pages locally
-mike deploy --update-aliases v0.1-dev v0-dev latest-dev latest
+mike deploy --update-aliases v0.0-dev v0-dev latest-dev latest
 mike set-default latest  # Makes the latest alias the default version
 git push upstream gh-pages  # Pushes the new branch upstream to publish the website
 ```
 
-This assumes your branch is called `v0.x.x` and your first release will be `v0.1.0`.
+This assumes your branch is called `v0.x.x` and has no releases yet. The
+version must match the one the CI will publish for that branch, otherwise the
+CI creates a separate version and the one deployed here is left behind, still
+holding the `latest` alias. For a `vX.x.x` branch the CI uses the minor
+version after the last release of that major, or `0` if there are no releases,
+so it is `v0.0-dev` here.
 
 Then make sure that GitHub Pages is enabled in
 `https://github.com/<repo-owner>/<repo-name>/settings/pages`.
@@ -148,8 +153,8 @@ The above commands create a new documentation version using
 [Mike](https://pypi.org/project/mike/), which is used to keep multiple versions
 of the website.
 
-The new documentation version is called `v0.1-dev`, which is used as the name
-for the currently in-development branch. The `v0.1-dev` branch has an alias
+The new documentation version is called `v0.0-dev`, which is used as the name
+for the currently in-development branch. The `v0.0-dev` branch has an alias
 called `v0-dev` that points to the latest v0.x branch development version, an
 alias `latest-dev` that points to the latest in-development version, and
 a `latest` alias, which is set as the *default*.
