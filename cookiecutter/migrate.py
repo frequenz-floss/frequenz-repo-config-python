@@ -39,6 +39,9 @@ def main() -> None:
     """Run the migration steps."""
     # Add a separation line like this one after each migration step.
     print("=" * 72)
+    print("Fixing the location of the mkdocstrings `paths` key in mkdocs.yml...")
+    migrate_mkdocstrings_paths()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -306,6 +309,106 @@ def read_cookiecutter_str_var(name: str) -> str | None:
         return None
 
     return value
+
+
+def migrate_mkdocstrings_paths() -> None:
+    """Move the mkdocstrings `paths` key under the `python` handler.
+
+    The key belongs to `plugins.mkdocstrings.handlers.python.paths`, but two
+    older versions of the template put it elsewhere:
+
+    * Inside `handlers.python.options`, where mkdocstrings ignores it, so the
+      source tree is never added to `sys.path`.
+    * Directly under `handlers`, where mkdocstrings reads it as a handler name
+      and aborts the build with `ModuleNotFoundError: No module named
+      'mkdocstrings_handlers.paths'`.
+
+    Both are rewritten to the correct location, and a file that already has it
+    there is left untouched. A missing `mkdocs.yml` or a missing `handlers`
+    block is reported as a manual step, since every project is expected to have
+    both.
+    """
+    mkdocs_yml = Path("mkdocs.yml")
+    handlers_key = "      handlers:"
+    python_key = "        python:"
+    # Under `handlers` and inside `handlers.python.options`, respectively.
+    bad_paths_keys = ("        paths:", "            paths:")
+
+    if not mkdocs_yml.exists():
+        manual_step(
+            f"{mkdocs_yml} does not exist. Every project should have one; "
+            "please check why it is missing and make sure the mkdocstrings "
+            "`paths` key sits under `handlers.python`."
+        )
+        return
+
+    try:
+        lines = mkdocs_yml.read_text(encoding="utf-8").splitlines(keepends=True)
+    except OSError as exc:
+        manual_step(
+            f"Failed to read {mkdocs_yml}: {exc}. Please make sure the "
+            "mkdocstrings `paths` key sits under `handlers.python` manually."
+        )
+        return
+
+    handlers_index = next(
+        (i for i, line in enumerate(lines) if line.startswith(handlers_key)), None
+    )
+    if handlers_index is None:
+        manual_step(
+            f"{mkdocs_yml} has no mkdocstrings `handlers` configuration. Every "
+            "project should have one; please check why it is missing and make "
+            "sure the `paths` key sits under `handlers.python`."
+        )
+        return
+
+    # The handlers block ends at the first non-blank line indented at most as
+    # much as the `handlers:` key itself.
+    block_end = len(lines)
+    for index in range(handlers_index + 1, len(lines)):
+        line = lines[index]
+        if line.strip() and len(line) - len(line.lstrip()) <= 6:
+            block_end = index
+            break
+    block = range(handlers_index + 1, block_end)
+
+    bad_index = next(
+        (i for i in block if lines[i].startswith(bad_paths_keys)),
+        None,
+    )
+    if bad_index is None:
+        print(f"  Skipped {mkdocs_yml}: `paths` key already in the right place")
+        return
+
+    python_index = next((i for i in block if lines[i].startswith(python_key)), None)
+    if python_index is None:
+        manual_step(
+            f"{mkdocs_yml} has a misplaced `paths` key but no `python` handler; "
+            "please move the key manually."
+        )
+        return
+
+    paths_value = lines[bad_index].split(":", 1)[1].strip()
+    if not paths_value:
+        manual_step(
+            f"The `paths` key in {mkdocs_yml} spans several lines; please move "
+            "it under the `python` handler manually."
+        )
+        return
+
+    del lines[bad_index]
+    if bad_index < python_index:
+        python_index -= 1
+    lines.insert(python_index + 1, f"          paths: {paths_value}\n")
+
+    try:
+        replace_file_atomically(mkdocs_yml, "".join(lines))
+        print(f"  Updated {mkdocs_yml}: moved `paths` under the `python` handler")
+    except OSError as exc:
+        manual_step(
+            f"Failed to update {mkdocs_yml}: {exc}. Please move the "
+            "mkdocstrings `paths` key under `handlers.python` manually."
+        )
 
 
 def manual_step(message: str) -> None:
