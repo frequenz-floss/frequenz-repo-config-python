@@ -8,6 +8,9 @@
 
 <!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
+- The `mypy` nox session now runs `mypy` once, without paths, so it checks the paths listed in the `files` option of the `tool.mypy` section in `pyproject.toml`, and it fails if that option is not set. Before, it ran `mypy` twice: once for the configured `packages` and once for the existing development paths (`tests`, `docs`, etc.). The migration script sets `files` for you; projects not using it need to replace `packages` with `mypy_path` and `files` themselves, see the `mypy` section of the [`frequenz.repo.config` documentation](https://frequenz-floss.github.io/frequenz-repo-config-python/latest/reference/frequenz/repo/config/) for an example.
+- The `mypy` nox session now also warns about Python files in the repository (tracked by git, or untracked but not ignored) that `mypy` doesn't check, meaning not covered by `files` nor matched by `exclude`. In CI (when the `CI` environment variable is set to anything but an empty string, `0`, `false`, `no` or `off`, case-insensitive) this is an error instead, unless `Config.mypy_unchecked_files_error_in_ci` is set to `False`. Add those files to `files` if they should be type-checked, or to `exclude` if not.
+
 ### Cookiecutter template
 
 All upgrading should be done via the migration script or regenerating the templates.
@@ -20,6 +23,8 @@ But you might still need to adapt your code:
 
 <!-- Here upgrade steps for cookiecutter specifically -->
 
+- `mypy` now checks every package in the source directory, not only the one listed in `packages`, so it might report errors in code that was never type-checked before. The migration script only adds well-known locations to `files` (the source directory, `tests`/`pytests`, `examples`, `benchmarks`, `docs` and `noxfile.py`), and reports any other Python files as a manual step, so you can decide whether to add them to `files` or `exclude`. This includes paths your `noxfile.py` adds to the checked paths.
+
 ## New Features
 
 <!-- Here goes the main new features and examples or instructions on how to use them -->
@@ -27,6 +32,8 @@ But you might still need to adapt your code:
 ### Cookiecutter template
 
 <!-- Here new features for cookiecutter specifically -->
+
+- `mypy` is now configured with `mypy_path` and `files` instead of `packages`, so a plain `mypy` run checks the whole source directory plus tests, docs and `noxfile.py`, the same as the nox session.
 
 ## Bug Fixes
 
