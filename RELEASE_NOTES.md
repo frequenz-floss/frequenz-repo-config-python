@@ -31,7 +31,7 @@ But you might still need to adapt your code:
 
 ### Cookiecutter template
 
-<!-- Here new features for cookiecutter specifically -->
+- mkdocstrings [relative cross-references](https://mkdocstrings.github.io/python/usage/configuration/docstrings/#relative_crossrefs) are now enabled, so docstrings can refer to objects relative to the one being documented, like `[.member]` or `[..sibling]`, instead of using the full path. The migration script enables them in existing projects too, unless `mkdocs.yml` already sets `relative_crossrefs`, in which case it is left alone.
 
 - `mypy` is now configured with `mypy_path` and `files` instead of `packages`, so a plain `mypy` run checks the whole source directory plus tests, docs and `noxfile.py`, the same as the nox session.
 
