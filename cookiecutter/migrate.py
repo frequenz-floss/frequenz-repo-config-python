@@ -48,6 +48,9 @@ def main() -> None:
     print("Configuring mypy to check paths instead of packages...")
     migrate_mypy_files()
     print("=" * 72)
+    print("Enabling mkdocstrings relative cross-references in mkdocs.yml...")
+    enable_mkdocstrings_relative_crossrefs()
+    print("=" * 72)
     print()
 
     if _manual_steps:
@@ -722,6 +725,117 @@ def _report_mypy_unchecked_files(
         "or to `exclude` if not. Otherwise the nox `mypy` session warns about them, "
         "and fails in CI."
     )
+
+
+def enable_mkdocstrings_relative_crossrefs() -> None:
+    """Enable relative cross-references in the mkdocstrings Python handler.
+
+    Adds `relative_crossrefs: true` to `plugins.mkdocstrings.handlers.python.options`,
+    keeping the options in alphabetical order, as the template does. A file that
+    already sets the option is left untouched, whatever its value, so a project
+    that disabled it on purpose keeps it disabled.
+
+    Anything that does not look like what the template generates is reported as
+    a manual step instead of guessed at.
+    """
+    mkdocs_yml = Path("mkdocs.yml")
+    option = "relative_crossrefs"
+    manual_fix = (
+        f"Please add `{option}: true` to "
+        "`plugins.mkdocstrings.handlers.python.options` manually."
+    )
+
+    if not mkdocs_yml.exists():
+        manual_step(
+            f"{mkdocs_yml} does not exist. Every project should have one; "
+            f"please check why it is missing. {manual_fix}"
+        )
+        return
+
+    try:
+        lines = mkdocs_yml.read_text(encoding="utf-8").splitlines(keepends=True)
+    except OSError as exc:
+        manual_step(f"Failed to read {mkdocs_yml}: {exc}. {manual_fix}")
+        return
+
+    if any(line.lstrip().startswith(f"{option}:") for line in lines):
+        print(f"  Skipped {mkdocs_yml}: `{option}` already set")
+        return
+
+    def indent_of(line: str) -> int:
+        return len(line) - len(line.lstrip())
+
+    def find_child(start: int, end: int, key: str) -> tuple[int, int] | None:
+        """Find a key in `lines[start:end]` and the end of its block."""
+        index = next(
+            (i for i in range(start, end) if lines[i].rstrip() == key),
+            None,
+        )
+        if index is None:
+            return None
+        indent = indent_of(key)
+        # The block ends at the first non-blank line indented at most as much
+        # as the key itself.
+        block_end = next(
+            (
+                i
+                for i in range(index + 1, end)
+                if lines[i].strip() and indent_of(lines[i]) <= indent
+            ),
+            end,
+        )
+        return index, block_end
+
+    options = None
+    mkdocstrings = find_child(0, len(lines), "  - mkdocstrings:")
+    if mkdocstrings is not None:
+        handlers = find_child(mkdocstrings[0] + 1, mkdocstrings[1], "      handlers:")
+        if handlers is not None:
+            python = find_child(handlers[0] + 1, handlers[1], "        python:")
+            if python is not None:
+                options = find_child(python[0] + 1, python[1], "          options:")
+    if options is None:
+        manual_step(
+            f"Could not find the mkdocstrings `handlers.python.options` block "
+            f"in {mkdocs_yml}. {manual_fix}"
+        )
+        return
+
+    options_index, options_end = options
+    option_indent = " " * 12
+    keys = [
+        i
+        for i in range(options_index + 1, options_end)
+        if indent_of(lines[i]) == len(option_indent)
+        and not lines[i].lstrip().startswith("#")
+    ]
+    if not keys:
+        manual_step(
+            f"The mkdocstrings `handlers.python.options` block in {mkdocs_yml} "
+            f"is empty or has an unexpected indentation. {manual_fix}"
+        )
+        return
+
+    # Insert before the first option sorting after ours, or after the last one
+    # (and its value, if it spans several lines) otherwise.
+    insert_index = next(
+        (i for i in keys if lines[i].lstrip().split(":", 1)[0] > option), None
+    )
+    if insert_index is None:
+        insert_index = 1 + max(
+            i for i in range(keys[-1], options_end) if lines[i].strip()
+        )
+    else:
+        # Keep any comments right above the next option attached to it.
+        while lines[insert_index - 1].lstrip().startswith("#"):
+            insert_index -= 1
+    lines.insert(insert_index, f"{option_indent}{option}: true\n")
+
+    try:
+        replace_file_atomically(mkdocs_yml, "".join(lines))
+        print(f"  Updated {mkdocs_yml}: added `{option}: true`")
+    except OSError as exc:
+        manual_step(f"Failed to update {mkdocs_yml}: {exc}. {manual_fix}")
 
 
 def manual_step(message: str) -> None:
