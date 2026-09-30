@@ -105,6 +105,10 @@ plugins:
         python:
           paths: ["src"]
           options:
+            extensions:
+            - griffe_warnings_deprecated:
+                kind: deprecated
+                title: Deprecated
             docstring_section_style: spacy
             inherited_members: true
             merge_init_into_class: false

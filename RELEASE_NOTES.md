@@ -2,7 +2,7 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release documents deprecations with a `Deprecated:` admonition, generated automatically from the `typing_extensions.deprecated` decorator wherever there is one.
 
 ## Upgrading
 
@@ -21,7 +21,10 @@ curl -sSLf https://raw.githubusercontent.com/frequenz-floss/frequenz-repo-config
 
 But you might still need to adapt your code:
 
-<!-- Here upgrade steps for cookiecutter specifically -->
+- Deprecations are now documented with a `Deprecated:` admonition, never `Warning: Deprecated`, and never with a custom title, since a title replaces the word "Deprecated" in the rendered output. The migration script rewrites a plain `Warning: Deprecated` into `Deprecated:` on its own, and reports the rest:
+
+  - Symbols carrying both a `deprecated` decorator and a hand-written admonition, which would now be documented twice. Delete the hand-written one, moving into the decorator message anything it says that the message does not.
+  - Variants such as `Note: Deprecated`, `Warning: Deprecation` or a custom title, where only a human can tell what was meant.
 
 - `mypy` now checks every package in the source directory, not only the one listed in `packages`, so it might report errors in code that was never type-checked before. The migration script only adds well-known locations to `files` (the source directory, `tests`/`pytests`, `examples`, `benchmarks`, `docs` and `noxfile.py`), and reports any other Python files as a manual step, so you can decide whether to add them to `files` or `exclude`. This includes paths your `noxfile.py` adds to the checked paths.
 
@@ -34,6 +37,10 @@ But you might still need to adapt your code:
 - mkdocstrings [relative cross-references](https://mkdocstrings.github.io/python/usage/configuration/docstrings/#relative_crossrefs) are now enabled, so docstrings can refer to objects relative to the one being documented, like `[.member]` or `[..sibling]`, instead of using the full path. The migration script enables them in existing projects too, unless `mkdocs.yml` already sets `relative_crossrefs`, in which case it is left alone.
 
 - `mypy` is now configured with `mypy_path` and `files` instead of `packages`, so a plain `mypy` run checks the whole source directory plus tests, docs and `noxfile.py`, the same as the nox session.
+
+- Generated projects now render deprecations as a `Deprecated:` admonition, styled like a warning but with its own colour and a grave stone icon.
+
+  The [`griffe-warnings-deprecated`](https://mkdocstrings.github.io/griffe-warnings-deprecated/) extension builds that admonition from the message of a `typing_extensions.deprecated` decorator, so the text is written once and serves as both the runtime warning and the documentation. Where no decorator can reach, which is module-level aliases, individual function arguments, enum members and whole modules, the same admonition is written by hand.
 
 ## Bug Fixes
 
