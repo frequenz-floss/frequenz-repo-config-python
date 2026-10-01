@@ -2,7 +2,7 @@
 # Copyright © 2023 Frequenz Energy-as-a-Service GmbH
 
 [build-system]
-requires = ["setuptools == 84.0.0", "setuptools_scm[toml] == 10.2.1"]
+requires = ["setuptools == 84.0.0", "setuptools_scm[toml] == 10.3.4"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -68,7 +68,7 @@ extra-lint-examples = [
   "sybil >= 6.1.1, < 11",
 ]
 dev-flake8 = [
-  "flake8 == 7.3.0",
+  "flake8 == 7.4.1",
   "flake8-datetimez == 26.8.1",
   "flake8-docstrings == 1.7.0",
   "flake8-pyproject == 1.2.4", # For reading the flake8 config from pyproject.toml
@@ -78,7 +78,7 @@ dev-flake8 = [
 dev-formatting = ["black == 26.5.1", "isort == 9.0.1"]
 dev-mkdocs = [
   "black == 26.5.1",
-  "Markdown == 3.10.3",
+  "Markdown == 3.11",
   "griffe-warnings-deprecated == 1.1.1",
   "mike == 2.2.0",
   "mkdocs-gen-files == 0.6.1",
