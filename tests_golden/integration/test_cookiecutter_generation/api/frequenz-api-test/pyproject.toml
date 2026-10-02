@@ -171,6 +171,14 @@ filterwarnings = [
   "error",
   "once::DeprecationWarning",
   "once::PendingDeprecationWarning",
+  # But using our own deprecated symbols is an error, so we don't release code
+  # still using our own deprecated symbols, which will be noise for users.
+  # This is only a heuristic: it catches deprecation messages mentioning the
+  # fully qualified name of the deprecated symbol, as in "pkg.mod.OldThing is
+  # deprecated since v1.2.0. Use [pkg.mod.NewThing][] instead.". This is the
+  # recommended style in the deprecation guide:
+  # https://github.com/frequenz-floss/docs/blob/v0.x.x/python/deprecations.md
+  'error:.*frequenz\.api\.test\.[\w\.]+ (is|was) deprecated:DeprecationWarning',
   # We ignore warnings about protobuf gencode version being one version older
   # than the current version, as this is supported by protobuf, and we expect to
   # have such cases. If we go too far, we will get a proper error anyways.

@@ -26,6 +26,10 @@ But you might still need to adapt your code:
   - Symbols carrying both a `deprecated` decorator and a hand-written admonition, which would now be documented twice. Delete the hand-written one, moving into the decorator message anything it says that the message does not.
   - Variants such as `Note: Deprecated`, `Warning: Deprecation` or a custom title, where only a human can tell what was meant.
 
+- Tests using a symbol deprecated by the project itself now fail. Stop using the deprecated symbol, or, when the use is deliberate, wrap it in [`pytest.deprecated_call()`](https://docs.pytest.org/en/stable/reference/reference.html#pytest.deprecated_call) (which is how a deprecation should be tested anyway) or mark the test with `@pytest.mark.filterwarnings("once::DeprecationWarning")`.
+
+- The migration script can't add the filter if warnings are still configured through `addopts` instead of `filterwarnings`, or if the project's Python package can't be determined. It says so and prints what to add by hand.
+
 - `mypy` now checks every package in the source directory, not only the one listed in `packages`, so it might report errors in code that was never type-checked before. The migration script only adds well-known locations to `files` (the source directory, `tests`/`pytests`, `examples`, `benchmarks`, `docs` and `noxfile.py`), and reports any other Python files as a manual step, so you can decide whether to add them to `files` or `exclude`. This includes paths your `noxfile.py` adds to the checked paths.
 
 ## New Features
@@ -41,6 +45,22 @@ But you might still need to adapt your code:
 - Generated projects now render deprecations as a `Deprecated:` admonition, styled like a warning but with its own colour and a grave stone icon.
 
   The [`griffe-warnings-deprecated`](https://mkdocstrings.github.io/griffe-warnings-deprecated/) extension builds that admonition from the message of a `typing_extensions.deprecated` decorator, so the text is written once and serves as both the runtime warning and the documentation. Where no decorator can reach, which is module-level aliases, individual function arguments, enum members and whole modules, the same admonition is written by hand.
+
+- Generated projects now treat their own deprecations as errors in `pytest`, while deprecations coming from dependencies stay warnings, as they can't always be fixed right away:
+
+  ```toml
+  [tool.pytest.ini_options]
+  filterwarnings = [
+    "error",
+    "once::DeprecationWarning",
+    "once::PendingDeprecationWarning",
+    'error:.*my\.own\.package\.[\w\.]+ (is|was) deprecated:DeprecationWarning',
+  ]
+  ```
+
+  This is a heuristic: it only catches messages mentioning the fully qualified name of the deprecated symbol, as in `"my.own.package.mod.OldThing is deprecated since v1.2.0. Use [my.own.package.mod.NewThing][] instead."`, which is the style prescribed by the [deprecations guide](https://github.com/frequenz-floss/docs/blob/v0.x.x/python/deprecations.md).
+
+  The entry goes after the `once::` ones, as later filters take precedence, and before any project-specific filter, which can then still override it.
 
 ## Bug Fixes
 
