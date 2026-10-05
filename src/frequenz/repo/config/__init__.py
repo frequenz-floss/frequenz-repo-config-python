@@ -277,6 +277,10 @@ use [`pytest`](https://pypi.org/project/pytest/) to automatically collect all th
 examples wrapped in triple backticks (````python`) within our docstrings and validate
 them using [`pylint`](https://pypi.org/project/pylint/).
 
+Code blocks with extra options after the language, like `python show_lines="2:"` or
+`python title="example.py"`, are also validated, and all the lines are checked,
+including the ones hidden from the rendered documentation by those options.
+
 To do so there is some setup that's needed:
 
 1. Add a `conftest.py` file to the root directory containing your source code with the
