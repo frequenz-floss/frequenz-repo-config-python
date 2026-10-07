@@ -2,7 +2,7 @@
 
 ## Summary
 
-This release documents deprecations with a `Deprecated:` admonition, generated automatically from the `typing_extensions.deprecated` decorator wherever there is one.
+This release documents deprecations with a `Deprecated:` admonition, generated automatically from the `typing_extensions.deprecated` decorator wherever there is one. It also bumps the minimum supported dependencies for protobuf, pytest and setuptools to exclude vulnerable versions.
 
 ## Upgrading
 
@@ -10,6 +10,7 @@ This release documents deprecations with a `Deprecated:` admonition, generated a
 
 - The `mypy` nox session now runs `mypy` once, without paths, so it checks the paths listed in the `files` option of the `tool.mypy` section in `pyproject.toml`, and it fails if that option is not set. Before, it ran `mypy` twice: once for the configured `packages` and once for the existing development paths (`tests`, `docs`, etc.). The migration script sets `files` for you; projects not using it need to replace `packages` with `mypy_path` and `files` themselves, see the `mypy` section of the [`frequenz.repo.config` documentation](https://frequenz-floss.github.io/frequenz-repo-config-python/latest/reference/frequenz/repo/config/) for an example.
 - The `mypy` nox session now also warns about Python files in the repository (tracked by git, or untracked but not ignored) that `mypy` doesn't check, meaning not covered by `files` nor matched by `exclude`. In CI (when the `CI` environment variable is set to anything but an empty string, `0`, `false`, `no` or `off`, case-insensitive) this is an error instead, unless `Config.mypy_unchecked_files_error_in_ci` is set to `False`. Add those files to `files` if they should be type-checked, or to `exclude` if not.
+- The `api` extra now requires `protobuf >= 7.35.1, < 9` and `setuptools >= 83.0.0, < 85`. The `extra-lint-examples` extra now requires `pytest >= 9.0.3, < 10`.
 
 ### Cookiecutter template
 
