@@ -57,14 +57,15 @@ actor = []
 api = [
   "grpcio-tools >= 1.47.0, < 2",
   "mypy-protobuf >= 3.0.0, < 6",
-  "setuptools >= 67.6.0, < 85",
+  "protobuf >= 7.35.1, < 9",
+  "setuptools >= 83.0.0, < 85",
 ]
 app = []
 lib = []
 model = []
 extra-lint-examples = [
   "pylint >= 2.17.3, < 5",
-  "pytest >= 7.3.0, < 10",
+  "pytest >= 9.0.3, < 10",
   "sybil >= 6.1.1, < 11",
 ]
 dev-flake8 = [
@@ -90,7 +91,7 @@ dev-mkdocs = [
 ]
 dev-mypy = [
   "mypy == 2.3.1",
-  "types-setuptools >= 67.6.0, < 85", # Should match the api dependency
+  "types-setuptools >= 83.0.0, < 85", # Should match the api dependency
   "types-Markdown == 3.10.2.20260712",
   "types-PyYAML == 6.0.12.20260906",
   "types-babel == 2.11.0.15",
@@ -103,7 +104,7 @@ dev-pylint = [
   # dev-pytest already defines a dependency to pylint because of the examples
   # For checking the noxfile, docs/ script, and tests
   "frequenz-repo-config[dev-mkdocs,dev-noxfile,dev-pytest]",
-  "setuptools >= 67.6.0, < 85", # Should match the api dependency
+  "setuptools >= 83.0.0, < 85", # Should match the api dependency
 ]
 dev-pytest = [
   "pytest == 9.1.1",

@@ -143,12 +143,12 @@ dev-flake8 = [
   "pydoclint == 0.3.1",
   "pydocstyle == 6.3.0",
 ]
-dev-formatting = ["black == 23.3.0", "isort == 5.12.0"]
+dev-formatting = ["black == 26.5.1", "isort == 5.12.0"]
 dev-mkdocs = [
   "mike == 1.1.2",
   "mkdocs-gen-files == 0.5.0",
   "mkdocs-literate-nav == 0.6.0",
-  "mkdocs-material == 9.1.16",
+  "mkdocs-material == 9.7.7",
   "mkdocs-section-index == 0.3.5",
   "mkdocstrings[python] == 0.22.0",
 ]
@@ -164,7 +164,7 @@ dev-pylint = [
   "my-package[dev-mkdocs,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 8.0.0",
+  "pytest == 9.1.1",
   "pytest-asyncio == 0.21.0",
   "pytest-mock == 3.10.0",
 ]
@@ -412,7 +412,7 @@ dependencies to your project, for example:
 
 ```toml
 requires = [
-  "setuptools >= 67.3.2, < 68",
+  "setuptools >= 83.0.0, < 85",
   "setuptools_scm[toml] >= 7.1.0, < 8",
   "frequenz-repo-config[api]{{version_requirement}}",
 ]
@@ -423,6 +423,7 @@ dependencies = [
   "frequenz-api-common >= 0.2.0, < 0.3.0",
   "googleapis-common-protos >= 1.56.2, < 2",
   "grpcio >= 1.51.1, < 2",
+  "protobuf >= 7.35.1, < 9",
 ]
 ```
 
