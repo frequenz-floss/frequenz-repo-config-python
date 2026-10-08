@@ -24,12 +24,15 @@ pytest_collect_file = Sybil(**examples.get_sybil_arguments()).pytest()
 
 import ast
 import os
+import re
 import subprocess
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from sybil import Example
+from sybil import Document, Example, Region
 from sybil.evaluators.python import pad
+from sybil.parsers.abstract.lexers import LexerCollection
 from sybil.parsers.markdown import CodeBlockParser, PythonCodeBlockParser
 from sybil.typing import Evaluator
 
@@ -100,6 +103,45 @@ def _path_to_import_statement(path: Path) -> str:
     return import_statement
 
 
+_FENCE_LANGUAGE_RE = re.compile(r"^\{?\s*\.?(?P<language>[^\s{}]+)")
+"""Matches the language at the start of a fence's info string.
+
+The language is the first word, optionally preceded by `{` and/or `.` (as in
+`{.python}`), so these all match `python`: `python`, `python show_lines="2:"`,
+`python title="x.py"`, `{.python hl_lines="1"}`.
+"""
+
+
+class _LanguageOnlyLexers(LexerCollection):
+    """A collection of lexers that keeps only the language in the `arguments` lexeme.
+
+    Sybil's Markdown lexers return the whole info string of a fenced code block as
+    the `arguments` lexeme (for example, `python show_lines="2:"`), and the code block
+    parsers only accept a block if `arguments` is *exactly* the wanted language, so
+    blocks with extra options after the language (like the ones used by
+    [`pymdownx-superfence-filter-lines`](https://github.com/frequenz-floss/pymdownx-superfence-filter-lines-python),
+    or `title`, `hl_lines`, `linenums`, etc.) would be silently skipped.
+
+    This collection strips everything but the language from `arguments`, so those
+    blocks are parsed and linted like any other.
+    """
+
+    def __call__(self, document: Document) -> Iterable[Region]:
+        """Lex the document, leaving only the language in `arguments`.
+
+        Args:
+            document: The document to lex.
+
+        Yields:
+            The regions found, with `arguments` containing only the language.
+        """
+        for region in super().__call__(document):
+            arguments = region.lexemes["arguments"]
+            if match := _FENCE_LANGUAGE_RE.match(arguments):
+                region.lexemes["arguments"] = match.group("language")
+            yield region
+
+
 class _CustomPythonCodeBlockParser(CodeBlockParser):
     """A code block parser that validates extracted code examples using pylint.
 
@@ -116,11 +158,16 @@ class _CustomPythonCodeBlockParser(CodeBlockParser):
     line numbers are correct.
 
     Pylint warnings which are unimportant for code examples are disabled.
+
+    Code blocks with extra options after the language in the opening fence (for
+    example, `python show_lines="2:"`) are also linted, including the lines that might
+    be hidden from the rendered documentation by those options.
     """
 
     def __init__(self, language: str | None = None, _: Evaluator | None = None) -> None:
         """Initialize the parser."""
         super().__init__(language, self.evaluate)
+        self.lexers = _LanguageOnlyLexers(self.lexers)
 
     def evaluate(self, example: Example) -> None | str:
         """Validate the extracted code example using pylint.
