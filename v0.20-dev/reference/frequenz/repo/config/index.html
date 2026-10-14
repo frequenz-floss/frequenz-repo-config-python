@@ -2615,6 +2615,9 @@ directory).</p>
 use <a href="https://pypi.org/project/pytest/"><code>pytest</code></a> to automatically collect all the
 examples wrapped in triple backticks (<code>```python</code>) within our docstrings and validate
 them using <a href="https://pypi.org/project/pylint/"><code>pylint</code></a>.</p>
+<p>Code blocks with extra options after the language, like <code>python show_lines="2:"</code> or
+<code>python title="example.py"</code>, are also validated, and all the lines are checked,
+including the ones hidden from the rendered documentation by those options.</p>
 <p>To do so there is some setup that's needed:</p>
 <ol>
 <li>
