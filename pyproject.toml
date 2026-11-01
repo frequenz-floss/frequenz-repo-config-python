@@ -79,15 +79,15 @@ dev-flake8 = [
 dev-formatting = ["black == 26.5.1", "isort == 9.0.2"]
 dev-mkdocs = [
   "black == 26.5.1",
-  "Markdown == 3.11",
-  "griffe-warnings-deprecated == 1.1.1",
+  "Markdown == 3.11.2",
+  "griffe-warnings-deprecated == 1.1.2",
   "mike == 2.2.0",
   "mkdocs-gen-files == 0.6.1",
   "mkdocs-literate-nav == 0.6.3",
   "mkdocs-macros-plugin == 1.5.0",
   "mkdocs-material == 9.7.7",
-  "mkdocstrings[python] == 1.0.7",
-  "mkdocstrings-python == 2.0.9",
+  "mkdocstrings[python] == 1.0.8",
+  "mkdocstrings-python == 2.0.10",
 ]
 dev-mypy = [
   "mypy == 2.3.1",
