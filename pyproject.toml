@@ -40,7 +40,7 @@ dependencies = [
   "nox >= 2022.11.21",
   "mkdocs-gen-files >= 0.4.0, < 0.7.0",
   "semver >= 3.0.1, < 4",
-  "github-action-utils >= 1.1.0, < 2",
+  "github-action-utils >= 1.1.0, < 3",
   "mkdocstrings-python >= 1.14.6, < 3",
 ]
 dynamic = ["version"]
