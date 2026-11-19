@@ -54,11 +54,11 @@ def main() -> None:
     print("Enabling mkdocstrings relative cross-references in mkdocs.yml...")
     enable_mkdocstrings_relative_crossrefs()
     print("=" * 72)
-    print("Adding the griffe-warnings-deprecated dependency...")
-    migrate_griffe_warnings_deprecated_dependency()
+    print("Adding the griffe-frequenz-core dependency...")
+    migrate_griffe_frequenz_core_dependency()
     print("=" * 72)
-    print("Enabling the griffe-warnings-deprecated extension in mkdocs.yml...")
-    migrate_griffe_warnings_deprecated_extension()
+    print("Enabling the griffe-frequenz-core extension in mkdocs.yml...")
+    migrate_griffe_frequenz_core_extension()
     print("=" * 72)
     print("Adding the `Deprecated` admonition style to mkdocstrings.css...")
     migrate_deprecated_admonition_css()
@@ -856,8 +856,11 @@ def enable_mkdocstrings_relative_crossrefs() -> None:
         manual_step(f"Failed to update {mkdocs_yml}: {exc}. {manual_fix}")
 
 
-_GRIFFE_WARNINGS_DEPRECATED_REQUIREMENT = '"griffe-warnings-deprecated == 1.1.1",'
+_GRIFFE_FREQUENZ_CORE_REQUIREMENT = '"griffe-frequenz-core == 1.1.0",'
 """The ``dev-mkdocs`` requirement added by the migration."""
+
+_GRIFFE_FREQUENZ_CORE_EXTENSION = "griffe_frequenz_core.deprecations"
+"""The mkdocstrings extension enabled by the migration."""
 
 # The icon is `material/grave-stone`, from the set shipped by mkdocs-material.
 # It is kept in its own constant because the data URI is far too long for one
@@ -907,13 +910,14 @@ _DEPRECATED_ADMONITION_RE = re.compile(r"^(?P<indent>[ \t]*)Deprecated:[ \t]*$")
 _DEPRECATION_MENTION_RE = re.compile(r"deprecat", re.IGNORECASE)
 """Any mention of a deprecation, however it is worded."""
 
-_DEPRECATION_HELPERS = frozenset({"deprecated_member"})
+_DEPRECATION_HELPERS = frozenset({"deprecated_member", "DeprecatedMember"})
 """Helpers that deprecate a symbol the `deprecated` decorator cannot reach.
 
-`frequenz.core.enum.deprecated_member` marks an enum member, and nothing
-renders its message, so the member's docstring is the only place a reader can
-learn that it is deprecated. A call to one is worth reporting even though it
-says nothing in prose.
+`frequenz.core.enum.deprecated_member` and `DeprecatedMember` mark an enum
+member. The griffe extension only writes a complete notice for the member when
+both `new_name` and `since` are passed, otherwise the member's docstring needs
+a hand-written one. Such a call is worth reporting even though it says nothing
+in prose.
 """
 
 _DEPRECATIONS_GUIDE_URL = (
@@ -947,14 +951,14 @@ report under itself.
 class _DeprecationReport:
     """The deprecations a scan of the sources leaves for a human to deal with."""
 
-    duplicated: list[str] = field(default_factory=list)
-    """Admonitions on a symbol that a `deprecated` decorator already marks."""
+    undocumented: list[str] = field(default_factory=list)
+    """Symbols a `deprecated` decorator marks without a `Deprecated:` notice."""
 
     ambiguous: list[str] = field(default_factory=list)
     """Admonitions that are not a plain `Warning: Deprecated`."""
 
     unrendered: list[str] = field(default_factory=list)
-    """Symbols a helper deprecates without the documentation showing it."""
+    """Symbols a helper deprecates without a notice the extension can write."""
 
     unmarked: list[str] = field(default_factory=list)
     """Docstrings talking about a deprecation that nothing marks as one."""
@@ -977,108 +981,140 @@ class _Docstring:
     """Whether that symbol carries a `deprecated` decorator."""
 
     helper_line: int | None = None
-    """Where a helper from `_DEPRECATION_HELPERS` deprecates that symbol."""
+    """Where a helper from `_DEPRECATION_HELPERS` deprecates that symbol.
+
+    Only set when the call doesn't pass both `new_name` and `since`, so the
+    griffe extension can't write a complete notice for it.
+    """
 
 
-def migrate_griffe_warnings_deprecated_dependency() -> None:
-    """Add ``griffe-warnings-deprecated`` to the ``dev-mkdocs`` dependencies.
+def migrate_griffe_frequenz_core_dependency() -> None:
+    """Add ``griffe-frequenz-core`` to the ``dev-mkdocs`` dependencies.
 
-    The griffe extension turns the message of a
-    `typing_extensions.deprecated` decorator into a `Deprecated:` admonition
-    in the rendered documentation, so it is only needed to build the docs.
+    Its griffe extension documents deprecations in the rendered documentation,
+    so it is only needed to build the docs.
 
-    The step is skipped when the requirement is already there, which is the
-    case for projects that adopted the styling by hand before this release.
+    It replaces ``griffe-warnings-deprecated``, which a few projects adopted by
+    hand before this release, so that requirement is replaced in place, or
+    removed when the new one is already there. The step is skipped when only
+    the new requirement is there.
     """
     pyproject = Path("pyproject.toml")
+    manual_hint = (
+        f"Please add `{_GRIFFE_FREQUENZ_CORE_REQUIREMENT}` to the `dev-mkdocs` "
+        "optional dependencies, and remove `griffe-warnings-deprecated` if "
+        "present, manually."
+    )
     if not pyproject.exists():
-        manual_step(
-            f"{pyproject} was not found. Please add "
-            f"`{_GRIFFE_WARNINGS_DEPRECATED_REQUIREMENT}` to the `dev-mkdocs` "
-            "optional dependencies manually."
-        )
+        manual_step(f"{pyproject} was not found. {manual_hint}")
         return
 
     try:
         content = pyproject.read_text(encoding="utf-8")
     except OSError as exc:
+        manual_step(f"Failed to read {pyproject}: {exc}. {manual_hint}")
+        return
+
+    has_new = "griffe-frequenz-core" in content
+    old_requirement = re.search(
+        r'(?m)^(?P<indent>[ \t]*)"griffe-warnings-deprecated\b[^"\n]*",?[^\n]*\n',
+        content,
+    )
+
+    if old_requirement is not None:
+        if has_new:
+            new_content = (
+                content[: old_requirement.start()] + content[old_requirement.end() :]
+            )
+            message = "removed griffe-warnings-deprecated"
+        else:
+            new_content = (
+                content[: old_requirement.start()]
+                + f"{old_requirement['indent']}{_GRIFFE_FREQUENZ_CORE_REQUIREMENT}\n"
+                + content[old_requirement.end() :]
+            )
+            message = "replaced griffe-warnings-deprecated with griffe-frequenz-core"
+    elif "griffe-warnings-deprecated" in content:
         manual_step(
-            f"Failed to read {pyproject}: {exc}. Please add "
-            f"`{_GRIFFE_WARNINGS_DEPRECATED_REQUIREMENT}` to the `dev-mkdocs` "
-            "optional dependencies manually."
+            f"`griffe-warnings-deprecated` was found in {pyproject}, but not as "
+            f"a dependency on its own line. {manual_hint}"
         )
         return
-
-    if "griffe-warnings-deprecated" in content:
-        print(f"  Skipped {pyproject}: griffe-warnings-deprecated already present")
+    elif has_new:
+        print(f"  Skipped {pyproject}: griffe-frequenz-core already present")
         return
+    else:
+        section = re.search(r"(?ms)^dev-mkdocs\s*=\s*\[\n(?P<entries>.*?)^\]", content)
+        if section is None:
+            manual_step(
+                f"No `dev-mkdocs` dependency group found in {pyproject}. Please "
+                f"add `{_GRIFFE_FREQUENZ_CORE_REQUIREMENT}` to the group that "
+                "installs the documentation tooling manually."
+            )
+            return
 
-    section = re.search(r"(?ms)^dev-mkdocs\s*=\s*\[\n(?P<entries>.*?)^\]", content)
-    if section is None:
-        manual_step(
-            f"No `dev-mkdocs` dependency group found in {pyproject}. Please add "
-            f"`{_GRIFFE_WARNINGS_DEPRECATED_REQUIREMENT}` to the group that "
-            "installs the documentation tooling manually."
+        entries = section["entries"].splitlines(keepends=True)
+        indent = next(
+            (
+                entry[: len(entry) - len(entry.lstrip())]
+                for entry in entries
+                if entry.lstrip().startswith('"')
+            ),
+            "  ",
         )
-        return
+        # The generated list is sorted by raw string, so `Markdown` sorts before
+        # `black`; inserting with the same comparison keeps migrated projects
+        # identical to freshly generated ones.
+        position = next(
+            (
+                index
+                for index, entry in enumerate(entries)
+                if entry.lstrip().startswith('"')
+                and entry.strip() > _GRIFFE_FREQUENZ_CORE_REQUIREMENT
+            ),
+            len(entries),
+        )
+        entries.insert(position, f"{indent}{_GRIFFE_FREQUENZ_CORE_REQUIREMENT}\n")
 
-    entries = section["entries"].splitlines(keepends=True)
-    indent = next(
-        (
-            entry[: len(entry) - len(entry.lstrip())]
-            for entry in entries
-            if entry.lstrip().startswith('"')
-        ),
-        "  ",
-    )
-    # The generated list is sorted by raw string, so `Markdown` sorts before
-    # `black`; inserting with the same comparison keeps migrated projects
-    # identical to freshly generated ones.
-    position = next(
-        (
-            index
-            for index, entry in enumerate(entries)
-            if entry.lstrip().startswith('"')
-            and entry.strip() > _GRIFFE_WARNINGS_DEPRECATED_REQUIREMENT
-        ),
-        len(entries),
-    )
-    entries.insert(position, f"{indent}{_GRIFFE_WARNINGS_DEPRECATED_REQUIREMENT}\n")
-
-    new_content = (
-        content[: section.start("entries")]
-        + "".join(entries)
-        + content[section.end("entries") :]
-    )
+        new_content = (
+            content[: section.start("entries")]
+            + "".join(entries)
+            + content[section.end("entries") :]
+        )
+        message = "added griffe-frequenz-core to dev-mkdocs"
 
     try:
         replace_file_atomically(pyproject, new_content)
-        print(f"  Updated {pyproject}: added griffe-warnings-deprecated to dev-mkdocs")
+        print(f"  Updated {pyproject}: {message}")
     except OSError as exc:
-        manual_step(
-            f"Failed to update {pyproject}: {exc}. Please add "
-            f"`{_GRIFFE_WARNINGS_DEPRECATED_REQUIREMENT}` to the `dev-mkdocs` "
-            "optional dependencies manually."
-        )
+        manual_step(f"Failed to update {pyproject}: {exc}. {manual_hint}")
 
 
-def migrate_griffe_warnings_deprecated_extension() -> None:
-    """Wire the griffe extension into the mkdocstrings handler in ``mkdocs.yml``.
+_GRIFFE_FREQUENZ_CORE_DEFAULTS = {"kind": "deprecated", "title": "Deprecated"}
+"""The `griffe_warnings_deprecated` options the new extension has as defaults."""
 
-    The extension is configured with `kind: deprecated` and
-    `title: Deprecated` so the generated admonition matches the hand-written
-    `Deprecated:` ones and picks up the same CSS.
 
-    The step is skipped when the extension is already configured, and a manual
-    step is emitted when the mkdocstrings handler options cannot be found.
+def migrate_griffe_frequenz_core_extension() -> None:
+    """Enable the griffe-frequenz-core extension in ``mkdocs.yml``.
+
+    The extension replaces `griffe_warnings_deprecated`, and both enabled make
+    a strict build fail, so an existing `griffe_warnings_deprecated` entry is
+    replaced in place. Its `kind: deprecated` and `title: Deprecated` options
+    are dropped, as they are the new extension's defaults, and any other
+    option is kept. When the new extension is already enabled, the old entry
+    is just removed.
+
+    Otherwise the extension is added to the mkdocstrings handler's
+    `extensions`, creating the option if needed. The step is skipped when
+    the extension is already enabled, and a manual step is emitted when the
+    mkdocstrings handler options cannot be found.
     """
     mkdocs = Path("mkdocs.yml")
     manual_hint = (
         "Please add the extension manually to the mkdocs.yml file under "
-        "plugins.mkdocstrings.handlers.python.options.extensions:\n"
-        "\t- griffe_warnings_deprecated:\n"
-        "\t    kind: deprecated\n"
-        "\t    title: Deprecated"
+        "plugins.mkdocstrings.handlers.python.options.extensions, removing "
+        "`griffe_warnings_deprecated` if present:\n"
+        f"\t- {_GRIFFE_FREQUENZ_CORE_EXTENSION}"
     )
 
     if not mkdocs.exists():
@@ -1091,11 +1127,164 @@ def migrate_griffe_warnings_deprecated_extension() -> None:
         manual_step(f"Failed to read {mkdocs}: {exc}. {manual_hint}")
         return
 
-    if "griffe_warnings_deprecated" in content:
-        print(f"  Skipped {mkdocs}: the extension is already configured")
-        return
-
     lines = content.splitlines(keepends=True)
+    has_new = any(
+        re.match(
+            rf"^\s*-\s+{re.escape(_GRIFFE_FREQUENZ_CORE_EXTENSION)}\s*:?\s*$", line
+        )
+        for line in lines
+    )
+    old_index = next(
+        (
+            index
+            for index, line in enumerate(lines)
+            if re.match(r"^\s*-\s+griffe_warnings_deprecated\b", line)
+        ),
+        None,
+    )
+
+    if old_index is not None:
+        replaced = _replace_griffe_warnings_deprecated(
+            mkdocs, lines, old_index, has_new=has_new, manual_hint=manual_hint
+        )
+        if replaced is None:
+            return
+        lines, message = replaced
+    elif "griffe_warnings_deprecated" in content:
+        manual_step(
+            f"`griffe_warnings_deprecated` was found in {mkdocs}, but not as an "
+            f"entry of its own in a block list. {manual_hint}"
+        )
+        return
+    elif has_new or _GRIFFE_FREQUENZ_CORE_EXTENSION in content:
+        print(f"  Skipped {mkdocs}: the extension is already enabled")
+        return
+    else:
+        if not _add_griffe_frequenz_core_extension(mkdocs, lines, manual_hint):
+            return
+        message = "enabled the griffe-frequenz-core extension"
+
+    try:
+        replace_file_atomically(mkdocs, "".join(lines))
+        print(f"  Updated {mkdocs}: {message}")
+    except OSError as exc:
+        manual_step(f"Failed to update {mkdocs}: {exc}. {manual_hint}")
+
+
+def _replace_griffe_warnings_deprecated(
+    mkdocs: Path,
+    lines: list[str],
+    old_index: int,
+    *,
+    has_new: bool,
+    manual_hint: str,
+) -> tuple[list[str], str] | None:
+    """Replace the `griffe_warnings_deprecated` entry of a list of extensions.
+
+    Args:
+        mkdocs: The path of the file, only used in messages.
+        lines: The lines of the file.
+        old_index: The index of the line with the old entry.
+        has_new: Whether the new extension is already enabled, in which case
+            the old entry is only removed.
+        manual_hint: What to do when the entry can't be replaced.
+
+    Returns:
+        The new lines and a description of the change, or `None` when the
+        entry was left alone and a manual step emitted.
+    """
+    entry = re.match(
+        r"^(?P<prefix>\s*-\s+)griffe_warnings_deprecated\s*:?\s*(?P<rest>.*?)\s*$",
+        lines[old_index],
+    )
+    if entry is None or (entry["rest"] and not entry["rest"].startswith("#")):
+        manual_step(
+            f"The `griffe_warnings_deprecated` entry in {mkdocs} has its options "
+            f"written inline, so it was left alone. {manual_hint}"
+        )
+        return None
+
+    # The entry's options are the lines indented deeper than its dash. Blank
+    # lines only belong to it when more options follow.
+    dash_indent = len(lines[old_index]) - len(lines[old_index].lstrip())
+    end = old_index + 1
+    for index in range(old_index + 1, len(lines)):
+        line = lines[index]
+        if not line.strip():
+            continue
+        if len(line) - len(line.lstrip()) <= dash_indent:
+            break
+        end = index + 1
+    options = lines[old_index + 1 : end]
+
+    kept = [
+        option
+        for option in options
+        if not _is_default_griffe_frequenz_core_option(option)
+    ]
+    kept_options = [option for option in kept if option.strip()]
+
+    if has_new:
+        if kept_options:
+            manual_step(
+                f"`griffe_warnings_deprecated` was removed from {mkdocs}, as "
+                f"`{_GRIFFE_FREQUENZ_CORE_EXTENSION}` was already enabled. "
+                "Please move these options to it, if still needed:\n"
+                + "\n".join(f"      {option.strip()}" for option in kept_options)
+            )
+        return lines[:old_index] + lines[end:], "removed griffe_warnings_deprecated"
+
+    if kept_options:
+        new_entry = [f"{entry['prefix']}{_GRIFFE_FREQUENZ_CORE_EXTENSION}:\n", *kept]
+        if any(re.match(r"^\s*kind\s*:", option) for option in kept_options):
+            manual_step(
+                f"The `{_GRIFFE_FREQUENZ_CORE_EXTENSION}` extension in {mkdocs} "
+                "keeps a custom `kind`. Hand-written `Deprecated:` notices are "
+                "only recognized with the default kind. The extension's "
+                "documentation explains how to write notices for yours: "
+                "https://github.com/frequenz-floss/griffe-frequenz-core#hand-written-admonitions"
+            )
+    else:
+        new_entry = [f"{entry['prefix']}{_GRIFFE_FREQUENZ_CORE_EXTENSION}\n"]
+
+    return (
+        lines[:old_index] + new_entry + lines[end:],
+        "replaced griffe_warnings_deprecated with griffe-frequenz-core",
+    )
+
+
+def _is_default_griffe_frequenz_core_option(line: str) -> bool:
+    """Tell whether an option line sets one of the new extension's defaults.
+
+    Args:
+        line: The option line.
+
+    Returns:
+        Whether the line can be dropped.
+    """
+    option = re.match(
+        r"""^\s*(?P<key>\w+)\s*:\s*(?P<quote>["']?)(?P<value>[^"'#]*?)(?P=quote)\s*(#.*)?$""",
+        line,
+    )
+    return (
+        option is not None
+        and _GRIFFE_FREQUENZ_CORE_DEFAULTS.get(option["key"]) == option["value"]
+    )
+
+
+def _add_griffe_frequenz_core_extension(
+    mkdocs: Path, lines: list[str], manual_hint: str
+) -> bool:
+    """Add the new extension to the mkdocstrings handler options.
+
+    Args:
+        mkdocs: The path of the file, only used in messages.
+        lines: The lines of the file, updated in place.
+        manual_hint: What to do when the options can't be found.
+
+    Returns:
+        Whether the extension was added.
+    """
     options_index = None
     in_mkdocstrings = False
     for index, line in enumerate(lines):
@@ -1109,23 +1298,41 @@ def migrate_griffe_warnings_deprecated_extension() -> None:
         manual_step(
             f"No mkdocstrings handler `options:` found in {mkdocs}. {manual_hint}"
         )
-        return
+        return False
 
     options_line = lines[options_index]
     indent = options_line[: len(options_line) - len(options_line.lstrip())]
+
+    for index in range(options_index + 1, len(lines)):
+        line = lines[index]
+        if not line.strip():
+            continue
+        line_indent = len(line) - len(line.lstrip())
+        if line_indent <= len(indent):
+            break
+        if line_indent == len(indent) + 2 and re.match(r"^\s*extensions\s*:\s*$", line):
+            following = next(
+                (later for later in lines[index + 1 :] if later.strip()), ""
+            )
+            item_indent = following[: len(following) - len(following.lstrip())]
+            if not following.lstrip().startswith("-"):
+                item_indent = f"{indent}  "
+            lines.insert(
+                index + 1, f"{item_indent}- {_GRIFFE_FREQUENZ_CORE_EXTENSION}\n"
+            )
+            return True
+        if line_indent == len(indent) + 2 and re.match(r"^\s*extensions\s*:", line):
+            manual_step(
+                f"The mkdocstrings `extensions` option in {mkdocs} is written "
+                f"inline, so it was left alone. {manual_hint}"
+            )
+            return False
+
     lines.insert(
         options_index + 1,
-        f"{indent}  extensions:\n"
-        f"{indent}  - griffe_warnings_deprecated:\n"
-        f"{indent}      kind: deprecated\n"
-        f"{indent}      title: Deprecated\n",
+        f"{indent}  extensions:\n{indent}  - {_GRIFFE_FREQUENZ_CORE_EXTENSION}\n",
     )
-
-    try:
-        replace_file_atomically(mkdocs, "".join(lines))
-        print(f"  Updated {mkdocs}: enabled the griffe_warnings_deprecated extension")
-    except OSError as exc:
-        manual_step(f"Failed to update {mkdocs}: {exc}. {manual_hint}")
+    return True
 
 
 def migrate_deprecated_admonition_css() -> None:
@@ -1176,11 +1383,14 @@ def migrate_deprecation_admonitions() -> None:
     the rendered output.  A plain `Warning: Deprecated` maps to `Deprecated:`
     without touching the body, so it is converted automatically.
 
-    Two cases are reported instead of being guessed at: an admonition on a
-    symbol that also carries a `typing_extensions.deprecated` decorator, which
-    must be deleted rather than rewritten because the griffe extension now
-    generates one, and any other variant, such as `Note: Deprecated` or a
-    custom title, where only a human can tell what was meant.
+    Any other variant, such as `Note: Deprecated` or a custom title, is
+    reported instead, since only a human can tell what was meant.
+
+    The griffe extension needs a hand-written notice for a symbol carrying a
+    `typing_extensions.deprecated` decorator, as the decorator only has the
+    runtime warning, and for an enum member whose helper call doesn't pass both
+    `new_name` and `since`. Without one, `mkdocs build --strict` fails, so
+    those symbols are reported too.
 
     Whatever is left is found by searching the docstrings for the word
     "deprecated" itself, since most projects announce their deprecations as
@@ -1234,13 +1444,13 @@ def migrate_deprecation_admonitions() -> None:
     if converted_total == 0:
         print("  No `Warning: Deprecated` admonitions found to convert")
 
-    if report.duplicated:
+    if report.undocumented:
         manual_step(
-            "These symbols carry both a `deprecated` decorator and a "
-            "hand-written admonition, so the documentation would now show two. "
-            "Please delete the hand-written one, moving anything it says that "
-            "the decorator message does not into the decorator message:\n"
-            + _indented_list(report.duplicated)
+            "These symbols carry a `deprecated` decorator, but their docstring "
+            "has no `Deprecated:` admonition. The decorator message is the "
+            "runtime warning, so `mkdocs build --strict` fails until the "
+            "docstring has a notice. Please add one to each of these "
+            "docstrings:\n" + _indented_list(report.undocumented)
         )
 
     if report.ambiguous:
@@ -1254,10 +1464,11 @@ def migrate_deprecation_admonitions() -> None:
     if report.unrendered:
         manual_step(
             "These symbols are deprecated by a helper, such as "
-            "`deprecated_member()`, that warns at runtime but renders nothing "
-            "in the documentation, and their docstring carries no "
-            "`Deprecated:` admonition, so the rendered page never says they "
-            "are deprecated. Please add one to each of these docstrings:\n"
+            "`deprecated_member()`, called without both `new_name` and "
+            "`since`, and their docstring has no `Deprecated:` admonition. "
+            "The griffe extension can't build a complete notice for them, so "
+            "`mkdocs build --strict` fails. Please pass both arguments, or "
+            "add a notice to each of these docstrings:\n"
             + _indented_list(report.unrendered)
         )
 
@@ -1271,7 +1482,7 @@ def migrate_deprecation_admonitions() -> None:
             + _indented_list(report.unmarked)
         )
 
-    if report.duplicated or report.ambiguous or report.unrendered or report.unmarked:
+    if report.undocumented or report.ambiguous or report.unrendered or report.unmarked:
         manual_step(
             "The deprecations guide explains how each of the deprecations "
             "listed above should be marked and documented:\n"
@@ -1369,10 +1580,7 @@ def _convert_deprecation_admonitions(  # pylint: disable=too-many-locals
                 continue
 
             location = f"{path}:{index + 1} ({docstring.name})"
-            if docstring.decorated:
-                report.duplicated.append(location)
-                reported.add(index)
-            elif kind == "Deprecated":
+            if kind == "Deprecated":
                 if title:
                     report.ambiguous.append(
                         f"{location}: custom title `{kind}: {title}`"
@@ -1388,11 +1596,16 @@ def _convert_deprecation_admonitions(  # pylint: disable=too-many-locals
 
     if not _is_test_code(path):
         headers, admonitions = _find_deprecated_admonitions(lines)
+        report.undocumented.extend(
+            _find_undocumented_deprecations(path, lines, docstrings, headers)
+        )
         report.unrendered.extend(
             _find_unrendered_deprecations(path, lines, docstrings, headers)
         )
         report.unmarked.extend(
-            _find_unmarked_deprecations(path, lines, docstrings, reported | admonitions)
+            _find_unmarked_deprecations(
+                path, lines, docstrings, headers, reported | admonitions
+            )
         )
 
     if converted == 0:
@@ -1447,15 +1660,51 @@ def _find_deprecated_admonitions(lines: list[str]) -> tuple[set[int], set[int]]:
     return headers, occupied
 
 
+def _find_undocumented_deprecations(
+    path: Path, lines: list[str], docstrings: list[_Docstring], headers: set[int]
+) -> list[str]:
+    """Find the symbols a decorator deprecates without a `Deprecated:` notice.
+
+    The decorator only carries the runtime warning, so the griffe extension
+    needs a hand-written notice in the docstring. Without one, it shows the
+    warning instead and logs a warning, which fails a strict build.
+
+    Symbols without a docstring are not reported: they are usually overloads,
+    setters or deleters, whose notice goes in the docstring of the function or
+    property, and a missing docstring is reported by the linters anyway.
+
+    Args:
+        path: The path of the source, only used to build report locations.
+        lines: The source lines, after the admonitions were converted.
+        docstrings: The docstrings found in the source.
+        headers: The indexes of the `Deprecated:` admonition headers.
+
+    Returns:
+        One `path:line (name)` location per symbol, in source order, cut short
+        after `_MAX_MENTIONS_PER_FILE` of them.
+    """
+    found = sorted(
+        (docstring.start, f"{path}:{docstring.start} ({docstring.name})")
+        for docstring in docstrings
+        if docstring.decorated
+        and headers.isdisjoint(
+            range(docstring.start - 1, min(docstring.end, len(lines)))
+        )
+    )
+    return _cut_short(path, [location for _, location in found])
+
+
 def _find_unrendered_deprecations(
     path: Path, lines: list[str], docstrings: list[_Docstring], headers: set[int]
 ) -> list[str]:
-    """Find the symbols a helper deprecates without the documentation saying so.
+    """Find the symbols a helper deprecates without a complete notice.
 
-    A helper such as `deprecated_member()` warns at runtime, but the griffe
-    extension only renders the decorator, so the member's own docstring has to
-    carry the admonition or the rendered page says nothing at all. A symbol
-    whose docstring already has one is therefore not reported.
+    The griffe extension writes the notice of an enum member deprecated with a
+    helper such as `deprecated_member()` from its `new_name` and `since`
+    arguments. When either is missing, or not a literal string, the member's
+    own docstring has to carry the admonition, or the extension logs a warning
+    and a strict build fails. A symbol whose docstring already has one is
+    therefore not reported.
 
     Args:
         path: The path of the source, only used to build report locations.
@@ -1479,7 +1728,11 @@ def _find_unrendered_deprecations(
 
 
 def _find_unmarked_deprecations(
-    path: Path, lines: list[str], docstrings: list[_Docstring], excluded: set[int]
+    path: Path,
+    lines: list[str],
+    docstrings: list[_Docstring],
+    headers: set[int],
+    excluded: set[int],
 ) -> list[str]:
     """Find the docstrings that talk about a deprecation without marking it.
 
@@ -1495,10 +1748,15 @@ def _find_unmarked_deprecations(
     A `deprecated` decorator needs no exclusion either, since its message is
     not a docstring.
 
+    Docstrings that already have a `Deprecated:` admonition are skipped
+    entirely, since the symbol is already marked, and their summaries often
+    say so too, as in "The old thing (deprecated)."
+
     Args:
         path: The path of the source, only used to build report locations.
         lines: The source lines, after the admonitions were converted.
         docstrings: The docstrings found in the source.
+        headers: The indexes of the `Deprecated:` admonition headers.
         excluded: The indexes of the lines already reported on their own, and
             of the admonitions that already render as written.
 
@@ -1508,7 +1766,9 @@ def _find_unmarked_deprecations(
     """
     candidates: set[int] = set()
     for docstring in docstrings:
-        candidates.update(range(docstring.start - 1, min(docstring.end, len(lines))))
+        docstring_lines = range(docstring.start - 1, min(docstring.end, len(lines)))
+        if headers.isdisjoint(docstring_lines):
+            candidates.update(docstring_lines)
     candidates -= excluded
 
     return _cut_short(
@@ -1608,12 +1868,16 @@ def _collect_docstrings(tree: ast.Module) -> list[_Docstring]:
 def _deprecation_helper_line(statement: ast.stmt) -> int | None:
     """Return the line where a helper deprecates the symbol a statement assigns.
 
+    Only calls the griffe extension can't write a complete notice for count,
+    meaning the ones not passing both `new_name` and `since` as literal
+    strings.
+
     Args:
         statement: The assignment to inspect.
 
     Returns:
         The line of the call, or `None` when the statement assigns something
-        else.
+        else, or the call passes both arguments.
     """
     if not isinstance(statement, (ast.Assign, ast.AnnAssign)):
         return None
@@ -1629,7 +1893,18 @@ def _deprecation_helper_line(statement: ast.stmt) -> int | None:
     else:
         return None
 
-    return call.lineno if name in _DEPRECATION_HELPERS else None
+    if name not in _DEPRECATION_HELPERS:
+        return None
+
+    literal_keywords = {
+        keyword.arg
+        for keyword in call.keywords
+        if isinstance(keyword.value, ast.Constant)
+        and isinstance(keyword.value.value, str)
+    }
+    if {"new_name", "since"} <= literal_keywords:
+        return None
+    return call.lineno
 
 
 def _docstring_node(node: ast.AST) -> ast.Constant | None:

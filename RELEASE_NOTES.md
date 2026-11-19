@@ -2,7 +2,7 @@
 
 ## Summary
 
-This release documents deprecations with a `Deprecated:` admonition, generated automatically from the `typing_extensions.deprecated` decorator wherever there is one. It also bumps the minimum supported dependencies for protobuf, pytest and setuptools to exclude vulnerable versions.
+This release documents deprecations with a `Deprecated:` admonition, and checks that every deprecated symbol has one, using the [`griffe-frequenz-core`](https://github.com/frequenz-floss/griffe-frequenz-core) extension. It also bumps the minimum supported dependencies for protobuf, pytest and setuptools to exclude vulnerable versions.
 
 ## Upgrading
 
@@ -25,8 +25,11 @@ But you might still need to adapt your code:
 
 - Deprecations are now documented with a `Deprecated:` admonition, never `Warning: Deprecated`, and never with a custom title, since a title replaces the word "Deprecated" in the rendered output. The migration script rewrites a plain `Warning: Deprecated` into `Deprecated:` on its own, and reports the rest:
 
-  - Symbols carrying both a `deprecated` decorator and a hand-written admonition, which would now be documented twice. Delete the hand-written one, moving into the decorator message anything it says that the message does not.
+  - Symbols carrying a `deprecated` decorator without a `Deprecated:` admonition. The decorator message is the runtime warning, so the docstring needs a notice written for the documentation, or `mkdocs build --strict` fails.
+  - Enum members deprecated with `deprecated_member()` or `DeprecatedMember` without both `new_name` and `since`, and without a `Deprecated:` admonition. The extension can't write a complete notice for them, so `mkdocs build --strict` fails until both arguments are passed or the docstring has a notice.
   - Variants such as `Note: Deprecated`, `Warning: Deprecation` or a custom title, where only a human can tell what was meant.
+
+- Projects that already use [`griffe-warnings-deprecated`](https://mkdocstrings.github.io/griffe-warnings-deprecated/) get it replaced by `griffe-frequenz-core` in `pyproject.toml` and `mkdocs.yml`. Both extensions enabled make a strict build fail, so the old one is always removed. Its `kind: deprecated` and `title: Deprecated` options are dropped, as they are the new defaults, and any other option is kept. The migration script reports a custom `kind`, since hand-written `Deprecated:` notices are then not recognized.
 
 - Tests using a symbol deprecated by the project itself now fail. Stop using the deprecated symbol, or, when the use is deliberate, wrap it in [`pytest.deprecated_call()`](https://docs.pytest.org/en/stable/reference/reference.html#pytest.deprecated_call) (which is how a deprecation should be tested anyway) or mark the test with `@pytest.mark.filterwarnings("once::DeprecationWarning")`.
 
@@ -46,7 +49,7 @@ But you might still need to adapt your code:
 
 - Generated projects now render deprecations as a `Deprecated:` admonition, styled like a warning but with its own colour and a grave stone icon.
 
-  The [`griffe-warnings-deprecated`](https://mkdocstrings.github.io/griffe-warnings-deprecated/) extension builds that admonition from the message of a `typing_extensions.deprecated` decorator, so the text is written once and serves as both the runtime warning and the documentation. Where no decorator can reach, which is module-level aliases, individual function arguments, enum members and whole modules, the same admonition is written by hand.
+  The [`griffe-frequenz-core`](https://github.com/frequenz-floss/griffe-frequenz-core) extension marks every symbol deprecated with the `typing_extensions.deprecated` decorator, or with `frequenz-core`'s `deprecated_aliases()` and `deprecated_member()`, and moves its notice to the top of its documentation. It writes the notice of aliases and enum members itself, from the version and replacement passed to the helper. A hand-written `Deprecated:` admonition always takes priority, and it is required for decorated symbols, since the decorator only has the runtime warning. Missing or incomplete notices make `mkdocs build --strict` fail. The [deprecations guide](https://github.com/frequenz-floss/docs/blob/v0.x.x/python/deprecations.md) explains how to document each kind of deprecation.
 
 - Generated projects now treat their own deprecations as errors in `pytest`, while deprecations coming from dependencies stay warnings, as they can't always be fixed right away:
 
